@@ -34,6 +34,7 @@ function render(status) {
 
 function compileObserve(names, node, Literal) {
     const renderers = compileNode([], names.join(', '), node, Literal);
+
     var sets = nothing;
     var observer1;
 
@@ -48,12 +49,12 @@ function compileObserve(names, node, Literal) {
         if (observer === observer1) { return node.childNodes; }
         observer1 = observer;
 
-        const data   = Observer.target(observer);
-        const statii = [];
+        const data     = Observer.target(observer);
+        const statuses = [];
 
         sets.stop();
         sets = Observer.sets(observer, (name, value) => {
-            const renders = statii.map(function(status) {
+            const renders = statuses.map(function(status) {
                 // If the last render did not access this name (synchronously)
                 // assume there is no need to render.
                 return status.names[name] ?
@@ -74,7 +75,7 @@ function compileObserve(names, node, Literal) {
         });
 
         return Promise.all(renderers.map((fn, i) => {
-            const status = statii[i] = { fn, data, observer };
+            const status = statuses[i] = { fn, data, observer };
             return render(status);
         }))
         .then((counts) => {
@@ -110,8 +111,9 @@ export default function Literal(source) {
         log('render', 'data-data attribute not allowed', 'red');
     }
 
-    return cache[id] = compileObserve(names, node, Literal);
+    return (cache[id] = compileObserve(names, node, Literal));
 }
+
 /*
 assign(Literal.prototype, {
     observe: function(data) {
