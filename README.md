@@ -101,7 +101,10 @@ via `${ title }`. Constants are not observed for live data-binding.
 
 Behind the scenes accesses to the main `data` object are recorded on each 
 render, allowing literal to know exactly which attributes and text nodes
-need to be rendered or ignored when the data mutates.
+need to be rendered or ignored when the data mutates. Constants are removed 
+from this process. They are re-rendered when a) they are in an attribute
+or text node containing another template tag that has mutated or b) when
+a new data object is passed to the template (in JS via `render(data)`).
 
 Incidentally, immutable objects such as frozen objects are not observed for 
 data-binding, that wouldn't make sense. <!--It is perfectly performant to be
