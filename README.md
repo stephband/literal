@@ -92,7 +92,7 @@ The `src` attribute includes some other template referenced by id:
 ```
 
 
-### <include>
+### &lt;include&gt;
 
 Include tags, like the literal template, are replaced on render with
 their source content. Like the literal template, they support the `src` 
