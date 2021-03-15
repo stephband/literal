@@ -50,8 +50,8 @@ inject any old data for the template's scope.
 </template>
 ```
 
-A template tag may evaluate to a promise, so `fetch` and `import` may be
-employed to get data:
+A template tag may evaluate to a promise, so `fetch` and `import` can be
+employed to import data:
 
 ```html
 <template is="literal-template" data="${ import('./module.js') }">
