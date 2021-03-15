@@ -1,0 +1,51 @@
+{
+  "title": "Literal",
+  "name": "literal",
+  "description": "Render HTML templates as JS Literals.",
+  "version": "0.2.1",
+  "author": {
+    "name": "stephband",
+    "url": "http://stephen.band",
+    "twitter": "@stephband"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stephband/literal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stephband/literal/issues/"
+  },
+  "devDependencies": {
+    "clean-css": "^4.2.3",
+    "esbuild": "^0.8.27",
+    "findit": "^2.0.0",
+    "madge": "^3.12.0",
+    "sass": "^1.30.0"
+  },
+  "homepage": "https://stephen.band/literal",
+  "docs": "https://stephen.band/literal",
+  "type": "module",
+  "module": "module.js",
+  "scripts": {
+    "build-sass": "sass ./css/grid.scss ./css/grid.css && sass ./css/respond.scss ./css/respond.css && sass ./css/text.scss ./css/text.css",
+    "build-module": "rm -rf prod && node --experimental-json-modules build-module.js",
+    "build-css": "node ./bolt/build-css.js module.css nendaz.css && node ./bolt/build-css.js bolt/elements/slide-show.shadow.css slide-show.shadow.css",
+    "build-literal": "node --experimental-json-modules --no-warnings ./bolt/literal/index.js ./ pages/ debug",
+    "watch": "node ./bolt/literal/build-watch.js",
+    "build": "npm run build-css && npm run build-module && npm run build-literal && git add --all && git commit -am 'Build' && git push && npm run publish"
+  },
+  "literal": {
+    "exclude": [
+      ".git",
+      "bolt",
+      "dom",
+      "fn",
+      "node_modules",
+      "archive",
+      "templates",
+      "fonts",
+      "images",
+      "design"
+    ]
+  }
+}

@@ -87,7 +87,7 @@ function compileAttr(renderers, vars, node, name) {
     renderers.push((...params) => 
         render(...params)
         .then((value) => {
-            if (value === node.getAttribtue(name)) { return 0; }
+            if (value === node.getAttribute(name)) { return 0; }
             // Mutate DOM
             node.setAttribute(name, value);
             // Return number of mutations
@@ -131,6 +131,17 @@ function compileValue(renderers, vars, node) {
     );
 }
 
+function compileValueString(renderers, vars, node) {
+    const string = node.getAttribute('value');
+    if (!string || !rliteral.test(string)) { return; }
+
+    const render = compileStringRender(library, vars, string, 'arguments[1]');
+    renderers.push((...params) => 
+        render(...params)
+        .then((value) => setPropertyValue(node, value))
+    );
+}
+
 function compileChecked(renderers, vars, node) {
     const string = node.getAttribute('value');
     if (!string || !rliteral.test(string)) { return; }
@@ -168,10 +179,12 @@ const compileAttribute = overload((renderers, vars, node, name) => name, {
     'value': overload((renderers, vars, node, name) => ('' + node.type), {
         //'checkbox':  compileValueChecked,
         //'date':    compileValueDate,
-        //'number':  compileValue,
-        //'range':   compileValue,
+        //'number':    compileValueNumber,
+        //'range':     compileValueNumber,
         //'select-multiple': compileValueArray,
-        'default': compileValue,
+        'text':      compileValueString,
+        'search':    compileValueString,
+        'default':   compileValue,
         'undefined': (renderers, vars, node) => {
             compileAttr(renderers, vars, node, 'value');
         }
@@ -230,7 +243,7 @@ function compileType(renderers, vars, node) {
     // Compile element type attributes
     const type  = node.type;
     if (!type) { return; }
-    const names = config.types[type || 'default'];
+    const names = config.types[type] || config.types['default'];
     compileAttributes(renderers, vars, node, names);
 }
 
@@ -247,7 +260,9 @@ const compileElement = overload((renderers, vars, node) => node.tagName.toLowerC
         var count = 0;
         
         log('include', node.getAttribute('src'), 'yellow');
-        
+
+        //compileAttrValue()
+
         renderers.push(function first(data) {
             // Render and replace include node with rendered dom
             return ++count === 1 ?
@@ -270,7 +285,7 @@ const compileElement = overload((renderers, vars, node) => node.tagName.toLowerC
         // We must wait until custom elements are upgraded before we may 
         // interact with their non-standard properties and attributes
         if (isCustomElement(node)) {
-            const i = renderers.length;
+            //const i = renderers.length;
             window.customElements.whenDefined(name).then(() => {
                 compileTag(renderers, vars, node, Literal);
                 compileType(renderers, vars, node, Literal);

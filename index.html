@@ -27,6 +27,16 @@
     // class is removed
     window.addEventListener('load', () => window.requestAnimationFrame(() => document.documentElement.classList.remove('loading')));
     window.DEBUG = true;
+    window.data = {
+        string: 'string <&>',
+        number: 9,
+        infinity: Infinity,
+        NULL:   null,
+        object: { a: 1 },
+        true:  true,
+        false: false,
+        hidden: false
+    };
     </script>
 
     <link rel="stylesheet" href="../bolt/css/html.css" />
@@ -47,9 +57,9 @@
         </ul-->
     </header>
 
-    <template id="include" data-string>
-        <h2>Include</h2>
-        <span class="block">${ data.string }</span>
+    <template id="include" data-name>
+        <h2>Include ${ data }</h2>
+        <span class="block">${ data.title } ${ name }</span>
     </template>
 
     <template id="template" data-string data-arse>
@@ -58,34 +68,23 @@
         <input type="text" value="${ data.string }, ${ string }, ${ data.number }, ${ data.infinity }, ${ data.object }, ${ data.true }, ${ data.false }${ data.NULL }${ data.undefined }, entities <&>" />
         <p>${ data.string }, ${ string }, ${ data.number }, ${ data.infinity }, ${ data.object }, ${ data.true }, ${ data.false }${ data.NULL }${ data.undefined }, entities &lt;&amp;&gt;</p>
         <p hidden="${ data.hidden }">Hidden</p>
-        <include src="#include"></include>
+        <include src="#include" data="${ data.object }"></include>
     </template>
 
+    <!--template is="literal-template" data="${ window.data }" data-string>
+        Hello ${ data.string }
+        <input type="text" value="${ data.string }, ${ string }, ${ data.number }, ${ data.infinity }, ${ data.object }, ${ data.true }, ${ data.false }${ data.NULL }${ data.undefined }, entities <&>" />
+    </template-->
+
+    <template is="literal-template" data="${ window.data }" src="#template">
+        <template is="literal-template" data="${ window.data }" src="#template"></template>
+    </template>
+    <!--template is="literal-template" data="./package.json" src="#include"></template-->
+
     <script type="module">
+        import "./elements/literal-template.js";
         import Literal  from "./module.js";
-        import observer from "./modules/observer.js";
-        import delegate from "../dom/modules/delegate.js";
-        import events   from "../dom/modules/events.js";
-
-        const render = Literal(document.getElementById('template'));
-        window.render = render;
-        const data = {
-            string: 'string <&>',
-            number: 9,
-            infinity: Infinity,
-            NULL:   null,
-            object: { a: 1 },
-            true:  true,
-            false: false,
-            hidden: false
-        };
-
-        window.data = observer(data);
-
-        render(data)
-        .then((nodes) => {
-            console.log('Render complete, add to DOM', nodes);
-            nodes.length && template.after(...nodes);
-        });
+        import Observer from "./modules/observer.js";
+        window.data = Observer(window.data);
     </script>
 </body>
