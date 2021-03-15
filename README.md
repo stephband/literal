@@ -3,7 +3,7 @@
 Literal templates for the DOM and for Node.
 
 
-## The literal-template element
+## literal-template
 
 Register the `literal-template` (customised built-in) element:
 
@@ -11,8 +11,7 @@ Register the `literal-template` (customised built-in) element:
 <script type="module" src="./elements/literal-template.js"></script> 
 ```
 
-A `literal-template` is declared using the `is` attribute on a `<template>` 
-element:
+A `literal-template` is declared using the `is` attribute:
 
 ```html
 <template is="literal-template" data="./package.json">
