@@ -4,7 +4,7 @@ Literal sticks JS into your HTML. Literal uses the native capabilities of JS
 to compile and render fast and powerful templates.
 
 
-## Literal constructor in JS
+## Literal templates in JS
 
 Literal may be used without the custom element interface. Import the Literal 
 constructor and render a template:
@@ -14,7 +14,7 @@ import Literal from './module.js';
 
 const render = Literal('#my-template');
 
-render({ name: 'Literal' }).then((node) => {
+render({ name: 'Literal' }).then((nodes) => {
     // Do something with the generated nodes
 });
 ```
