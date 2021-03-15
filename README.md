@@ -1,6 +1,6 @@
 # Literal
 
-Literal templates for the DOM and for Node.
+Literal templates stick some JS in yer HTML. for the DOM and for Node.
 
 
 ## Custom element literal-template
@@ -11,7 +11,7 @@ Register the `literal-template` (customised built-in) element:
 <script type="module" src="./elements/literal-template.js"></script> 
 ```
 
-A `literal-template` is declared using the `is` attribute:
+A literal template is declared using the `is` attribute:
 
 ```html
 <template is="literal-template" data="./package.json">
@@ -20,14 +20,14 @@ A `literal-template` is declared using the `is` attribute:
 ```
 
 Literal templates are replaced with their rendered content as soon as data 
-becomes available. When `package.json` is fetched the HTML above renders to 
-the DOM as:
+becomes available. In the example above, when `package.json` is fetched 
+the template renders to the DOM as:
 
 ```html
 <h1>Literal</h1>
 ```
 
-### `data` attribute
+### The *data* attribute
 
 The `data` attribute accepts a url to request some JSON:
 
