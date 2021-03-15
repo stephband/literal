@@ -6,8 +6,7 @@ to compile and render fast and powerful templates.
 
 ## Literal templates in JS
 
-Literal may be used without the custom element interface. Import the Literal 
-constructor and render a template:
+Import the Literal constructor and render a template:
 
 ```js
 import Literal from './module.js';
