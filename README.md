@@ -96,14 +96,15 @@ a template:
 ### Data binding
 
 There is a subtle difference between data access via `${ data.title }` and 
-via `${ title }`. Constants are not observed for live data-binding. 
+via `${ title }` – constants are not observed for live data-binding. 
 
 Behind the scenes accesses to the main `data` object are recorded on each 
-render, allowing literal to know exactly which attributes and text nodes
+render, allowing Literal to know exactly which attributes and text nodes
 need to be rendered or ignored when data mutates. Constants are removed 
 from this process. They are re-rendered only when a) they are in an attribute
-or text node containing another template tag that has mutated or b) when
-an entirely new data object is passed to the template (in JS via `render(data)`).
+or text node containing another template tag that has been flagged for render or 
+b) when an entirely new data object is passed to the template (in JS 
+via `render(data)`).
 
 Incidentally, immutable objects such as frozen objects are not observed for 
 data-binding, that wouldn't make sense. <!--It is perfectly performant to be
