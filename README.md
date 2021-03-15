@@ -105,8 +105,8 @@ The `src` attribute includes some other template referenced by id:
 
 ### &lt;include src="#template-id"&gt;
 
-Include tags, found only in unrendered templates, are replaced on render with
-their source content. Like the literal template, they support the `src` 
+Include tags, found only in unrendered literal templates, are replaced on render 
+with their source content. Like the literal template, they support the `src` 
 and `data` attributes. Indeed, an include requires a `src` attribute.
 
 ```html
