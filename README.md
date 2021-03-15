@@ -1,6 +1,6 @@
 # Literal
 
-Literal templates stick some JS in yer HTML. for the DOM and for Node.
+Literal templates stick some JS in your HTML.
 
 
 ## Using Literal in HTML
@@ -27,7 +27,7 @@ the template renders to the DOM as:
 <h1>Literal</h1>
 ```
 
-### The *data* attribute
+### data=url
 
 The `data` attribute accepts a url to request some JSON:
 
