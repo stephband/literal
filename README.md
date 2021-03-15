@@ -3,7 +3,7 @@
 Literal templates stick some JS in your HTML.
 
 
-## Using Literal in HTML
+## Using Literal templates in HTML
 
 Register the `literal-template` (customised built-in) element:
 
@@ -61,7 +61,7 @@ employed to get data:
 
 ### data-name
 
-Use `data-` attributes to declare properties of `data` as constants inside the 
+Use `data-` attributes to define properties of `data` as constants inside the 
 template:
 
 ```html
