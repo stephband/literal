@@ -27,7 +27,7 @@ the template renders to the DOM as:
 <h1>Literal</h1>
 ```
 
-### data=url
+### data="url"
 
 The `data` attribute accepts a url to request some JSON:
 
@@ -38,6 +38,8 @@ The `data` attribute accepts a url to request some JSON:
     </ul>
 </template>
 ```
+
+### data="${value}"
 
 The `data` attribute may also contain a literal tag, which can be used to 
 inject any old data for the template's scope.
@@ -57,6 +59,8 @@ employed to get data:
 </template>
 ```
 
+### data-name
+
 Use `data-` attributes to declare properties of `data` as constants inside the 
 template:
 
@@ -67,7 +71,7 @@ template:
 </template>
 ```
 
-Note that constants are not observed for live data-binding. They are useful 
+Constants are not observed for live data-binding. They are useful 
 for rendering data that is known not to mutate. Incidentally, immutable 
 objects such as frozen objects are not observed for data-binding either, that 
 wouldn't be sensible.
