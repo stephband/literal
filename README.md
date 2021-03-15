@@ -72,7 +72,7 @@ inject any old data for the template's scope.
 </template>
 ```
 
-A Literal template tag may evaluate to a promise, so `fetch` and `import` can be
+A literal tag may evaluate to a promise, so `fetch` and `import` can be
 employed to import data:
 
 ```html
@@ -93,7 +93,7 @@ a template:
 </template>
 ```
 
-### Data binding
+### Live updates
 
 There is a subtle difference between data access via `${ data.title }` and 
 via `${ title }` – constants are not observed for live data-binding. 
@@ -102,7 +102,7 @@ Behind the scenes accesses to the main `data` object are recorded on each
 render, allowing Literal to know exactly which attributes and text nodes
 need to be rendered or ignored when data mutates. Constants are removed 
 from this process. They are re-rendered only when a) they are in an attribute
-or text node containing another template tag that has been flagged for render or 
+or text node containing another tag that has been flagged for render or 
 b) when an entirely new data object is passed to the template (in JS 
 via `render(data)`).
 
@@ -145,9 +145,10 @@ and `data` attributes. Indeed, an include requires a `src` attribute.
 
 ## Literal for NodeJS
 
-Build all files in the directory tree with the extension `.literal` to their
-built equivalent without the extension in the same location. Literal will render 
-`.html.literal`, `.css.literal`, `.svg.literal` and other `.literal` files.
+Literal comes with a build script for the static render of files with a 
+`.literal` extension. Files are built to their equivalent without the extension 
+in the same location. Literal will render `.html.literal`, `.css.literal`, 
+`.svg.literal` and other `.literal` files.
 
 ```
 > node ./index.js
