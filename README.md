@@ -5,7 +5,7 @@ to render fast and powerful template literals as either DOM fragments or HTML
 strings.
 
 
-## Using Literal templates in HTML
+## Literal templates in HTML
 
 Register the `literal-template` (customised built-in) element:
 
@@ -93,7 +93,7 @@ The `src` attribute includes some other template referenced by id:
 ```
 
 
-## Using Literal in JS
+## Literal module in JS
 
 Literal may be used without the custom element interface. Import the Literal
 constructor and render a template:
@@ -112,7 +112,7 @@ The Literal constructor accepts an identifier in the form `'#template-id'`,
 a reference to a template element, or an HTML string.
 
 
-## Using Literal in Node
+## Literal in NodeJS
 
 Build all files in the directory tree with the extension `.literal` to their
 built equivalent without the extension in the same location. Literal will render 
