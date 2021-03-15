@@ -1,6 +1,8 @@
 # Literal
 
-Literal templates stick some JS in your HTML.
+Literal sticks some JS in your HTML. Literal uses the native capabilities of JS 
+to render fast and powerful template literals as either DOM fragments or HTML 
+strings.
 
 
 ## Using Literal templates in HTML
@@ -79,7 +81,7 @@ wouldn't be sensible.
 
 ### src="#template-id"
 
-The `src` attribute imports another template referenced by id:
+The `src` attribute includes some other template referenced by id:
 
 ```html
 <template id="header">
@@ -93,11 +95,21 @@ The `src` attribute imports another template referenced by id:
 
 ## Using Literal in JS
 
-Import Literal:
+Literal may be used without the custom element interface. Import the Literal
+constructor and render a template:
 
 ```js
 import Literal from './module.js';
+
+const render = Literal('#my-template');
+
+render({ name: 'Literal' }).then((node) => {
+    // Do something with the generated nodes
+});
 ```
+
+The Literal constructor accepts an identifier in the form `'#template-id'`,
+a reference to a template element, or an HTML string.
 
 
 ## Using Literal in Node
