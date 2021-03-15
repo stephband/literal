@@ -1,8 +1,7 @@
 # Literal
 
-Literal sticks some JS in your HTML. Literal uses the native capabilities of JS 
-to render fast and powerful template literals as either DOM fragments or HTML 
-strings.
+Literal sticks JS into your HTML. Literal uses the native capabilities of JS 
+to render fast and powerful template literals into the DOM.
 
 
 ## Literal templates in HTML
@@ -93,9 +92,26 @@ The `src` attribute includes some other template referenced by id:
 ```
 
 
-## Literal module in JS
+### <include>
 
-Literal may be used without the custom element interface. Import the Literal
+Include tags, like the literal template, are replaced on render with
+their source content. Like the literal template, they support the `src` 
+and `data` attributes. Indeed, an include requires a `src` attribute.
+
+```html
+<template id="description">
+    <p>${ description }</p>
+</template>
+
+<template is="literal-template" data="./package.json">
+    <h1>${ title }</h1>
+    <include src="#description"></include>
+</template>
+```
+
+## Literal constructor in JS
+
+Literal may be used without the custom element interface. Import the Literal 
 constructor and render a template:
 
 ```js
@@ -112,7 +128,7 @@ The Literal constructor accepts an identifier in the form `'#template-id'`,
 a reference to a template element, or an HTML string.
 
 
-## Literal in NodeJS
+## Literal for NodeJS
 
 Build all files in the directory tree with the extension `.literal` to their
 built equivalent without the extension in the same location. Literal will render 
