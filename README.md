@@ -4,6 +4,25 @@ Literal sticks JS into your HTML. Literal uses the native capabilities of JS
 to compile and render fast and powerful templates.
 
 
+## Literal constructor in JS
+
+Literal may be used without the custom element interface. Import the Literal 
+constructor and render a template:
+
+```js
+import Literal from './module.js';
+
+const render = Literal('#my-template');
+
+render({ name: 'Literal' }).then((node) => {
+    // Do something with the generated nodes
+});
+```
+
+The Literal constructor accepts an identifier in the form `'#template-id'`,
+a reference to a template element, or an HTML string.
+
+
 ## Literal templates in HTML
 
 Register the `literal-template` (customised built-in) element:
@@ -119,24 +138,6 @@ and `data` attributes. Indeed, an include requires a `src` attribute.
     <include src="#description"></include>
 </template>
 ```
-
-## Literal constructor in JS
-
-Literal may be used without the custom element interface. Import the Literal 
-constructor and render a template:
-
-```js
-import Literal from './module.js';
-
-const render = Literal('#my-template');
-
-render({ name: 'Literal' }).then((node) => {
-    // Do something with the generated nodes
-});
-```
-
-The Literal constructor accepts an identifier in the form `'#template-id'`,
-a reference to a template element, or an HTML string.
 
 
 ## Literal for NodeJS
