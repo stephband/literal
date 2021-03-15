@@ -61,7 +61,7 @@ is available inside the template as `data`:
 </template>
 ```
 
-### data="${value}"
+### data="${}"
 
 The `data` attribute may also contain a literal tag, which can be used to 
 inject any old data for the template's scope.
