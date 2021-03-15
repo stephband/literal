@@ -59,10 +59,10 @@ employed to import data:
 </template>
 ```
 
-### data-name
+### data-xxx
 
-Use `data-` attributes to define properties of `data` as constants inside the 
-template:
+`data-xxx` attributes define properties of `data` as constants for use inside 
+a template:
 
 ```html
 <template is="literal-template" data="./package.json" data-title data-description>
@@ -77,7 +77,7 @@ objects such as frozen objects are not observed for data-binding either, that
 wouldn't be sensible.
 
 
-### The *src* attribute
+### src="#template-id"
 
 The `src` attribute imports another template referenced by id:
 
