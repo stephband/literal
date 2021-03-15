@@ -107,8 +107,8 @@ b) when an entirely new data object is passed to the template (in JS
 via `render(data)`).
 
 Incidentally, immutable objects such as frozen objects are not observed for 
-data-binding, that wouldn't make sense. <!--It is perfectly performant to be
-using Literal as an immutable rendering library.-->
+data-binding, that wouldn't make sense. Literal is comfortable working
+mutably or immutably.
 
 
 ### src="#template-id"
