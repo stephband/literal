@@ -3,7 +3,7 @@
 Literal templates stick some JS in yer HTML. for the DOM and for Node.
 
 
-## Custom element literal-template
+## Custom *literal-template* element
 
 Register the `literal-template` (customised built-in) element:
 
@@ -73,7 +73,7 @@ objects such as frozen objects are not observed for data-binding either, that
 wouldn't be sensible.
 
 
-### `src` attribute
+### The *src* attribute
 
 The `src` attribute imports another template referenced by id:
 
