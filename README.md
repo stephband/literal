@@ -3,7 +3,7 @@
 Literal templates stick some JS in yer HTML. for the DOM and for Node.
 
 
-## Use Literal in HTML
+## Using Literal in HTML
 
 Register the `literal-template` (customised built-in) element:
 
@@ -87,7 +87,7 @@ The `src` attribute imports another template referenced by id:
 ```
 
 
-## Use Literal in JS
+## Using Literal in JS
 
 Import Literal:
 
@@ -96,7 +96,7 @@ import Literal from './module.js';
 ```
 
 
-## Use Literal in Node
+## Using Literal in Node
 
 Build all files in the directory tree with the extension `.literal` to their
 built equivalent without the extension in the same location. Literal will render 
