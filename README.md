@@ -3,7 +3,7 @@
 Literal templates stick some JS in yer HTML. for the DOM and for Node.
 
 
-## Custom *literal-template* element
+## Custom template element
 
 Register the `literal-template` (customised built-in) element:
 
