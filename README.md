@@ -3,7 +3,7 @@
 Literal templates for the DOM and for Node.
 
 
-## literal-template
+## Custom element literal-template
 
 Register the `literal-template` (customised built-in) element:
 
