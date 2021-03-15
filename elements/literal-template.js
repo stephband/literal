@@ -2,7 +2,6 @@
 /* Register customised built-in element <template is="literal-template"> */
 
 import Literal  from '../module.js';
-import Observer from '../modules/observer.js';
 import element  from '../../dom/modules/element.js';
 import { compileValue } from '../modules/compile-string.js';
 import { requestGet as request } from '../../dom/modules/request.js';

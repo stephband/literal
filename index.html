@@ -71,6 +71,10 @@
         <include src="#include" data="${ data.object }"></include>
     </template>
 
+    <template is="literal-template" data="${ window.location }">
+        <p>${ data.pathname }</p>
+    </template>
+
     <!--template is="literal-template" data="${ window.data }" data-string>
         Hello ${ data.string }
         <input type="text" value="${ data.string }, ${ string }, ${ data.number }, ${ data.infinity }, ${ data.object }, ${ data.true }, ${ data.false }${ data.NULL }${ data.undefined }, entities <&>" />

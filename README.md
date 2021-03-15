@@ -32,7 +32,8 @@ the template renders to the DOM as:
 
 ### data="url"
 
-The `data` attribute accepts a url to request some JSON:
+The `data` attribute accepts a url to request some JSON. The resulting object
+is available inside the template as `data`:
 
 ```html
 <template is="literal-template" data="./package.json">
@@ -74,10 +75,18 @@ a template:
 </template>
 ```
 
-Constants are not observed for live data-binding. They are useful 
-for rendering data that is known not to mutate. Incidentally, immutable 
-objects such as frozen objects are not observed for data-binding either, that 
-wouldn't be sensible.
+### Data binding
+
+There is a subtle difference between data access via `${ data.title }` and 
+via `${ title }`. Constants are not observed for live data-binding. 
+
+Behind the scenes accesses to the main `data` object are recorded on each 
+render, allowing literal to know exactly which attributes and text nodes
+need to be rendered or ignored when the data mutates.
+
+Incidentally, immutable objects such as frozen objects are not observed for 
+data-binding, that wouldn't make sense. <!--It is perfectly performant to be
+using Literal as an immutable rendering library.-->
 
 
 ### src="#template-id"
