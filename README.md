@@ -3,7 +3,7 @@
 Literal templates for the DOM and for Node.
 
 
-### The literal-template element
+## The literal-template element
 
 Register the `literal-template` (customised built-in) element:
 
@@ -28,7 +28,7 @@ the DOM as:
 <h1>Literal</h1>
 ```
 
-#### `data` attribute
+### `data` attribute
 
 The `data` attribute accepts a url to request some JSON:
 
@@ -74,7 +74,7 @@ objects such as frozen objects are not observed for data-binding either, that
 wouldn't be sensible.
 
 
-#### `src` attribute
+### `src` attribute
 
 The `src` attribute imports another template referenced by id:
 
@@ -88,7 +88,7 @@ The `src` attribute imports another template referenced by id:
 ```
 
 
-### Literal()
+## Literal()
 
 Import Literal:
 
