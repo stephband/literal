@@ -145,6 +145,6 @@ Build all files in the directory tree with the extension `.literal` to their
 built equivalent without the extension in the same location. Literal will render 
 `.html.literal`, `.css.literal`, `.svg.literal` and other `.literal` files.
 
-```js
+```cli
 node ./index.js
 ```
