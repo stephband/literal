@@ -1,7 +1,7 @@
 # Literal
 
 Literal sticks JS into your HTML. Literal uses the native capabilities of JS 
-to render fast and powerful template literals into the DOM.
+to compile and render fast and powerful templates.
 
 
 ## Literal templates in HTML
@@ -11,6 +11,8 @@ Register the `literal-template` (customised built-in) element:
 ```html
 <script type="module" src="./elements/literal-template.js"></script> 
 ```
+
+### &lt;template is="literal-template"&gt;
 
 A literal template is declared using the `is` attribute:
 
