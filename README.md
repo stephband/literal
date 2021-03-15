@@ -1,18 +1,9 @@
-# literal
+# Literal
 
-Literal templates for the DOM.
-
-
-### Literal()
-
-Import Literal:
-
-```js
-import Literal from './module.js';
-```
+Literal templates for the DOM and for Node.
 
 
-### The `literal-template` element
+### The literal-template element
 
 Register the `literal-template` (customised built-in) element:
 
@@ -94,6 +85,15 @@ The `src` attribute imports another template referenced by id:
 </template>
 
 <template is="literal-template" src="#header" data="./package.json"></template>
+```
+
+
+### Literal()
+
+Import Literal:
+
+```js
+import Literal from './module.js';
 ```
 
 
