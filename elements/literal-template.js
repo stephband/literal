@@ -3,20 +3,21 @@
 <template is="literal-template">
 
 Literal templates bind the DOM to data, parsing text content, classes and 
-attributes as JS template literals. Here is a literal template that simply 
-prints out `data` when rendered:
+attributes as JS template literals. Here is a literal template that prints out 
+data when rendered:
 
 ```html
 <template is="literal-template" id="log">
-    <pre>${ data }</pre>
+    <pre><code>${ data }</code></pre>
 </template>
 ```
 
-Use a `<render-template>` to render this template into the document:
+Use an `<include-template>` to render this template into the document with some 
+data:
 
 ```html
-<p>Here is package.json:</p>
-<render-template src="#log" data="./package.json"></render-template>
+<p>Ooo matron, what a lovely package.json:</p>
+<include-template src="#log" data="./package.json"></include-template>
 ```
 **/
 
@@ -66,27 +67,6 @@ element('<template is=literal-template>', {
             }
         }
     }
-    
-    /*
-    update: {
-        value: function update() {
-            if (!this.data) { return; }
-
-            const data    = this.data;
-            const promise = this.render(data);
-
-            // On first render add nodes to DOM
-            if (!this.renderCount++) {
-                promise.then((nodes) => {
-                    this.after(...nodes);
-                    this.remove();
-                })
-            }
-
-            return this;
-        }
-    },
-    */
 });
 
 // If one has not been found already, test for customised built-in element

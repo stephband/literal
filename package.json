@@ -27,12 +27,9 @@
   "type": "module",
   "module": "module.js",
   "scripts": {
-    "build-sass": "sass ./css/grid.scss ./css/grid.css && sass ./css/respond.scss ./css/respond.css && sass ./css/text.scss ./css/text.css",
-    "build-module": "rm -rf prod && node --experimental-json-modules build-module.js",
-    "build-css": "node ./bolt/build-css.js module.css nendaz.css && node ./bolt/build-css.js bolt/elements/slide-show.shadow.css slide-show.shadow.css",
-    "build-literal": "node --experimental-json-modules --no-warnings ./bolt/literal/index.js ./ pages/ debug",
-    "watch": "node ./bolt/literal/build-watch.js",
-    "build": "npm run build-css && npm run build-module && npm run build-literal && git add --all && git commit -am 'Build' && git push && npm run publish"
+    "build":   "node --experimental-json-modules ../fn/build-module.js",
+    "literal": "node --experimental-json-modules --no-warnings ./index.js ./ ./ debug",
+    "watch":   "node ./bolt/literal/build-watch.js"
   },
   "literal": {
     "exclude": [
