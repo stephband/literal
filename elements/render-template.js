@@ -1,9 +1,54 @@
 
-/* Register customised built-in element <template is="literal-template"> */
+
+/** 
+<render-template>
+
+A `<render-template>` finds a source template identified by its `src` attribute
+and replaces itself with the template content:
+
+```html
+<template id="greetings">
+    Hello you.
+</template>
+
+<render-template src="#greetings"></render-template>
+```
+
+If the source template has a `.render()` method (as is the case with the 
+customised template `is="literal-template"`), its `.render()` method is called 
+with data read from `data-` attributes, and the `<render-template>` is replaced 
+with the result:
+
+```html
+<template is="literal-template" id="greetings">
+    Hello ${ data.name }.
+</template>
+
+<render-template src="#greetings" data-name="Bartholemew"></render-template>
+```
+
+To import from an external source such as a JSON file specify a `data` attribute 
+with a path:
+
+```html
+<render-template src="#greetings" data="./package.json"></render-template>
+```
+
+The `data` attribute will also import the default export of a JS module:
+
+```html
+<render-template src="#greetings" data="./modules/literal.js"></render-template>
+```
+
+Or indeed the named export of JS module:
+
+```html
+<render-template src="#greetings" data="./modules/literal.js#namedExport"></render-template>
+```
+**/
 
 import Literal  from '../module.js';
 import element  from '../../dom/modules/element.js';
-import { compileValue } from '../modules/compile-string.js';
 import { requestGet as request } from '../../dom/modules/request.js';
 import log      from '../../bolt/literal/modules/log-browser.js';
 
@@ -16,45 +61,16 @@ function reject() {
     return rejectSrc;
 }
 
-element('literal-template', {
-    extends: 'template',
-
+element('render-template', {
     construct: function() {
         // Default to using this as template src
         this.template = this;
-    
-        // Where template is just whitespace don't compile it as a template
-        this.render = /^\s*$/.test(this.innerHTML) ?
-            reject :
-            Literal(this.template) ;
-        
-        // Keep tabs on the number of renders
-        this.renderCount = 0;
-    
+
         // Flag support
         supportsCustomBuiltIn = true;
     },
 
     properties: {
-        update: {
-            value: function update() {
-                if (!this.data) { return; }
-
-                const data    = this.data;
-                const promise = this.render(data);
-
-                // On first render add nodes to DOM
-                if (!this.renderCount++) {
-                    promise.then((nodes) => {
-                        this.after(...nodes);
-                        this.remove();
-                    })
-                }
-
-                return this;
-            }
-        },
-
         src: {
             attribute: function(value) {
                 if (value) {
@@ -105,7 +121,7 @@ if (!supportsCustomBuiltIn) {
 
     window.addEventListener('DOMContentLoaded', function() {
         window.document
-        .querySelectorAll('[is="literal-template"]')
+        .querySelectorAll('render-template')
         .forEach((template) => {
             const fn  = template.getAttribute(config.attributeFn) || undefined;
             const src = template.getAttribute(config.attributeSrc) || undefined;
