@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="author" content="stephband" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width" />
+
+    <meta name="twitter:card" content="summary"></meta>
+    <meta name="twitter:site" content="@@stephband"></meta>
+    <meta property="og:url" content="http://stephen.band/literal/" />
+    <meta property="og:title" content="Literal" />
+    <meta property="og:description" content="" />
+    <meta property="og:image" content="" />
+    
+    <title>Literal</title>
+    
+    <link rel="icon" type="image/png" href="./images/logo-32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="./images/logo-64.png" sizes="64x64">
+    <link rel="icon" type="image/png" href="./images/logo-128.png" sizes="128x128">
+    
+    <script title="load">
+    document.documentElement.className += ' js content-loading loading';
+    window.addEventListener('DOMContentLoaded', () => document.documentElement.classList.remove('content-loading'));
+    // Wait for other load handlers to run first - Literal does a few things on
+    // load (eg. data-targetable scrolls) and we want them to run before the loading
+    // class is removed
+    window.addEventListener('load', () => window.requestAnimationFrame(() => document.documentElement.classList.remove('loading')));
+    window.DEBUG = true;
+    window.data = {
+        string: 'string <&>',
+        number: 9,
+        infinity: Infinity,
+        NULL:   null,
+        object: { a: 1 },
+        true:  true,
+        false: false,
+        hidden: false
+    };
+    </script>
+
+    <link rel="stylesheet" href="../bolt/css/html.css" />
+    <link rel="stylesheet" href="../bolt/css/text.css" />
+    <link rel="stylesheet" href="../bolt/css/input.css" />
+    <link rel="stylesheet" href="../bolt/css/label.css" />
+    <link rel="stylesheet" href="../bolt/css/block.css" />
+    <link rel="stylesheet" href="../bolt/css/debug.css" />
+    
+    <template is="literal-template">
+        <h2>${ data.name }</h2>
+        <p>${ data.text }</p>
+    </template>
+</head>
+
+<body class="">
+    <header>
+        <h1 class="doctext-01">Literal <span class="doctext-06">0.0.1</span></h1>
+        <!--p class="doctext-08"></p>
+        <ul class="link-index index">
+            <li><strong>repo:</strong> <a href="https://github.com/stephband/literal.git">github.com/stephband/literal.git</a></li>
+            <li><strong>bugs:</strong> <a href="https://github.com/stephband/literal/issues/">github.com/stephband/literal/issues/</a></li>
+        </ul-->
+    </header>
+
+    <template id="include">Include ${ data }</template>
+
+    <!--template id="template" data-string data-arse>
+        <h1>Literal</h1>
+        <span class="block">${ data.string }</span>
+        <input type="text" value="${ data.string }, ${ string }, ${ data.number }, ${ data.infinity }, ${ data.object }, ${ data.true }, ${ data.false }${ data.NULL }${ data.undefined }, entities <&>" />
+        <p>${ data.string }, ${ string }, ${ data.number }, ${ data.infinity }, ${ data.object }, ${ data.true }, ${ data.false }${ data.NULL }${ data.undefined }, entities &lt;&amp;&gt;</p>
+        <p hidden="${ data.hidden }">Hidden</p>
+        <include src="#include" data="${ data.object }"></include>
+    </template-->
+
+    <template is="literal-template">
+        <p>${ include('#include', { arse: 8 }) }</p>
+    </template>
+
+    <!--template is="literal-template" data="${ window.data }" data-string>
+        Hello ${ data.string }
+        <input type="text" value="${ data.string }, ${ string }, ${ data.number }, ${ data.infinity }, ${ data.object }, ${ data.true }, ${ data.false }${ data.NULL }${ data.undefined }, entities <&>" />
+    </template-->
+
+    <!--template is="literal-template" data="${ window.data }" src="#template"></template-->
+
+    <!--template is="literal-template" data="./package.json" src="#include"></template-->
+
+    <script type="module">
+        import "./elements/literal-template.js";
+        import Literal  from "./module.js";
+        import Observer from "./modules/observer.js";
+        window.data = Observer(window.data);
+    </script>
+</body>
