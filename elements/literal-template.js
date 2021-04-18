@@ -1,97 +1,50 @@
 
 /* Register customised built-in element <template is="literal-template"> */
 
-import Literal  from '../module.js';
 import element  from '../../dom/modules/element.js';
-import { compileValue } from '../modules/compile-string.js';
-import { requestGet as request } from '../../dom/modules/request.js';
-import log      from '../../bolt/literal/modules/log-browser.js';
+import Template from '../modules/template.js';
+import log      from '../modules/log-browser.js';
 
 var supportsCustomBuiltIn = false;
 
 const rejectSrc   = Promise.resolve('Cannot .render() missing src template');
-const nullPromise = Promise.resolve(null);
 
 function reject() {
     return rejectSrc;
 }
 
-element('literal-template', {
-    extends: 'template',
-
-    properties: {
-        update: {
-            value: function update() {
-                if (!this.data) { return; }
-
-                const data    = this.data;
-                const promise = this.render(data);
-
-                // On first render add nodes to DOM
-                if (!this.renderCount++) {
-                    promise.then((nodes) => {
-                        this.after(...nodes);
-                        this.remove();
-                    })
-                }
-
-                return this;
-            }
-        }
-    },
-
-    attributes: {
-        src: function(value) {
-            if (value) {
-                const id = value.replace(/^#/, '');
-                this.template = document.getElementById(id);
-                if (this.template) {
-                    this.render = Literal(this.template);
-                    log('source ', '#' + id, 'yellow');
-                    this.update();
-                }
-            }
-            else {
-                this.template = this;
-                this.render = /^\s*$/.test(this.innerHTML) ?
-                    reject :
-                    Literal(this.template) ;
-                this.update();
-            }
-        },
-
-        data: function(value) {
-            const promise = !value ? nullPromise :
-                // Where data contains ${...}, compile and render value as literal
-                /^\$\{/.test(value) ? compileValue(value)() :
-                // Request JSON
-                request(value) ;
-
-            promise.then((data) => {
-                this.data = data;
-                this.update();
-            });
-        }
-    },
-
-    construct: function() {
-        // Default to using this as template src
-        this.template = this;
-
-        // Where template is just whitespace don't compile it as a template
-        this.render = /^\s*$/.test(this.innerHTML) ?
-            reject :
-            Literal(this.template) ;
-        
+element('<template is=literal-template>', {
+    construct: function() {        
         // Keep tabs on the number of renders
         this.renderCount = 0;
 
         // Flag support
         supportsCustomBuiltIn = true;
+
+        this.getAttribute('inplace');
     },
 
-    connect: function() {
+    properties: {
+        render: {
+            value: function(data) {
+                // Where template is just whitespace don't compile it as a template
+                // Not sure why we bother?
+                const promise = /^\s*$/.test(this.innerHTML) ?
+                    reject :
+                    Template(this) ;
 
+                // Increment renderCount
+                promise.then(() => ++this.renderCount) ;
+                return promise;
+            }
+        },
+
+        inplace: {
+            attribute: function() {
+                // May only be set once before initialisation
+                
+            }
+        }
     }
 });
 

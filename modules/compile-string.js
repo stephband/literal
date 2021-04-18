@@ -1,8 +1,6 @@
 
-import library from '../../bolt/literal/modules/lib.js';
-import { compileValueRender } from '../../bolt/literal/modules/compile.js';
-
-const DEBUG = window.DEBUG === true;
+import library from './lib.js';
+import { compileValueRender } from './compile.js';
 
 
 /** 

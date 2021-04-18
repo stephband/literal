@@ -1,12 +1,12 @@
 
 import noop       from '../../fn/modules/noop.js';
 import overload   from '../../fn/modules/overload.js';
-import { toType } from '../../dom/modules/node.js';
+import { toType, isNode } from '../../dom/modules/node.js';
 
-import library from '../../bolt/literal/modules/lib.js';
-import { compileStringRender, compileValueRender } from '../../bolt/literal/modules/compile.js';
-import log     from '../../bolt/literal/modules/log-browser.js';
-import decode  from '../../bolt/literal/modules/decode.js';
+import library from './lib.js';
+import { compileStringRender, compileValueRender, compileValues } from './compile.js';
+import log     from './log.js';
+import decode  from './decode.js';
 
 import { isCustomElement, setText, setBooleanProperty, setPropertyChecked, setPropertyValue } from './dom.js';
 
@@ -85,8 +85,7 @@ function compileAttr(renderers, vars, node, name) {
 
     const render = compileValueRender(library, vars, string, 'arguments[1]');
     renderers.push((...params) => 
-        render(...params)
-        .then((value) => {
+        render(...params).then((value) => {
             if (value === node.getAttribute(name)) { return 0; }
             // Mutate DOM
             node.setAttribute(name, value);
@@ -168,7 +167,7 @@ const compileAttribute = overload((renderers, vars, node, name) => name, {
         );
     },
 
-    'datetime': function compileClass(renderers, vars, node, name) {
+    'datetime': function compileDatetime(renderers, vars, node, name) {
         console.log('Todo: compile datetime');
     },
 
@@ -210,11 +209,27 @@ function compileText(renderers, vars, node) {
     const string = node.nodeValue;
 
     if (string && rliteral.test(string)) {
-        const render = compileStringRender(library, vars, decode(string), 'arguments[1]');
+        const render = compileValues(library, vars, decode(string), 'arguments[1]');
         renderers.push((...params) =>
-            render(...params)
-            .then((value) => setText(node, value))
-        );
+            render(...params).then((nodes) => {
+
+console.log('renderValues:', nodes);
+
+                var n = -1;
+                var string = '';
+                while (++n < nodes.length && !(isNode(nodes[n]) || isNode(nodes[n][0]))) {
+                    string += nodes[n];
+                }
+
+                // Change text in text node to just initial string
+                node.nodeValue = string;
+
+                // Get the rest of the things, owt else goes after
+                const rest = Array.prototype.slice.call(nodes, n);
+                rest.length && node.after.apply(node, rest);
+                return 1 + rest.length;
+            }
+        ));
     }
 }
 

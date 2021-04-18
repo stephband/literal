@@ -2,7 +2,7 @@
   "title": "Literal",
   "name": "literal",
   "description": "Render HTML templates as JS Literals.",
-  "version": "0.2.1",
+  "version": "0.1.1",
   "author": {
     "name": "stephband",
     "url": "http://stephen.band",
