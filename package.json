@@ -1,7 +1,7 @@
 {
   "title": "Literal",
   "name": "literal",
-  "description": "Render HTML templates as JS Literals.",
+  "description": "Render strings, <template>s, and files as JS Literals.",
   "version": "0.1.1",
   "author": {
     "name": "stephband",
@@ -27,9 +27,9 @@
   "type": "module",
   "module": "module.js",
   "scripts": {
-    "build":   "node --experimental-json-modules ../fn/build-module.js",
+    "build": "node --experimental-json-modules ../fn/build-module.js",
     "literal": "node --experimental-json-modules --no-warnings ./index.js ./ ./ debug",
-    "watch":   "node ./bolt/literal/build-watch.js"
+    "watch": "node ./bolt/literal/build-watch.js"
   },
   "literal": {
     "exclude": [

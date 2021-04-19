@@ -7,7 +7,7 @@ import log         from './log.js';
 
 const DEBUG  = window.DEBUG === true;
 
-//const assign = Object.assign;
+const assign = Object.assign;
 const cache  = {};
 
 function add(a, b) {
@@ -16,6 +16,28 @@ function add(a, b) {
 
 function not0(value) {
     return value !== 0;
+}
+
+/* 
+Renderer
+Descendant paths are stored in the form `"1.12.3.class"`.
+*/
+
+function child(index, parent) {
+    return /^[a-zA-Z]/.test(index) ?
+        parent :
+        parent.childNodes[index] ;
+}
+
+function descendant(path, root) {
+    const p = path.split(/\./);
+    return p.reduce(child, root);
+}
+
+function toRenderer(options) {
+    return assign({}, options, {
+        node: descendant(options.path, this)
+    });
 }
 
 function render(status) {
@@ -27,33 +49,36 @@ function render(status) {
 
     // We may only collect synchronous gets – other templates may use 
     // this data object while we are promising and we don't want to
-    // include their gets by stopping on .then(). Stop now.
+    // include their gets by stopping on .then(). Stop now. If we want to
+    // fix this, making a proxy per template instance would be the way to go.
     gets.stop();
 
     return promise;
 }
 
-function compileObserve(names, node, Template) {
-    const renderers = compileNode([], names.join(', '), node, Template);
+function TemplateRenderer(renderers, names, fragment) {
+    this.consts    = names;
+    this.fragment  = fragment;
+    this.sets      = nothing;
+    this.renderers = renderers;
+}
 
-    var sets = nothing;
-    var target1;
-
-    return function observe(object) {
+assign(TemplateRenderer.prototype, {
+    render: function observe(object) {
         const target = Observer.target(object);
 
-        // Dedup. Not sure this is entirely necessary.
-        if (target === target1) {
-            return node.childNodes;
+        // Deduplicate. Not sure this is entirely necessary.
+        if (target === this.target) {
+            return this.fragment.childNodes;
         }
 
-        target1 = target;
+        this.target = target;
 
-        const observer = Observer(object);
+        const observer = Observer(target);
         const statuses = [];
 
-        sets.stop();
-        sets = observer ?
+        this.sets.stop();
+        this.sets = observer ?
             Observer.sets(observer, (name, value) => {
                 const renders = statuses.map(function(status) {
                     // If the last render did not access this name (synchronously)
@@ -73,36 +98,35 @@ function compileObserve(names, node, Template) {
                     if (count === 0) { return; }
                     console.log('mutations', counts.reduce(add, 0));
                 });
-            }) :
-            
+            }) :    
             nothing ;
 
-        return Promise.all(renderers.map((fn, i) => {
+        return Promise.all(this.renderers.map((fn, i) => {
             const status = statuses[i] = { fn, data: target, observer };
             return render(status);
         }))
         .then((counts) => {
             console.log('mutations', counts.reduce(add, 0));
-            return node.childNodes;
+            return this.fragment.childNodes;
         });
-    };
-}
+    } 
+});
 
-export default function Template(source) {
-    const id = typeof source === 'string' ?
-        source.replace(/^#/, '') :
-        identify(source) ;
+export default function Template(template) {
+    const id = identify(template);
 
-    const template = typeof source === 'string' ?
-        document.getElementById(id) :
-        source ;
+    if (DEBUG && !template.content) {
+        throw new Error('Template: node does not have a .content fragment');
+    }
 
-    const node = template.content ?
-        template.content.cloneNode(true) :
-        template ;
+    const fragment = template.content.cloneNode(true);
 
     if (cache[id]) {
-        console.log('Cached', id);
+        console.log('Cached', id, cache[id]);
+
+        // Return a clone of the template object with a cloned array of 
+        // renderers bound to the new fragment
+        return new TemplateRenderer(cache[id].map(toRenderer, fragment), names, fragment);
     }
 
     // Pick up const names from data-name attributes
@@ -114,8 +138,15 @@ export default function Template(source) {
         log('render', 'data-data attribute not allowed', 'red');
     }
 
-    return (cache[id] = compileObserve(names, node, Template));
+    // renderers, vars, path, node
+    const renderers = compileNode([], names.join(', '), '', fragment);
+    return (cache[id] = new TemplateRenderer(renderers, names, fragment));
 }
+
+Template.fromId = function(id) {
+    return new Template(document.getElementById(id));
+};
+
 
 /*
 assign(Template.prototype, {

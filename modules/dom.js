@@ -104,6 +104,15 @@ export function setAttribute(node, name, value) {
 }
 
 
+/** 
+setClass(node, name, value)
+**/
+
+export function setClass(node, name, value) {
+    
+}
+
+
 /**
 setProperty(node, name, value)/
 **/

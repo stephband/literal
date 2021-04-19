@@ -5,25 +5,25 @@ import { fileURLToPath } from 'url';
 // Absolute path to module
 const moduleAbs = dirname(fileURLToPath(import.meta.url));
 
-import exec                from '../../../fn/modules/exec.js';
-import get                 from '../../../fn/modules/get.js';
-import id                  from '../../../fn/modules/id.js';
-import overload            from '../../../fn/modules/overload.js';
-import toType              from '../../../fn/modules/to-type.js';
+import exec                from '../../fn/modules/exec.js';
+import get                 from '../../fn/modules/get.js';
+import id                  from '../../fn/modules/id.js';
+import overload            from '../../fn/modules/overload.js';
+import toType              from '../../fn/modules/to-type.js';
 
-import { addDate }         from '../../../fn/modules/date.js';
-import { addTime }         from '../../../fn/modules/time.js';
+import { addDate }         from '../../fn/modules/date.js';
+import { addTime }         from '../../fn/modules/time.js';
 
-export { default as by }      from '../../../fn/modules/by.js';
-export { default as equals }  from '../../../fn/modules/equals.js';
-export { default as matches } from '../../../fn/modules/matches.js';
-export { default as get }     from '../../../fn/modules/get-path.js';
-export { default as id }      from '../../../fn/modules/id.js';
-export { default as px, em, rem } from './parse-length.js';
+export { default as by }      from '../../fn/modules/by.js';
+export { default as equals }  from '../../fn/modules/equals.js';
+export { default as matches } from '../../fn/modules/matches.js';
+export { default as get }     from '../../fn/modules/get-path.js';
+export { default as id }      from '../../fn/modules/id.js';
+export { default as px, em, rem } from '../modules/parse-length.js';
 
-export { default as exec }    from '../../../fn/modules/exec.js';
-export { default as slugify } from '../../../fn/modules/slugify.js';
-export { default as Pipe }    from './pipe.js';
+export { default as exec }    from '../../fn/modules/exec.js';
+export { default as slugify } from '../../fn/modules/slugify.js';
+export { default as Pipe }    from '../modules/pipe.js';
 export { default as comments } from './comments.js';
 
 import request from './request.js';
@@ -118,7 +118,7 @@ function extractBody(html) {
     return html.slice(pre.index + pre[0].length, post.index);
 }
 
-function getRootSrc(source, src) {
+export function getRootSrc(source, src) {
     const root     = path.parse(source);
     const dir      = root.dir;
     const relative = src.replace(/#.*$/, '');

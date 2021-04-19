@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<!-- Literal template "index.html.literal" -->
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+<meta name="author" content="stephband" />
+<meta name="description" content="Documentation for Literal. Render HTML templates as JS Literals." />
+<meta name="viewport" content="width=device-width" />
+
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@stephband">
+<meta property="og:url" content="https://stephen.band/literal" />
+<meta property="og:title" content="Literal" />
+<meta property="og:description" content="Render HTML templates as JS Literals." />
+<meta property="og:image" content="$ { image }" />
+
+
+<title>Literal</title>
+
+<link rel="icon" type="image/png" href="../bolt/images/logo-32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="../bolt/images/logo-64.png" sizes="64x64">
+<link rel="icon" type="image/png" href="../bolt/images/logo-128.png" sizes="128x128">
+
+<script title="load">
+    document.documentElement.className += ' js content-loading loading';
+    window.addEventListener('DOMContentLoaded', () => document.documentElement.classList.remove('content-loading'));
+    // Wait for other load handlers to run first - Bolt does a few things on
+    // load (eg. targetable scrolls) and we want them to run before the loading
+    // class is removed
+    window.addEventListener('load', () => window.requestAnimationFrame(() => document.documentElement.classList.remove('loading')));
+</script>
+
+
+    <script title="debug">
+        window.DEBUG = true;
+    </script>
+
+    <!--link rel="stylesheet" href="../nendaz.min.css" /-->
+    <link rel="stylesheet" href="module.css" />
+    <link rel="stylesheet" href="../bolt/documentation/prism-cruncher.css" />
+<link rel="stylesheet" href="../fn/css/tests.css" />
+<link rel="stylesheet" href="../bolt/documentation/grid.css" />
+<link rel="stylesheet" href="../bolt/documentation/documentation.css" />
+<link rel="stylesheet" href="../fn/css/respond.css" />
+<link rel="stylesheet" href="../bolt/css/debug.css" />
+
+
+    <style>
+        /* Render some elements visible, just in this styleguide */
+        div.button {
+            font-size: 0.875rem;
+            background-color: rgba(127, 127, 127, 0.15);
+        }
+    
+        /* Colour swatch thumbs */
+        .thumb[class$="bg"] {
+            box-shadow: inset 0 0 0 1px currentcolor;
+        }
+    </style>
+    
+    <script title="config">
+        window.customElementStylesheetPath = './bolt/elements/';
+    </script>
+</head>
+
+<body class="docs-grid grid 3x-grid @1-6x-grid @2-9x-grid">
+    <header class="x1 3x @1-x-3 @1-4x @2-x-4">
+        <!-- Literal template "../bolt/templates/header.literal" -->
+<h1 class="doctext-01">Literal <span class="doctext-06">0.1.1</span></h1>
+<p class="doctext-08">Render HTML templates as JS Literals.</p>
+<ul class="link-index index">
+    <li><strong>repo:</strong> <a href="https://github.com/stephband/literal.git">github.com/stephband/literal.git</a></li>
+    <li><strong>bugs:</strong> <a href="https://github.com/stephband/literal/issues/">github.com/stephband/literal/issues/</a></li>
+</ul>
+
+    </header>
+
+    <!--img class="x1 x-end y1 @2-x-1 @2-3x" src="images/logo.svg" width="800" height="800" style="width: 10.625rem; margin-top: -1.125rem; margin-right: -0.9375rem; max-width: none;" alt="Literal logo" /-->
+
+    <!-- Literal template "../bolt/templates/css.literal" -->
+<section class="x1 3x 3x-grid @1-6x @1-6x-grid @2-9x @2-9x-grid grid" style="row-gap: 0.9375rem; grid-auto-flow: column; align-content: start;">
+    <!-- Just to get the grid to line up. Todo: find a better way. -->
+    <div class="@2-x-1 @2-3x"></div>
+
+    <h2 class="x1 3x @1-x-3 @1-4x @2-x-4 @2-4x x-stretch doctext-02" targetable id="ooooo" style="border-bottom: 0.08em solid currentcolor; padding-bottom: 0.16em; margin-bottom: 1.875rem;">OOOOO</h2>
+    
+</section>
+
+    $ { include("../bolt/templates/css.literal", await comments("./modules/literal-template.js")) }
+</body>

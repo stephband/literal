@@ -5,9 +5,9 @@
 
 
 
-import compileAsyncFn from '../../../fn/modules/compile-async.js';
-import * as library   from './functions.js';
-import renderString   from './to-text.js';
+import compileAsyncFn from '../../fn/modules/compile-async.js';
+import * as library   from './lib.js';
+import renderString   from '../modules/to-text.js';
 import { rewriteURL, rewriteURLs } from './url.js';
 import { dimgreendim, dimyellow, dimred, dim, red, yellow, redwhitedim } from './log.js';
 

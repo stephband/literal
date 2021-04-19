@@ -9,9 +9,10 @@ comments.
 import request         from './request.js';
 import { rewriteURLs } from './url.js';
 import parseComments   from './parse-comments.js';
+import { getRootSrc }  from './lib.js';
 import { red, yellow } from './log.js';
 
-export function comments(source, target, ...urls) {
+export default function comments(source, target, ...urls) {
     return Promise.all(urls.map((path) => {
         const url = getRootSrc(source, path);
 

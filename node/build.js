@@ -3,7 +3,7 @@ import fs      from 'fs';
 import path    from 'path';
 
 import request from './request.js';
-import Literal from '../modules/literal.js';
+import Literal from './literal.js';
 import { dimyellow } from './log.js';
 
 /**
