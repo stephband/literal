@@ -5,7 +5,7 @@ import nothing     from '../../fn/modules/nothing.js';
 import identify    from '../../dom/modules/identify.js';
 import log         from './log.js';
 
-const DEBUG  = window.DEBUG === true;
+const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
 const assign = Object.assign;
 const cache  = {};
@@ -116,7 +116,7 @@ export default function Template(template) {
     const id = identify(template);
 
     if (DEBUG && !template.content) {
-        throw new Error('Template: node does not have a .content fragment');
+        throw new Error('Template: template node does not have a .content fragment');
     }
 
     const fragment = template.content.cloneNode(true);

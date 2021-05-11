@@ -122,12 +122,14 @@ export function getRootSrc(source, src) {
     const root     = path.parse(source);
     const dir      = root.dir;
     const relative = src.replace(/#.*$/, '');
+console.log(root, dir, relative);
     return path.join(dir, relative);
 }
 
 export const include = overload((source, target, url) => toExtension(url), {
     '.literal': overload((source, target, url) => toExtensions(url), {
         '.html.literal': (source, target, url, scope) => {
+            console.log('INCLUDE 1');
             // Get src relative to working directory 
             const src = getRootSrc(source, url);
             return resolveScope(scope, source, target)
@@ -145,6 +147,7 @@ export const include = overload((source, target, url) => toExtension(url), {
         default: (source, target, url, scope) => {
             // Get src relative to working directory 
             const src = getRootSrc(source, url);
+            console.log('----------------------------------\nsource', source, '\nsrc   ', src, '\ntarget', target, '\nurl   ', url);
             return resolveScope(scope, source, target)
             .then((data) => {
                 // Get data keys so that we can reference them as params 

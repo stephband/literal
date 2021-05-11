@@ -13,6 +13,7 @@ import { getRootSrc }  from './lib.js';
 import { red, yellow } from './log.js';
 
 export default function comments(source, target, ...urls) {
+    console.log('COMMENTS', source, target, urls)
     return Promise.all(urls.map((path) => {
         const url = getRootSrc(source, path);
 
@@ -50,5 +51,6 @@ export default function comments(source, target, ...urls) {
     .then((comments) => comments.flat())
     .catch((error) => {
         console.log(red + ' ' + yellow + ' ' +  red + ' ' + yellow, 'Import', urls.join(', '), error.constructor.name, error.message, error.stack);
+        throw error;
     });
 }

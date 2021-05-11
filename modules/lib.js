@@ -8,10 +8,9 @@ import by              from '../../fn/modules/by.js';
 import equals          from '../../fn/modules/equals.js';
 import matches         from '../../fn/modules/matches.js';
 import get             from '../../fn/modules/get-path.js';
-import exec            from '../../fn/modules/exec.js';
 import slugify         from '../../fn/modules/slugify.js';
 import px, { em, rem } from './parse-length.js';
-import Pipe            from './pipe.js';
+//import Pipe            from './pipe.js';
 
 
 /**
@@ -42,6 +41,7 @@ ${ pipe(add('-01:00:20'), data.time) }
 
 function toAddType(n) {
     const type = typeof n;
+    // Where it's a string figure out if it looks like a date or time
     return type === 'string' ?
         /^-?\d\d\d\d(?:-|$)/.test(n) ? 'date' :
         /^-?\d\d(?::|$)/.test(n) ? 'time' :
@@ -60,12 +60,18 @@ const lib = {
         }
     }),
 
-    and: function(a, b) { return !!(a && b); },
-    gt: function(a, b) { return b > a; },
-    lt: function(a, b) { return b < a; },
-
-    by, entries: Object.entries, em, equals, exec, get, keys: Object.keys,
-    matches, Pipe, px, rem, slugify, values: Object.values
+    by,
+    entries: Object.entries, 
+    em, 
+    equals, 
+    get, 
+    keys: Object.keys,
+    matches, 
+    /*Pipe,*/ 
+    px, 
+    rem, 
+    slugify, 
+    values: Object.values
 };
 
 export default lib;
