@@ -7,6 +7,6 @@ import { compileValueRender } from './compile.js';
 compileValue()
 **/
 
-export function compileValue(string) {
+export default function compileString(string) {
     return compileValueRender(library, '', string, 'arguments[1]');
 }
