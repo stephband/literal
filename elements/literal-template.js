@@ -28,9 +28,11 @@ import element  from '../../dom/modules/element.js';
 import Template from '../modules/template.js';
 import log      from '../modules/log-browser.js';
 
+const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
+
 var supportsCustomBuiltIn = false;
 
-const rejectSrc   = Promise.resolve('Cannot .render() missing src template');
+const rejectSrc = Promise.resolve('Cannot .render() missing src template');
 
 function reject() {
     return rejectSrc;

@@ -334,7 +334,7 @@ const parseComment = capture(/\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(")|(<)|(\{[\
 
 
 /**
-parseDocs(string)
+parseComments(string)
 Parses documentation comments out of JS or CSS files.
 **/
 

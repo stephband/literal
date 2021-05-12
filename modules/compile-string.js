@@ -4,7 +4,7 @@ import { compileValueRender } from './compile.js';
 
 
 /** 
-compileValue()
+compileString()
 **/
 
 export default function compileString(string) {

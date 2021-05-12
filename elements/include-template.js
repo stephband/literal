@@ -57,6 +57,8 @@ import element  from '../../dom/modules/element.js';
 import { requestGet as request } from '../../dom/modules/request.js';
 import log      from '../modules/log.js';
 
+const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
+
 var supportsCustomBuiltIn = false;
 
 const rejectSrc   = Promise.resolve('Cannot .render() missing src template');

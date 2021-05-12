@@ -150,7 +150,7 @@ export default function Literal(parameters, template, source) {
         logCompile(source, library, params);
         // scope, paramString, code [, context]        
         try {
-            fn = compileAsyncFn(library, 'data = {}, render, include, imports, documentation', code);
+            fn = compileAsyncFn(library, 'data = {}, render, include, imports, comments', code);
         }
         catch(e) {
             logError(source, template, e);
@@ -158,7 +158,7 @@ export default function Literal(parameters, template, source) {
         }
     }
     else {
-        fn = compileAsyncFn(library, 'data = {}, render, include, imports, documentation', code);
+        fn = compileAsyncFn(library, 'data = {}, render, include, imports, comments', code);
     }
 
     // Store a reference to the global object
@@ -178,8 +178,8 @@ export default function Literal(parameters, template, source) {
             (url, data) => library.include(source, target, rewriteURL(source, target, url), data),
             // imports()
             (url)       => library.imports(source, target, url),
-            // documentation
-            (...urls)   => library.documentation(source, target, ...urls)
+            // comments
+            (...urls)   => library.comments(source, target, ...urls)
         )
         .then(DEBUG ?
             (text) => prependComment(source, target, rewriteURLs(source, target, text)) :

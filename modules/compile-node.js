@@ -10,7 +10,7 @@ import decode  from './decode.js';
 
 import { isCustomElement, setText, setBooleanProperty, setClass, setPropertyChecked, setPropertyValue } from './dom.js';
 
-const DEBUG = window.DEBUG === true;
+const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
 const config = {
     elements: {
