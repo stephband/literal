@@ -116,13 +116,13 @@ export default function Template(template) {
     const id = identify(template);
 
     if (DEBUG && !template.content) {
-        throw new Error('Template: template node does not have a .content fragment');
+        throw new Error('Template: template does not have a .content fragment');
     }
 
     const fragment = template.content.cloneNode(true);
 
     if (cache[id]) {
-        console.log('Cached', id, cache[id]);
+        console.log('Cached template', id, cache[id]);
 
         // Return a clone of the template object with a cloned array of 
         // renderers bound to the new fragment
