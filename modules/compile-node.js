@@ -3,12 +3,12 @@ import noop       from '../../fn/modules/noop.js';
 import overload   from '../../fn/modules/overload.js';
 import { toType, isNode } from '../../dom/modules/node.js';
 
-import library from './lib.js';
+import library from './library.js';
 import { compileStringRender, compileValueRender, compileValues } from './compile.js';
 import log     from './log.js';
 import decode  from './decode.js';
 
-import { isCustomElement, setText, setBooleanProperty, setClass, setPropertyChecked, setPropertyValue } from './dom.js';
+import { isCustomElement, setBooleanProperty, setClass, setPropertyChecked, setPropertyValue } from './dom.js';
 
 const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
@@ -248,11 +248,11 @@ const compileAttribute = overload((renderers, vars, path, node, name) => name, {
     'default':  compileAttr
 });
 
-function compileAttributes(renderers, vars, node, path, names) {
+function compileAttributes(renderers, vars, path, node, names) {
     if (!names) { return; }
     var n = -1;
     while (names[++n]) {
-        compileAttribute(renderers, vars, (path ? path + '.' + names[n]), node, names[n]);
+        compileAttribute(renderers, vars, (path ? path + '.' + names[n] : names[n]), node, names[n]);
     }
 }
 

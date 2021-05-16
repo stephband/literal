@@ -1,6 +1,7 @@
 
 import compileNode from './compile-node.js';
 import Observer    from './observer.js';
+import curry       from '../../fn/modules/curry.js';
 import nothing     from '../../fn/modules/nothing.js';
 import identify    from '../../dom/modules/identify.js';
 import log         from './log.js';
@@ -164,11 +165,11 @@ assign(Template.prototype, {
 
 
 
-import library from '../../bolt/literal/modules/lib.js';
+import library from '../modules/library.js';
 
 // Augment library!! Todo: clean up when we import the lib into this repo
 
-library.include = function include(url, data) {
+library.include = curry(function include(url, data) {
     if (!/^#/.test(url)) {
         throw new Error('Template: Only #hashrefs currently supported as include() urls ("' + url + '")');
     }
@@ -179,4 +180,4 @@ library.include = function include(url, data) {
 
     const render = Template(url.slice(1));
     return render(data || {});
-};
+});

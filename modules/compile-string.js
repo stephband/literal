@@ -1,5 +1,5 @@
 
-import library from './lib.js';
+import library from './library.js';
 import { compileValueRender } from './compile.js';
 
 

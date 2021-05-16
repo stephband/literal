@@ -26,7 +26,7 @@ data:
 
 import element  from '../../dom/modules/element.js';
 import Template from '../modules/template.js';
-import log      from '../modules/log-browser.js';
+import log      from '../modules/log.js';
 
 const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
@@ -38,8 +38,8 @@ function reject() {
     return rejectSrc;
 }
 
-element('<template is=literal-template>', {
-    construct: function() {        
+element('template is="literal-template"', {
+    construct: function() {
         // Keep tabs on the number of renders
         this.renderCount = 0;
 
