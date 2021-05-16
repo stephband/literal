@@ -95,12 +95,8 @@ element('include-template', {
 
                 // Template element has a .render() method
                 if (template.render) {
-                    template
-                    .render(this.data)
-                    .then((nodes) => {
-                        this.after(...nodes);
-                        this.remove();
-                    });
+                    this.after(template.render(this.data));
+                    this.remove();
                 }
                 // Template element is a built-in template with .content property
                 else {

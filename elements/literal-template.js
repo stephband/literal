@@ -41,12 +41,10 @@ function reject() {
 element('template is="literal-template"', {
     construct: function() {
         // Keep tabs on the number of renders
-        this.renderCount = 0;
+        this.instanceCount = 0;
 
         // Flag support
         supportsCustomBuiltIn = true;
-
-        this.getAttribute('inplace');
     },
 
     properties: {
@@ -57,15 +55,10 @@ element('template is="literal-template"', {
         **/
         render: {
             value: function(data) {
-                // Where template is just whitespace don't compile it as a template
-                // Not sure why we bother?
-                const promise = /^\s*$/.test(this.innerHTML) ?
-                    reject :
-                    Template(this) ;
-
-                // Increment renderCount
-                promise.then(() => ++this.renderCount) ;
-                return promise;
+                const instance = Template(this);
+                ++this.instanceCount;
+                instance.render(data);
+                return instance.fragment;
             }
         }
     }
