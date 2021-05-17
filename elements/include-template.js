@@ -64,10 +64,6 @@ var supportsCustomBuiltIn = false;
 const rejectSrc   = Promise.resolve('Cannot .render() missing src template');
 const nullPromise = Promise.resolve(null);
 
-function reject() {
-    return rejectSrc;
-}
-
 element('include-template', {
     construct: function() {
         // Default to using this as template src
@@ -77,11 +73,32 @@ element('include-template', {
         supportsCustomBuiltIn = true;
     },
 
+    connect: function() {
+        Promise
+        .all([this.template, this.data])
+        .then(([template, data]) => {
+            // Template element has a .render() method
+            if (template.render) {
+                this.after(template.render(data));
+                this.remove();
+            }
+            // Template element is a built-in template with .content property
+            else {
+                this.after(template.content.cloneNode(true));
+                this.remove();
+            }
+        })
+        .catch((e) => {
+            throw e;
+        });
+    },
+
     properties: {
         /** 
         src="#id"
         Define a source template whose rendered content replaces this `include-template`. 
         **/
+
         src: {
             attribute: function(value) {
                 if (!value) { return; }
@@ -93,44 +110,23 @@ element('include-template', {
                     throw new Error('<include-template> src template "' + value + '" not found in document');
                 }
 
-                // Template element has a .render() method
-                if (template.render) {
-                    this.after(template.render(this.data));
-                    this.remove();
-                }
-                // Template element is a built-in template with .content property
-                else {
-                    this.after(template.content.cloneNode(true));
-                    this.remove();
-                }
+                this.template = template;
             }
         },
 
         /** 
         data="path/to/file.json"
-        Define a JSON file used to render templates (that have a `.render(data)` method).
+        Define a JSON file used to render templates (that have a `.render(data)` 
+        method).
         **/
 
         data: {
             attribute: function(value) {
-                const promise = !value ? nullPromise :
+                this.data = !value ? nullPromise :
                     // Where data contains ${...}, compile and render value as literal
                     /^\$\{/.test(value) ? compileValue(value)() :
                     // Request JSON
                     request(value) ;
-    
-                promise.then((data) => {
-                    this.data = data;
-                    this.update();
-                });
-            },
-
-            get: function() {
-                
-            },
-
-            set: function() {
-                
             }
         }
     }

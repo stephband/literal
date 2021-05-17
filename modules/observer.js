@@ -259,7 +259,7 @@ object with the method `.stop()`.
 **/
 
 Observer.target = function target(object) {
-    return object[$target] || object ;
+    return object && object[$target] || object ;
 };
 
 

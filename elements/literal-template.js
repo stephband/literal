@@ -64,6 +64,7 @@ element('template is="literal-template"', {
     }
 });
 
+/*
 // If one has not been found already, test for customised built-in element
 // support by force creating a <template is="literal-template">
 if (!supportsCustomBuiltIn) {
@@ -93,3 +94,4 @@ if (!supportsCustomBuiltIn) {
         });
     });
 }
+*/

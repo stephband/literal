@@ -72,7 +72,6 @@ function logError(source, template, e) {
 render(array, param)
 **/
 
-//const join = (strings) => strings.join('');
 const reduce = (values) => values.reduce((output, value) => (
     // Ignore undefined and empty strings
     value === '' || value === undefined ?
@@ -140,13 +139,7 @@ function renderValue(strings, ...values) {
 }
 
 function valueify(values, value) {
-    if (!value) {
-        values.push(value);
-    }
-    else if (value.then) {
-        values.push(value);
-    }
-    else if (value.forEach) {
+    if (value.push) {
         values.push.apply(values, value);
     }
     else {
@@ -159,19 +152,18 @@ function renderValues(strings) {
     var n = -1 ;
     var value;
     while (strings[++n] !== undefined) {
-        // If a string is more than just space push it in
-        if (/[^\s]/.test(strings[n])) {
-            values.push(strings[n].trim());
+        // Don't strip spaces, but do ignore empty strings
+        if (strings[n]) { 
+            values.push(strings[n]);
         }
 
         // If a value is more than nothing push it in
         value = arguments[n + 1];
         if (value !== undefined && value !== '') {
-            console.log('VALUE', value);
             valueify(values, value);
         }
     }
-
+console.trace('renderValues', values);
     return Promise.all(values).then((values) => values.flat(8));
 }
 
@@ -223,7 +215,7 @@ export default function compile(scope, varstring, string, id, consts = 'data', r
 
         // Allow passing nothing to a render function by defaulting data to an 
         // empty object. Compiled function cannot be given a name as it will 
-        // appear in template scope. Todo: does outer function's name 'anonymous',
+        // appear in template scope. Todo: test does outer function's name 'anonymous',
         // which appears to be automatic, appear in scope?
         fn = compileAsync(scope, 'data = {}', code);
     }

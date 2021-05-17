@@ -3,10 +3,11 @@ import noop       from '../../fn/modules/noop.js';
 import overload   from '../../fn/modules/overload.js';
 import { toType, isNode } from '../../dom/modules/node.js';
 
-import library from './library.js';
+import library  from './library.js';
 import { compileStringRender, compileValueRender, compileValues } from './compile.js';
-import log     from './log.js';
-import decode  from './decode.js';
+import Renderer from './renderer.js';
+import log      from './log.js';
+import decode   from './decode.js';
 
 import { isCustomElement, setBooleanProperty, setClass, setPropertyChecked, setPropertyValue } from './dom.js';
 
@@ -74,21 +75,6 @@ const config = {
 
 const rliteral = /\$\{/;
 
-/** 
-Renderer
-**/
-
-function Renderer(render, path, node, name, update) {
-    this.name = name;
-    this.node = node;
-    this.path = path;    
-    this.render = function() {
-        // this.node may change in the future
-        return render(...params)
-        .then((value) => update(this.node, name, value));
-    };
-}
-
 
 /** 
 compileAttributes(renderers, vars, path, nodeames)
@@ -105,51 +91,23 @@ function renderAttribute(node, name, value) {
 function compileAttr(renderers, vars, path, node, name) {
     const string = node.getAttribute(name);
     if (!string || !rliteral.test(string)) { return; }
-
     const render = compileValueRender(library, vars, string, 'arguments[1]');
     renderers.push(new Renderer(render, path, node, name, renderAttribute));
-    /*
-    renderers.push((...params) => 
-        render(...params).then((value) => {
-            if (value === node.getAttribute(name)) { return 0; }
-            // Mutate DOM
-            node.setAttribute(name, value);
-            // Return number of mutations
-            return 1;
-        })
-    );
-    */
 }
 
 function compileBoolean(renderers, vars, path, node, name) {
     const string = node.getAttribute(name);
     if (!string || !rliteral.test(string)) { return; }
-
     node.removeAttribute(name);
     const render = compileValueRender(library, vars, string, 'arguments[1]');
     renderers.push(new Renderer(render, path, node, name, setBooleanProperty));
-
-    /*
-    renderers.push((...params) => 
-        render(...params).then((value) => setBooleanProperty(node, name, value))
-    );
-    */
 }
 
 function compileClass(renderers, vars, path, node, name) {
     const string = node.getAttribute('class');
     if (!string || !rliteral.test(string)) { return; }
-
     const render = compileValueRender(library, vars, string, 'arguments[1]');
     renderers.push(new Renderer(render, path, node, name, setClass));
-    /*
-    renderers.push((...params) => 
-        render(...params)
-        .then((value) => {
-            console.log('Todo: render class');
-        })
-    );
-    */
 }
 
 function setValue(node, name, value) {
@@ -159,32 +117,15 @@ function setValue(node, name, value) {
 function compileValue(renderers, vars, path, node) {
     const string = node.getAttribute('value');
     if (!string || !rliteral.test(string)) { return; }
-
     const render = compileValueRender(library, vars, string, 'arguments[1]');
     renderers.push(new Renderer(render, path, node, 'value', setValue));
-
-    /*
-    renderers.push((...params) => 
-        render(...params)
-        .then((value) => setPropertyValue(node, value))
-    );
-    */
 }
-
 
 function compileValueString(renderers, vars, path, node) {
     const string = node.getAttribute('value');
     if (!string || !rliteral.test(string)) { return; }
-
     const render = compileStringRender(library, vars, string, 'arguments[1]');
     renderers.push(new Renderer(render, path, node, 'value', setValue));
-
-    /*
-    renderers.push((...params) => 
-        render(...params)
-        .then((value) => setPropertyValue(node, value))
-    );
-    */
 }
 
 function setChecked(node, name, value) {
@@ -194,16 +135,8 @@ function setChecked(node, name, value) {
 function compileChecked(renderers, vars, path, node) {
     const string = node.getAttribute('value');
     if (!string || !rliteral.test(string)) { return; }
-
     const render = compileValueRender(library, vars, string, 'arguments[1]');
     renderers.push(new Renderer(render, path, node, 'value', setChecked));
-
-    /*
-    renderers.push((...params) => 
-        render(...params)
-        .then((value) => setPropertyChecked(node, value))
-    );
-    */
 }
 
 const compileAttribute = overload((renderers, vars, path, node, name) => name, {
@@ -262,10 +195,9 @@ compileElement()
 **/
 
 function setText(node, name, nodes) {
-    console.log('renderValues:', nodes);
-
     var n = -1;
     var string = '';
+
     while (++n < nodes.length && !(isNode(nodes[n]) || isNode(nodes[n][0]))) {
         string += nodes[n];
     }
@@ -281,32 +213,9 @@ function setText(node, name, nodes) {
 
 function compileText(renderers, vars, path, node) {
     const string = node.nodeValue;
-
     if (string && rliteral.test(string)) {
         const render = compileValues(library, vars, decode(string), 'arguments[1]');
         renderers.push(new Renderer(render, path, node, 'nodeValue', setText));
-        /*
-        renderers.push((...params) =>
-            render(...params).then((nodes) => {
-
-                console.log('renderValues:', nodes);
-
-                var n = -1;
-                var string = '';
-                while (++n < nodes.length && !(isNode(nodes[n]) || isNode(nodes[n][0]))) {
-                    string += nodes[n];
-                }
-
-                // Change text in text node to just initial string
-                node.nodeValue = string;
-
-                // Get the rest of the things, owt else goes after
-                const rest = Array.prototype.slice.call(nodes, n);
-                rest.length && node.after.apply(node, rest);
-                return 1 + rest.length;
-            }
-        ));
-        */
     }
 }
 
@@ -340,8 +249,8 @@ function compileType(renderers, vars, path, node) {
 }
 
 const compileElement = overload((renderers, vars, path, node) => node.tagName.toLowerCase(), {
-    // Ignore SVG <defs>, which for our purposes we consider as equivalent to 
-    // the inert content of HTML <template>
+    // Ignore SVG <defs>, which for our purposes we consider as inert like 
+    // HTML's <template>
     'defs': noop,
 
     'default': (renderers, vars, path, node) => {
@@ -368,12 +277,14 @@ const compileElement = overload((renderers, vars, path, node) => node.tagName.to
 /** 
 compileNode()
 **/
-
+var indent = '  ';
 const compileNode = overload((renderers, vars, path, node) => toType(node), {
     'comment': noop,
 
     'element': (renderers, vars, path, node) => {
+console.log(indent, node); indent += '  ';
         compileElement(renderers, vars, path, node);
+indent = indent.slice(0, -2);
         return renderers;
     },
 
@@ -394,7 +305,7 @@ const compileNode = overload((renderers, vars, path, node) => toType(node), {
         return renderers;
     },
 
-    'default': (renderers, vars, node) => {
+    'default': () => {
         throw new Error('Node not compileable');
     }
 });
