@@ -20,7 +20,7 @@ isCustomElement(node)
 
 export function isCustomElement(node) {
     // Custom elements are required to have a '-' in their name
-    return /-/.test(node.tagName);
+    return !!node.getAttribute('is') || /-/.test(node.tagName);
 }
 
 
@@ -97,9 +97,10 @@ setAttribute(node, name, value)
 **/
 
 export function setAttribute(node, name, value) {
+    if (value === node.getAttribute(name)) { return 0; }
+    // Mutate DOM
     node.setAttribute(name, value);
-
-    // Return DOM mod count
+    // Return number of mutations
     return 1;
 }
 

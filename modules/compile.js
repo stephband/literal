@@ -163,7 +163,7 @@ function renderValues(strings) {
             valueify(values, value);
         }
     }
-console.trace('renderValues', values);
+
     return Promise.all(values).then((values) => values.flat(8));
 }
 

@@ -9,17 +9,18 @@ import Renderer from './renderer.js';
 import log      from './log.js';
 import decode   from './decode.js';
 
-import { isCustomElement, setBooleanProperty, setClass, setPropertyChecked, setPropertyValue } from './dom.js';
+import { isCustomElement, setBooleanProperty, setAttribute, setClass, setPropertyChecked, setPropertyValue } from './dom.js';
 
 const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
 const config = {
     elements: {
         // Global
-        '*':        ['id', 'title', 'style', 'class', 'hidden'],
+        '*':        ['id', 'title', 'style', 'class', 'hidden', 'html'],
 
         // HTML
         'a':        ['href'],
+        'audio':    ['src'],
         'button':   ['disabled'],
         'command':  ['disabled'],
         'form':     ['name', 'method', 'action'],
@@ -80,19 +81,11 @@ const rliteral = /\$\{/;
 compileAttributes(renderers, vars, path, nodeames)
 **/
 
-function renderAttribute(node, name, value) {
-    if (value === node.getAttribute(name)) { return 0; }
-    // Mutate DOM
-    node.setAttribute(name, value);
-    // Return number of mutations
-    return 1;
-}
-
 function compileAttr(renderers, vars, path, node, name) {
     const string = node.getAttribute(name);
     if (!string || !rliteral.test(string)) { return; }
     const render = compileValueRender(library, vars, string, 'arguments[1]');
-    renderers.push(new Renderer(render, path, node, name, renderAttribute));
+    renderers.push(new Renderer(render, path, node, name, setAttribute));
 }
 
 function compileBoolean(renderers, vars, path, node, name) {
@@ -139,6 +132,11 @@ function compileChecked(renderers, vars, path, node) {
     renderers.push(new Renderer(render, path, node, 'value', setChecked));
 }
 
+function setChildren(node, name, nodes) {
+    node.append.apply(node, nodes);
+    return nodes.length;
+}
+
 const compileAttribute = overload((renderers, vars, path, node, name) => name, {
     'checked': compileChecked,
 
@@ -162,6 +160,17 @@ const compileAttribute = overload((renderers, vars, path, node, name) => name, {
 
     'disabled': compileBoolean,
     'hidden':   compileBoolean,
+
+    // Special workaround attribute used in cases where ${} cannot be added
+    // directly to the HTML content, such as in <tbody> or <tr>
+    'html': function compileClass(renderers, vars, path, node) {
+        const string = node.getAttribute('html');
+        if (!string) { return; }
+        node.removeAttribute('html');
+        const render = compileValues(library, vars, decode(string), 'arguments[1]');
+        renderers.push(new Renderer(render, path, node, 'children', setChildren));
+    },
+
     'required': compileBoolean,
 
     'value': overload((renderers, vars, path, node, name) => ('' + node.type), {
@@ -259,9 +268,9 @@ const compileElement = overload((renderers, vars, path, node) => node.tagName.to
 
         // We must wait until custom elements are upgraded before we may 
         // interact with their non-standard properties and attributes
-        if (isCustomElement(node)) {
-            //const i = renderers.length;
-            window.customElements.whenDefined(name).then(() => {
+        const tag = node.getAttribute('is') || node.tagName.toLowerCase();
+        if (/-/.test(tag)) {
+            window.customElements.whenDefined(node.tagName).then(() => {
                 compileTag(renderers, vars, path, node);
                 compileType(renderers, vars, path, node);
             });
@@ -277,14 +286,12 @@ const compileElement = overload((renderers, vars, path, node) => node.tagName.to
 /** 
 compileNode()
 **/
-var indent = '  ';
+
 const compileNode = overload((renderers, vars, path, node) => toType(node), {
     'comment': noop,
 
     'element': (renderers, vars, path, node) => {
-console.log(indent, node); indent += '  ';
         compileElement(renderers, vars, path, node);
-indent = indent.slice(0, -2);
         return renderers;
     },
 
