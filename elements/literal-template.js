@@ -38,7 +38,7 @@ function reject() {
     return rejectSrc;
 }
 
-element('template is="literal-template"', {
+const LiteralTemplate = element('template is="literal-template"', {
     construct: function() {
         // Keep tabs on the number of renders
         this.instanceCount = 0;
@@ -64,34 +64,12 @@ element('template is="literal-template"', {
     }
 });
 
-/*
-// If one has not been found already, test for customised built-in element
-// support by force creating a <template is="literal-template">
-if (!supportsCustomBuiltIn) {
-    document.createElement('template', { is: 'literal-template' });
-}
+// Safari has no support for customised built-in elements
 
-// If still not supported, fallback to a dom query for [is="literal-template"]
 if (!supportsCustomBuiltIn) {
-    log("Browser does not support custom built-in elements so we're doin' it oldskool selector stylee.");
-
-    window.addEventListener('DOMContentLoaded', function() {
-        window.document
-        .querySelectorAll('[is="literal-template"]')
-        .forEach((template) => {
-            const fn  = template.getAttribute(config.attributeFn) || undefined;
-            const src = template.getAttribute(config.attributeSrc) || undefined;
-    
-            if (fn) {
-                Sparky(template, { fn: fn, src: src });
-            }
-            else {
-                // If there is no attribute fn, there is no way for this sparky
-                // to launch as it will never get scope. Enable sparky templates
-                // with just an include by passing in blank scope.
-                Sparky(template, { src: src }).push({});
-            }
-        });
+    console.log('literal-template: No customised built-in element support, polyfilling...')
+    document.querySelectorAll('[is="literal-template"]').forEach((element) => {
+        element.instanceCount = 0;
+        element.render = LiteralTemplate.prototype.render;
     });
 }
-*/

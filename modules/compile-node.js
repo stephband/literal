@@ -34,7 +34,7 @@ const config = {
         'meter':    ['min', 'max', 'low', 'high', 'value'],
         'option':   ['disabled', 'value'],
         'optgroup': ['disabled'],
-        'output':   ['name', 'for'],
+        'output':   ['name', 'for', 'value'],
         'param':    ['name'],
         'progress': ['max', 'value'],
         'select':   ['disabled', 'name'],

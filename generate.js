@@ -13,7 +13,7 @@ const workingdir = Deno.cwd() + '/';
 //const modules   = args.slice(1) || '';
 
 import select  from './deno/select.js';
-import request from './node/request.js';
+//import request from './node/request.js';
 import { yellow, dimyellow, red, dim } from './node/log.js';
 //import build from './node/build.js';
 

@@ -28,10 +28,11 @@
     window.addEventListener('load', () => window.requestAnimationFrame(() => document.documentElement.classList.remove('loading')));
     window.DEBUG = true;
     window.data = {
-        string: 'string <&>',
+        string: 'string chars < & >',
         number: 9,
         infinity: Infinity,
         NULL:   null,
+        array: [0, 1, 2, 3],
         object: { a: 1 },
         true:  true,
         false: false,
@@ -63,7 +64,7 @@
         </ul-->
     </header>
 
-    <template id="include">Include ${ data }</template>
+    <template is="literal-template" id="1">Include ${ data }</template>
 
     <!--template id="template" data-string data-arse>
         <h1>Literal</h1>
@@ -74,9 +75,11 @@
         <include src="#include" data="${ data.object }"></include>
     </template-->
 
-    <template is="literal-template">
-        <p>${ include('#include', { arse: 8 }) }</p>
-    </template>
+    <h2>include-template src="#1"</h2>
+    <include-template src="#1"></include-template>
+
+    <h2>include-template src="#1" data="./package.json"</h2>
+    <include-template src="#1" data="./package.json"></include-template>
 
     <!--template is="literal-template" data="${ window.data }" data-string>
         Hello ${ data.string }
@@ -88,9 +91,8 @@
     <!--template is="literal-template" data="./package.json" src="#include"></template-->
 
     <script type="module">
-        import "./elements/literal-template.js";
-        import Literal  from "./module.js";
-        import Observer from "./modules/observer.js";
-        window.data = Observer(window.data);
+        import "./module.js";
+        //import Observer from "./modules/observer.js";
+        //window.data = Observer(window.data);
     </script>
 </body>

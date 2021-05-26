@@ -59,8 +59,6 @@ import log      from '../modules/log.js';
 
 const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
-var supportsCustomBuiltIn = false;
-
 const rejectSrc   = Promise.resolve('Cannot .render() missing src template');
 const nullPromise = Promise.resolve(null);
 
@@ -68,15 +66,13 @@ element('include-template', {
     construct: function() {
         // Default to using this as template src
         this.template = this;
-
-        // Flag support
-        supportsCustomBuiltIn = true;
     },
 
     connect: function() {
         Promise
         .all([this.template, this.data])
         .then(([template, data]) => {
+            console.log(template, data);
             // Template element has a .render() method
             if (template.render) {
                 this.after(template.render(data));
