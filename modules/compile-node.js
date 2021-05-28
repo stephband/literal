@@ -220,13 +220,7 @@ function setText(node, name, nodes) {
     return 1 + rest.length;
 }
 
-function compileText(renderers, vars, path, node) {
-    const string = node.nodeValue;
-    if (string && rliteral.test(string)) {
-        const render = compileValues(library, vars, decode(string), 'arguments[1]');
-        renderers.push(new Renderer(render, path, node, 'nodeValue', setText));
-    }
-}
+
 
 function compileChildren(renderers, vars, path, node) {
     const children = node.childNodes;
@@ -301,7 +295,13 @@ const compileNode = overload((renderers, vars, path, node) => toType(node), {
     },
 
     'text': (renderers, vars, path, node) => {
-        compileText(renderers, vars, path, node);
+        const string = node.nodeValue;
+
+        if (string && rliteral.test(string)) {
+            const render = compileValues(library, vars, decode(string), 'arguments[1]');
+            renderers.push(new Renderer(render, path, node, 'nodeValue', setText));
+        }
+
         return renderers;
     },
 

@@ -26,25 +26,11 @@ data:
 
 import element  from '../../dom/modules/element.js';
 import Template from '../modules/template.js';
-import log      from '../modules/log.js';
 
-const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
-
-var supportsCustomBuiltIn = false;
-
-const rejectSrc = Promise.resolve('Cannot .render() missing src template');
-
-function reject() {
-    return rejectSrc;
-}
-
-const LiteralTemplate = element('template is="literal-template"', {
+export default element('template is="literal-template"', {
     construct: function() {
         // Keep tabs on the number of renders
         this.instanceCount = 0;
-
-        // Flag support
-        supportsCustomBuiltIn = true;
     },
 
     properties: {
@@ -63,13 +49,3 @@ const LiteralTemplate = element('template is="literal-template"', {
         }
     }
 });
-
-// Safari has no support for customised built-in elements
-
-if (!supportsCustomBuiltIn) {
-    console.log('literal-template: No customised built-in element support, polyfilling...')
-    document.querySelectorAll('[is="literal-template"]').forEach((element) => {
-        element.instanceCount = 0;
-        element.render = LiteralTemplate.prototype.render;
-    });
-}

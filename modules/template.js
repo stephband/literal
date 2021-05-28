@@ -86,7 +86,8 @@ function TemplateRenderer(renderers, consts, fragment) {
 }
 
 assign(TemplateRenderer.prototype, {
-    render: function observe(object) {
+    // Default data is an empty object
+    render: function observe(object = {}) {
         const data = Observer.target(object);
 
         // Deduplicate. Not sure this is entirely necessary.

@@ -34,7 +34,7 @@ export default overload(toType, {
     'object': overload((object) => (object ? object.constructor.name : 'null'), {
         'RegExp':  (object) => object.source,
         'null':    () => '',
-        'default': JSON.stringify
+        'default': (object) => JSON.stringify(object, null, 2)
     }),
 
     'default': JSON.stringify

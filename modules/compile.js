@@ -139,11 +139,14 @@ function renderValue(strings, ...values) {
 }
 
 function valueify(values, value) {
-    if (value.push) {
+    // If value is an array, it may have come from on include and be a set of 
+    // DOM nodes, ... right ? This is probably not the best way to detect that.
+    if (value && typeof value === 'object' && value.length !== undefined) {
         values.push.apply(values, value);
     }
     else {
-        values.push(value);
+        // Convert to a render value before pushing it in
+        values.push(toText(value));
     }
 }
 
@@ -151,9 +154,10 @@ function renderValues(strings) {
     const values = [];
     var n = -1 ;
     var value;
+
     while (strings[++n] !== undefined) {
         // Don't strip spaces, but do ignore empty strings
-        if (strings[n]) { 
+        if (strings[n]) {
             values.push(strings[n]);
         }
 

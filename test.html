@@ -27,17 +27,6 @@
     // class is removed
     window.addEventListener('load', () => window.requestAnimationFrame(() => document.documentElement.classList.remove('loading')));
     window.DEBUG = true;
-    window.data = {
-        string: 'string chars < & >',
-        number: 9,
-        infinity: Infinity,
-        NULL:   null,
-        array: [0, 1, 2, 3],
-        object: { a: 1 },
-        true:  true,
-        false: false,
-        hidden: false
-    };
     </script>
 
     <link rel="stylesheet" href="../bolt/css/html.css" />
@@ -52,6 +41,21 @@
         <h2>${ data.name }</h2>
         <p>${ data.text }</p>
     </template>
+    
+    <style>
+        p {
+            padding-left: 1.875rem;
+            text-indent: -1rem;
+        }
+        
+        dl > dd {
+            margin: 0;
+        }
+        
+        .blue-fg {
+            color: blue;
+        }
+    </style>
 </head>
 
 <body class="">
@@ -64,35 +68,89 @@
         </ul-->
     </header>
 
-    <template is="literal-template" id="1">Include ${ data }</template>
+    <h3><code>&lt;include-template&gt;</code></h3>
 
-    <!--template id="template" data-string data-arse>
-        <h1>Literal</h1>
-        <span class="block">${ data.string }</span>
-        <input type="text" value="${ data.string }, ${ string }, ${ data.number }, ${ data.infinity }, ${ data.object }, ${ data.true }, ${ data.false }${ data.NULL }${ data.undefined }, entities <&>" />
-        <p>${ data.string }, ${ string }, ${ data.number }, ${ data.infinity }, ${ data.object }, ${ data.true }, ${ data.false }${ data.NULL }${ data.undefined }, entities &lt;&amp;&gt;</p>
-        <p hidden="${ data.hidden }">Hidden</p>
-        <include src="#include" data="${ data.object }"></include>
-    </template-->
+    <include-template>
+        <p>✓ Default content of an <code>&lt;include-template&gt;</code> element. Should warn about missing <code>src</code> attribute in the console.</p>
+    </include-template>
 
-    <h2>include-template src="#1"</h2>
-    <include-template src="#1"></include-template>
+    <h3><code>&lt;include-template src="#template"&gt;</code></h3>
 
-    <h2>include-template src="#1" data="./package.json"</h2>
-    <include-template src="#1" data="./package.json"></include-template>
+    <include-template src="#nonexistant">
+        <p>✓ Default content of an <code>&lt;include-template src="#nonexistant"&gt;</code> element. Should warn about missing source template in the console.</p>
+    </include-template>
 
-    <!--template is="literal-template" data="${ window.data }" data-string>
-        Hello ${ data.string }
-        <input type="text" value="${ data.string }, ${ string }, ${ data.number }, ${ data.infinity }, ${ data.object }, ${ data.true }, ${ data.false }${ data.NULL }${ data.undefined }, entities <&>" />
-    </template-->
+    <template id="standard-template">
+        <p>✓ Content in a standard <code>&lt;template&gt;</code> element.</p>
+    </template>
 
-    <!--template is="literal-template" data="${ window.data }" src="#template"></template-->
+    <include-template src="#standard-template">
+        <p>✗ Default content of an <code>&lt;include-template src="#standard-template"&gt;</code> element.</p>
+    </include-template>
 
-    <!--template is="literal-template" data="./package.json" src="#include"></template-->
+    <include-template src="#standard-template" data="./test.json">        
+        <p>✗ Default content of an <code>&lt;include-template src="#standard-template" data="./test.json"&gt;</code> element.</p>
+    </include-template>
+
+    <include-template src="#standard-template" data="./test-bad.json">        
+        <p>✓ Default content of an <code>&lt;include-template src="#standard-template" data="./test-bad.json"&gt;</code> element pointing to mal-formed JSON data. Error logged in the console.</p>
+    </include-template>
+
+    <include-template src="#standard-template" data="./nonexistant.json">
+        <p>✓ Default content of an <code>&lt;include-template src="#standard-template" data="nonexistant"&gt;</code> element.</p>
+    </include-template>
+
+    <h3><code>&lt;include-template src="#literal-template"&gt;</code></h3>
+
+    <template is="literal-template" id="literal-template">
+        <p>✓ Content in a <code>&lt;template is="literal-template"&gt;</code> element, with rendered data:</p>
+        <pre><code>${ data }</code></pre>
+    </template>
+
+    <include-template src="#literal-template">
+        <p>✗ Default content of an <code>&lt;include-template src="#literal-template"&gt;</code> element.</p>
+    </include-template>
+
+    <include-template src="#literal-template" data="./test.json">        
+        <p>✗ Default content of an <code>&lt;include-template src="#literal-template" data="./test.json"&gt;</code> element.</p>
+    </include-template>
+    
+    <include-template src="#literal-template" data="./nonexistant.json">
+        <p>✓ Default content of an <code>&lt;include-template src="#literal-template" data="nonexistant"&gt;</code> element.</p>
+    </include-template>
+
+    <h3>Values</h3>
+
+    <template is="literal-template" id="values-template">
+        <p>This is how various values are rendered in a <code>&lt;template is="literal-template"&gt;</code>:</p>
+        <dl style="display: grid; grid-template-columns: min-content 1fr; text-align: left;">
+            <dt>string</dt>    <dd>${ 'hello' }</dd>
+            <dt>number</dt>    <dd>${ 123.45 }</dd>
+            <dt>Infinity</dt>  <dd>${ Infinity }, ${ -Infinity }</dd>
+            <dt>boolean</dt>   <dd>${ true }, ${ false }</dd>
+            <dt>array</dt>     <dd>${ [0, 1, 2, 3] }</dd>
+            <dt>object</dt>    <dd>${ { property: 'hello' } }</dd>
+            <dt>null</dt>      <dd>${ null }</dd>
+            <dt>undefined</dt> <dd>${ undefined }</dd>
+        </dl>
+
+        <p>Boolean attributes:</p>
+        <p hidden="${ true }">✗ This paragraph has <code>hidden</code></p>
+        <p hidden="${ false }">✓ This paragraph does not have <code>hidden</code></p>
+
+        <p>Class attributes:</p>
+        <p class="${ 'blue-fg' }">✓ This paragraph has <code>class="blue-fg"</code>.</p>
+
+        <p>Style attributes:</p>
+        <p style="color: ${ 'blue' };">✓ This paragraph has <code>style="color: blue;"</code>.</p>
+
+        <p>Text attributes:</p>
+        <p title="✓ This title is rendered with ${ 'some literal content' }">✓ This paragraph has a <code>title</code>.</p>
+    </template>
+
+    <include-template src="#values-template"></include-template>
 
     <script type="module">
         import "./module.js";
-        //import Observer from "./modules/observer.js";
-        //window.data = Observer(window.data);
     </script>
 </body>

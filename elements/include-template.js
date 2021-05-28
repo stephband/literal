@@ -64,15 +64,20 @@ const nullPromise = Promise.resolve(null);
 
 element('include-template', {
     construct: function() {
+        if (!this.hasAttribute('src')) {
+            console.error('<include-template> missing required attribute src="uri"', this);
+            return;
+        }
+
         // Default to using this as template src
-        this.template = this;
+        this.template = null;
     },
 
     connect: function() {
         Promise
         .all([this.template, this.data])
         .then(([template, data]) => {
-            console.log(template, data);
+            //console.log(template, data);
             // Template element has a .render() method
             if (template.render) {
                 this.after(template.render(data));
@@ -84,12 +89,26 @@ element('include-template', {
                 this.remove();
             }
         })
-        .catch((e) => {
-            throw e;
-        });
+        .catch((e) => console.error(e.message, this));
     },
 
     properties: {
+        /** 
+        data="path/to/file.json"
+        Define a JSON file used to render templates (that have a `.render(data)` 
+        method).
+        **/
+        
+        data: {
+            attribute: function(value) {
+                this.data = !value ? nullPromise :
+                    // Where data contains ${...}, compile and render value as literal
+                    /^\$\{/.test(value) ? compileValue(value)() :
+                    // Request JSON
+                    request(value) ;
+            }
+        },
+
         /** 
         src="#id"
         Define a source template whose rendered content replaces this `include-template`. 
@@ -103,60 +122,11 @@ element('include-template', {
                 const template = document.getElementById(id);
 
                 if (!template) {
-                    throw new Error('<include-template> src template "' + value + '" not found in document');
+                    console.error('<include-template> source src="' + value + '" not found');
                 }
 
                 this.template = template;
             }
-        },
-
-        /** 
-        data="path/to/file.json"
-        Define a JSON file used to render templates (that have a `.render(data)` 
-        method).
-        **/
-
-        data: {
-            attribute: function(value) {
-                this.data = !value ? nullPromise :
-                    // Where data contains ${...}, compile and render value as literal
-                    /^\$\{/.test(value) ? compileValue(value)() :
-                    // Request JSON
-                    request(value) ;
-            }
         }
     }
 });
-
-
-/*
-// If one has not been found already, test for customised built-in element
-// support by force creating a <template is="literal-template">
-if (!supportsCustomBuiltIn) {
-    document.createElement('include-template');
-}
-
-// If still not supported, fallback to a dom query for [is="literal-template"]
-if (!supportsCustomBuiltIn) {
-    log("Browser does not support custom built-in elements so we're doin' it oldskool selector stylee.");
-
-    window.addEventListener('DOMContentLoaded', function() {
-        window.document
-        .querySelectorAll('include-template')
-        .forEach((template) => {
-            const fn  = template.getAttribute(config.attributeFn) || undefined;
-            const src = template.getAttribute(config.attributeSrc) || undefined;
-    
-            if (fn) {
-                Sparky(template, { fn: fn, src: src });
-            }
-            else {
-                // If there is no attribute fn, there is no way for this sparky
-                // to launch as it will never get scope. Enable sparky templates
-                // with just an include by passing in blank scope.
-                Sparky(template, { src: src }).push({});
-            }
-        });
-    });
-}
-*/
