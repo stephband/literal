@@ -7,6 +7,7 @@ import overload from '../../fn/modules/overload.js';
 import toType   from '../../fn/modules/to-type.js';
 
 // Matches the arguments list in the result of fn.toString()
+const rarrowents = /\s*(\([\w,\s]*\))/;
 const rarguments = /function(?:\s+\w+)?\s*(\([\w,\s]*\))/;
 
 export default overload(toType, {
@@ -14,8 +15,9 @@ export default overload(toType, {
 
     // Print function and parameters
     'function': (value) => (
-        (value.name || 'function')
-        + (rarguments.exec(value.toString()) || [])[1]
+        value.prototype ?
+            (value.name || 'function') + (rarguments.exec(value.toString()) || [])[1] :
+            (rarrowents.exec(value.toString()) || [])[1] + ' ⇒ ()'
     ),
 
     // Convert NaN to empty string and Infinity to ∞ symbol

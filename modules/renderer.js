@@ -122,13 +122,14 @@ function removeNodes(firstNode, lastNode) {
     let node = lastNode;
     while (node !== firstNode) {
         lastNode = node.previousSibling;
-        console.log('REMOVING', node);
         node.remove();
         node = lastNode;
     }
 }
 
 function setText(renderer, node, nodes) {
+    // TODO: WE MUST ALSO UNBIND ANY SUB-TEMPLATES THAST WERE INCLUDED! HOW?
+
     if (renderer.lastNode) {
         removeNodes(renderer.node, renderer.lastNode);
         renderer.lastNode = undefined;

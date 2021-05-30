@@ -109,7 +109,7 @@ element('include-template', {
             this.rejectData = reject;
         });
 
-        srcPromise.then((template) => {            
+        srcPromise.then((template) => {
             // Template requires data to be rendered
             if (template.render) {
                 return dataPromise.then((data) => {
@@ -121,7 +121,8 @@ element('include-template', {
             // Template is a standard template with .content property
             this.after(template.content.cloneNode(true));
             this.remove();
-        });
+        })
+        .catch((message) => console.error(message, this));
     },
 
     connect: function() {
@@ -152,18 +153,14 @@ element('include-template', {
         src: {
             attribute: function(value) {
                 if (!value) {
-                    console.error('<include-template> source src="' + value + '" is empty');
-                    this.rejectSrc();
-                    return;
+                    return this.rejectSrc('<include-template> source src="' + value + '" is empty');
                 }
 
                 const id = value.replace(/^#/, '');
                 const template = document.getElementById(id);
 
                 if (!template) {
-                    console.error('<include-template src="' + value + '"> src template not found', this);
-                    this.rejectSrc();
-                    return;
+                    return this.rejectSrc('<include-template> src template not found');
                 }
 
                 this.resolveSrc(template);

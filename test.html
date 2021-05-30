@@ -222,6 +222,7 @@
             <dt>Infinity</dt>  <dd>${ Infinity }, ${ -Infinity }</dd>
             <dt>boolean</dt>   <dd>${ true }, ${ false }</dd>
             <dt>function</dt>  <dd>${ function fn(param) {} }</dd>
+            <dt>arrow</dt>     <dd>${ (param) => {} }</dd>
             <dt>array</dt>     <dd>${ [0, 1, 2, 3] }</dd>
             <dt>object</dt>    <dd>${ { property: 'hello' } }</dd>
             <dt>null</dt>      <dd>${ null }</dd>
@@ -286,6 +287,37 @@
     
     <include-template src="#include-literal-template" data="./test.json"></include-template>
     
+    <hr/>
+
+
+    <h3 class="text-03">Live binding <span class="test-count">(3 tests)</span></h3>
+
+    <template is="literal-template" id="clock-template">
+        <p>Time since load: ${ parseInt(data.time, 10) }</p>
+    </template>
+
+    <include-template src="#clock-template" data="./test-clock.js"></include-template>
+    
+    <hr/>
+
+    <include-template src="#clock-template" data="./test-clock.js"></include-template>
+
+    <hr/>
+
+    <template is="literal-template" id="even-template">
+        <p>Even: ${ parseInt(data.time, 10) }</p>
+    </template>
+
+    <template is="literal-template" id="odd-template">
+        <p>Odd:  ${ parseInt(data.time, 10) }</p>
+    </template>
+
+    <template is="literal-template" id="evenodd-template">
+        ${ include(parseInt(data.time, 10) % 2 === 0 ? '#even-template' : '#odd-template', data) }
+    </template>
+
+    <include-template src="#evenodd-template" data="./test-clock.js"></include-template>
+
     <hr/>
 
     <script type="module">
