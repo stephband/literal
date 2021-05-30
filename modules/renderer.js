@@ -1,5 +1,5 @@
 
-import overload   from '../../fn/modules/overload.js';
+import overload from '../../fn/modules/overload.js';
 import { setBooleanProperty, setAttribute } from './dom.js';
 
 const assign  = Object.assign;
@@ -32,6 +32,7 @@ assign(Renderer.prototype, {
 
 /** 
 AttributeRenderer()
+Constructs an object responsible for rendering to a plain text attribute.
 **/
 
 export function AttributeRenderer(fn, path, node, name) {
@@ -44,6 +45,7 @@ assign(AttributeRenderer.prototype, Renderer.prototype);
 
 /** 
 BooleanRenderer()
+Constructs an object responsible for rendering to a boolean attribute.
 **/
 
 export function BooleanRenderer(fn, path, node, name) {
@@ -59,6 +61,8 @@ assign(BooleanRenderer.prototype, Renderer.prototype);
 
 /** 
 TokensRenderer()
+Constructs an object responsible for rendering to a token list attribute such
+as a class attribute.
 **/
 
 const getTokenList = overload((node, name) => name, {
@@ -105,8 +109,11 @@ export function TokensRenderer(fn, path, node, name) {
 assign(TokensRenderer.prototype, Renderer.prototype);
 
 
-/** 
+/**
 TextRenderer()
+Constructs an object responsible for rendering to a text node. If the result of
+processing the literal content is more DOM content this renderer will insert 
+that DOM after the text node.
 **/
 
 const array = [];
