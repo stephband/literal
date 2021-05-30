@@ -1,15 +1,15 @@
 
 import noop       from '../../fn/modules/noop.js';
 import overload   from '../../fn/modules/overload.js';
-import { toType, isNode } from '../../dom/modules/node.js';
+import { toType } from '../../dom/modules/node.js';
 
 import library  from './library.js';
 import { compileStringRender, compileValueRender, compileValues } from './compile.js';
-import Renderer from './renderer.js';
+import Renderer, { AttributeRenderer, BooleanRenderer, TokensRenderer, TextRenderer } from './renderer.js';
 import log      from './log.js';
 import decode   from './decode.js';
 
-import { isCustomElement, setBooleanProperty, setAttribute, setClass, setPropertyChecked, setPropertyValue } from './dom.js';
+import { isCustomElement, setAttribute, setBooleanProperty, setClass, setPropertyChecked, setPropertyValue } from './dom.js';
 
 const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
@@ -81,37 +81,41 @@ const rliteral = /\$\{/;
 compileAttributes(renderers, vars, path, nodeames)
 **/
 
-function compileAttr(renderers, vars, path, node, name) {
-    const string = node.getAttribute(name);
+function compileAttr(renderers, vars, path, node, attribute) {
+    const string = attribute.value;
     if (!string || !rliteral.test(string)) { return; }
+    const name = attribute.localName;
     const render = compileValueRender(library, vars, string, 'arguments[1]');
-    renderers.push(new Renderer(render, path, node, name, setAttribute));
+    renderers.push(new AttributeRenderer(render, path, node, name));
 }
 
-function compileBoolean(renderers, vars, path, node, name) {
-    const string = node.getAttribute(name);
+function compileBoolean(renderers, vars, path, node, attribute) {
+    const string = attribute.value;
     if (!string || !rliteral.test(string)) { return; }
-    node.removeAttribute(name);
+    const name = attribute.localName;
     const render = compileValueRender(library, vars, string, 'arguments[1]');
-    renderers.push(new Renderer(render, path, node, name, setBooleanProperty));
+    renderers.push(new BooleanRenderer(render, path, node, name));
 }
 
-function compileClass(renderers, vars, path, node, name) {
-    const string = node.getAttribute('class');
+function compileTokens(renderers, vars, path, node, attribute) {
+    const string = attribute.value;
     if (!string || !rliteral.test(string)) { return; }
-    const render = compileValueRender(library, vars, string, 'arguments[1]');
-    renderers.push(new Renderer(render, path, node, name, setClass));
+    const name = attribute.localName;
+    const render = compileValues(library, vars, string, 'arguments[1]');
+    renderers.push(new TokensRenderer(render, path, node, name));
 }
 
 function setValue(node, name, value) {
     return setPropertyValue(node, value);
 }
 
-function compileValue(renderers, vars, path, node) {
-    const string = node.getAttribute('value');
+function compileValue(renderers, vars, path, node, attribute) {
+    const string = attribute.value;
     if (!string || !rliteral.test(string)) { return; }
+    const name = 'value';
+    console.log('value  ', string);
     const render = compileValueRender(library, vars, string, 'arguments[1]');
-    renderers.push(new Renderer(render, path, node, 'value', setValue));
+    renderers.push(new Renderer(render, path, node, name, setValue));
 }
 
 function compileValueString(renderers, vars, path, node) {
@@ -125,8 +129,9 @@ function setChecked(node, name, value) {
     return setPropertyChecked(node, value);
 }
 
-function compileChecked(renderers, vars, path, node) {
-    const string = node.getAttribute('value');
+function compileChecked(renderers, vars, path, node, attribute) {
+    const string = attribute.value;
+    console.log('checked', string);
     if (!string || !rliteral.test(string)) { return; }
     const render = compileValueRender(library, vars, string, 'arguments[1]');
     renderers.push(new Renderer(render, path, node, 'value', setChecked));
@@ -137,24 +142,11 @@ function setChildren(node, name, nodes) {
     return nodes.length;
 }
 
-const compileAttribute = overload((renderers, vars, path, node, name) => name, {
-    'checked': compileChecked,
+const compileAttribute = overload((renderers, vars, path, node, attribute) => attribute.localName, {
+    'checked':  compileChecked,
+    'class':    compileTokens,
 
-    'class': function compileClass(renderers, vars, path, node) {
-        const string = node.getAttribute('class');
-        if (!string || !rliteral.test(string)) { return; }    
-        const render = compileValueRender(library, vars, string, 'arguments[1]');
-        /*
-        renderers.push((...params) => 
-            render(...params)
-            .then((value) => {
-                console.log('Todo: render class');
-            })
-        );
-        */
-    },
-
-    'datetime': function compileDatetime(renderers, vars, path, node) {
+    'datetime': function compileDatetime(renderers, vars, path, node, attribute) {
         console.log('Todo: compile datetime');
     },
 
@@ -163,7 +155,7 @@ const compileAttribute = overload((renderers, vars, path, node, name) => name, {
 
     // Special workaround attribute used in cases where ${} cannot be added
     // directly to the HTML content, such as in <tbody> or <tr>
-    'html': function compileClass(renderers, vars, path, node) {
+    'html': function compileClass(renderers, vars, path, node, attribute) {
         const string = node.getAttribute('html');
         if (!string) { return; }
         node.removeAttribute('html');
@@ -173,28 +165,26 @@ const compileAttribute = overload((renderers, vars, path, node, name) => name, {
 
     'required': compileBoolean,
 
-    'value': overload((renderers, vars, path, node, name) => ('' + node.type), {
+    'value': overload((renderers, vars, path, node, attribute) => ('' + node.type), {
         //'checkbox':  compileValueChecked,
-        //'date':    compileValueDate,
+        //'date':      compileValueDate,
         //'number':    compileValueNumber,
         //'range':     compileValueNumber,
         //'select-multiple': compileValueArray,
         'text':      compileValueString,
         'search':    compileValueString,
         'default':   compileValue,
-        'undefined': (renderers, vars, path, node) => {
-            compileAttr(renderers, vars, path, node, 'value');
-        }
+        'undefined': compileAttr
     }),
 
     'default':  compileAttr
 });
 
-function compileAttributes(renderers, vars, path, node, names) {
-    if (!names) { return; }
-    var n = -1;
-    while (names[++n]) {
-        compileAttribute(renderers, vars, (path ? path + '.' + names[n] : names[n]), node, names[n]);
+function compileAttributes(renderers, vars, path, node) {
+    const attributes = node.attributes;
+    var n = -1, attribute;
+    while (attribute = attributes[++n]) {
+        compileAttribute(renderers, vars, path, node, attribute);
     }
 }
 
@@ -202,25 +192,6 @@ function compileAttributes(renderers, vars, path, node, names) {
 /**
 compileElement()
 **/
-
-function setText(node, name, nodes) {
-    var n = -1;
-    var string = '';
-
-    while (++n < nodes.length && !(isNode(nodes[n]) || isNode(nodes[n][0]))) {
-        string += nodes[n];
-    }
-
-    // Change text in text node to just initial string
-    node.nodeValue = string;
-
-    // Get the rest of the things, owt else goes after
-    const rest = Array.prototype.slice.call(nodes, n);
-    rest.length && node.after.apply(node, rest);
-    return 1 + rest.length;
-}
-
-
 
 function compileChildren(renderers, vars, path, node) {
     const children = node.childNodes;
@@ -231,16 +202,6 @@ function compileChildren(renderers, vars, path, node) {
             compileNode(renderers, vars, (path ? path + '.' + n : path + n), children[n]);
         }
     }
-}
-
-function compileTag(renderers, vars, path, node) {
-    // Compile global attributes    
-    compileAttributes(renderers, vars, path, node, config.elements['*']);
-
-    // Compile element attributes
-    const tag   = node.tagName.toLowerCase();
-    const names = config.elements[tag || 'default'];
-    compileAttributes(renderers, vars, path, node, names);
 }
 
 function compileType(renderers, vars, path, node) {
@@ -262,15 +223,18 @@ const compileElement = overload((renderers, vars, path, node) => node.tagName.to
 
         // We must wait until custom elements are upgraded before we may 
         // interact with their non-standard properties and attributes
+        // Todo:
+        // Hang on... is this still true given that the renderer.set negociates
+        // the way an attribute is rendered??
         const tag = node.getAttribute('is') || node.tagName.toLowerCase();
         if (/-/.test(tag)) {
             window.customElements.whenDefined(node.tagName).then(() => {
-                compileTag(renderers, vars, path, node);
+                compileAttributes(renderers, vars, path, node);
                 compileType(renderers, vars, path, node);
             });
         }
         else {
-            compileTag(renderers, vars, path, node);
+            compileAttributes(renderers, vars, path, node);
             compileType(renderers, vars, path, node);
         }
     }
@@ -299,7 +263,7 @@ const compileNode = overload((renderers, vars, path, node) => toType(node), {
 
         if (string && rliteral.test(string)) {
             const render = compileValues(library, vars, decode(string), 'arguments[1]');
-            renderers.push(new Renderer(render, path, node, 'nodeValue', setText));
+            renderers.push(new TextRenderer(render, path, node));
         }
 
         return renderers;

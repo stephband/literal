@@ -39,6 +39,7 @@ bower_components
 build/Release
 
 # Dependency directories
+archive/
 node_modules/
 jspm_packages/
 

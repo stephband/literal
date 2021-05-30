@@ -41,8 +41,12 @@
         <h2>${ data.name }</h2>
         <p>${ data.text }</p>
     </template>
-    
+
     <style>
+        .test-count {
+            font-size: 0.875em;
+        }
+        
         p {
             padding-left: 1.875rem;
             text-indent: -1rem;
@@ -58,7 +62,7 @@
     </style>
 </head>
 
-<body class="">
+<body>
     <header>
         <h1 class="doctext-01">Literal <span class="doctext-06">0.0.1</span></h1>
         <!--p class="doctext-08"></p>
@@ -68,17 +72,21 @@
         </ul-->
     </header>
 
-    <h3><code>&lt;include-template&gt;</code></h3>
+    <h3><code>&lt;include-template&gt;</code> <span class="test-count">(1 test)</span></h3>
 
     <include-template>
         <p>✓ Default content of an <code>&lt;include-template&gt;</code> element. Should warn about missing <code>src</code> attribute in the console.</p>
     </include-template>
 
-    <h3><code>&lt;include-template src="#template"&gt;</code></h3>
+    <hr/>
+
+    <h3><code>&lt;include-template src="#template"&gt;</code> <span class="test-count">(5 tests)</span></h3>
 
     <include-template src="#nonexistant">
         <p>✓ Default content of an <code>&lt;include-template src="#nonexistant"&gt;</code> element. Should warn about missing source template in the console.</p>
     </include-template>
+
+    <hr/>
 
     <template id="standard-template">
         <p>✓ Content in a standard <code>&lt;template&gt;</code> element.</p>
@@ -87,39 +95,59 @@
     <include-template src="#standard-template">
         <p>✗ Default content of an <code>&lt;include-template src="#standard-template"&gt;</code> element.</p>
     </include-template>
+    
+    <hr/>
+    
+    <include-template src="#standard-template" data="./nonexistant.json">
+        <p>✗ Default content of an <code>&lt;include-template src="#standard-template" data="nonexistant"&gt;</code> element.</p>
+    </include-template>
+
+    <hr/>
+
+    <include-template src="#standard-template" data="./test-bad.json">        
+        <p>✗ Default content of an <code>&lt;include-template src="#standard-template" data="./test-bad.json"&gt;</code> element pointing to mal-formed JSON data. Error logged in the console.</p>
+    </include-template>
+
+    <hr/>
 
     <include-template src="#standard-template" data="./test.json">        
         <p>✗ Default content of an <code>&lt;include-template src="#standard-template" data="./test.json"&gt;</code> element.</p>
     </include-template>
 
-    <include-template src="#standard-template" data="./test-bad.json">        
-        <p>✓ Default content of an <code>&lt;include-template src="#standard-template" data="./test-bad.json"&gt;</code> element pointing to mal-formed JSON data. Error logged in the console.</p>
-    </include-template>
+    <hr/>
 
-    <include-template src="#standard-template" data="./nonexistant.json">
-        <p>✓ Default content of an <code>&lt;include-template src="#standard-template" data="nonexistant"&gt;</code> element.</p>
-    </include-template>
-
-    <h3><code>&lt;include-template src="#literal-template"&gt;</code></h3>
+    <h3><code>&lt;include-template src="#literal-template"&gt;</code> <span class="test-count">(4 tests)</span></h3>
 
     <template is="literal-template" id="literal-template">
         <p>✓ Content in a <code>&lt;template is="literal-template"&gt;</code> element, with rendered data:</p>
         <pre><code>${ data }</code></pre>
     </template>
-
-    <include-template src="#literal-template">
-        <p>✗ Default content of an <code>&lt;include-template src="#literal-template"&gt;</code> element.</p>
-    </include-template>
-
-    <include-template src="#literal-template" data="./test.json">        
-        <p>✗ Default content of an <code>&lt;include-template src="#literal-template" data="./test.json"&gt;</code> element.</p>
-    </include-template>
     
     <include-template src="#literal-template" data="./nonexistant.json">
         <p>✓ Default content of an <code>&lt;include-template src="#literal-template" data="nonexistant"&gt;</code> element.</p>
     </include-template>
 
-    <h3>Values</h3>
+    <hr/>
+
+    <include-template src="#literal-template" data="./test-bad.json">
+        <p>✓ Default content of an <code>&lt;include-template src="#literal-template" data="test-bad.json"&gt;</code> element.</p>
+    </include-template>
+
+    <hr/>
+
+    <include-template src="#literal-template">
+        <p>✓ Default content of an <code>&lt;include-template src="#literal-template"&gt;</code> element.</p>
+    </include-template>
+
+    <hr/>
+
+    <include-template src="#literal-template" data="./test.json">        
+        <p>✗ Default content of an <code>&lt;include-template src="#literal-template" data="./test.json"&gt;</code> element.</p>
+    </include-template>
+
+    <hr/>
+
+    <h3>Values <span class="test-count">(1 test)</span></h3>
 
     <template is="literal-template" id="values-template">
         <p>This is how various values are rendered in a <code>&lt;template is="literal-template"&gt;</code>:</p>
@@ -128,6 +156,7 @@
             <dt>number</dt>    <dd>${ 123.45 }</dd>
             <dt>Infinity</dt>  <dd>${ Infinity }, ${ -Infinity }</dd>
             <dt>boolean</dt>   <dd>${ true }, ${ false }</dd>
+            <dt>function</dt>  <dd>${ function fn(param) {} }</dd>
             <dt>array</dt>     <dd>${ [0, 1, 2, 3] }</dd>
             <dt>object</dt>    <dd>${ { property: 'hello' } }</dd>
             <dt>null</dt>      <dd>${ null }</dd>
@@ -138,17 +167,61 @@
         <p hidden="${ true }">✗ This paragraph has <code>hidden</code></p>
         <p hidden="${ false }">✓ This paragraph does not have <code>hidden</code></p>
 
-        <p>Class attributes:</p>
-        <p class="${ 'blue-fg' }">✓ This paragraph has <code>class="blue-fg"</code>.</p>
+        <p>Class attributes (TokenLists):</p>
+        <p class="${ 'blue-fg' }">This paragraph has <code>class="blue-fg"</code>.</p>
 
         <p>Style attributes:</p>
-        <p style="color: ${ 'blue' };">✓ This paragraph has <code>style="color: blue;"</code>.</p>
+        <p style="color: ${ 'blue' };">This paragraph has <code>style="color: blue;"</code>.</p>
 
         <p>Text attributes:</p>
-        <p title="✓ This title is rendered with ${ 'some literal content' }">✓ This paragraph has a <code>title</code>.</p>
+        <p title="${ '✓ title attribute has literal content' }">This paragraph has a <code>title</code> attribute.</p>
+
+        <p>Data attributes:</p>
+        <p data-thing="${ '✓ data-thing attribute has literal content' }">This paragraph has a <code>data-thing</code> attribute.</p>
     </template>
 
     <include-template src="#values-template"></include-template>
+
+    <hr/>
+
+    <h3><code>include(template, data)</code> <span class="test-count">(3 tests)</span></h3>
+
+    <template id="paragraph-template">
+        <p>✓ Standard template included.</p>
+    </template>
+
+    <template is="literal-template" id="include-standard-template">
+        <div>
+            Before include.
+            ${ include('#paragraph-template', {}) }
+            After include.
+        </div>
+    </template>
+
+    <include-template src="#include-standard-template"></include-template>
+
+    <hr/>
+
+    <template is="literal-template" id="data-template">
+        <p>✓ Literal template included.</p>
+        <pre><code>${ data }</code></pre>
+    </template>
+    
+    <template is="literal-template" id="include-literal-template">
+        <div>
+            Before include.
+            ${ include('#data-template', data) }
+            After include.
+        </div>
+    </template>
+    
+    <include-template src="#include-literal-template"></include-template>
+    
+    <hr/>
+    
+    <include-template src="#include-literal-template" data="./test.json"></include-template>
+    
+    <hr/>
 
     <script type="module">
         import "./module.js";

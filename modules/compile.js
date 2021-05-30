@@ -6,6 +6,7 @@ import compileAsync from '../../fn/modules/compile-async.js';
 import toText       from './to-text.js';
 import log          from './log.js';
 
+const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
 const illegals = [
     // Reserved by literal
@@ -79,7 +80,7 @@ const reduce = (values) => values.reduce((output, value) => (
         output + value
 ));
 
-const isPromise = (object) => object && object.then;
+const isPromise = (object) => (object && typeof object === 'object' && object.then);
 
 function stringify(value, string, render) {
     return value && typeof value === 'object' ? (
@@ -94,7 +95,9 @@ function stringify(value, string, render) {
         value.find ?
             value.find(isPromise) ?
                 // Resolve promises and join to string
-                Promise.all(value).then((strings) => (
+                Promise
+                .all(value)
+                .then((strings) => (
                     string === '' ?
                         reduce(strings.map(render)) :
                         string + reduce(strings.map(render))
@@ -141,16 +144,19 @@ function renderValue(strings, ...values) {
 function valueify(values, value) {
     // If value is an array, it may have come from on include and be a set of 
     // DOM nodes, ... right ? This is probably not the best way to detect that.
-    if (value && typeof value === 'object' && value.length !== undefined) {
+    if (value instanceof Node) {
+        values.push(value);
+    }
+    else if (value && typeof value === 'object' && value.length !== undefined) {
         values.push.apply(values, value);
     }
     else {
-        // Convert to a render value before pushing it in
         values.push(toText(value));
     }
 }
 
-function renderValues(strings) {
+function renderValuesX(args) {
+    const [strings] = args;
     const values = [];
     var n = -1 ;
     var value;
@@ -162,13 +168,20 @@ function renderValues(strings) {
         }
 
         // If a value is more than nothing push it in
-        value = arguments[n + 1];
+        value = args[n + 1];
         if (value !== undefined && value !== '') {
             valueify(values, value);
         }
     }
 
-    return Promise.all(values).then((values) => values.flat(8));
+    return values;
+}
+
+function renderValues(strings) {    
+    return Promise
+    .all(arguments)
+    .then(renderValuesX)
+    .then((values) => values.flat(8));
 }
 
 
@@ -215,7 +228,7 @@ export default function compile(scope, varstring, string, id, consts = 'data', r
     var fn;
 
     try {
-        logCompile(id ? id : key.length > 45 ? '`' + key.slice(0, 33) + '...' +  key.slice(-8) + '`' : '`' + key + '`', scope, 'data' + (vars ? ', ' + vars : ''));
+        logCompile(id ? id : key.trim().length > 45 ? '`' + key.trim().slice(0, 33).replace(/ *\n */g, ' ') + ' ... ' +  key.trim().slice(-8).replace(/ *\n */g, ' ') + '`' : '`' + key.trim().replace(/ *\n */g, ' ') + '`', scope, 'data' + (vars ? ', ' + vars : ''));
 
         // Allow passing nothing to a render function by defaulting data to an 
         // empty object. Compiled function cannot be given a name as it will 
@@ -229,20 +242,23 @@ export default function compile(scope, varstring, string, id, consts = 'data', r
     }
 
     return cache[key] = function literal() {
-        log('render ', id ? id : key.length > 45 ? '`' + key.slice(0, 33) + '...' +  key.slice(-8) + '`' : '`' + key + '`', 'orange');
+        if (DEBUG) {
+            log('render ', id ? id : key.trim().length > 45 ? '`' + key.trim().slice(0, 33).replace(/ *\n */g, ' ') + ' ... ' +  key.trim().slice(-8).replace(/ *\n */g, ' ') + '`' : '`' + key.trim().replace(/ *\n */g, ' ') + '`', 'orange');
+        }
+
         // Where this is global, neuter it
         return fn.apply(this === self ? {} : this, arguments);
     };
 }
 
-export function compileStringRender(scope, varstring, string, consts = 'data') {
+export function compileStringRender(scope, varstring, string, consts) {
     return compile(scope, varstring, string, null, consts, renderString);
 }
 
-export function compileValueRender(scope, varstring, string, consts = 'data') {
+export function compileValueRender(scope, varstring, string, consts) {
     return compile(scope, varstring, string, null, consts, renderValue);
 }
 
-export function compileValues(scope, varstring, string, consts = 'data') {
+export function compileValues(scope, varstring, string, consts) {
     return compile(scope, varstring, string, null, consts, renderValues);
 }

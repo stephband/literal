@@ -55,77 +55,83 @@ to provide default or fallback content.
 
 import element  from '../../dom/modules/element.js';
 import { requestGet as request } from '../../dom/modules/request.js';
-import log      from '../modules/log.js';
 
 const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
-
-const rejectSrc   = Promise.resolve('Cannot .render() missing src template');
-const nullPromise = Promise.resolve(null);
 
 element('include-template', {
     construct: function() {
         if (!this.hasAttribute('src')) {
-            console.error('<include-template> missing required attribute src="uri"', this);
-            return;
+            console.error('<include-template> src attribute required', this);
         }
 
-        // Default to using this as template src
-        this.template = null;
+        const srcPromise = new Promise((resolve, reject) => {
+            this.resolveSrc = resolve;
+            this.rejectSrc = reject;
+        });
+
+        const dataPromise = new Promise((resolve, reject) => {
+            this.resolveData = resolve;
+            this.rejectData = reject;
+        });
+
+        srcPromise.then((template) => {            
+            // Template requires data to be rendered
+            if (template.render) {
+                return dataPromise.then((data) => {
+                    this.after(template.render(data));
+                    this.remove();
+                });
+            }
+
+            // Template is a standard template with .content property
+            this.after(template.content.cloneNode(true));
+            this.remove();
+        });
     },
 
     connect: function() {
-        Promise
-        .all([this.template, this.data])
-        .then(([template, data]) => {
-            //console.log(template, data);
-            // Template element has a .render() method
-            if (template.render) {
-                this.after(template.render(data));
-                this.remove();
-            }
-            // Template element is a built-in template with .content property
-            else {
-                this.after(template.content.cloneNode(true));
-                this.remove();
-            }
-        })
-        .catch((e) => console.error(e.message, this));
+        // Where a data attribute has not been defined resolve with an 
+        // empty object
+        this.resolveData({});
     },
 
     properties: {
         /** 
         data="path/to/file.json"
         Define a JSON file used to render templates (that have a `.render(data)` 
-        method).
+        method). If a data attribute is not defined and empty object is used.
         **/
         
         data: {
             attribute: function(value) {
-                this.data = !value ? nullPromise :
-                    // Where data contains ${...}, compile and render value as literal
-                    /^\$\{/.test(value) ? compileValue(value)() :
-                    // Request JSON
-                    request(value) ;
+                this.resolveData(request(value));
             }
         },
 
         /** 
         src="#id"
-        Define a source template whose rendered content replaces this `include-template`. 
+        Define a source template whose rendered content replaces this
+        `include-template`. This is a required attribute.
         **/
 
         src: {
             attribute: function(value) {
-                if (!value) { return; }
+                if (!value) {
+                    console.error('<include-template> source src="' + value + '" is empty');
+                    this.rejectSrc();
+                    return;
+                }
 
                 const id = value.replace(/^#/, '');
                 const template = document.getElementById(id);
 
                 if (!template) {
-                    console.error('<include-template> source src="' + value + '" not found');
+                    console.error('<include-template src="' + value + '"> src template not found', this);
+                    this.rejectSrc();
+                    return;
                 }
 
-                this.template = template;
+                this.resolveSrc(template);
             }
         }
     }

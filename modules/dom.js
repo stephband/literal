@@ -110,7 +110,7 @@ setClass(node, name, value)
 **/
 
 export function setClass(node, name, value) {
-    
+    console.log('setTokens', name, value);
 }
 
 

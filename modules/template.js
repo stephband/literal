@@ -4,7 +4,6 @@ import Observer    from './observer.js';
 import curry       from '../../fn/modules/curry.js';
 import nothing     from '../../fn/modules/nothing.js';
 import identify    from '../../dom/modules/identify.js';
-import Renderer    from './renderer.js';
 import log         from './log.js';
 
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
@@ -23,14 +22,14 @@ function not0(value) {
 function logCounts(counts) {
     const count = counts.reduce(add, 0);
     if (count === 0) { return; }
-    console.log('Mutations', counts.reduce(add, 0));
+    log('mutate ', counts.reduce(add, 0), '#ff7246');
 }
 
 /* 
 Renderer
 Descendant paths are stored in the form `"1.12.3.class"`. This enables fast 
 cloning of template instances without retraversing their DOMs looking for 
-literal attribute and text.
+literal attributes and text.
 */
 
 function child(parent, index) {
@@ -44,9 +43,16 @@ function descendant(path, root) {
     return p.reduce(child, root);
 }
 
-function toRenderer(r) {
-    // Create new renderer from old with reference to a new node
-    return new Renderer(r.fn, r.path, descendant(r.path, this), r.name, r.update);
+function toRenderer(renderer) {
+    // Create new renderer from old with reference to a new node, where `this` 
+    // is the new fragment
+    return new renderer.constructor(
+        renderer.fn, 
+        renderer.path, 
+        descendant(renderer.path, this),
+        renderer.name,
+        renderer.set
+    );
 }
 
 function empty(renderer) {
@@ -177,13 +183,12 @@ Template.fromId = function(id) {
 
 import library from '../modules/library.js';
 
-// Augment library!! Todo: clean up when we import the lib into this repo
-
 library.include = curry(function include(url, data) {
     if (!/^#/.test(url)) {
         throw new Error('Template: Only #fragment identifier currently supported as include() url ("' + url + '")');
     }
 
-    const instance = Template.fromId(url.slice(1));
-    return instance.render(data || {});
+    return Template
+    .fromId(url.slice(1))
+    .render(data || {});
 });
