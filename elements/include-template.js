@@ -53,45 +53,8 @@ displayed until templated content has been fetched and rendered, allowing you
 to provide default or fallback content.
 **/
 
-import overload from '../../fn/modules/overload.js';
-import element  from '../../dom/modules/element.js';
-import { requestGet } from '../../dom/modules/request.js';
-
-const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
-
-const rextension = /\.([\w-]+)(?:#|\?|$)/;
-const rfragment  = /#(\w+)(?:\(([^\)]*)\))?$/;
-const defaultexp = ['', 'default', ''];
-
-const request = overload((url) => rextension.exec(url)[1], {
-    'js': (url) => {
-        // Support named exports via the #fragment identifier
-        const [string, name, params] = rfragment.exec(url) || defaultexp;
-
-        // Rewrite relative import URLs to be absolute, taking the page as their
-        // relative root
-        const absolute = url[0] === '.' ?
-            new URL(url, window.location) :
-            url ;
-
-        return params ?
-            // Where params have been captured, assume the export is a constructor
-            // and call it with params as values
-            import(absolute)
-            .then((data) => {
-                if (typeof data[name] !== 'function') {
-                    throw new Error('Export ' + absolute + ' is not a function');
-                }
-
-                return new data[name](...JSON.parse('[' + params.replace(/'/g, '"') + ']'))
-            }) :
-            // Otherwise use the export as data directly
-            import(absolute)
-            .then((data) => data[name]) ;
-    },
-
-    'json': (url) => requestGet(url)
-});
+import element from '../../dom/modules/element.js';
+import requestData from '../modules/request-data.js';
 
 element('include-template', {
     construct: function() {
@@ -140,7 +103,7 @@ element('include-template', {
         
         data: {
             attribute: function(value) {
-                this.resolveData(request(value));
+                this.resolveData(requestData(value));
             }
         },
 

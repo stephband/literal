@@ -1,7 +1,6 @@
 
 import compileNode from './compile-node.js';
 import Observer    from './observer.js';
-import curry       from '../../fn/modules/curry.js';
 import nothing     from '../../fn/modules/nothing.js';
 import identify    from '../../dom/modules/identify.js';
 import log         from './log.js';
@@ -25,8 +24,8 @@ function logCounts(counts) {
     log('mutate ', counts.reduce(add, 0), '#ff7246');
 }
 
-/* 
-Renderer
+/*
+TemplateRenderer
 Descendant paths are stored in the form `"1.12.3.class"`. This enables fast 
 cloning of template instances without retraversing their DOMs looking for 
 literal attributes and text.
@@ -38,7 +37,7 @@ function child(parent, index) {
         parent.childNodes[index] ;
 }
 
-function descendant(path, root) {
+function getDescendant(path, root) {
     const p = path.split(/\./);
     return p.reduce(child, root);
 }
@@ -49,7 +48,7 @@ function toRenderer(renderer) {
     return new renderer.constructor(
         renderer.fn, 
         renderer.path, 
-        descendant(renderer.path, this),
+        getDescendant(renderer.path, this),
         renderer.name,
         renderer.set
     );
@@ -84,11 +83,50 @@ function render(renderer, observer, data) {
     return promise;
 }
 
-function TemplateRenderer(renderers, consts, fragment) {
-    this.consts    = consts;
-    this.fragment  = fragment;
+export default function TemplateRenderer(template) {
+    // TemplateRenderer may be called with a string id or a template element
+    const id = typeof template === 'string' ?
+        template :
+        identify(template) ;
+
+    // If the template is already compiled, clone the compiled consts and 
+    // renderers to this renderer and bind them to a new fragment
+    if (cache[id]) {
+        this.consts    = cache[id].consts;
+        this.content   = cache[id].content;
+        this.fragment  = cache[id].content.cloneNode(true);
+        this.renderers = cache[id].renderers.map(toRenderer, this.fragment);
+        this.sets      = nothing;
+        return;
+    }
+
+    template = typeof template === 'string' ?
+        document.getElementById(template) :
+        template ;
+
+    if (DEBUG) {
+        if (!template) {
+            throw new Error('Template id="' + id + '" not found in document');
+        }
+        
+        if (!template.content) {
+            throw new Error('Element id="' + id + '" is not a <template> (no content fragment)');
+        }
+        
+        if (template.dataset.data !== undefined) {
+            log('render', 'data-data attribute will be ignored', 'red');
+        }
+    }
+
+    // Pick up const names from data-name attributes, such that the attribute 
+    // data-hello makes the const ${ hello } available inside the template.
+    this.consts    = template.dataset ? Object.keys(template.dataset) : nothing ;
+    this.content   = template.content;
+    this.fragment  = template.content.cloneNode(true);
+    this.renderers = compileNode([], this.consts.join(', '), '', this.fragment);
     this.sets      = nothing;
-    this.renderers = renderers;
+
+    cache[id] = this;
 }
 
 assign(TemplateRenderer.prototype, {
@@ -133,62 +171,4 @@ assign(TemplateRenderer.prototype, {
             return this.fragment;
         });
     } 
-});
-
-export default function Template(template) {
-    if (DEBUG && !template.content) {
-        throw new Error('Template: template does not have a .content fragment');
-    }
-
-    const id = identify(template);
-    const fragment = template.content.cloneNode(true);
-
-    if (cache[id]) {
-        if (DEBUG) {
-            log('cached ', '#' + id + ' { data' + (cache[id].consts.length ? ', ' + cache[id].consts : cache[id].consts) + ' }');
-        }
-
-        // Return a clone of the template object with a cloned array of 
-        // renderers bound to the new fragment
-        return new TemplateRenderer(cache[id].renderers.map(toRenderer, fragment), cache[id].consts, fragment);
-    }
-
-    // Pick up const names from data-name attributes, such that the attribute 
-    // data-hello makes the const ${ hello } available inside the template.
-    const consts = template.dataset ?
-        Object.keys(template.dataset) :
-        nothing ;
-
-    // An attribute data-data is not allowed: the const ${ data } is reserved
-    // by the template and may not be overwritten.
-    if (DEBUG && consts.includes('data')) {
-        log('render', 'data-data attribute not allowed', 'red');
-    }
-
-    // Compile renderers, consts, path, node
-    const renderers = compileNode([], consts.join(', '), '', fragment);
-    return (cache[id] = new TemplateRenderer(renderers, consts, fragment));
-}
-
-Template.fromId = function(id) {
-    return Template(document.getElementById(id));
-};
-
-
-
-
-
-
-
-
-import library from '../modules/library.js';
-
-library.include = curry(function include(url, data) {
-    if (!/^#/.test(url)) {
-        throw new Error('Template: Only #fragment identifier currently supported as include() url ("' + url + '")');
-    }
-
-    return Template
-    .fromId(url.slice(1))
-    .render(data || {});
 });

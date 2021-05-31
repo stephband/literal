@@ -4,17 +4,19 @@ import overload   from '../../fn/modules/overload.js';
 import { toType } from '../../dom/modules/node.js';
 
 import library  from './library.js';
+import include  from './include.js';
 import { compileStringRender, compileValueRender, compileValues } from './compile.js';
-import Renderer, { AttributeRenderer, BooleanRenderer, TokensRenderer, TextRenderer } from './renderer.js';
+import { AttributeRenderer, BooleanRenderer, CheckedRenderer, TokensRenderer, ValueRenderer } from './renderer-attribute.js';
+import { ContentRenderer } from './renderer-content.js';
 import log      from './log.js';
 import decode   from './decode.js';
 
-import { isCustomElement, setAttribute, setBooleanProperty, setClass, setPropertyChecked, setPropertyValue } from './dom.js';
-
 const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
+const assign = Object.assign;
+
 const config = {
-    elements: {
+    /*elements: {
         // Global
         '*':        ['id', 'title', 'style', 'class', 'hidden', 'html'],
 
@@ -53,7 +55,7 @@ const config = {
         'svg':      ['viewbox'],
         'text':     ['x', 'y', 'dx', 'dy', 'text-anchor', 'transform'],
         'use':      ['x', 'y', 'href', 'transform']
-    },
+    },*/
 
     types: {
         // Form types
@@ -105,41 +107,25 @@ function compileTokens(renderers, vars, path, node, attribute) {
     renderers.push(new TokensRenderer(render, path, node, name));
 }
 
-function setValue(node, name, value) {
-    return setPropertyValue(node, value);
-}
-
 function compileValue(renderers, vars, path, node, attribute) {
     const string = attribute.value;
     if (!string || !rliteral.test(string)) { return; }
-    const name = 'value';
-    console.log('value  ', string);
     const render = compileValueRender(library, vars, string, 'arguments[1]');
-    renderers.push(new Renderer(render, path, node, name, setValue));
+    renderers.push(new ValueRenderer(render, path, node));
 }
 
-function compileValueString(renderers, vars, path, node) {
-    const string = node.getAttribute('value');
+function compileValueString(renderers, vars, path, node, attribute) {
+    const string = attribute.value;
     if (!string || !rliteral.test(string)) { return; }
     const render = compileStringRender(library, vars, string, 'arguments[1]');
-    renderers.push(new Renderer(render, path, node, 'value', setValue));
-}
-
-function setChecked(node, name, value) {
-    return setPropertyChecked(node, value);
+    renderers.push(new ValueRenderer(render, path, node));
 }
 
 function compileChecked(renderers, vars, path, node, attribute) {
     const string = attribute.value;
-    console.log('checked', string);
     if (!string || !rliteral.test(string)) { return; }
     const render = compileValueRender(library, vars, string, 'arguments[1]');
-    renderers.push(new Renderer(render, path, node, 'value', setChecked));
-}
-
-function setChildren(node, name, nodes) {
-    node.append.apply(node, nodes);
-    return nodes.length;
+    renderers.push(new CheckedRenderer(render, path, node));
 }
 
 const compileAttribute = overload((renderers, vars, path, node, attribute) => attribute.localName, {
@@ -155,12 +141,12 @@ const compileAttribute = overload((renderers, vars, path, node, attribute) => at
 
     // Special workaround attribute used in cases where ${} cannot be added
     // directly to the HTML content, such as in <tbody> or <tr>
-    'html': function compileClass(renderers, vars, path, node, attribute) {
-        const string = node.getAttribute('html');
-        if (!string) { return; }
-        node.removeAttribute('html');
-        const render = compileValues(library, vars, decode(string), 'arguments[1]');
-        renderers.push(new Renderer(render, path, node, 'children', setChildren));
+    'inner-content': function compileContent(renderers, vars, path, node, attribute) {
+        const string = attribute.value;
+        if (!string || !rliteral.test(string)) { return; }
+        node.removeAttribute(attribute.localName);
+        const render = compileValues(contentLibrary, vars, decode(string), 'arguments[1]');
+        renderers.push(new ContentRenderer(render, path, node));
     },
 
     'required': compileBoolean,
@@ -245,6 +231,10 @@ const compileElement = overload((renderers, vars, path, node) => node.tagName.to
 compileNode()
 **/
 
+const contentLibrary = assign({}, library, {
+    include: include
+});
+
 const compileNode = overload((renderers, vars, path, node) => toType(node), {
     'comment': noop,
 
@@ -262,8 +252,8 @@ const compileNode = overload((renderers, vars, path, node) => toType(node), {
         const string = node.nodeValue;
 
         if (string && rliteral.test(string)) {
-            const render = compileValues(library, vars, decode(string), 'arguments[1]');
-            renderers.push(new TextRenderer(render, path, node));
+            const render = compileValues(contentLibrary, vars, decode(string), 'arguments[1]');
+            renderers.push(new ContentRenderer(render, path, node));
         }
 
         return renderers;

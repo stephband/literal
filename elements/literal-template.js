@@ -25,7 +25,7 @@ data:
 /* Register customised built-in element <template is="literal-template"> */
 
 import element  from '../../dom/modules/element.js';
-import Template from '../modules/template.js';
+import TemplateRenderer from '../modules/renderer-template.js';
 
 export default element('template is="literal-template"', {
     construct: function() {
@@ -41,10 +41,10 @@ export default element('template is="literal-template"', {
         **/
         render: {
             value: function(data) {
-                const instance = Template(this);
+                const renderer = new TemplateRenderer(this);
                 ++this.instanceCount;
-                instance.render(data);
-                return instance.fragment;
+                renderer.render(data);
+                return renderer.fragment;
             }
         }
     }
