@@ -10,7 +10,6 @@ import matches         from '../../fn/modules/matches.js';
 import get             from '../../fn/modules/get-path.js';
 import slugify         from '../../fn/modules/slugify.js';
 import px, { em, rem } from './parse-length.js';
-//import Pipe            from './pipe.js';
 
 
 /**
@@ -66,8 +65,7 @@ const lib = {
     equals, 
     get, 
     keys: Object.keys,
-    matches, 
-    /*Pipe,*/ 
+    matches,
     px, 
     rem, 
     slugify, 

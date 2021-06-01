@@ -12,12 +12,12 @@ data when rendered:
 </template>
 ```
 
-Use an `<include-template>` to render this template into the document with some 
+Use an `<include-content>` to render this template into the document with some 
 data:
 
 ```html
 <p>Ooo matron, what a lovely package.json:</p>
-<include-template src="#log" data="./package.json"></include-template>
+<include-content src="#log" data="./package.json"></include-content>
 ```
 **/
 

@@ -1,5 +1,11 @@
 
-import Renderer from './renderer.js';
+import Renderer         from './renderer.js';
+import { isTextNode }   from './dom.js';
+
+
+const assign = Object.assign;
+const array  = [];
+
 
 /**
 ContentRenderer()
@@ -8,70 +14,98 @@ processing the literal content is more DOM content this renderer will insert
 that DOM after the text node.
 **/
 
-const assign = Object.assign;
-const array  = [];
-
-function removeNodes(firstNode, lastNode) {
-    let node = lastNode;
-    while (node !== firstNode) {
-        lastNode = node.previousSibling;
-        node.remove();
-        node = lastNode;
-    }
+function remove(count, node) {
+    // Todo: Express this more clearly
+    node.stop && node.stop();
+    count += (node.remove() || 1);
+    return count;
 }
 
-function setContent(renderer, node, nodes) {
-    // TODO: WE MUST ALSO UNBIND ANY SUB-TEMPLATES THAST WERE INCLUDED! HOW?
+function setContent(node, children, contents) {
+    let count = 0;
 
-    if (renderer.lastNode) {
-        removeNodes(renderer.node, renderer.lastNode);
-        renderer.lastNode = undefined;
+    // Fast out for the common case where there is but one text node to render, 
+    // for which we employ our registration node.
+    if (!contents.length || (contents.length === 1 && typeof contents[0] === 'string')) {      
+        count = children.reduce(remove, count);
+        node.nodeValue = contents[0] || '';
+        return ++count;
     }
 
-    var n = -1;
-    var string = '';
+    let c = -1, n = 0;
+    let content, child;
 
-    while (++n < nodes.length && typeof nodes[n] === 'string') {
-        string += nodes[n];
+    // Deal with first child if it is a string
+    if (typeof contents[0] === 'string') {
+        node.nodeValue = contents[0];
+        c = 0;
+    }
+    else {
+        node.nodeValue = ''; 
     }
 
-    // Change text in text node to initial string
-    node.nodeValue = string;
+    // Deal with rest of children
+    while (content = contents[++c]) {
+        // If content is a string look for the next text node
+        if (typeof content === 'string') {
+            // Throw away any non-text entries
+            while (n < children.length && !isTextNode(children[n])) {
+                count = children.splice(n, 1).reduce(remove, count);
+            }
 
-    // Fast out if there are no more nodes
-    if (n === nodes.length) {
-        return 1;
-    }
+            // If child exists fill it with content
+            if (children[n]) {
+                children[n].nodeValue = content;
+                ++count;
+            }
 
-    // Get the rest of the things, consolidating strings
-    array.length = 0;
-    string = '';
-    --n;
-    
-    while (++n < nodes.length) {
-        if (typeof nodes[n] === 'string') {
-            string += nodes[n];
+            // Otherwise create a text node with content
+            else {
+                child = document.createTextNode(content);                
+                // TODO: cant after ting tings
+                children[n - 1].after(child);
+                children.push(child);
+                ++count;
+            }
+
+            ++n;
         }
         else {
-            string && array.push(string);
-            array.push(nodes[n]);
-            string = '';
+            // Throw away any text nodes
+            while (n < children.length && isTextNode(children[n])) {
+                count = children.splice(n, 1).reduce(remove, count);
+            }
+
+            child = children[n];
+
+            if (!child) {
+                const text = document.createTextNode('');
+                (children[n - 1] || node).after(content.fragment, text);
+                children.push(content, text);
+                ++count;
+            }
+            else if (child.content !== content.content || child.data !== content.data) {
+                count = remove(count, children[n]);
+                (children[n - 1] || node).after(content.fragment);
+                children[n] = content;
+                ++count;
+            }
+
+            ++n;
         }
     }
 
-    array.push(document.createTextNode(string));
-    array.length && node.after.apply(node, array);
-    
-    // Keep a record of the last node for removal on next update
-    renderer.lastNode  = array[array.length - 1];
+    count = children.splice(n).reduce(remove, count);
 
-    // Return the number of nodes appended to DOM
-    return 1 + array.length;
+    // Return the number of contents appended to DOM
+    return count;
 }
 
 export function ContentRenderer(fn, path, node) {
     Renderer.apply(this, arguments);
-    this.update = (values) => setContent(this, node, values);
+    // The children collection is a collection of text nodes and TemplateRenderers
+    this.children = [];
+    this.update   = (contents) => setContent(this.node, this.children, contents);
 }
 
 assign(ContentRenderer.prototype, Renderer.prototype);

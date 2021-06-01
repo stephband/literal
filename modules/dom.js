@@ -14,6 +14,16 @@ const config = {
 };
 
 
+/**
+isTextNode(node)
+Returns `true` if `node` is a text node.
+**/
+
+export function isTextNode(node) {
+    return node.nodeType === 3;
+}
+
+
 /** 
 isCustomElement(node)
 **/

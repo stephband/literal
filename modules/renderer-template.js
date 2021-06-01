@@ -1,9 +1,11 @@
-
-import compileNode from './compile-node.js';
-import Observer    from './observer.js';
-import nothing     from '../../fn/modules/nothing.js';
-import identify    from '../../dom/modules/identify.js';
-import log         from './log.js';
+   
+import noop           from '../../fn/modules/noop.js';
+import nothing        from '../../fn/modules/nothing.js';
+import identify       from '../../dom/modules/identify.js';
+import compileNode    from './compile-node.js';
+import Observer       from './observer.js';
+import { isTextNode } from './dom.js';
+import log            from './log.js';
 
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
@@ -83,6 +85,32 @@ function render(renderer, observer, data) {
     return promise;
 }
 
+function prepareContent(content) {
+    // Due to the way HTML is usually written the vast majority of templates
+    // start an end with a text node, usually containing some white space
+    // and new lines. The renderer uses these as delimiters for the start and
+    // end of templated content, to enable removal even after templated content
+    // has mutated. If the template does NOT start or end with a text node, we
+    // should insert a couple of empty ones to enable this.
+    const first = content.childNodes[0];
+    const last  = content.childNodes[content.childNodes.length - 1];
+
+    if (!isTextNode(first)) {
+        content.prependChild(document.createTextNode(''));
+    }
+
+    if (isTextNode(last)) {
+        // Slice off space from the end of the last node and use it to create an
+        // end delimiter.
+        const space = /\s*$/.exec(last.nodeValue);
+        last.nodeValue = space.input.slice(0, space.index);
+        content.appendChild(document.createTextNode(space[0]));
+    }
+    else {
+        content.appendChild(document.createTextNode(''));
+    }
+}
+
 export default function TemplateRenderer(template) {
     // TemplateRenderer may be called with a string id or a template element
     const id = typeof template === 'string' ?
@@ -95,6 +123,8 @@ export default function TemplateRenderer(template) {
         this.consts    = cache[id].consts;
         this.content   = cache[id].content;
         this.fragment  = cache[id].content.cloneNode(true);
+        this.first     = this.fragment.childNodes[0];
+        this.last      = this.fragment.childNodes[this.fragment.childNodes.length - 1];
         this.renderers = cache[id].renderers.map(toRenderer, this.fragment);
         this.sets      = nothing;
         return;
@@ -118,11 +148,15 @@ export default function TemplateRenderer(template) {
         }
     }
 
+    prepareContent(template.content);
+
     // Pick up const names from data-name attributes, such that the attribute 
     // data-hello makes the const ${ hello } available inside the template.
     this.consts    = template.dataset ? Object.keys(template.dataset) : nothing ;
     this.content   = template.content;
     this.fragment  = template.content.cloneNode(true);
+    this.first     = this.fragment.childNodes[0];
+    this.last      = this.fragment.childNodes[this.fragment.childNodes.length - 1];
     this.renderers = compileNode([], this.consts.join(', '), '', this.fragment);
     this.sets      = nothing;
 
@@ -170,5 +204,29 @@ assign(TemplateRenderer.prototype, {
             logCounts(counts);
             return this.fragment;
         });
-    } 
+    },
+    
+    stop: function() {
+        // We must not empty .renderers, they are compiled and cached and may 
+        // be used again. We can stop listening to sets and make .render() a
+        // noop.
+        this.sets.stop();
+        this.render = noop;
+    },
+    
+    remove: function() {
+        let count = 0;
+        // Remove this.first and this.last and all nodes in between
+        let node = this.last;
+
+        while (node !== this.first) {
+            const previous = node.previousSibling;
+            node.remove();
+            ++count;
+            node = previous;
+        }
+
+        this.first.remove();
+        return ++count;
+    }
 });

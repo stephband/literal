@@ -35,7 +35,7 @@
     <link rel="stylesheet" href="../bolt/css/label.css" />
     <link rel="stylesheet" href="../bolt/css/block.css" />
     <link rel="stylesheet" href="../bolt/css/debug.css" />
-    <link rel="stylesheet" href="./elements/include-template.css" />
+    <link rel="stylesheet" href="./elements/include-content.css" />
     
     <template is="literal-template">
         <h2>${ data.name }</h2>
@@ -113,19 +113,19 @@
         </ul-->
     </header>
 
-    <h3 class="text-03"><code>&lt;include-template&gt;</code> <span class="test-count">(1 test)</span></h3>
+    <h3 class="text-03"><code>&lt;include-content&gt;</code> <span class="test-count">(1 test)</span></h3>
 
-    <include-template>
-        <p>✓ Default content of an <code>&lt;include-template&gt;</code> element. Should warn about missing <code>src</code> attribute in the console.</p>
-    </include-template>
+    <include-content>
+        <p>✓ Default content of an <code>&lt;include-content&gt;</code> element. Should warn about missing <code>src</code> attribute in the console.</p>
+    </include-content>
 
     <hr/>
 
-    <h3 class="text-03"><code>&lt;include-template src="#template"&gt;</code> <span class="test-count">(5 tests)</span></h3>
+    <h3 class="text-03"><code>&lt;include-content src="#template"&gt;</code> <span class="test-count">(5 tests)</span></h3>
 
-    <include-template src="#nonexistant">
-        <p>✓ Default content of an <code>&lt;include-template src="#nonexistant"&gt;</code> element. Should warn about missing source template in the console.</p>
-    </include-template>
+    <include-content src="#nonexistant">
+        <p>✓ Default content of an <code>&lt;include-content src="#nonexistant"&gt;</code> element. Should warn about missing source template in the console.</p>
+    </include-content>
 
     <hr/>
 
@@ -133,82 +133,82 @@
         <p>✓ Content in a standard <code>&lt;template&gt;</code> element.</p>
     </template>
 
-    <include-template src="#standard-template">
-        <p>✗ Default content of an <code>&lt;include-template src="#standard-template"&gt;</code> element.</p>
-    </include-template>
+    <include-content src="#standard-template">
+        <p>✗ Default content of an <code>&lt;include-content src="#standard-template"&gt;</code> element.</p>
+    </include-content>
     
     <hr/>
     
-    <include-template src="#standard-template" data="./nonexistant.json">
-        <p>✗ Default content of an <code>&lt;include-template src="#standard-template" data="nonexistant"&gt;</code> element.</p>
-    </include-template>
+    <include-content src="#standard-template" data="./nonexistant.json">
+        <p>✗ Default content of an <code>&lt;include-content src="#standard-template" data="nonexistant"&gt;</code> element.</p>
+    </include-content>
 
     <hr/>
 
-    <include-template src="#standard-template" data="./test-bad.json">        
-        <p>✗ Default content of an <code>&lt;include-template src="#standard-template" data="./test-bad.json"&gt;</code> element pointing to mal-formed JSON data. Error logged in the console.</p>
-    </include-template>
+    <include-content src="#standard-template" data="./test-bad.json">        
+        <p>✗ Default content of an <code>&lt;include-content src="#standard-template" data="./test-bad.json"&gt;</code> element pointing to mal-formed JSON data. Error logged in the console.</p>
+    </include-content>
 
     <hr/>
 
-    <include-template src="#standard-template" data="./test.json">        
-        <p>✗ Default content of an <code>&lt;include-template src="#standard-template" data="./test.json"&gt;</code> element.</p>
-    </include-template>
+    <include-content src="#standard-template" data="./test.json">        
+        <p>✗ Default content of an <code>&lt;include-content src="#standard-template" data="./test.json"&gt;</code> element.</p>
+    </include-content>
 
     <hr/>
 
-    <h3 class="text-03"><code>&lt;include-template src="#literal-template"&gt;</code> <span class="test-count">(8 tests)</span></h3>
+    <h3 class="text-03"><code>&lt;include-content src="#literal-template"&gt;</code> <span class="test-count">(8 tests)</span></h3>
 
     <template is="literal-template" id="literal-template">
         <p>✓ Content in a <code>&lt;template is="literal-template"&gt;</code> element, with rendered data:</p>
         <pre><code>${ data }</code></pre>
     </template>
     
-    <include-template src="#literal-template" data="./nonexistant.json">
-        <p>✓ Default content of an <code>&lt;include-template src="#literal-template" data="nonexistant"&gt;</code> element.</p>
-    </include-template>
+    <include-content src="#literal-template" data="./nonexistant.json">
+        <p>✓ Default content of an <code>&lt;include-content src="#literal-template" data="nonexistant"&gt;</code> element.</p>
+    </include-content>
 
     <hr/>
 
-    <include-template src="#literal-template" data="./test-bad.json">
-        <p>✓ Default content of an <code>&lt;include-template src="#literal-template" data="test-bad.json"&gt;</code> element.</p>
-    </include-template>
+    <include-content src="#literal-template" data="./test-bad.json">
+        <p>✓ Default content of an <code>&lt;include-content src="#literal-template" data="test-bad.json"&gt;</code> element.</p>
+    </include-content>
 
     <hr/>
     
-    <include-template src="#literal-template" data="./test-bad.js">
-        <p>✓ Default content of an <code>&lt;include-template src="#literal-template" data="test-bad.js"&gt;</code> element.</p>
-    </include-template>
+    <include-content src="#literal-template" data="./test-bad.js">
+        <p>✓ Default content of an <code>&lt;include-content src="#literal-template" data="test-bad.js"&gt;</code> element.</p>
+    </include-content>
 
     <hr/>
 
-    <include-template src="#literal-template">
-        <p>✓ Default content of an <code>&lt;include-template src="#literal-template"&gt;</code> element.</p>
-    </include-template>
+    <include-content src="#literal-template">
+        <p>✓ Default content of an <code>&lt;include-content src="#literal-template"&gt;</code> element.</p>
+    </include-content>
 
     <hr/>
 
-    <include-template src="#literal-template" data="./test.json">        
-        <p>✗ Default content of an <code>&lt;include-template src="#literal-template" data="./test.json"&gt;</code> element.</p>
-    </include-template>
+    <include-content src="#literal-template" data="./test.json">        
+        <p>✗ Default content of an <code>&lt;include-content src="#literal-template" data="./test.json"&gt;</code> element.</p>
+    </include-content>
 
     <hr/>
 
-    <include-template src="#literal-template" data="./test.js">        
-        <p>✗ Default content of an <code>&lt;include-template src="#literal-template" data="./test.js"&gt;</code> element.</p>
-    </include-template>
+    <include-content src="#literal-template" data="./test.js">        
+        <p>✗ Default content of an <code>&lt;include-content src="#literal-template" data="./test.js"&gt;</code> element.</p>
+    </include-content>
 
     <hr/>
 
-    <include-template src="#literal-template" data="./test.js#named">        
-        <p>✗ Default content of an <code>&lt;include-template src="#literal-template" data="./test.js#named"&gt;</code> element.</p>
-    </include-template>
+    <include-content src="#literal-template" data="./test.js#named">        
+        <p>✗ Default content of an <code>&lt;include-content src="#literal-template" data="./test.js#named"&gt;</code> element.</p>
+    </include-content>
 
     <hr/>
 
-    <include-template src="#literal-template" data="./test.js#fn('string',1,null)">        
-        <p>✗ Default content of an <code>&lt;include-template src="#literal-template" data="./test.js#fn('string', 1, null)"&gt;</code> element.</p>
-    </include-template>
+    <include-content src="#literal-template" data="./test.js#fn('string',1,null)">        
+        <p>✗ Default content of an <code>&lt;include-content src="#literal-template" data="./test.js#fn('string', 1, null)"&gt;</code> element.</p>
+    </include-content>
 
     <hr/>
 
@@ -246,7 +246,7 @@
         <p data-thing="${ '✓ data-thing attribute has literal content' }">This paragraph has a <code>data-thing</code> attribute.</p>
     </template>
 
-    <include-template src="#values-template"></include-template>
+    <include-content src="#values-template"></include-content>
 
     <hr/>
 
@@ -264,7 +264,7 @@
         </div>
     </template>
 
-    <include-template src="#include-standard-template"></include-template>
+    <include-content src="#include-standard-template"></include-content>
 
     <hr/>
 
@@ -281,11 +281,11 @@
         </div>
     </template>
     
-    <include-template src="#include-literal-template"></include-template>
+    <include-content src="#include-literal-template"></include-content>
     
     <hr/>
     
-    <include-template src="#include-literal-template" data="./test.json"></include-template>
+    <include-content src="#include-literal-template" data="./test.json"></include-content>
     
     <hr/>
 
@@ -296,15 +296,15 @@
         <p>Time since load: ${ parseInt(data.time, 10) }</p>
     </template>
 
-    <include-template src="#clock-template" data="./test-clock.js"></include-template>
+    <include-content src="#clock-template" data="./test-clock.js"></include-content>
     
     <hr/>
 
-    <include-template src="#clock-template" data="./test-clock.js"></include-template>
+    <include-content src="#clock-template" data="./test-clock.js"></include-content>
 
     <hr/>
 
-    <!--template is="literal-template" id="even-template">
+    <template is="literal-template" id="even-template">
         <p>Even: ${ parseInt(data.time, 10) }</p>
     </template>
 
@@ -316,9 +316,9 @@
         ${ include(parseInt(data.time, 10) % 2 === 0 ? '#even-template' : '#odd-template', data) }
     </template>
 
-    <include-template src="#evenodd-template" data="./test-clock.js"></include-template>
+    <include-content src="#evenodd-template" data="./test-clock.js"></include-content>
 
-    <hr/-->
+    <hr/>
 
     <script type="module">
         import "./module.js";

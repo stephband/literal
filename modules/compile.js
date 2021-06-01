@@ -8,6 +8,8 @@ import log          from './log.js';
 
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
+const assign = Object.assign;
+
 const illegals = [
     // Reserved by literal
     "render",
@@ -82,6 +84,13 @@ const reduce = (values) => values.reduce((output, value) => (
 
 const isPromise = (object) => (object && typeof object === 'object' && object.then);
 
+
+
+
+
+
+/* TODO: Refactor this lot because promises already resolved */
+
 function stringify(value, string, render) {
     return value && typeof value === 'object' ? (
         // If expression returns a promise
@@ -155,6 +164,11 @@ function valueify(values, value) {
     }
 }
 
+/* -----   */
+
+
+
+
 function renderValuesX(args) {
     const [strings] = args;
     const values = [];
@@ -203,6 +217,17 @@ function sanitiseVars(vars) {
     return names.join(', ');
 }
 
+function Context(render) {
+    this.render = render;
+}
+
+assign(Context.prototype, {
+    resolve: function() {
+        // Wait for user-side promises to resolve before sending to render
+        return Promise.all(arguments).then(this.render);
+    }
+});
+
 export default function compile(scope, varstring, string, id, consts = 'data', render = renderString) {
     if (typeof string !== 'string') {
         throw new Error('Template is not a string');
@@ -215,15 +240,11 @@ export default function compile(scope, varstring, string, id, consts = 'data', r
 
     // Alphabetise and format
     const vars = varstring && sanitiseVars(varstring) ;
-
-    // Make it impossible to override render
-    scope.render = render;
-
-    const self = this;
+    const context = new Context(render);
     const code = '\n'
         + (id ? indent + '// Render ' + id + '\n' : '')
         + (vars ? indent + 'const { ' + vars + ' } = ' + consts + ';\n' : '')
-        + indent + 'return render`' + string + '`;\n';
+        + indent + 'return this.resolve`' + string + '`;\n';
 
     var fn;
 
@@ -247,7 +268,7 @@ export default function compile(scope, varstring, string, id, consts = 'data', r
         }
 
         // Where this is global, neuter it
-        return fn.apply(this === self ? {} : this, arguments);
+        return fn.apply(context, arguments);
     };
 }
 

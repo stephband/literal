@@ -6,6 +6,7 @@ import { toType } from '../../dom/modules/node.js';
 import library  from './library.js';
 import include  from './include.js';
 import { compileStringRender, compileValueRender, compileValues } from './compile.js';
+import compileContent from './compile-content.js';
 import { AttributeRenderer, BooleanRenderer, CheckedRenderer, TokensRenderer, ValueRenderer } from './renderer-attribute.js';
 import { ContentRenderer } from './renderer-content.js';
 import log      from './log.js';
@@ -145,7 +146,7 @@ const compileAttribute = overload((renderers, vars, path, node, attribute) => at
         const string = attribute.value;
         if (!string || !rliteral.test(string)) { return; }
         node.removeAttribute(attribute.localName);
-        const render = compileValues(contentLibrary, vars, decode(string), 'arguments[1]');
+        const render = compileContent(contentLibrary, vars, decode(string), 'arguments[1]');
         renderers.push(new ContentRenderer(render, path, node));
     },
 
@@ -252,7 +253,7 @@ const compileNode = overload((renderers, vars, path, node) => toType(node), {
         const string = node.nodeValue;
 
         if (string && rliteral.test(string)) {
-            const render = compileValues(contentLibrary, vars, decode(string), 'arguments[1]');
+            const render = compileContent(contentLibrary, vars, decode(string), 'arguments[1]');
             renderers.push(new ContentRenderer(render, path, node));
         }
 
