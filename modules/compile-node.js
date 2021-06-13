@@ -3,61 +3,19 @@ import noop       from '../../fn/modules/noop.js';
 import overload   from '../../fn/modules/overload.js';
 import { toType } from '../../dom/modules/node.js';
 
-import library  from './library.js';
-import include  from './include.js';
-import { compileStringRender, compileValueRender, compileValues } from './compile.js';
-import compileContent from './compile-content.js';
-import { AttributeRenderer, BooleanRenderer, CheckedRenderer, TokensRenderer, ValueRenderer } from './renderer-attribute.js';
-import { ContentRenderer } from './renderer-content.js';
+import AttributeRenderer from './renderers/attribute-renderer.js';
+import BooleanRenderer   from './renderers/boolean-renderer.js';
+import CheckedRenderer   from './renderers/checked-renderer.js';
+import ContentRenderer   from './renderers/content-renderer.js';
+import TokensRenderer    from './renderers/tokens-renderer.js';
+import ValueRenderer, { StringValueRenderer } from './renderers/value-renderer.js';
+
 import log      from './log.js';
 import decode   from './decode.js';
 
 const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
-const assign = Object.assign;
-
 const config = {
-    /*elements: {
-        // Global
-        '*':        ['id', 'title', 'style', 'class', 'hidden', 'html'],
-
-        // HTML
-        'a':        ['href'],
-        'audio':    ['src'],
-        'button':   ['disabled'],
-        'command':  ['disabled'],
-        'form':     ['name', 'method', 'action'],
-        'fieldset': ['name', 'disabled'],
-        'img':      ['alt', 'src'],
-        'input':    ['name', 'disabled'],
-        'keygen':   ['name', 'disabled'],
-        'label':    ['for'],
-        'link':     ['href'],
-        'meta':     ['name', 'content'],
-        'meter':    ['min', 'max', 'low', 'high', 'value'],
-        'option':   ['disabled', 'value'],
-        'optgroup': ['disabled'],
-        'output':   ['name', 'for', 'value'],
-        'param':    ['name'],
-        'progress': ['max', 'value'],
-        'select':   ['disabled', 'name'],
-        'textarea': ['disabled', 'name'],
-        'time':     ['datetime'],
-
-        // SVG
-        'circle':   ['cx', 'cy', 'r', 'transform'],
-        'ellipse':  ['cx', 'cy', 'rx', 'ry', 'transform'],
-        'g':        ['transform'],
-        'line':     ['x1', 'x2', 'y1', 'y2', 'transform'],
-        'path':     ['d', 'transform'],
-        'polygon':  ['points', 'transform'],
-        'polyline': ['points', 'transform'],
-        'rect':     ['x', 'y', 'width', 'height', 'rx', 'ry', 'transform'],
-        'svg':      ['viewbox'],
-        'text':     ['x', 'y', 'dx', 'dy', 'text-anchor', 'transform'],
-        'use':      ['x', 'y', 'href', 'transform']
-    },*/
-
     types: {
         // Form types
         'button':   ['name', 'value'],
@@ -88,45 +46,39 @@ function compileAttr(renderers, vars, path, node, attribute) {
     const string = attribute.value;
     if (!string || !rliteral.test(string)) { return; }
     const name = attribute.localName;
-    const render = compileValueRender(library, vars, string, 'arguments[1]');
-    renderers.push(new AttributeRenderer(render, path, node, name));
+    renderers.push(new AttributeRenderer(vars, string, node, path, name));
 }
 
 function compileBoolean(renderers, vars, path, node, attribute) {
     const string = attribute.value;
     if (!string || !rliteral.test(string)) { return; }
     const name = attribute.localName;
-    const render = compileValueRender(library, vars, string, 'arguments[1]');
-    renderers.push(new BooleanRenderer(render, path, node, name));
+    renderers.push(new BooleanRenderer(vars, string, node, path, name));
 }
 
 function compileTokens(renderers, vars, path, node, attribute) {
     const string = attribute.value;
     if (!string || !rliteral.test(string)) { return; }
     const name = attribute.localName;
-    const render = compileValues(library, vars, string, 'arguments[1]');
-    renderers.push(new TokensRenderer(render, path, node, name));
+    renderers.push(new TokensRenderer(vars, string, node, path, name));
 }
 
 function compileValue(renderers, vars, path, node, attribute) {
     const string = attribute.value;
     if (!string || !rliteral.test(string)) { return; }
-    const render = compileValueRender(library, vars, string, 'arguments[1]');
-    renderers.push(new ValueRenderer(render, path, node));
+    renderers.push(new ValueRenderer(vars, string, node, path));
 }
 
 function compileValueString(renderers, vars, path, node, attribute) {
     const string = attribute.value;
     if (!string || !rliteral.test(string)) { return; }
-    const render = compileStringRender(library, vars, string, 'arguments[1]');
-    renderers.push(new ValueRenderer(render, path, node));
+    renderers.push(new StringValueRenderer(vars, string, node, path));
 }
 
 function compileChecked(renderers, vars, path, node, attribute) {
     const string = attribute.value;
     if (!string || !rliteral.test(string)) { return; }
-    const render = compileValueRender(library, vars, string, 'arguments[1]');
-    renderers.push(new CheckedRenderer(render, path, node));
+    renderers.push(new CheckedRenderer(vars, string, node, path));
 }
 
 const compileAttribute = overload((renderers, vars, path, node, attribute) => attribute.localName, {
@@ -142,12 +94,11 @@ const compileAttribute = overload((renderers, vars, path, node, attribute) => at
 
     // Special workaround attribute used in cases where ${} cannot be added
     // directly to the HTML content, such as in <tbody> or <tr>
-    'inner-content': function compileContent(renderers, vars, path, node, attribute) {
+    'inner-content': function(renderers, vars, path, node, attribute) {
         const string = attribute.value;
         if (!string || !rliteral.test(string)) { return; }
         node.removeAttribute(attribute.localName);
-        const render = compileContent(contentLibrary, vars, decode(string), 'arguments[1]');
-        renderers.push(new ContentRenderer(render, path, node));
+        renderers.push(new ContentRenderer(vars, decode(string), node, path));
     },
 
     'required': compileBoolean,
@@ -158,10 +109,11 @@ const compileAttribute = overload((renderers, vars, path, node, attribute) => at
         //'number':    compileValueNumber,
         //'range':     compileValueNumber,
         //'select-multiple': compileValueArray,
-        'text':      compileValueString,
-        'search':    compileValueString,
-        'default':   compileValue,
-        'undefined': compileAttr
+        'text':       compileValueString,
+        'search':     compileValueString,
+        'select-one': compileValueString,
+        'default':    compileValue,
+        'undefined':  compileAttr
     }),
 
     'default':  compileAttr
@@ -170,6 +122,7 @@ const compileAttribute = overload((renderers, vars, path, node, attribute) => at
 function compileAttributes(renderers, vars, path, node) {
     const attributes = node.attributes;
     var n = -1, attribute;
+    // Todo: order attributes so that min, max, value come last?
     while (attribute = attributes[++n]) {
         compileAttribute(renderers, vars, path, node, attribute);
     }
@@ -193,7 +146,7 @@ function compileChildren(renderers, vars, path, node) {
 
 function compileType(renderers, vars, path, node) {
     // Compile element type attributes
-    const type  = node.type;
+    const type = node.type;
     if (!type) { return; }
     const names = config.types[type] || config.types['default'];
     compileAttributes(renderers, vars, path, node, names);
@@ -213,17 +166,17 @@ const compileElement = overload((renderers, vars, path, node) => node.tagName.to
         // Todo:
         // Hang on... is this still true given that the renderer.set negociates
         // the way an attribute is rendered??
-        const tag = node.getAttribute('is') || node.tagName.toLowerCase();
+        /*const tag = node.getAttribute('is') || node.tagName.toLowerCase();
         if (/-/.test(tag)) {
             window.customElements.whenDefined(node.tagName).then(() => {
                 compileAttributes(renderers, vars, path, node);
                 compileType(renderers, vars, path, node);
             });
         }
-        else {
+        else {*/
             compileAttributes(renderers, vars, path, node);
             compileType(renderers, vars, path, node);
-        }
+        /*}*/
     }
 });
 
@@ -231,10 +184,6 @@ const compileElement = overload((renderers, vars, path, node) => node.tagName.to
 /** 
 compileNode()
 **/
-
-const contentLibrary = assign({}, library, {
-    include: include
-});
 
 const compileNode = overload((renderers, vars, path, node) => toType(node), {
     'comment': noop,
@@ -253,8 +202,7 @@ const compileNode = overload((renderers, vars, path, node) => toType(node), {
         const string = node.nodeValue;
 
         if (string && rliteral.test(string)) {
-            const render = compileContent(contentLibrary, vars, decode(string), 'arguments[1]');
-            renderers.push(new ContentRenderer(render, path, node));
+            renderers.push(new ContentRenderer(vars, decode(string), node, path));
         }
 
         return renderers;

@@ -23,8 +23,8 @@ export default overload(toType, {
     // Convert NaN to empty string and Infinity to ∞ symbol
     'number': (value) => (
         Number.isNaN(value) ? '' :
-            Number.isFinite(value) ? value + '' :
-            value < 0 ? '-∞' : '∞'
+        Number.isFinite(value) ? value + '' :
+        value < 0 ? '-∞' : '∞'
     ),
 
     'string': id,
@@ -33,7 +33,7 @@ export default overload(toType, {
 
     'undefined': (value) => '',
 
-    'object': overload((object) => (object ? object.constructor.name : 'null'), {
+    'object': overload((object) => (object && object.constructor.name), {
         'RegExp':  (object) => object.source,
         'null':    () => '',
         'default': (object) => JSON.stringify(object, null, 2)

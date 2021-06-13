@@ -1,14 +1,8 @@
 
-/* Quick browser version */
-
-import id           from '../../fn/modules/id.js';
 import compileAsync from '../../fn/modules/compile-async.js';
-import toText       from './to-text.js';
 import log          from './log.js';
 
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
-
-const assign = Object.assign;
 
 const illegals = [
     // Reserved by literal
@@ -72,134 +66,6 @@ function logError(source, template, e) {
 
 
 /**
-render(array, param)
-**/
-
-const reduce = (values) => values.reduce((output, value) => (
-    // Ignore undefined and empty strings
-    value === '' || value === undefined ?
-        output :
-        output + value
-));
-
-const isPromise = (object) => (object && typeof object === 'object' && object.then);
-
-
-
-
-
-
-/* TODO: Refactor this lot because promises already resolved */
-
-function stringify(value, string, render) {
-    return value && typeof value === 'object' ? (
-        // If expression returns a promise
-        value.then ?
-            value.then((value) => (
-                string === '' ?
-                    value :
-                    string + value
-            )) :
-        // If expression returns an array with promises
-        value.find ?
-            value.find(isPromise) ?
-                // Resolve promises and join to string
-                Promise
-                .all(value)
-                .then((strings) => (
-                    string === '' ?
-                        reduce(strings.map(render)) :
-                        string + reduce(strings.map(render))
-                )) :
-            // Otherwise join to string immediately
-            string === '' ? 
-                reduce(value.map(render)) :
-                string + reduce(value.map(render)) :
-        // pass any other value to render
-        string === '' ?
-            render(value) :
-            string + render(value)
-    ) :
-    string === '' ?
-        render(value) :
-        string + render(value) ;
-}
-
-function renderString(strings, ...values) {
-    return Promise.all(strings.map((string, i) => (
-        i < values.length ?
-            // Strings 0 to n - 1
-            stringify(values[i], string, toText) :
-            // Final string
-            string === '' ? undefined :
-            string
-    )))
-    .then(reduce);
-}
-
-function renderValue(strings, ...values) {
-    return Promise.all(strings.map((string, i) => (
-        //console.log(typeof string, string),
-        i < values.length ?
-            // Strings 0 to n - 1
-            stringify(values[i], string, id) :
-            // Final string
-            string === '' ? undefined :
-            string
-    )))
-    .then(reduce);
-}
-
-function valueify(values, value) {
-    // If value is an array, it may have come from on include and be a set of 
-    // DOM nodes, ... right ? This is probably not the best way to detect that.
-    if (value instanceof Node) {
-        values.push(value);
-    }
-    else if (value && typeof value === 'object' && value.length !== undefined) {
-        values.push.apply(values, value);
-    }
-    else {
-        values.push(toText(value));
-    }
-}
-
-/* -----   */
-
-
-
-
-function renderValuesX(args) {
-    const [strings] = args;
-    const values = [];
-    var n = -1 ;
-    var value;
-
-    while (strings[++n] !== undefined) {
-        // Don't strip spaces, but do ignore empty strings
-        if (strings[n]) {
-            values.push(strings[n]);
-        }
-
-        // If a value is more than nothing push it in
-        value = args[n + 1];
-        if (value !== undefined && value !== '') {
-            valueify(values, value);
-        }
-    }
-
-    return values;
-}
-
-function renderValues(strings) {    
-    return Promise
-    .all(arguments)
-    .then(renderValuesX)
-    .then((values) => values.flat(8));
-}
-
-
-/**
 compile(scope, params, template)
 Returns a function that renders a literal template.
 **/
@@ -217,18 +83,7 @@ function sanitiseVars(vars) {
     return names.join(', ');
 }
 
-function Context(render) {
-    this.render = render;
-}
-
-assign(Context.prototype, {
-    resolve: function() {
-        // Wait for user-side promises to resolve before sending to render
-        return Promise.all(arguments).then(this.render);
-    }
-});
-
-export default function compile(scope, varstring, string, id, consts = 'data', render = renderString) {
+export default function compile(scope, varstring, string, id, consts = 'data') {
     if (typeof string !== 'string') {
         throw new Error('Template is not a string');
     }
@@ -240,46 +95,34 @@ export default function compile(scope, varstring, string, id, consts = 'data', r
 
     // Alphabetise and format
     const vars = varstring && sanitiseVars(varstring) ;
-    const context = new Context(render);
+    //const context = new Context(render);
     const code = '\n'
         + (id ? indent + '// Render ' + id + '\n' : '')
         + (vars ? indent + 'const { ' + vars + ' } = ' + consts + ';\n' : '')
         + indent + 'return this.resolve`' + string + '`;\n';
 
-    var fn;
+    if (DEBUG) {
+        try {
+            logCompile(id ? id : key.trim().length > 45 ? '`' + key.trim().slice(0, 33).replace(/ *\n */g, ' ') + ' ... ' +  key.trim().slice(-8).replace(/ *\n */g, ' ') + '`' : '`' + key.trim().replace(/ *\n */g, ' ') + '`', scope, 'data' + (vars ? ', ' + vars : ''));
+    
+            // Allow passing nothing to a render function by defaulting data to an 
+            // empty object. Compiled function cannot be given a name as it will 
+            // appear in template scope. 
+            // Todo: test does outer function's name 'anonymous', which appears to 
+            // be automatic, appear in scope?
+            const fn = compileAsync(scope, 'data = {}', code);
 
-    try {
-        logCompile(id ? id : key.trim().length > 45 ? '`' + key.trim().slice(0, 33).replace(/ *\n */g, ' ') + ' ... ' +  key.trim().slice(-8).replace(/ *\n */g, ' ') + '`' : '`' + key.trim().replace(/ *\n */g, ' ') + '`', scope, 'data' + (vars ? ', ' + vars : ''));
-
-        // Allow passing nothing to a render function by defaulting data to an 
-        // empty object. Compiled function cannot be given a name as it will 
-        // appear in template scope. Todo: test does outer function's name 'anonymous',
-        // which appears to be automatic, appear in scope?
-        fn = compileAsync(scope, 'data = {}', code);
-    }
-    catch(e) {
-        logError(key, code, e);
-        throw e;
-    }
-
-    return cache[key] = function literal() {
-        if (DEBUG) {
-            log('render ', id ? id : key.trim().length > 45 ? '`' + key.trim().slice(0, 33).replace(/ *\n */g, ' ') + ' ... ' +  key.trim().slice(-8).replace(/ *\n */g, ' ') + '`' : '`' + key.trim().replace(/ *\n */g, ' ') + '`', 'orange');
+            return cache[key] = function literal() {
+                log('render ', id ? id : key.trim().length > 45 ? '`' + key.trim().slice(0, 33).replace(/ *\n */g, ' ') + ' ... ' +  key.trim().slice(-8).replace(/ *\n */g, ' ') + '`' : '`' + key.trim().replace(/ *\n */g, ' ') + '`', 'orange');    
+                // Where this is global, neuter it
+                return fn.apply(this, arguments);
+            };
         }
+        catch(e) {
+            logError(key, code, e);
+            throw e;
+        }
+    }
 
-        // Where this is global, neuter it
-        return fn.apply(context, arguments);
-    };
-}
-
-export function compileStringRender(scope, varstring, string, consts) {
-    return compile(scope, varstring, string, null, consts, renderString);
-}
-
-export function compileValueRender(scope, varstring, string, consts) {
-    return compile(scope, varstring, string, null, consts, renderValue);
-}
-
-export function compileValues(scope, varstring, string, consts) {
-    return compile(scope, varstring, string, null, consts, renderValues);
+    return cache[key] = compileAsync(scope, 'data = {}', code);
 }

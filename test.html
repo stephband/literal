@@ -100,6 +100,11 @@
             margin-top: 3rem;
             margin-bottom: 1.5rem;
         }
+        
+        input + hr,
+        select + hr {
+            margin-top: 0.75rem;
+        }
     </style>
 </head>
 
@@ -244,6 +249,10 @@
 
         <p>Data attributes:</p>
         <p data-thing="${ '✓ data-thing attribute has literal content' }">This paragraph has a <code>data-thing</code> attribute.</p>
+
+        <p>Value property:</p>
+        <input type="text" value="${ 'hello' }" />
+        <input type="number" value="  ${ 5 } " />
     </template>
 
     <include-content src="#values-template"></include-content>
@@ -290,7 +299,7 @@
     <hr/>
 
 
-    <h3 class="text-03">Live binding <span class="test-count">(3 tests)</span></h3>
+    <h3 class="text-03">Live binding <span class="test-count">(4 tests)</span></h3>
 
     <template is="literal-template" id="clock-template">
         <p>Time since load: ${ parseInt(data.time, 10) }</p>
@@ -317,6 +326,59 @@
     </template>
 
     <include-content src="#evenodd-template" data="./test-clock.js"></include-content>
+
+    <hr/>
+
+    <template is="literal-template" id="numbers-template">
+        <input type="number" value="${ parseInt(data.time, 10) }" />
+        <input type="range" min="0" max="10" value="${ parseInt(data.time, 10) }" />
+
+        <label>Checked on odd</label>
+        <input type="checkbox" checked="${ parseInt(data.time, 10) % 2 }" />
+        
+        <label>Checked on 1</label>
+        <input type="checkbox" checked="${ parseInt(data.time, 10) }" value="1" />
+
+        <label>Checked when equal to value 1-9</label>
+        <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="1" />
+        <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="2" />
+        <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="3" />
+        <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="4" />
+        <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="5" />
+        <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="6" />
+        <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="7" />
+        <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="8" />
+        <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="9" />
+
+        <label>Selected when equal to value 1-9</label>
+        <select value="${ parseInt(data.time, 10) }">
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+            <option value="4">Four</option>
+            <option value="5">Five</option>
+            <option value="6">Six</option>
+            <option value="7">Seven</option>
+            <option value="8">Eight</option>
+            <option value="9">Nine</option>
+        </select>
+    </template>
+    
+    <include-content src="#numbers-template" data="./test-clock.js"></include-content>
+
+    <hr/>
+
+    <h3 class="text-03">Mapped include() <span class="test-count">(1 test)</span></h3>
+
+    <template is="literal-template" id="title-template">
+        <p>${ data.title }</p>
+    </template>
+
+    <template is="literal-template" id="objects-template">
+        <div>Before ${ data.map(include('#title-template')) } After</div>
+    </template>
+
+    <include-content src="#objects-template" data="./test-objects.json"></include-content>
 
     <hr/>
 

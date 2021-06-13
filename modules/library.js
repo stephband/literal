@@ -1,9 +1,9 @@
 
 /* Scope functions */
 
-import overload        from '../../fn/modules/overload.js';
-import { addDate }     from '../../fn/modules/date.js';
-import { addTime }     from '../../fn/modules/time.js';
+//import overload        from '../../fn/modules/overload.js';
+//import { addDate }     from '../../fn/modules/date.js';
+//import { addTime }     from '../../fn/modules/time.js';
 import by              from '../../fn/modules/by.js';
 import equals          from '../../fn/modules/equals.js';
 import matches         from '../../fn/modules/matches.js';
@@ -37,7 +37,7 @@ seconds:
 ${ pipe(add('-01:00:20'), data.time) }
 ```
 **/
-
+/*
 function toAddType(n) {
     const type = typeof n;
     // Where it's a string figure out if it looks like a date or time
@@ -47,8 +47,10 @@ function toAddType(n) {
         'string' :
     type;
 }
+*/
 
 const lib = {
+    /*
     add: overload(toAddType, {
         'date': addDate,
         'time': addTime,
@@ -58,6 +60,7 @@ const lib = {
             throw new Error('add(value) does not accept values of type ' + typeof n);
         }
     }),
+    */
 
     by,
     entries: Object.entries, 

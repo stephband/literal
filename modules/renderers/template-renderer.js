@@ -1,11 +1,11 @@
    
-import noop           from '../../fn/modules/noop.js';
-import nothing        from '../../fn/modules/nothing.js';
-import identify       from '../../dom/modules/identify.js';
-import compileNode    from './compile-node.js';
-import Observer       from './observer.js';
-import { isTextNode } from './dom.js';
-import log            from './log.js';
+import noop        from '../../../fn/modules/noop.js';
+import nothing     from '../../../fn/modules/nothing.js';
+import identify    from '../../../dom/modules/identify.js';
+import isTextNode  from '../../../dom/modules/is-text-node.js';
+import compileNode from '../compile-node.js';
+import Observer    from '../observer.js';
+import log         from '../log.js';
 
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
@@ -48,11 +48,11 @@ function toRenderer(renderer) {
     // Create new renderer from old with reference to a new node, where `this` 
     // is the new fragment
     return new renderer.constructor(
-        renderer.fn, 
+        renderer.consts, 
+        renderer.source, 
+        getDescendant(renderer.path, this), 
         renderer.path, 
-        getDescendant(renderer.path, this),
-        renderer.name,
-        renderer.set
+        renderer.name
     );
 }
 

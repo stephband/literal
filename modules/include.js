@@ -1,7 +1,7 @@
 
 import curry from '../../fn/modules/curry.js';
 import requestData from './request-data.js';
-import TemplateRenderer from './renderer-template.js';
+import TemplateRenderer from './renderers/template-renderer.js';
 
 export function include(url, data) {
     if (!/^#/.test(url)) {

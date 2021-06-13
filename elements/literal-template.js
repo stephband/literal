@@ -24,10 +24,10 @@ data:
 
 /* Register customised built-in element <template is="literal-template"> */
 
-import element  from '../../dom/modules/element.js';
-import TemplateRenderer from '../modules/renderer-template.js';
+import element from '../../dom/modules/element.js';
+import TemplateRenderer from '../modules/renderers/template-renderer.js';
 
-export default element('template is="literal-template"', {
+export default element('<template is="literal-template">', {
     construct: function() {
         // Keep tabs on the number of renders
         this.instanceCount = 0;

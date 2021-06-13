@@ -34,7 +34,7 @@
             "error",
             "last"
         ],
-        "complexity": ["error", 18],
+        "complexity": ["error", 32],
         "computed-property-spacing": [
             "error",
             "never"
