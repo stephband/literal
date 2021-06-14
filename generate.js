@@ -14,7 +14,7 @@ const workingdir = Deno.cwd() + '/';
 
 import select  from './deno/select.js';
 //import request from './node/request.js';
-import { yellow, dimyellow, red, dim } from './node/log.js';
+import { yellow, dimyellow, red, dim } from './deno/log.js';
 import build from './deno/build.js';
 
 if (Deno.args.length < 2) {
