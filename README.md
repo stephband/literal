@@ -1,6 +1,6 @@
 # Literal
 
-Literal sticks JS into your HTML. Literal customises the template element,
+Literal puts JS into your HTML. Literal customises the template element,
 enhancing it with the native capabilities of JS template tags to render fast, 
 flexible and powerful templates, all in a small library that is just 10kB 
 minified and gzipped.

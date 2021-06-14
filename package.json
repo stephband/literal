@@ -1,7 +1,7 @@
 {
   "title": "Literal",
   "name": "literal",
-  "description": "Render strings, templates, and files as JS Literals.",
+  "description": "Literal puts JS into your HTML. Literal customises the template element, enhancing it with the native capabilities of JS template tags to render fast, flexible and powerful templates, all in a small library that is under 10kB (minified and gzipped).",
   "version": "0.2.1",
   "author": {
     "name": "stephband",
