@@ -142,13 +142,13 @@ Incidentally, immutable objects such as frozen objects are not observed for
 data-binding, that wouldn't make sense. Literal is comfortable working
 mutably or immutably.
 
-## Literal for NodeJS
+## Literal for Deno
 
 Literal comes with a build script for the static render of files with a 
-`.literal` extension. Files are built to their equivalent without the extension 
+`.literal` extension. Files are built in place without the extension 
 in the same location. Literal will render `.html.literal`, `.css.literal`, 
 `.svg.literal` and other `.literal` files.
 
 ```
-> node ./index.js
+> make literal
 ```
