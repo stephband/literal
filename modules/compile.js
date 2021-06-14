@@ -4,6 +4,8 @@ import log          from './log.js';
 
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
+const assign = Object.assign;
+
 const illegals = [
     // Reserved by literal
     "render",
@@ -73,6 +75,18 @@ Returns a function that renders a literal template.
 // Store render functions against their template strings
 const cache = {};
 
+const scope = {
+    render: function render(strings) {
+        let n = 0;
+        let string = strings[n];
+        while (strings[++n] !== undefined) {
+            string += arguments[n];
+            string += strings[n];
+        }
+        return string;
+    }
+};
+
 function isValidConst(namevalue) {
     const name = namevalue[0];
     return /^\w/.test(name);
@@ -83,7 +97,7 @@ function sanitiseVars(vars) {
     return names.join(', ');
 }
 
-export default function compile(scope, varstring, string, id, consts = 'data') {
+export default function compile(library, varstring, string, id, consts = 'data') {
     if (typeof string !== 'string') {
         throw new Error('Template is not a string');
     }
@@ -93,13 +107,16 @@ export default function compile(scope, varstring, string, id, consts = 'data') {
     // Return cached fn
     if (cache[key]) { return cache[key]; }
 
+    // Since compilation is synchronous we can assign to scope at compile time
+    assign(scope, library, scope);
+
     // Alphabetise and format
     const vars = varstring && sanitiseVars(varstring) ;
     //const context = new Context(render);
     const code = '\n'
         + (id ? indent + '// Render ' + id + '\n' : '')
         + (vars ? indent + 'const { ' + vars + ' } = ' + consts + ';\n' : '')
-        + indent + 'return this.resolve`' + string + '`;\n';
+        + indent + 'return render`' + string + '`;\n';
 
     if (DEBUG) {
         try {

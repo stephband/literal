@@ -1,12 +1,14 @@
 
-import library from './library.js';
-import { compileValueRender } from './compile.js';
+// Todo: This script used by bolt/elements/slide-show... can we refactor that out?
 
+import library from './library.js';
+import compile from './compile.js';
 
 /** 
 compileString()
 **/
 
 export default function compileString(string) {
-    return compileValueRender(library, '', string, 'arguments[1]');
+    // library, varstring, string, id, consts = 'data'
+    return compile(library, '', string);
 }
