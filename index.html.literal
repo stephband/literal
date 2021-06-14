@@ -33,10 +33,12 @@
 <body class="docs-grid grid 3x-grid @1-6x-grid @2-9x-grid">
     <header class="x1 3x @1-x-3 @1-4x @2-x-4">
         ${ include("../bolt/templates/header.literal", "./package.json") }
+        <p class="doctext-09">10kB minified and gzipped</p>
+        <p class="doctext-09">Literal enhances HTML templates with JS literal expressions.</p>
     </header>
 
     <!--img class="x1 x-end y1 @2-x-1 @2-3x" src="images/logo.svg" width="800" height="800" style="width: 10.625rem; margin-top: -1.125rem; margin-right: -0.9375rem; max-width: none;" alt="Literal logo" /-->
 
-    ${ include("../bolt/templates/element.literal", await comments("./elements/include-content.js")) }
-    $ { include("../bolt/templates/css.literal", await comments("./modules/literal-template.js")) }
+    <!--$ { include("../bolt/templates/element.literal", await comments("./elements/include-content.js")) }
+    $ { include("../bolt/templates/css.literal", await comments("./modules/literal-template.js")) }-->
 </body>

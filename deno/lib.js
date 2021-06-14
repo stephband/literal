@@ -1,9 +1,8 @@
 
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import * as path from "https://deno.land/std@0.98.0/path/mod.ts";
 
 // Absolute path to module
-const moduleAbs = dirname(fileURLToPath(import.meta.url));
+const moduleAbs = path.dirname(path.fromFileUrl(import.meta.url));
 
 import exec                from '../../fn/modules/exec.js';
 import get                 from '../../fn/modules/get.js';
@@ -23,7 +22,7 @@ export { default as px, em, rem } from '../modules/parse-length.js';
 
 export { default as exec }    from '../../fn/modules/exec.js';
 export { default as slugify } from '../../fn/modules/slugify.js';
-export { default as Pipe }    from '../modules/pipe.js';
+//export { default as Pipe }    from '../modules/pipe.js';
 export { default as comments } from './comments.js';
 
 import request from './request.js';
@@ -47,10 +46,13 @@ imports(url)
 Imports all exports of a JS module or JSON file.
 **/
 
+// TextDecoder decodes the Uint8Array to unicode text
+const decoder = new TextDecoder('utf-8');
+
 export const imports = overload((source, target, url) => toExtension(url), {
     '.js': (source, target, url) => {
         // Current directory absolute
-        const currentAbs  = process.cwd();
+        const currentAbs  = Deno.cwd() + '/';
         // Source dir relative to current working directory
         const sourcedir   = path.dirname(source);
         // Resource path relative to current working directory
@@ -65,17 +67,25 @@ export const imports = overload((source, target, url) => toExtension(url), {
 
     '.json': (source, target, url) => {
         // Current directory absolute
-        const currentAbs  = process.cwd();
+        const currentAbs  = Deno.cwd() + '/';
         // Source dir relative to current working directory
         const sourcedir   = path.dirname(source);
         // Resource path relative to current working directory
         const resource    = path.join(sourcedir, url);
         // Resource path absolute
-        const resourceAbs = path.join(currentAbs, resource);
+        //const resourceAbs = path.join(currentAbs, resource);
         // Resource path relative to module
-        const resourceRel = path.relative(moduleAbs, resourceAbs);
+        //const resourceRel = path.relative(moduleAbs, resourceAbs);
 
-        return import(resourceRel).then(get('default'));
+//console.log('RRRR', currentAbs);
+//console.log('RRRR', sourcedir);
+//console.log('RRRR', resource);
+//console.log('RRRR', resourceAbs);
+//console.log('RRRR', resourceRel);
+
+        return Deno.readFile(resource)
+        .then((array) => decoder.decode(array))
+        .then(JSON.parse);
     },
 
     'undefined': (source, target, url) => {
@@ -122,7 +132,7 @@ export function getRootSrc(source, src) {
     const root     = path.parse(source);
     const dir      = root.dir;
     const relative = src.replace(/#.*$/, '');
-console.log(root, dir, relative);
+//console.log(root, dir, relative);
     return path.join(dir, relative);
 }
 

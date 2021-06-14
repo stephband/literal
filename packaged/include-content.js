@@ -1,0 +1,4 @@
+// Literal 0.2.0 (Built 2021-06-13 21:30)
+
+
+import{f as n,h as o}from"./chunk-MXU6YKIX.js";n("include-content",{construct:function(){this.hasAttribute("src")||console.error("<include-content> src attribute required",this);let t=new Promise((e,r)=>{this.resolveSrc=e,this.rejectSrc=r}),s=new Promise((e,r)=>{this.resolveData=e,this.rejectData=r});t.then(e=>{if(e.render)return s.then(r=>{this.after(e.render(r)),this.remove()});this.after(e.content.cloneNode(!0)),this.remove()}).catch(e=>console.error(e,this))},connect:function(){this.resolveData({})},properties:{data:{attribute:function(t){this.resolveData(o(t))}},src:{attribute:function(t){if(!t)return this.rejectSrc('<include-content> source src="'+t+'" is empty');let s=t.replace(/^#/,""),e=document.getElementById(s);if(!e)return this.rejectSrc("<include-content> src template not found");this.resolveSrc(e)}}}});

@@ -1,7 +1,7 @@
 {
   "title": "Literal",
   "name": "literal",
-  "description": "Render strings, <template>s, and files as JS Literals.",
+  "description": "Render strings, templates, and files as JS Literals.",
   "version": "0.2.0",
   "author": {
     "name": "stephband",
@@ -31,6 +31,7 @@
     "literal": "node --experimental-json-modules --no-warnings ./index.js ./ ./ debug",
     "watch": "node ./bolt/literal/build-watch.js"
   },
+  "favicons": [],
   "literal": {
     "exclude": [
       ".git",

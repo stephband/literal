@@ -9,9 +9,14 @@ import { dimbluedim } from './log.js';
 
 const DEBUG = false;
 
-export default cache(function request(path) {
-    return new Promise(function(resolve, reject) {
-        Deno.readFile(path, { encoding: 'utf8' }, (err, text) => {
+// TextDecoder decodes the Uint8Array to unicode text
+const decoder = new TextDecoder('utf-8');
+
+export default cache(function request(source) {
+    return Deno.readFile(source)
+    .then((array) => decoder.decode(array));
+    /*
+        Deno.readFile(path), { encoding: 'utf8' }, (err, text) => {
             if (err) {
                 //console.log(red + ' ' + yellow, 'Not found', path);
                 return reject(err);
@@ -25,4 +30,5 @@ export default cache(function request(path) {
             return resolve(text) ;
         });
     });
+    */
 });

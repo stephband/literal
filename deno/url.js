@@ -1,5 +1,5 @@
 
-import path from 'path';
+import * as path from "https://deno.land/std@0.98.0/path/mod.ts";
 
 function countUpLevels(path) {
     let n = -1;
