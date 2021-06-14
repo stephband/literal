@@ -1,7 +1,9 @@
 # Literal
 
-Literal sticks JS into your HTML. Literal uses the native capabilities of JS 
-to compile and render fast, flexible and powerful templates.
+Literal sticks JS into your HTML. Literal customises the template element,
+enhancing it with the native capabilities of JS template tags to render fast, 
+flexible and powerful templates, all in a small library that is just 10kB 
+minified and gzipped.
 
 
 ## Literal templates in JS
