@@ -1,9 +1,9 @@
 
-import trigger   from '../../../dom/modules/trigger.js';
-import config    from '../config.js';
-import library   from '../library.js';
-import compile   from '../compile.js';
-import Renderer, { renderString } from './renderer.js';
+import trigger  from '../../../dom/modules/trigger.js';
+import config   from '../config.js';
+import library  from '../library.js';
+import compile  from '../compile.js';
+import Renderer from './renderer.js';
 
 const assign = Object.assign;
 
@@ -97,20 +97,14 @@ function setValue(node, value) {
     return count;
 }
 
-export default function ValueRenderer(consts, source, node, path, name = 'value') {
+export default function ValueRenderer(node, context, options) {
     Renderer.apply(this, arguments);
-    this.render = compile(library, consts, source, null, 'arguments[1]');
+    this.literal = options.literal || compile(library, options.consts, options.source, null, 'arguments[1]');
     this.update = (value) => setValue(node, value);
 }
 
 assign(ValueRenderer.prototype, Renderer.prototype, {
-    resolve: function() {
-        // Wait for user-side promises to resolve before sending to render
-        return Promise
-        .all(arguments)
-        .then(renderValue)
-        .then(this.update);
-    }
+    resolve: renderValue
 });
 
 
@@ -120,18 +114,10 @@ StringValueRenderer()
 Constructs an object responsible for rendering to a value property as a string.
 **/
 
-export function StringValueRenderer(consts, source, node, path, name = 'value') {
+export function StringValueRenderer(node, context, options) {
     Renderer.apply(this, arguments);
-    this.render = compile(library, consts, source, null, 'arguments[1]');
-    this.update = (value) => setValue(node, value);
+    this.literal = options.literal || compile(library, options.consts, options.source, null, 'arguments[1]');
+    this.update  = (value) => setValue(node, value);
 }
 
-assign(StringValueRenderer.prototype, Renderer.prototype, {
-    resolve: function() {
-        // Wait for user-side promises to resolve before sending to render
-        return Promise
-        .all(arguments)
-        .then(renderString)
-        .then(this.update);
-    }
-});
+assign(StringValueRenderer.prototype, Renderer.prototype);

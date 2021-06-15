@@ -10,7 +10,6 @@ import TemplateRenderer from './template-renderer.js';
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
 const assign = Object.assign;
-const create = Object.create;
 
 const contentLibrary = assign({}, library, {
     include: include
@@ -159,31 +158,13 @@ function setContent(node, children, contents) {
     return count;
 }
 
-export default function ContentRenderer(consts, source, node, path, name = 'content') {
+export default function ContentRenderer(node, context, options) {
     Renderer.apply(this, arguments);
     const children = this.children = [];
-    this.render = compile(contentLibrary, consts, source, null, 'arguments[1]');
+    this.literal = options.literal || compile(contentLibrary, options.consts, options.source, null, 'arguments[1]');
     this.update = (contents) => setContent(node, children, contents);
 }
 
-assign(ContentRenderer.prototype, {
-    clone: function(node) {
-        // Make a copy of renderer attached to a different node and using the
-        // original render function
-        const renderer = create(ContentRenderer.prototype);
-        const children = renderer.children = [];
-        renderer.node   = node;
-        renderer.path   = this.path;
-        renderer.render = this.render;
-        renderer.update = (contents) => setContent(node, children, contents);
-        return renderer;
-    },
-
-    resolve: function() {
-        // Wait for user-side promises to resolve before sending to render
-        return Promise
-        .all(arguments)
-        .then(renderContent)
-        .then(this.update);
-    }
+assign(ContentRenderer.prototype, Renderer.prototype, {
+    resolve: renderContent
 });

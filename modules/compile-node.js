@@ -16,6 +16,7 @@ import decode   from './decode.js';
 const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
 const config = {
+    /*
     types: {
         // Form types
         'button':   ['name', 'value'],
@@ -33,6 +34,7 @@ const config = {
         // Defaults
         'default':  ['required', 'value']
     }
+    */
 };
 
 const rliteral = /\$\{/;
@@ -42,50 +44,50 @@ const rliteral = /\$\{/;
 compileAttributes(renderers, vars, path, nodeames)
 **/
 
-function compileAttr(renderers, vars, path, node, attribute) {
-    const string = attribute.value;
-    if (!string || !rliteral.test(string)) { return; }
+function compileAttr(renderers, consts, path, node, attribute, context) {
+    const source = attribute.value;
+    if (!source || !rliteral.test(source)) { return; }
     const name = attribute.localName;
-    renderers.push(new AttributeRenderer(vars, string, node, path, name));
+    renderers.push(new AttributeRenderer(node, context, { consts, source, path, name }));
 }
 
-function compileBoolean(renderers, vars, path, node, attribute) {
-    const string = attribute.value;
-    if (!string || !rliteral.test(string)) { return; }
+function compileBoolean(renderers, consts, path, node, attribute, context) {
+    const source = attribute.value;
+    if (!source || !rliteral.test(source)) { return; }
     const name = attribute.localName;
-    renderers.push(new BooleanRenderer(vars, string, node, path, name));
+    renderers.push(new BooleanRenderer(node, context, { consts, source, path, name }));
 }
 
-function compileTokens(renderers, vars, path, node, attribute) {
-    const string = attribute.value;
-    if (!string || !rliteral.test(string)) { return; }
+function compileTokens(renderers, consts, path, node, attribute, context) {
+    const source = attribute.value;
+    if (!source || !rliteral.test(source)) { return; }
     const name = attribute.localName;
-    renderers.push(new TokensRenderer(vars, string, node, path, name));
+    renderers.push(new TokensRenderer(node, context, { consts, source, path, name }));
 }
 
-function compileValue(renderers, vars, path, node, attribute) {
-    const string = attribute.value;
-    if (!string || !rliteral.test(string)) { return; }
-    renderers.push(new ValueRenderer(vars, string, node, path));
+function compileValue(renderers, consts, path, node, attribute, context) {
+    const source = attribute.value;
+    if (!source || !rliteral.test(source)) { return; }
+    renderers.push(new ValueRenderer(node, context, { consts, source, path }));
 }
 
-function compileValueString(renderers, vars, path, node, attribute) {
-    const string = attribute.value;
-    if (!string || !rliteral.test(string)) { return; }
-    renderers.push(new StringValueRenderer(vars, string, node, path));
+function compileValueString(renderers, consts, path, node, attribute, context) {
+    const source = attribute.value;
+    if (!source || !rliteral.test(source)) { return; }
+    renderers.push(new StringValueRenderer(node, context, { consts, source, path }));
 }
 
-function compileChecked(renderers, vars, path, node, attribute) {
-    const string = attribute.value;
-    if (!string || !rliteral.test(string)) { return; }
-    renderers.push(new CheckedRenderer(vars, string, node, path));
+function compileChecked(renderers, consts, path, node, attribute, context) {
+    const source = attribute.value;
+    if (!source || !rliteral.test(source)) { return; }
+    renderers.push(new CheckedRenderer(node, context, { consts, source, path }));
 }
 
 const compileAttribute = overload((renderers, vars, path, node, attribute) => attribute.localName, {
     'checked':  compileChecked,
     'class':    compileTokens,
 
-    'datetime': function compileDatetime(renderers, vars, path, node, attribute) {
+    'datetime': function compileDatetime(renderers, vars, path, node, attribute, context) {
         console.log('Todo: compile datetime');
     },
 
@@ -94,16 +96,16 @@ const compileAttribute = overload((renderers, vars, path, node, attribute) => at
 
     // Special workaround attribute used in cases where ${} cannot be added
     // directly to the HTML content, such as in <tbody> or <tr>
-    'inner-content': function(renderers, vars, path, node, attribute) {
+    'inner-content': function(renderers, consts, path, node, attribute, context) {
         const string = attribute.value;
         if (!string || !rliteral.test(string)) { return; }
         node.removeAttribute(attribute.localName);
-        renderers.push(new ContentRenderer(vars, decode(string), node, path));
+        renderers.push(new ContentRenderer(node, context, { consts, source: decode(string), path }));
     },
 
     'required': compileBoolean,
 
-    'value': overload((renderers, vars, path, node, attribute) => ('' + node.type), {
+    'value': overload((renderers, vars, path, node, attribute, context) => ('' + node.type), {
         //'checkbox':  compileValueChecked,
         //'date':      compileValueDate,
         //'number':    compileValueNumber,
@@ -119,12 +121,12 @@ const compileAttribute = overload((renderers, vars, path, node, attribute) => at
     'default':  compileAttr
 });
 
-function compileAttributes(renderers, vars, path, node) {
+function compileAttributes(renderers, vars, path, node, context) {
     const attributes = node.attributes;
     var n = -1, attribute;
     // Todo: order attributes so that min, max, value come last?
     while (attribute = attributes[++n]) {
-        compileAttribute(renderers, vars, path, node, attribute);
+        compileAttribute(renderers, vars, path, node, attribute, context);
     }
 }
 
@@ -133,33 +135,33 @@ function compileAttributes(renderers, vars, path, node) {
 compileElement()
 **/
 
-function compileChildren(renderers, vars, path, node) {
+function compileChildren(renderers, vars, path, node, context) {
     const children = node.childNodes;
 
     if (children) {
         let n = -1;
         while(children[++n]) {
-            compileNode(renderers, vars, (path ? path + '.' + n : path + n), children[n]);
+            compileNode(renderers, vars, (path ? path + '.' + n : path + n), children[n], context);
         }
     }
 }
-
-function compileType(renderers, vars, path, node) {
+/*
+function compileType(renderers, vars, path, node, context) {
     // Compile element type attributes
     const type = node.type;
     if (!type) { return; }
-    const names = config.types[type] || config.types['default'];
-    compileAttributes(renderers, vars, path, node, names);
+    //const names = config.types[type] || config.types['default'];
+    compileAttributes(renderers, vars, path, node, context);
 }
-
+*/
 const compileElement = overload((renderers, vars, path, node) => node.tagName.toLowerCase(), {
     // Ignore SVG <defs>, which for our purposes we consider as inert like 
     // HTML's <template>
     'defs': noop,
 
-    'default': (renderers, vars, path, node) => {
+    'default': (renderers, vars, path, node, context) => {
         // Children first
-        compileChildren(renderers, vars, path, node);
+        compileChildren(renderers, vars, path, node, context);
 
         // We must wait until custom elements are upgraded before we may 
         // interact with their non-standard properties and attributes
@@ -174,8 +176,8 @@ const compileElement = overload((renderers, vars, path, node) => node.tagName.to
             });
         }
         else {*/
-            compileAttributes(renderers, vars, path, node);
-            compileType(renderers, vars, path, node);
+            compileAttributes(renderers, vars, path, node, context);
+            //compileType(renderers, vars, path, node, context);
         /*}*/
     }
 });
@@ -188,21 +190,21 @@ compileNode()
 const compileNode = overload((renderers, vars, path, node) => toType(node), {
     'comment': noop,
 
-    'element': (renderers, vars, path, node) => {
-        compileElement(renderers, vars, path, node);
+    'element': (renderers, vars, path, node, context) => {
+        compileElement(renderers, vars, path, node, context);
         return renderers;
     },
 
-    'fragment': (renderers, vars, path, node) => {
-        compileChildren(renderers, vars, path, node);
+    'fragment': (renderers, vars, path, node, context) => {
+        compileChildren(renderers, vars, path, node, context);
         return renderers;
     },
 
-    'text': (renderers, vars, path, node) => {
+    'text': (renderers, consts, path, node, context) => {
         const string = node.nodeValue;
 
         if (string && rliteral.test(string)) {
-            renderers.push(new ContentRenderer(vars, decode(string), node, path));
+            renderers.push(new ContentRenderer(node, context, { consts, source: decode(string), path }));
         }
 
         return renderers;
@@ -210,8 +212,8 @@ const compileNode = overload((renderers, vars, path, node) => toType(node), {
 
     'doctype': noop,
 
-    'document': (renderers, vars, path, node) => {
-        compileChildren(renderers, vars, path, node);
+    'document': (renderers, vars, path, node, context) => {
+        compileChildren(renderers, vars, path, node, context);
         return renderers;
     },
 

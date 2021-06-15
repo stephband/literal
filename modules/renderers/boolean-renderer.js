@@ -30,13 +30,14 @@ export function setBooleanProperty(node, name, value) {
     return 1;
 }
 
-export default function BooleanRenderer(consts, source, node, path, name) {
+export default function BooleanRenderer(node, context, options) {
     Renderer.apply(this, arguments);
-    this.render = compile(library, consts, source, null, 'arguments[1]');
-    this.update = (value) => setBooleanProperty(node, name, value);
+    this.literal = options.literal || compile(library, options.consts, options.source, null, 'arguments[1]');
+    this.name    = options.name;
+    this.update  = (value) => setBooleanProperty(node, this.name, value);
 
     // Remove the boolean until it is processed
-    node.removeAttribute(name);
+    node.removeAttribute(this.name);
 }
 
 assign(BooleanRenderer.prototype, Renderer.prototype);

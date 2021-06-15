@@ -76,14 +76,15 @@ function setTokens(list, cached, tokens, count) {
     return ++count;
 }
 
-export default function TokensRenderer(consts, source, node, path, name) {
+export default function TokensRenderer(node, context, options) {
     Renderer.apply(this, arguments);
     
-    const list = getTokenList(node, name);
+    const list = getTokenList(node, options.name);
     let cached = nothing;
 
-    this.render = compile(library, consts, source, null, 'arguments[1]');
-    this.update = (tokens) => {
+    this.literal = options.literal || compile(library, options.consts, options.source, null, 'arguments[1]');
+    this.name    = options.name;
+    this.update  = (tokens) => {
         const count = setTokens(list, cached, tokens, 0);
         cached = tokens;
         // Count 1 for removing, 1 for adding
@@ -91,15 +92,9 @@ export default function TokensRenderer(consts, source, node, path, name) {
     };
 
     // Empty the token list until it is rendered
-    node.setAttribute(name, '');
+    node.setAttribute(this.name, '');
 }
 
 assign(TokensRenderer.prototype, Renderer.prototype, {
-    resolve: function() {
-        // Wait for user-side promises to resolve before sending to render
-        return Promise
-        .all(arguments)
-        .then(renderValues)
-        .then(this.update);
-    }
+    resolve: renderValues
 });

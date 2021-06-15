@@ -44,18 +44,6 @@ function getDescendant(path, root) {
     return p.reduce(child, root);
 }
 
-function toRenderer(renderer) {
-    // Create new renderer from old with reference to a new node, where `this` 
-    // is the new fragment
-    return new renderer.constructor(
-        renderer.consts, 
-        renderer.source, 
-        getDescendant(renderer.path, this), 
-        renderer.path, 
-        renderer.name
-    );
-}
-
 function empty(renderer) {
     const rendered = renderer.rendered;
 
@@ -122,10 +110,13 @@ export default function TemplateRenderer(template) {
     if (cache[id]) {
         this.consts    = cache[id].consts;
         this.content   = cache[id].content;
+        this.context   = {};
         this.fragment  = cache[id].content.cloneNode(true);
         this.first     = this.fragment.childNodes[0];
         this.last      = this.fragment.childNodes[this.fragment.childNodes.length - 1];
-        this.renderers = cache[id].renderers.map(toRenderer, this.fragment);
+        this.renderers = cache[id].renderers.map((renderer) =>
+            new renderer.constructor(getDescendant(renderer.path, this.fragment), this.context, renderer)
+        );
         this.sets      = nothing;
         return;
     }

@@ -72,7 +72,11 @@ const lib = {
     px, 
     rem, 
     slugify, 
-    values: Object.values
+    values: Object.values,
+    render: function() {
+        // Wait for user-side promises to resolve before sending to render
+        return Promise.all(arguments);
+    }
 };
 
 export default lib;

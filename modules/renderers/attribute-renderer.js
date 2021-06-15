@@ -1,7 +1,7 @@
 
-import library   from '../library.js';
-import compile   from '../compile.js';
-import Renderer  from './renderer.js';
+import library  from '../library.js';
+import compile  from '../compile.js';
+import Renderer from './renderer.js';
 
 const assign = Object.assign;
 
@@ -19,10 +19,11 @@ function setAttribute(node, name, value) {
     return 1;
 }
 
-export default function AttributeRenderer(consts, source, node, path, name) {
+export default function AttributeRenderer(node, context, options) {
     Renderer.apply(this, arguments);
-    this.render = compile(library, consts, source, null, 'arguments[1]');
-    this.update = (value) => setAttribute(node, name, value);
+    this.literal = options.literal || compile(library, options.consts, options.source, null, 'arguments[1]');
+    this.name    = options.name;
+    this.update  = (value) => setAttribute(node, this.name, value);
 }
 
 assign(AttributeRenderer.prototype, Renderer.prototype);

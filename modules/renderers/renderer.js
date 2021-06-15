@@ -1,5 +1,7 @@
 
-import toText    from '../to-text.js';
+import library from '../library.js';
+import compile from '../compile.js';
+import toText  from '../to-text.js';
 
 const assign = Object.assign;
 
@@ -48,8 +50,7 @@ function stringify(value, string, render) {
 
 export function renderString(values) {
     const strings = values[0];
-    return reduce(strings
-    .map((string, i) => (
+    return reduce(strings.map((string, i) => (
         //console.log(typeof string, string),
         i <= values.length ?
             // Strings 0 to n - 1
@@ -60,6 +61,9 @@ export function renderString(values) {
     )));
 }
 
+export function toPromise() {
+    return Promise.all(arguments);
+}
 
 /** 
 Renderer()
@@ -67,20 +71,20 @@ Base class for providing renderers with the properties `{ node, path, fn, name }
 and a generic `.render(observer, data)` method.
 **/
 
-export default function Renderer(consts, source, node, path, name) {
-    this.consts = consts;
-    this.source = source;
-    this.node   = node;
-    this.path   = path;
-    this.name   = name;
+export default function Renderer(node, context, options) {
+    this.node    = node;
+    this.context = context;
+    this.path    = options.path;
+    //this.literal = options.literal || compile(library, options.consts, options.source, null, 'arguments[1]', toPromise);
 }
 
 assign(Renderer.prototype, {
-    resolve: function() {
-        // Wait for user-side promises to resolve before sending to render
-        return Promise
-        .all(arguments)
-        .then(renderString)
+    render: function() {
+        return this.literal
+        .apply(this.context, arguments)
+        .then(this.resolve)
         .then(this.update);
-    }
+    },
+
+    resolve: renderString
 });

@@ -14,14 +14,6 @@ function isNotEmpty(string) {
     return !rempty.test(string);
 }
 
-function renderBoolean(values) {
-    if (values.length !== 2 || values[0].find(isNotEmpty)) {
-        throw new Error('A checked attribute may contain only one ${ tag }, optionally surrounded by white space');
-    }
-
-    return values[1];
-}
-
 
 /** 
 CheckedRenderer()
@@ -50,21 +42,21 @@ function setChecked(node, value) {
     return 1;
 }
 
-export default function CheckedRenderer(consts, source, node, path, name = 'checked') {
+export default function CheckedRenderer(node, context, options) {
     Renderer.apply(this, arguments);
-    this.render = compile(library, consts, source, null, 'arguments[1]');
-    this.update = (value) => setChecked(node, value);
-    
+    this.literal = options.literal || compile(library, options.consts, options.source, null, 'arguments[1]');
+    this.update  = (value) => setChecked(node, value);
+
     // Negate the effects of having template content in the checked attribute
     node.checked = false;
 }
 
 assign(CheckedRenderer.prototype, Renderer.prototype, {
-    resolve: function() {
-        // Wait for user-side promises to resolve before sending to render
-        return Promise
-        .all(arguments)
-        .then(renderBoolean)
-        .then(this.update);
+    resolve: function renderBoolean(values) {
+        if (values.length !== 2 || values[0].find(isNotEmpty)) {
+            throw new Error('A checked attribute may contain only one ${ tag }, optionally surrounded by white space');
+        }
+    
+        return values[1];
     }
 });
