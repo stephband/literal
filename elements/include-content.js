@@ -45,10 +45,10 @@ Or import the default export of a JS module:
 Or indeed the named export of JS module:
 
 ```html
-<include-content src="#greetings" data="./modules/literal.js#namedExport"></include-content>
+<include-content src="#greetings" data="./modules/literal.js#name"></include-content>
 ```
 
-Should the `include-content` contain static content, note that that content is 
+Should the `include-content` contain html, note that that content is 
 displayed until templated content has been fetched and rendered, allowing you
 to provide default or fallback content.
 **/

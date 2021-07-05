@@ -1,4 +1,8 @@
 
+/** 
+include(url, data)
+**/
+
 import curry from '../../fn/modules/curry.js';
 import requestData from './request-data.js';
 import TemplateRenderer from './renderers/template-renderer.js';

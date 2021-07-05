@@ -178,6 +178,15 @@ function createObserver(target) {
         gets: [],
         sets: []
     };
+/*
+console.trace('T', target === Object.prototype, target, name);
+
+    if (Object.prototype === target) {
+        throw new Error('NO');
+    }
+*/
+
+    target[$handlers] = handlers;
 
     return target[$observer] = new Proxy(target, {
         // Inside handlers, observer is the observer proxy or an object that 
@@ -192,12 +201,21 @@ function createObserver(target) {
                     target[name] ;
             }
 
+            // Don't allow Safari to log __proto__ as a Proxy. Dangerous!
+            // Pollutes Object.prototpye with [$observer] which breaks everything 
+            if (name === '__proto__') {
+                return target[name];
+            }
+
             // Mutable if the property's not a symbol
             let desc;
             const mutable = ((desc = Object.getOwnPropertyDescriptor(target, name)), !desc || desc.writable);
-
+//console.log('GET', name, mutable, Observer(target[name]), target[name]);
             if (mutable) {
                 fire(handlers.gets, name);
+            }
+            else if (typeof target[name] === 'function') {
+                return target[name];
             }
 
             // Return the observer of its value or its value
@@ -229,11 +247,13 @@ via `Observer.gets(object)`.
 **/
 
 export default function Observer(object) {
+    //console.log(('jgv')[$observer]);
+    //console.log(object[$observer], isObservable(object));
     return !object ? undefined :
-        object[$observer] || (isObservable(object) ?
+        (object[$observer] || (isObservable(object) ?
             createObserver(object) :
             undefined
-        );
+        ));
 }
 
 
@@ -243,7 +263,7 @@ Force the `object`'s Observer to register a mutation at `path`. Pass in `value`
 to override the value actually at the end of the path.
 */
 
-Observer.notify = function notify(object, path, value) {
+Observer.notify = function notify(path, object, value) {
     const observer = object[$observer];
     if (!observer) { return; }
     const target = observer[$target];
