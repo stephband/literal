@@ -319,3 +319,31 @@ method `.stop()`.
 Observer.sets = function sets(observer, fn) {
     return new Ops('set', observer, fn);
 };
+
+
+/** 
+mutations
+**/
+
+export function mutations(selector, object, fn) {
+    const observer = Observer(object);
+
+    const names   = [];
+    const promise = Promise.resolve(names);
+    var pending;
+
+    function resolve(names) {
+        fn(names);
+        names.length = 0;
+        pending = undefined;
+    }
+
+    return Observer.sets(observer, (name) => {
+        if (!selector.includes(name)) {
+            console.log('Changed', name, 'not in selector');
+            return;
+        }
+        pending = pending || promise.then(resolve);
+        names.push(name);
+    });
+}

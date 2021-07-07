@@ -15,7 +15,7 @@ export const defaults = {
 
 // Router scope
 
-const root  = assign(defaults);
+const root  = assign({}, defaults);
 const scope = Observer(root);
 
 
@@ -114,8 +114,6 @@ location.on(function(location) {
     while (names[++n] !== undefined) {
         Observer.notify(names[n], scope);
     }
-    // Temp
-    //Observer.notify('location', scope);
 });
 
 export default scope;

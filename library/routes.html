@@ -39,7 +39,7 @@
 
         path:     ${ data.base + data.path }
         params:   ${ data.params }
-        id:       ${ data.identifier }
+        id:       ${ data.id }
         state:    ${ data.state }
     </template>
 
@@ -48,7 +48,7 @@
     
         path:     ${ data.base + data.path }
         params:   ${ data.params }
-        id:       ${ data.identifier }
+        id:       ${ data.id }
         state:    ${ data.state }
     </template>
 
@@ -57,7 +57,7 @@
 
         path:     ${ data.base + data.path }
         params:   ${ data.params }
-        id:       ${ data.identifier }
+        id:       ${ data.id }
         state:    ${ data.state }
     </template>
 
@@ -67,7 +67,7 @@
         path:   ${ data.base + data.path }
         route:  ${ data.route }
         params: ${ data.params }
-        id:     ${ data.identifier }
+        id:     ${ data.id }
         state:  ${ data.state }
     
         ${ routes({
@@ -81,13 +81,12 @@
         path:   ${ data.base + data.path }
         params: ${ data.params }
         $1:     ${ data.$1 }
-        id:     ${ data.identifier }
+        id:     ${ data.id }
         state:  ${ data.state }
     </template>
 
     <template is="literal-template" id="main-template">
         <h3>Routes</h3>
-        ${ data }
         <pre>
         ${ routes({
             '^literal/library/': routes({
@@ -96,25 +95,28 @@
                 '^add(?:\\.html)?$':    include('#add.html'),
                 '^routes/':             include('#routes/')
             })
-        })(data.location) }
+        }, data) }
         </pre>
     </template>
 
     <a href="/literal/library/index.html">index.html</a>
+    <a href="/literal/library/index.html" data-number="9" data-string="boo">index.html { number: 9, string: "boo" }</a>
     <a href="/literal/library/add.html">add.html</a>
     <a href="/literal/library/routes.html">routes.html</a>
-    <a href="/literal/library/routes.html?number=0&strings=one,two,three">routes.html?number=0&strings=one,two,three"</a>
+    <a href="/literal/library/routes.html?number=0&strings=one,two,three&string=woo">routes.html?number=0&strings=one,two,three</a>
     <a href="/literal/library/routes/45/">routes/45/</a>
-    <a href="/literal/library/routes/45/?number=0&strings=one,two,three">routes/45/?number=0&strings=one,two,three"</a>
+    <a href="/literal/library/routes/45/?number=1&strings=four,five,six#identifier">routes/45/?number=1&strings=four,five,six#identifier</a>
+    <a href="?query=1">?query=1</a>
+    <a href="?query=2">?query=2</a>
+    <a href="#id-1">#hashref-1</a>
+    <a href="#id-2">#hashref-2</a>
 
-    <include-content src="#main-template" data="./routes.js"></include-content>
+    <include-content src="#main-template" data="../data/location.js"></include-content>
 
     <!-- Document interactivity -->
     <script type="module">
         import delegate from '../../dom/modules/delegate.js';
         import events   from '../../dom/modules/events.js';
-        import arg      from '../../fn/modules/arg.js';
-        import routes   from '../../dom/modules/routes.js';
         import location from '../../dom/modules/location.js';
         import "../library/routes.js";
         import "../module.js";

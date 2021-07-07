@@ -1,6 +1,6 @@
 
 import { register } from '../modules/library.js';
-import Observer     from '../modules/observer.js';
+import Observer, { mutations } from '../modules/observer.js';
 import { defaults } from '../data/location.js';
 
 const DEBUG = window.DEBUG && (window.DEBUG === true || window.DEBUG.includes('routes'));
@@ -42,10 +42,11 @@ assign(Route.prototype, {
     identifier: defaults.identifier,
     state:      defaults.state
 });
-
-function router(patterns, keys, regexps, location, route) {
+let pk = 0;
+function updateRoute(patterns, keys, regexps, location, data) {
     const base   = location.base + location.path;
     const string = location.route;
+    let { route } = data;
 
     // Loop through regexes until a match is captured
     var regexp, captures, n = -1;
@@ -56,7 +57,12 @@ function router(patterns, keys, regexps, location, route) {
     ); // Semicolon important here, don't remove
 
     // Ignore unmatching handlers
-    if (!captures) { return; }
+    if (!captures) {
+        data.mutations && data.mutations.stop();
+        data.route = undefined;
+        data.mutations = undefined;
+        return data;
+    }
 
     const key  = keys[n];
     const path = captures.input.slice(0, captures.index + captures[0].length);
@@ -70,19 +76,17 @@ function router(patterns, keys, regexps, location, route) {
         //route.params      = location.params;
         //route.indentifier = location.identifier;
         //route.state       = location.state;
-        return route;
+        return data;
     }
-
-    // Stop old route and create a new one
-    //route && stop(route);
-    //changes.stop();
 
     // Start of route group ***
     if (DEBUG) { console.group('route ' + path); }
 
+    data.mutations && data.mutations.stop();
+
     // Create a new route object
     route = new Route(base, path, name, captures);
-
+route.pk = ++pk;
     // Update params, identifier, state
     route.params = location.params;
     route.id     = location.id;
@@ -90,24 +94,29 @@ function router(patterns, keys, regexps, location, route) {
 
     const observer = Observer(route);
 
+    data.mutations = mutations('params id state', location, (names) => {
+        console.log('Route mutated', names, route.pk);
+        var n = -1, name;
+        while ((name = names[++n]) !== undefined) {
+            observer[name] = location[name];
+        }
+    });
+
     // Call route handler with (route, $1, $2, ...)
-    patterns[key].apply(this, observer);
-
-    //mutations(location).each((changes) => route && assign(route, changes));
-
-    return route;
+    data.route = patterns[key](observer);
+    return data;
 }
 
 register('routes', function routes(patterns) {
     const keys    = Object.keys(patterns);
     const regexps = keys.map((pattern) => RegExp(pattern));
 
-    var route;
+    var data = {};
 
     function routes(location) {
-        route = router(patterns, keys, regexps, location);
-        if (!route) { return; }
-        return route;
+        data = updateRoute(patterns, keys, regexps, location, data);
+        if (!data.route) { return; }
+        return data.route;
     }
 
     // Allow partial application:
@@ -115,8 +124,10 @@ register('routes', function routes(patterns) {
     // fn(route)
     // or
     // routes(patterns, route)
-
     return arguments.length > 1 ?
         routes(arguments[1]) :
         routes ;
 });
+
+window.O = Observer;
+window.m = mutations;
