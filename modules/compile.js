@@ -73,7 +73,7 @@ Returns a function that renders a literal template.
 **/
 
 // Store render functions against their template strings
-const cache = {};
+export const cache = {};
 
 function renderToString(strings) {
     let n = 0;

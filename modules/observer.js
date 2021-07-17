@@ -1,4 +1,6 @@
 
+import noop from '../../fn/modules/noop.js';
+
 /* Observer */
 
 const $target   = Symbol('target');
@@ -29,7 +31,7 @@ function remove(array, value) {
 
 function fire(fns, name, value) {
     if (!fns) { return; }
-    //fns = fns.slice(0);
+    fns = fns.slice(0);
     var n = -1;
     while (fns[++n]) {
         fns[n](name, value);
@@ -274,8 +276,6 @@ Observer.notify = function notify(path, object, value) {
 
 /** 
 Observer.target(object)
-Calls `fn` for every property of `object` read via a get operation. Returns an
-object with the method `.stop()`.
 **/
 
 Observer.target = function target(object) {
@@ -288,14 +288,16 @@ Ops()
 Ops object with a stop method for efficient unbinding.
 */
 
-function Ops(type, observer, fn) {
+function Ops(type, observer, fn, done) {
     this.fns = observer[$handlers][type + 's'];
     this.fn  = fn;
     this.fns.push(fn);
+    this.done = done;
 }
 
 Ops.prototype.stop = function() {
     remove(this.fns, this.fn);
+    this.done && this.done();
 };
 
 
@@ -322,28 +324,31 @@ Observer.sets = function sets(observer, fn) {
 
 
 /** 
-mutations
+mutations()
 **/
 
 export function mutations(selector, object, fn) {
     const observer = Observer(object);
+    const names    = [];
+    const promise  = Promise.resolve(names);
 
-    const names   = [];
-    const promise = Promise.resolve(names);
-    var pending;
-
-    function resolve(names) {
+    function trigger(names) {
         fn(names);
         names.length = 0;
-        pending = undefined;
     }
 
-    return Observer.sets(observer, (name) => {
+    return new Ops('set', observer, (name) => {
+        // If selector does not include this property name, ignore
         if (!selector.includes(name)) {
-            console.log('Changed', name, 'not in selector');
             return;
         }
-        pending = pending || promise.then(resolve);
+
+        // Where names has no pending mutations, light up a promise
+        if (!names.length) {
+            promise.then(trigger);
+        }
+
+        // Then collect mutated names
         names.push(name);
-    });
+    }, () => fn = noop);
 }

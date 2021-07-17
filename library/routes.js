@@ -42,11 +42,16 @@ assign(Route.prototype, {
     identifier: defaults.identifier,
     state:      defaults.state
 });
+
 let pk = 0;
-function updateRoute(patterns, keys, regexps, location, data) {
+
+function updateRoute(patterns, keys, regexps, location, route) {
+    // Reading from location means that if route changes the literal is rerendered
+    // but if this is a sub route .... ?
     const base   = location.base + location.path;
     const string = location.route;
-    let { route } = data;
+
+    //let { route } = data;
 
     // Loop through regexes until a match is captured
     var regexp, captures, n = -1;
@@ -54,14 +59,17 @@ function updateRoute(patterns, keys, regexps, location, data) {
     while(
         (regexp = regexps[++n]) && 
         !(captures = regexp.exec(string))
-    ); // Semicolon important here, don't remove
+    ); // Semicolon important here, don't remove or next code counted as while block
 
     // Ignore unmatching handlers
     if (!captures) {
-        data.mutations && data.mutations.stop();
-        data.route = undefined;
-        data.mutations = undefined;
-        return data;
+        console.log('NO   route should be undefined', route)
+        return route;
+        //m.stop();
+        //data.mutations && data.mutations.stop();
+        //data.route = undefined;
+        //data.mutations = undefined;
+        //return data;
     }
 
     const key  = keys[n];
@@ -72,58 +80,75 @@ function updateRoute(patterns, keys, regexps, location, data) {
     // and params, identifier and state may have changed, so we update the 
     // existing route and notify as route
     if (route && route.base === base && route.path === path) {
-        route.route = name;
-        //route.params      = location.params;
-        //route.indentifier = location.identifier;
-        //route.state       = location.state;
-        return data;
+        console.log('OLD ROUTE (I think this is impossible now)');
+        //route.route = name;
+        return route;
     }
 
     // Start of route group ***
-    if (DEBUG) { console.group('route ' + path); }
+    //if (DEBUG) { console.group('route ' + path); }
 
-    data.mutations && data.mutations.stop();
+    //data.mutations && data.mutations.stop();
 
     // Create a new route object
     route = new Route(base, path, name, captures);
+
 route.pk = ++pk;
-    // Update params, identifier, state
-    route.params = location.params;
-    route.id     = location.id;
-    route.state  = location.state;
+console.log('new Route()', pk, base, path, name);
+    // Update params, id, state. Reading these properties should not alert the
+    // template renderer to rerender if they change, as we are about to observe
+    // them independently, so use the location observer's target object
+    const target = Observer.target(location);
+    route.params = target.params;
+    route.id     = target.id;
+    route.state  = target.state;
 
-    const observer = Observer(route);
+    const scope = Observer(route);
 
-    data.mutations = mutations('params id state', location, (names) => {
-        console.log('Route mutated', names, route.pk);
-        var n = -1, name;
-        while ((name = names[++n]) !== undefined) {
-            observer[name] = location[name];
+    // Kill everything when route changes, which we know will cause a rerender...
+    // what if something else causes a rerender? Ooooh.
+    const m1 = Observer.sets(location, (prop) => {
+        if (prop === 'route') {
+console.log('STOP route ', route.pk, base, path, name);
+            m1.stop();
+            m2.stop();
+            //data.mutations && data.mutations.stop();
+            //data.route = undefined;
+            //data.mutations = undefined;
+            //if (DEBUG) { console.groupEnd(); }
         }
     });
 
-    // Call route handler with (route, $1, $2, ...)
-    data.route = patterns[key](observer);
-    return data;
+    const m2 = mutations('params id state', location, (names) => {
+//console.log('Route mutated', names, route.pk);
+        var n = -1, name;
+        while ((name = names[++n]) !== undefined) {
+            scope[name] = location[name];
+        }
+    });
+
+    // Call route handler with current context (should be undefined) and scope
+    const fn = patterns[key];
+    return fn.call(this, scope);
 }
 
 register('routes', function routes(patterns) {
     const keys    = Object.keys(patterns);
     const regexps = keys.map((pattern) => RegExp(pattern));
 
-    var data = {};
+    //var internal = {};
+    var route;
 
     function routes(location) {
-        data = updateRoute(patterns, keys, regexps, location, data);
-        if (!data.route) { return; }
-        return data.route;
+//console.log('routes()', '\n  ' + Object.keys(patterns).join('\n  '));
+        return route = updateRoute(patterns, keys, regexps, location, route /* internal */);
+        //return internal.route || undefined;
     }
 
     // Allow partial application:
-    // fn = routes(patterns)
-    // fn(route)
+    // fn = routes(patterns); fn(route);
     // or
-    // routes(patterns, route)
+    // routes(patterns, route);
     return arguments.length > 1 ?
         routes(arguments[1]) :
         routes ;

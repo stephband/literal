@@ -12,12 +12,12 @@ data when rendered:
 </template>
 ```
 
-Use an `<include-content>` to render this template into the document with some 
+Use an `<html-include>` to render this template into the document with some 
 data:
 
 ```html
 <p>Ooo matron, what a lovely package.json:</p>
-<include-content src="#log" data="./package.json"></include-content>
+<html-include src="#log" data="./package.json"></html-include>
 ```
 **/
 
@@ -31,21 +31,19 @@ export default element('<template is="literal-template">', {
     construct: function() {
         // Keep tabs on the number of renders
         this.instanceCount = 0;
-    },
-
-    properties: {
-        /** 
-        .render(data)
-        Returns a promise containing a document fragment of DOM rendered from
-        the template contents.
-        **/
-        render: {
-            value: function(data) {
-                const renderer = new TemplateRenderer(this);
-                ++this.instanceCount;
-                renderer.render(data);
-                return renderer.fragment;
-            }
+    }
+}, {
+    /** 
+    .render(data)
+    Returns a promise containing a document fragment of DOM rendered from
+    the template contents.
+    **/
+    render: {
+        value: function(data) {
+            const renderer = new TemplateRenderer(this);
+            ++this.instanceCount;
+            renderer.render(data);
+            return renderer.fragment;
         }
     }
 });

@@ -21,6 +21,7 @@
     // load (eg. data-targetable scrolls) and we want them to run before the loading
     // class is removed
     window.addEventListener('load', () => window.requestAnimationFrame(() => document.documentElement.classList.remove('loading')));
+    window.DEBUG = true;
     </script>
 
     <link rel="shortcut icon" href="images/logo-64x64.ico">
@@ -30,40 +31,56 @@
 
     <link rel="stylesheet" href="../../bolt/module.css">
     <!--link rel="stylesheet" href="style.css" /-->
+    
+    <style>
+    pre {
+        margin-left: 0;
+    }
+    </style>
 </head>
 
 <body class="@3-12-grid grid">
 
     <template is="literal-template" id="index.html">
-        template: #index.html
-
-        path:     ${ data.base + data.path }
-        params:   ${ data.params }
-        id:       ${ data.id }
-        state:    ${ data.state }
-    </template>
-
-    <template is="literal-template" id="add.html">
-        template: #add.html    
+        template: index.html
+        --------------------
+        renderer: ${ this.id }
+        render:   ${ this.count }
     
-        path:     ${ data.base + data.path }
+        pk:       ${ data.pk }
+        base:     ${ data.base }
+        path:     ${ data.path }
+        route:    ${ data.route }
         params:   ${ data.params }
         id:       ${ data.id }
         state:    ${ data.state }
     </template>
+
+    <!--template is="literal-template" id="add.html">
+        template: #add.html
+        path:     ${ data.base + data.path }
+        params:   ${ data.params }
+        id:       ${ data.id }
+        state:    ${ data.state }
+    </template-->
 
     <template is="literal-template" id="router.html">
-        template: #router.html
-
-        path:     ${ data.base + data.path }
+        template: router.html
+        ---------------------
+        renderer: ${ this.id }
+        render:   ${ this.count }
+    
+        pk:       ${ data.pk }
+        base:     ${ data.base }
+        path:     ${ data.path }
+        route:    ${ data.route }
         params:   ${ data.params }
         id:       ${ data.id }
         state:    ${ data.state }
     </template>
 
-    <template is="literal-template" id="routes/">
+    <!--template is="literal-template" id="routes/">
         template: #routes/
-    
         path:   ${ data.base + data.path }
         route:  ${ data.route }
         params: ${ data.params }
@@ -77,17 +94,36 @@
 
     <template is="literal-template" id="number/">
         template: #number/
-
         path:   ${ data.base + data.path }
         params: ${ data.params }
         $1:     ${ data.$1 }
         id:     ${ data.id }
         state:  ${ data.state }
-    </template>
+    </template-->
 
     <template is="literal-template" id="main-template">
-        <h3>Routes</h3>
+        <h3>main-template</h3>
+
         <pre>
+        template: main-template
+        -----------------------
+        renderer: ${ this.id }
+        render:   ${ this.count }
+        number:   ${ typeof data.number } ${ data.number }
+    
+        pk:       ${ data.location.pk }
+        base:     ${ data.location.base }
+        path:     ${ data.location.path }
+        route:    ${ data.location.route }
+        params:   ${ data.location.params }
+        id:       ${ data.location.id }
+        state:    ${ data.location.state }
+        </pre>
+
+        <pre>
+        renderer: ${ this.id }
+        render:   ${ this.count }
+
         ${ routes({
             '^literal/library/': routes({
                 '^index(?:\\.html)?$':  include('#index.html'),
@@ -95,7 +131,7 @@
                 '^add(?:\\.html)?$':    include('#add.html'),
                 '^routes/':             include('#routes/')
             })
-        }, data) }
+        }, data.location) }
         </pre>
     </template>
 
@@ -103,15 +139,17 @@
     <a href="/literal/library/index.html" data-number="9" data-string="boo">index.html { number: 9, string: "boo" }</a>
     <a href="/literal/library/add.html">add.html</a>
     <a href="/literal/library/routes.html">routes.html</a>
-    <a href="/literal/library/routes.html?number=0&strings=one,two,three&string=woo">routes.html?number=0&strings=one,two,three</a>
+    <a href="/literal/library/routes.html#parp">routes.html#parp</a>
+    <a href="/literal/library/unrouted.html">unrouted.html</a>
+    <!--a href="/literal/library/routes.html?number=0&strings=one,two,three&string=woo">routes.html?number=0&strings=one,two,three</a>
     <a href="/literal/library/routes/45/">routes/45/</a>
     <a href="/literal/library/routes/45/?number=1&strings=four,five,six#identifier">routes/45/?number=1&strings=four,five,six#identifier</a>
     <a href="?query=1">?query=1</a>
     <a href="?query=2">?query=2</a>
     <a href="#id-1">#hashref-1</a>
-    <a href="#id-2">#hashref-2</a>
+    <a href="#id-2">#hashref-2</a-->
 
-    <include-content src="#main-template" data="../data/location.js"></include-content>
+    <html-include src="#main-template" data-number="9" data-location="../data/location.js"></html-include>
 
     <!-- Document interactivity -->
     <script type="module">
@@ -128,7 +166,8 @@
                     Object.assign({}, a.dataset) :
                     null ;
 
-                location.navigate(a, state);
+                const result = location.navigate(a, state);
+                console.log('Navigated', result);
                 e.preventDefault();
             }
         }));

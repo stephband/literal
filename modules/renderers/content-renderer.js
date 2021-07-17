@@ -53,22 +53,6 @@ function renderValue(string, contents, value) {
     return string + toText(value);
 }
 
-function renderContent(values) {
-    const strings  = values[0];
-    const contents = [];
-
-    let n = -1;
-    let string = '';
-
-    while (strings[++n] !== undefined) {
-        // Append to string until it has to be pushed to contents because
-        // a node or renderer has to be pushed in behind it
-        string = renderValue(string + strings[n], contents, values[n + 1]);
-    }
-
-    string && contents.push(string);
-    return contents;
-}
 
 /**
 ContentRenderer()
@@ -166,5 +150,20 @@ export default function ContentRenderer(node, context, options) {
 }
 
 assign(ContentRenderer.prototype, Renderer.prototype, {
-    resolve: renderContent
+    resolve: function(values) {
+        const strings  = values[0];
+        const contents = [];
+    
+        let n = -1;
+        let string = '';
+    
+        while (strings[++n] !== undefined) {
+            // Append to string until it has to be pushed to contents because
+            // a node or renderer has to be pushed in behind it
+            string = renderValue(string + strings[n], contents, values[n + 1]);
+        }
+    
+        string && contents.push(string);
+        return contents;
+    }
 });

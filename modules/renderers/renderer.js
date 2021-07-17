@@ -1,6 +1,6 @@
 
-import library from '../library.js';
-import compile from '../compile.js';
+//import library from '../library.js';
+//import compile from '../compile.js';
 import toText  from '../to-text.js';
 
 const assign = Object.assign;
@@ -67,21 +67,26 @@ export function toPromise() {
 
 /** 
 Renderer()
-Base class for providing renderers with the properties `{ node, path, fn, name }`
-and a generic `.render(observer, data)` method.
+Base class/mixin for providing renderers with the properties 
+`{ node, context, path }` and a generic `.render()` method.
 **/
+
+let id = 0;
 
 export default function Renderer(node, context, options) {
     this.node    = node;
     this.context = context;
     this.path    = options.path;
+    this.id      = ++id;
+    this.count   = 0;
+    this.templateId = options.templateId;
     //this.literal = options.literal || compile(library, options.consts, options.source, null, 'arguments[1]', toPromise);
 }
 
 assign(Renderer.prototype, {
     render: function() {
-        return this.literal
-        .apply(this.context, arguments)
+        ++this.count;
+        return this.literal.apply(this, arguments)
         .then(this.resolve)
         .then(this.update);
     },

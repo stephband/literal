@@ -148,7 +148,12 @@ export default function TemplateRenderer(template) {
     this.fragment  = template.content.cloneNode(true);
     this.first     = this.fragment.childNodes[0];
     this.last      = this.fragment.childNodes[this.fragment.childNodes.length - 1];
-    this.renderers = compileNode([], this.consts.join(', '), '', this.fragment);
+
+    this.renderers = compileNode([], this.consts.join(', '), '', this.fragment, {
+        /* Context object `this` inside template */
+        id: id
+    });
+
     this.sets      = nothing;
 
     cache[id] = this;
