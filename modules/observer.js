@@ -5,10 +5,11 @@ import noop from '../../fn/modules/noop.js';
 
 const $target   = Symbol('target');
 const $observer = Symbol('observer');
-const $handlers = Symbol('sets');
+const $handlers = Symbol('handlers');
 
 
 const A            = Array.prototype;
+const define       = Object.defineProperties;
 const nothing      = Object.freeze([]);
 const isExtensible = Object.isExtensible;
 
@@ -174,6 +175,11 @@ const arrayHandlers = {
     }*/
 };
 
+const properties = {
+    [$handlers]: {},
+    [$observer]: {},
+    [$target]:   {}
+};
 
 function createObserver(target) {
     const handlers = {
@@ -188,19 +194,13 @@ console.trace('T', target === Object.prototype, target, name);
     }
 */
 
-    target[$handlers] = handlers;
-
-    return target[$observer] = new Proxy(target, {
+    const observer = new Proxy(target, {
         // Inside handlers, observer is the observer proxy or an object that 
         // inherits from it
         get: function get(target, name, proxy) {
             if (typeof name === 'symbol') {
-                    // Handle observer symbols
-                return name === $target ? target :
-                    name === $observer ? proxy :
-                    name === $handlers ? handlers :
-                    // Return the symbol property value directly
-                    target[name] ;
+                // Handle observer symbols
+                return target[name] ;
             }
 
             // Don't allow Safari to log __proto__ as a Proxy. Dangerous!
@@ -238,6 +238,14 @@ console.trace('T', target === Object.prototype, target, name);
             return true;
         }
     });
+
+    properties[$handlers].value = handlers;
+    properties[$observer].value = observer;
+    properties[$target].value   = target;
+
+    define(target, properties);
+
+    return observer;
 }
 
 

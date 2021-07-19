@@ -13,7 +13,7 @@ requestData('./path/to/data.json');
 Where a `url` to a module is relative it is normalised to `window.location` so 
 that imports written in templates are treated relative to their location 
 (dynamic `import()` would otherwise try and import relative to this 
-`request-data.js` module).
+`request.js` module).
 
 ```
 requestData('./path/to/module.js');

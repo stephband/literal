@@ -15,6 +15,8 @@ import decode   from './decode.js';
 
 const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
+const A = Array.prototype;
+
 const config = {
     /*
     types: {
@@ -122,7 +124,8 @@ const compileAttribute = overload((renderers, vars, path, node, attribute) => at
 });
 
 function compileAttributes(renderers, vars, path, node, context) {
-    const attributes = node.attributes;
+    // Attributes may be removed during parsing so copy the list before looping
+    const attributes = A.slice.apply(node.attributes);
     var n = -1, attribute;
     // Todo: order attributes so that min, max, value come last?
     while (attribute = attributes[++n]) {

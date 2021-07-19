@@ -62,7 +62,9 @@ const lib = {
     }),
     */
 
+    assign: Object.assign,
     by,
+    define: Object.defineProperties,
     entries: Object.entries, 
     em, 
     equals, 

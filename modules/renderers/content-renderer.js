@@ -1,7 +1,8 @@
 
 import isTextNode     from '../../../dom/modules/is-text-node.js';
 import library        from '../library.js';
-import include        from '../include.js';
+import include        from '../../library/include.js';
+import request        from '../../library/request.js';
 import compile        from '../compile.js';
 import toText         from '../to-text.js';
 import Renderer       from './renderer.js';
@@ -12,7 +13,8 @@ const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('l
 const assign = Object.assign;
 
 const contentLibrary = assign({}, library, {
-    include: include
+    include: include,
+    request: request
 });
 
 
