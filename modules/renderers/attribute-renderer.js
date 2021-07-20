@@ -19,7 +19,7 @@ function setAttribute(node, name, value) {
     return 1;
 }
 
-export default function AttributeRenderer(node, context, options) {
+export default function AttributeRenderer(node, options) {
     Renderer.apply(this, arguments);
     this.literal = options.literal || compile(library, options.consts, options.source, null, 'arguments[1]');
     this.name    = options.name;

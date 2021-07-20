@@ -99,6 +99,13 @@ function prepareContent(content) {
     }
 }
 
+function newRenderer(renderer) {
+    // `this` is the fragment of the new renderer
+    const node    = getDescendant(renderer.path, this);
+    const element = isTextNode(node) ? node.parentNode : node ;
+    return new renderer.constructor(node, renderer, element);
+}
+
 export default function TemplateRenderer(template) {
     // TemplateRenderer may be called with a string id or a template element
     const id = typeof template === 'string' ?
@@ -110,13 +117,11 @@ export default function TemplateRenderer(template) {
     if (cache[id]) {
         this.consts    = cache[id].consts;
         this.content   = cache[id].content;
-        this.context   = {};
+        //this.context   = {};
         this.fragment  = cache[id].content.cloneNode(true);
         this.first     = this.fragment.childNodes[0];
         this.last      = this.fragment.childNodes[this.fragment.childNodes.length - 1];
-        this.renderers = cache[id].renderers.map((renderer) =>
-            new renderer.constructor(getDescendant(renderer.path, this.fragment), this.context, renderer)
-        );
+        this.renderers = cache[id].renderers.map(newRenderer, this.fragment);
         this.sets      = nothing;
         return;
     }
@@ -149,11 +154,7 @@ export default function TemplateRenderer(template) {
     this.first     = this.fragment.childNodes[0];
     this.last      = this.fragment.childNodes[this.fragment.childNodes.length - 1];
 
-    this.renderers = compileNode([], this.consts.join(', '), '', this.fragment, {
-        /* Context object `this` inside template */
-        id: id
-    });
-
+    this.renderers = compileNode([], this.consts.join(', '), '', this.fragment);
     this.sets      = nothing;
 
     cache[id] = this;
@@ -194,7 +195,7 @@ assign(TemplateRenderer.prototype, {
             }) :    
             nothing ;
 
-        return Promise
+        const promise = Promise
         .all(renderers.map((renderer) => render(renderer, observer, data)))
         .then((counts) => {
             logCounts(counts);

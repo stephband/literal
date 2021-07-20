@@ -68,14 +68,14 @@ export function toPromise() {
 /** 
 Renderer()
 Base class/mixin for providing renderers with the properties 
-`{ node, context, path }` and a generic `.render()` method.
+`{ node, path }` and a generic `.render()` method.
 **/
 
 let id = 0;
 
-export default function Renderer(node, context, options) {
+export default function Renderer(node, options) {
+    this.element = node;
     this.node    = node;
-    this.context = context;
     this.path    = options.path;
     this.id      = ++id;
     this.count   = 0;

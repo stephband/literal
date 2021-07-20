@@ -14,10 +14,15 @@ export function include(url, data) {
 
     const renderer = new TemplateRenderer(url.slice(1));
 
-    // Where data is a url, fetch or import it before rendering
+    // Accept a url, fetch or import it before rendering
     if (typeof data === 'string') {
         request(data).then((data) => renderer.render(data));
     }
+    // Accept a promise of data
+    else if (data.then) {
+        data.then((data) => renderer.render(data));
+    }
+    // Accept an object or undefined
     else {
         renderer.render(data || {});
     }

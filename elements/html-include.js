@@ -124,7 +124,7 @@ element('<html-include>', {
     },
 
     connect: function() {
-        // Where a data attribute has not been defined resolve with an 
+        // Where no data or data-* attribute has been defined resolve with an 
         // empty object
         this.resolveData && this.resolveData({});
     }

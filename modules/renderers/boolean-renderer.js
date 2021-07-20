@@ -30,7 +30,7 @@ export function setBooleanProperty(node, name, value) {
     return 1;
 }
 
-export default function BooleanRenderer(node, context, options) {
+export default function BooleanRenderer(node, options) {
     Renderer.apply(this, arguments);
     this.literal = options.literal || compile(library, options.consts, options.source, null, 'arguments[1]');
     this.name    = options.name;

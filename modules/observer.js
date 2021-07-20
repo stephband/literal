@@ -230,7 +230,8 @@ console.trace('T', target === Object.prototype, target, name);
     
             // Set the target of value on target. Then use that as value just 
             // in case target is doing something funky with property descriptors
-            target[name] = value && typeof value === 'object' && value[$target] || value ;
+            // that return a different value from the value that was set
+            target[name] = Observer.target(value);
             value = target[name];
             fire(handlers.sets, name, value);
 

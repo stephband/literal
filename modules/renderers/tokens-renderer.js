@@ -76,7 +76,7 @@ function setTokens(list, cached, tokens, count) {
     return ++count;
 }
 
-export default function TokensRenderer(node, context, options) {
+export default function TokensRenderer(node, options) {
     Renderer.apply(this, arguments);
     
     const list = getTokenList(node, options.name);

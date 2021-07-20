@@ -97,7 +97,7 @@ function setValue(node, value) {
     return count;
 }
 
-export default function ValueRenderer(node, context, options) {
+export default function ValueRenderer(node, options) {
     Renderer.apply(this, arguments);
     this.literal = options.literal || compile(library, options.consts, options.source, null, 'arguments[1]');
     this.update = (value) => setValue(node, value);
@@ -114,7 +114,7 @@ StringValueRenderer()
 Constructs an object responsible for rendering to a value property as a string.
 **/
 
-export function StringValueRenderer(node, context, options) {
+export function StringValueRenderer(node, options) {
     Renderer.apply(this, arguments);
     this.literal = options.literal || compile(library, options.consts, options.source, null, 'arguments[1]');
     this.update  = (value) => setValue(node, value);
