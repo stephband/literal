@@ -45,31 +45,31 @@ function getDescendant(path, root) {
 }
 
 function empty(renderer) {
-    const rendered = renderer.rendered;
+    const paths = renderer.paths;
 
-    if (!rendered) {
-        renderer.rendered = {};
+    if (!paths) {
+        renderer.paths = {};
         return;
     }
 
     let key;
-    for (key in rendered) {
-        rendered[key] = undefined;
+    for (key in paths) {
+        paths[key] = undefined;
     }
 }
 
 function render(renderer, observer, data) {
     empty(renderer);
 
-    const gets     = Observer.gets(observer, (name, value) => renderer.rendered[name] = true);
-    const promise  = renderer.render(observer, data);
+    const gets    = Observer.gets(observer, (name, value) => renderer.paths[name] = true);
+    const promise = renderer.render(observer, data);
 
     // We may only collect synchronous gets – other templates may use 
     // this data object while we are promising and we don't want to
     // include their gets by stopping on .then(). Stop now. If we want to
     // fix this, making a proxy per template instance would be the way to go.
     gets.stop();
-
+    //console.log(Object.keys(renderer.paths));
     return promise;
 }
 
@@ -181,7 +181,8 @@ assign(TemplateRenderer.prototype, {
                 // If the last render did not access this name assume there 
                 // is no need to render. Eh? Is this right?
                 const renders = renderers.map((renderer) => (
-                    renderer.rendered[name] ?
+console.log(name, Object.keys(renderer.paths)),
+                    renderer.paths[name] ?
                         render(renderer, observer, data) :
                         0
                 ));

@@ -92,3 +92,5 @@ export function register(name, fn) {
 
     lib[name] = fn;
 }
+
+window.s = slugify;

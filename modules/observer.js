@@ -9,9 +9,12 @@ const $handlers = Symbol('handlers');
 
 
 const A            = Array.prototype;
+const assign       = Object.assign;
 const define       = Object.defineProperties;
+const keys         = Object.keys;
 const nothing      = Object.freeze([]);
 const isExtensible = Object.isExtensible;
+const values       = Object.values;
 
 
 // Utils
@@ -35,7 +38,13 @@ function fire(fns, name, value) {
     fns = fns.slice(0);
     var n = -1;
     while (fns[++n]) {
-        fns[n](name, value);
+        // Support objects or functions (TEMP)
+        if (fns[n].fn) {
+            fns[n].fn(name, value);
+        }
+        else {
+            fns[n](name, value);
+        }
     }
 }
 
@@ -198,21 +207,17 @@ console.trace('T', target === Object.prototype, target, name);
         // Inside handlers, observer is the observer proxy or an object that 
         // inherits from it
         get: function get(target, name, proxy) {
-            if (typeof name === 'symbol') {
-                // Handle observer symbols
-                return target[name] ;
-            }
-
-            // Don't allow Safari to log __proto__ as a Proxy. Dangerous!
-            // Pollutes Object.prototpye with [$observer] which breaks everything 
-            if (name === '__proto__') {
+            // Don't observe changes to symbol properties, and
+            // don't allow Safari to log __proto__ as a Proxy. That's dangerous!
+            // It pollutes Object.prototpye with [$observer] which breaks everything 
+            if (typeof name === 'symbol' || name === '__proto__') {
                 return target[name];
             }
 
-            // Mutable if the property's not a symbol
-            let desc;
-            const mutable = ((desc = Object.getOwnPropertyDescriptor(target, name)), !desc || desc.writable);
-//console.log('GET', name, mutable, Observer(target[name]), target[name]);
+            // Is the property mutable
+            const descriptor = Object.getOwnPropertyDescriptor(target, name);
+            const mutable    = !descriptor || descriptor.writable || descriptor.set;
+
             if (mutable) {
                 fire(handlers.gets, name);
             }
@@ -220,14 +225,32 @@ console.trace('T', target === Object.prototype, target, name);
                 return target[name];
             }
 
-            // Return the observer of its value or its value
-            return Observer(target[name]) || target[name] ;
+            // Get the observer of its value
+            const observer = Observer(target[name]); 
+            
+            if (!observer) {
+                return target[name];
+            }
+
+            // If get operations are being monitored, make them monitor the
+            // object at the named key also
+            var n = -1;
+            while(handlers.gets[++n]) {
+                handlers.gets[n].observe(name);
+            }
+
+            return observer;
         },
         
         set: function set(target, name, value, proxy) {
             // If we are setting the same value, we're not really setting at all
             if (target[name] === value) { return true; }
-    
+
+            var n = -1;
+            while(handlers.gets[++n]) {
+                handlers.gets[n].unobserve(name);
+            }
+
             // Set the target of value on target. Then use that as value just 
             // in case target is doing something funky with property descriptors
             // that return a different value from the value that was set
@@ -292,22 +315,6 @@ Observer.target = function target(object) {
 };
 
 
-/*
-Ops()
-Ops object with a stop method for efficient unbinding.
-*/
-
-function Ops(type, observer, fn, done) {
-    this.fns = observer[$handlers][type + 's'];
-    this.fn  = fn;
-    this.fns.push(fn);
-    this.done = done;
-}
-
-Ops.prototype.stop = function() {
-    remove(this.fns, this.fn);
-    this.done && this.done();
-};
 
 
 /** 
@@ -316,8 +323,60 @@ Calls `fn` for every property of `object` read via a get operation. Returns an
 object with the method `.stop()`.
 **/
 
+function stop(child) {
+    child.stop();
+}
+
+function ChildGets(target, path, parent) {
+    this.children = {};
+    this.target   = target;
+    this.parent   = parent;
+    this.path     = path;
+    target[$handlers].gets.push(this);
+}
+
+assign(ChildGets.prototype, {
+    observe: function(key) {
+        // We may only create one child observer per key
+        if (this.children[key]) { return; }
+        this.children[key] = new ChildGets(this.target[key], key, this);
+    },
+
+    unobserve: function(key) {
+        // Can't unobserve the unobserved
+        if (!this.children[key]) { return; }
+        this.children[key].stop();
+        delete this.children[key];
+    },
+
+    fn: function(name) {
+        // Pass concated path to parent fn
+        this.parent.fn(this.path + '.' + name);
+    },
+
+    stop: function() {
+        remove(this.target[$handlers].gets, this);
+        values(this.children).forEach(stop);
+    }
+});
+
+function Gets(target, fn, done) {
+    this.children = {};
+    this.target   = target;
+    this.fn       = fn;
+    this.done     = done;
+    target[$handlers].gets.push(this);
+}
+
+assign(Gets.prototype, ChildGets.prototype, {
+    stop: function() {
+        ChildGets.prototype.stop.apply(this);
+        this.done && this.done();
+    }
+});
+
 Observer.gets = function gets(observer, fn) {
-    return new Ops('get', observer, fn);
+    return new Gets(Observer.target(observer), fn);
 };
 
 
@@ -327,8 +386,20 @@ Calls `fn` for every property of `object` set. Returns an object with the
 method `.stop()`.
 **/
 
+function Sets(target, fn, done) {
+    this.target = target;
+    this.fn     = fn;
+    this.done   = done;
+    target[$handlers].sets.push(fn);
+}
+
+Sets.prototype.stop = function() {
+    remove(this.target[$handlers].sets, this.fn);
+    this.done && this.done();
+};
+
 Observer.sets = function sets(observer, fn) {
-    return new Ops('set', observer, fn);
+    return new Sets(observer, fn);
 };
 
 
@@ -346,7 +417,7 @@ export function mutations(selector, object, fn) {
         names.length = 0;
     }
 
-    return new Ops('set', observer, (name) => {
+    return new Sets(observer, (name) => {
         // If selector does not include this property name, ignore
         if (!selector.includes(name)) {
             return;
