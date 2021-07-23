@@ -125,7 +125,7 @@ export default function TemplateRenderer(template) {
         this.first     = this.fragment.childNodes[0];
         this.last      = this.fragment.childNodes[this.fragment.childNodes.length - 1];
         this.renderers = cache[id].renderers.map(newRenderer, this.fragment);
-        this.sets      = nothing;
+        this.observers = nothing;
         return;
     }
 
@@ -159,7 +159,6 @@ export default function TemplateRenderer(template) {
 
     this.renderers = compileNode([], this.consts.join(', '), '', this.fragment);
     this.observers = nothing;
-//    this.sets      = nothing;
 
     cache[id] = this;
 }

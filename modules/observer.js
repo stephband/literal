@@ -363,7 +363,6 @@ assign(ChildGets.prototype, {
 function Gets(target, done) {
     this.children = {};
     this.target   = target;
-    this.fn       = fn;
     this.done     = done;
     target[$handlers].gets.push(this);
 }
