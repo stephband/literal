@@ -9,6 +9,7 @@ import equals          from '../../fn/modules/equals.js';
 import matches         from '../../fn/modules/matches.js';
 import get             from '../../fn/modules/get-path.js';
 import slugify         from '../../fn/modules/slugify.js';
+import last            from '../../fn/modules/last.js';
 import px, { em, rem } from './parse-length.js';
 
 
@@ -70,6 +71,7 @@ const lib = {
     equals, 
     get, 
     keys: Object.keys,
+    last,
     matches,
     px, 
     rem, 
