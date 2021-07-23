@@ -213,7 +213,7 @@ console.trace('T', target === Object.prototype, target, name);
             if (typeof name === 'symbol' || name === '__proto__') {
                 return target[name];
             }
-
+// console.log(this) ?? Can we use this object to store stuff?
             // Is the property mutable
             const descriptor = Object.getOwnPropertyDescriptor(target, name);
             const mutable    = !descriptor || descriptor.writable || descriptor.set;
@@ -236,7 +236,7 @@ console.trace('T', target === Object.prototype, target, name);
             // object at the named key also
             var n = -1;
             while(handlers.gets[++n]) {
-                handlers.gets[n].observe(name);
+                handlers.gets[n].watch(name);
             }
 
             return observer;
@@ -248,7 +248,7 @@ console.trace('T', target === Object.prototype, target, name);
 
             var n = -1;
             while(handlers.gets[++n]) {
-                handlers.gets[n].unobserve(name);
+                handlers.gets[n].unwatch(name);
             }
 
             // Set the target of value on target. Then use that as value just 
@@ -323,8 +323,8 @@ Calls `fn` for every property of `object` read via a get operation. Returns an
 object with the method `.stop()`.
 **/
 
-function stop(child) {
-    child.stop();
+function stop(gets) {
+    gets.stop();
 }
 
 function ChildGets(target, path, parent) {
@@ -336,13 +336,13 @@ function ChildGets(target, path, parent) {
 }
 
 assign(ChildGets.prototype, {
-    observe: function(key) {
+    watch: function(key) {
         // We may only create one child observer per key
         if (this.children[key]) { return; }
         this.children[key] = new ChildGets(this.target[key], key, this);
     },
 
-    unobserve: function(key) {
+    unwatch: function(key) {
         // Can't unobserve the unobserved
         if (!this.children[key]) { return; }
         this.children[key].stop();
@@ -360,7 +360,7 @@ assign(ChildGets.prototype, {
     }
 });
 
-function Gets(target, fn, done) {
+function Gets(target, done) {
     this.children = {};
     this.target   = target;
     this.fn       = fn;
@@ -369,37 +369,71 @@ function Gets(target, fn, done) {
 }
 
 assign(Gets.prototype, ChildGets.prototype, {
+    done: function(fn) {
+        this.fnDone = fn;
+        return this;
+    },
+
+    each: function(fn) {
+        this.fn = fn;
+        return this;
+    },
+
     stop: function() {
         ChildGets.prototype.stop.apply(this);
-        this.done && this.done();
+        this.fnDone && this.fnDone();
     }
 });
 
-Observer.gets = function gets(observer, fn) {
-    return new Gets(Observer.target(observer), fn);
+Observer.gets = function gets(observer) {
+    return new Gets(Observer.target(observer));
 };
+
+
+
 
 
 /** 
-Observer.sets(object, fn)
-Calls `fn` for every property of `object` set. Returns an object with the 
+observe
+**/
+
+export function observe(path, object) {
+    console.log('observe', path, Observer.target(object));
+}
+
+
+
+
+/** 
+Observer.sets(target).each(fn)
+Calls `fn` for every property of `target` set. Returns an object with the 
 method `.stop()`.
 **/
 
-function Sets(target, fn, done) {
+function Sets(target, done) {
     this.target = target;
-    this.fn     = fn;
-    this.done   = done;
-    target[$handlers].sets.push(fn);
 }
 
-Sets.prototype.stop = function() {
-    remove(this.target[$handlers].sets, this.fn);
-    this.done && this.done();
-};
+assign(Sets.prototype, {
+    done: function(fn) {
+        this.fnDone = fn;
+        return this;
+    },
 
-Observer.sets = function sets(observer, fn) {
-    return new Sets(observer, fn);
+    each: function(fn) {
+        this.fn = fn;
+        this.target[$handlers].sets.push(fn);
+        return this;
+    },
+
+    stop: function() {
+        remove(this.target[$handlers].sets, this.fn);
+        this.fnDone && this.fnDone();
+    }
+});
+
+Observer.sets = function sets(observer) {
+    return new Sets(Observer.target(observer));
 };
 
 
@@ -417,7 +451,8 @@ export function mutations(selector, object, fn) {
         names.length = 0;
     }
 
-    return new Sets(observer, (name) => {
+    return new Sets(observer)
+    .each((name) => {
         // If selector does not include this property name, ignore
         if (!selector.includes(name)) {
             return;
@@ -430,5 +465,6 @@ export function mutations(selector, object, fn) {
 
         // Then collect mutated names
         names.push(name);
-    }, () => fn = noop);
+    })
+    .done(() => fn = noop);
 }

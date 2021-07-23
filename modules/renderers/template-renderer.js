@@ -4,12 +4,13 @@ import nothing     from '../../../fn/modules/nothing.js';
 import identify    from '../../../dom/modules/identify.js';
 import isTextNode  from '../../../dom/modules/is-text-node.js';
 import compileNode from '../compile-node.js';
-import Observer    from '../observer.js';
+import Observer, { observe } from '../observer.js';
 import log         from '../log.js';
 
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
 const assign = Object.assign;
+const keys   = Object.keys;
 const cache  = {};
 
 function add(a, b) {
@@ -61,7 +62,9 @@ function empty(renderer) {
 function render(renderer, observer, data) {
     empty(renderer);
 
-    const gets    = Observer.gets(observer, (name, value) => renderer.paths[name] = true);
+    const gets = Observer.gets(observer)
+        .each((name, value) => renderer.paths[name] = true);
+
     const promise = renderer.render(observer, data);
 
     // We may only collect synchronous gets – other templates may use 
@@ -155,9 +158,14 @@ export default function TemplateRenderer(template) {
     this.last      = this.fragment.childNodes[this.fragment.childNodes.length - 1];
 
     this.renderers = compileNode([], this.consts.join(', '), '', this.fragment);
-    this.sets      = nothing;
+    this.observers = nothing;
+//    this.sets      = nothing;
 
     cache[id] = this;
+}
+
+function stop(object) {
+    object.stop();
 }
 
 assign(TemplateRenderer.prototype, {
@@ -175,9 +183,18 @@ assign(TemplateRenderer.prototype, {
         const observer  = Observer(data);
         const renderers = this.renderers;
 
+        this.observers.forEach(stop);
+        this.observers = observer ?
+            renderers.flatMap((renderer) => (renderer.paths ?
+                keys(renderer.paths).map((path) => observe(path, observer)) :
+                nothing
+            )) :
+            nothing ;
+
+        /*
         this.sets.stop();
         this.sets = observer ?
-            Observer.sets(observer, (name, value) => {
+            Observer.sets(data).each((name, value) => {
                 // If the last render did not access this name assume there 
                 // is no need to render. Eh? Is this right?
                 const renders = renderers.map((renderer) => (
@@ -195,6 +212,7 @@ console.log(name, Object.keys(renderer.paths)),
                 Promise.all(renders).then(logCounts);
             }) :    
             nothing ;
+        */
 
         const promise = Promise
         .all(renderers.map((renderer) => render(renderer, observer, data)))
