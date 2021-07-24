@@ -17,10 +17,6 @@ function add(a, b) {
     return b + a;
 }
 
-function not0(value) {
-    return value !== 0;
-}
-
 function logCounts(counts) {
     const count = counts.reduce(add, 0);
     if (count === 0) { return; }
@@ -55,7 +51,7 @@ function empty(renderer) {
 
     let key;
     for (key in paths) {
-        paths[key] = undefined;
+        delete paths[key];
     }
 }
 
@@ -72,7 +68,6 @@ function render(renderer, observer, data) {
     // include their gets by stopping on .then(). Stop now. If we want to
     // fix this, making a proxy per template instance would be the way to go.
     gets.stop();
-    //console.log(Object.keys(renderer.paths));
     return promise;
 }
 
@@ -185,7 +180,11 @@ assign(TemplateRenderer.prototype, {
         this.observers.forEach(stop);
         this.observers = observer ?
             renderers.flatMap((renderer) => (renderer.paths ?
-                keys(renderer.paths).map((path) => observe(path, observer)) :
+                keys(renderer.paths).map((path) =>
+                    observe(path, observer).each((value) =>
+                        render(renderer, observer, data)
+                    )
+                ) :
                 nothing
             )) :
             nothing ;
@@ -213,7 +212,7 @@ console.log(name, Object.keys(renderer.paths)),
             nothing ;
         */
 
-        const promise = Promise
+        return Promise
         .all(renderers.map((renderer) => render(renderer, observer, data)))
         .then((counts) => {
             logCounts(counts);

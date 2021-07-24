@@ -192,6 +192,7 @@ const properties = {
 
 function createObserver(target) {
     const handlers = {
+        observables: {},
         gets: [],
         sets: []
     };
@@ -209,10 +210,13 @@ console.trace('T', target === Object.prototype, target, name);
         get: function get(target, name, proxy) {
             // Don't observe changes to symbol properties, and
             // don't allow Safari to log __proto__ as a Proxy. That's dangerous!
-            // It pollutes Object.prototpye with [$observer] which breaks everything 
-            if (typeof name === 'symbol' || name === '__proto__') {
+            // It pollutes Object.prototpye with [$observer] which breaks everything.
+            // Also, we're not interested in observing the prototype chain so
+            // stick to hasOwnProperty.
+            if (typeof name === 'symbol' || name === '__proto__' || !target.hasOwnProperty(name)) {
                 return target[name];
             }
+
 // console.log(this) ?? Can we use this object to store stuff?
             // Is the property mutable
             const descriptor = Object.getOwnPropertyDescriptor(target, name);
@@ -256,6 +260,12 @@ console.trace('T', target === Object.prototype, target, name);
             // that return a different value from the value that was set
             target[name] = Observer.target(value);
             value = target[name];
+
+            const observables = handlers.observables[name]; 
+            if (observables) {
+                fire(observables, value);
+            }
+
             fire(handlers.sets, name, value);
 
             // Return true to indicate success to Proxy
@@ -329,7 +339,8 @@ function stop(gets) {
 
 function ChildGets(target, path, parent) {
     this.children = {};
-    this.target   = target;
+    // For some reason chilg proxies are being set... dunno...
+    this.target   = Observer.target(target);
     this.parent   = parent;
     this.path     = path;
     target[$handlers].gets.push(this);
@@ -339,6 +350,7 @@ assign(ChildGets.prototype, {
     watch: function(key) {
         // We may only create one child observer per key
         if (this.children[key]) { return; }
+        
         this.children[key] = new ChildGets(this.target[key], key, this);
     },
 
@@ -361,6 +373,7 @@ assign(ChildGets.prototype, {
 });
 
 function Gets(target, done) {
+    //console.log('TARG', target);
     this.children = {};
     this.target   = target;
     this.done     = done;
@@ -396,8 +409,73 @@ Observer.gets = function gets(observer) {
 observe
 **/
 
+const rkey = /(^\.?|\.)\s*([\w-]*)\s*/g;
+
+function getObservables(key, target) {
+    const handlers = target[$handlers];
+    const observables = handlers.observables || (handlers.observables = {});
+    return observables[key] || (observables[key] = []);
+}
+
+function Observable(path, lastIndex, target) {
+    if (lastIndex >= path.length) { return; }
+
+    rkey.lastIndex = lastIndex || 0;
+    const r = rkey.exec(path);
+
+    if (!r) {
+        return;
+    }
+
+    if (!r[1]) {
+        console.log('r[0] must be "."', r[0], 'Todo: observe all mutations');
+        return;
+    }
+
+    this.key       = r[1];
+    this.target    = target;
+
+    getObservables(this.key, this.target).push(this);
+
+    const value = this.target[this.key];
+    this.child = value ?
+        new Observable(path, rkey.lastIndex, value) :
+        undefined ;
+}
+
+assign(Observable.prototype, {
+    each: function(fn) {
+        this.fnEach = fn;
+        // Apply fn to all children
+        var child = this;
+        while (child = child.child) {
+            child.fnEach = fn;
+        }
+        return this;
+    },
+
+    /* Called by fire() */
+    fn: function() {
+        this.fnEach && this.fnEach(this.target[this.key]);
+        return 
+    },
+
+    stop: function() {
+        remove(getObservables(this.key, this.target), this);
+        this.child && this.child.stop();
+        this.child = undefined;
+        this.fnDone && this.fnDone();
+    },
+
+    done: function(fn) {
+        this.fnDone = fn;
+        return this;
+    }
+});
+
 export function observe(path, object) {
     console.log('observe', path, Observer.target(object));
+    return new Observable(path, 0, Observer.target(object));
 }
 
 
