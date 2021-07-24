@@ -42,13 +42,14 @@ function setChecked(node, value) {
     return 1;
 }
 
-export default function CheckedRenderer(node, context, options) {
+export default function CheckedRenderer(node, options) {
     Renderer.apply(this, arguments);
     this.literal = options.literal || compile(library, options.consts, options.source, null, 'arguments[1]');
     this.update  = (value) => setChecked(node, value);
 
     // Negate the effects of having template content in the checked attribute
-    node.checked = false;
+    //node.checked = false;
+    node.removeAttribute('checked');
 }
 
 assign(CheckedRenderer.prototype, Renderer.prototype, {

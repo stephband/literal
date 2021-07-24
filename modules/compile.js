@@ -129,7 +129,7 @@ export default function compile(scope, varstring, string, id, consts = 'data') {
             const fn = compileAsync(scope, 'data = {}', code);
 
             return cache[key] = function literal() {
-                log('render ', id ? id : key.trim().length > 45 ? '`' + key.trim().slice(0, 33).replace(/ *\n */g, ' ') + ' ... ' +  key.trim().slice(-8).replace(/ *\n */g, ' ') + '`' : '`' + key.trim().replace(/ *\n */g, ' ') + '`', 'orange');    
+                //log('render ', id ? id : key.trim().length > 45 ? '`' + key.trim().slice(0, 33).replace(/ *\n */g, ' ') + ' ... ' +  key.trim().slice(-8).replace(/ *\n */g, ' ') + '`' : '`' + key.trim().replace(/ *\n */g, ' ') + '`', 'orange');    
                 // Where this is global, neuter it
                 return fn.apply(this, arguments);
             };

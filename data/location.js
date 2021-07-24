@@ -6,7 +6,7 @@ const assign = Object.assign;
 
 export const defaults = {
     search: '',
-    params: null,
+    params: {},
     hash:   '',
     id:     '',
     json:   'null',
@@ -27,7 +27,8 @@ const names = [];
 
 function parseParam(string) {
     var value;
-    return string === 'null' ? null :
+    return string === '' ? '' :
+        string === 'null' ? null :
         string === 'true' ? true :
         string === 'false' ? false :
         // Number string to number
@@ -39,11 +40,29 @@ function parseParam(string) {
 }
 
 function fromEntries(entries) {
+    // Keep a note of what state each param is in: single, multiple or 
+    // undefined (unparsed)
+    const state  = {};
     const object = {};
     var key, value;
 
     for([key, value] of entries) {
-        object[key] = parseParam(value);
+        if (state[key] === 'multiple') {
+            // Values have already been got, ignore
+        }
+        else if (state[key] === 'single') {
+            // As soon as we encounter a second instance of key, get all values 
+            // for key. We flatMap to accomodate the case where a single value 
+            // is parsed as an array, ie ?v=a&v=b,c ... although I'm not convinced 
+            // we should be supporting nonstandard ways of representing multiple 
+            // values
+            object[key] = entries.getAll(key).flatMap(parseParam);
+            state[key] = 'multiple';
+        }
+        else {
+            object[key] = parseParam(value);
+            state[key] = 'single';
+        }
     }
 
     return object;

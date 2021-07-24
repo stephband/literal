@@ -4,20 +4,17 @@ import nothing     from '../../../fn/modules/nothing.js';
 import identify    from '../../../dom/modules/identify.js';
 import isTextNode  from '../../../dom/modules/is-text-node.js';
 import compileNode from '../compile-node.js';
-import Observer    from '../observer.js';
+import Observer, { observe } from '../observer.js';
 import log         from '../log.js';
 
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
 const assign = Object.assign;
+const keys   = Object.keys;
 const cache  = {};
 
 function add(a, b) {
     return b + a;
-}
-
-function not0(value) {
-    return value !== 0;
 }
 
 function logCounts(counts) {
@@ -45,31 +42,32 @@ function getDescendant(path, root) {
 }
 
 function empty(renderer) {
-    const rendered = renderer.rendered;
+    const paths = renderer.paths;
 
-    if (!rendered) {
-        renderer.rendered = {};
+    if (!paths) {
+        renderer.paths = {};
         return;
     }
 
     let key;
-    for (key in rendered) {
-        rendered[key] = undefined;
+    for (key in paths) {
+        delete paths[key];
     }
 }
 
 function render(renderer, observer, data) {
     empty(renderer);
 
-    const gets     = Observer.gets(observer, (name, value) => renderer.rendered[name] = true);
-    const promise  = renderer.render(observer, data);
+    const gets = Observer.gets(observer)
+        .each((name, value) => renderer.paths[name] = true);
+
+    const promise = renderer.render(observer, data);
 
     // We may only collect synchronous gets – other templates may use 
     // this data object while we are promising and we don't want to
     // include their gets by stopping on .then(). Stop now. If we want to
     // fix this, making a proxy per template instance would be the way to go.
     gets.stop();
-
     return promise;
 }
 
@@ -99,6 +97,13 @@ function prepareContent(content) {
     }
 }
 
+function newRenderer(renderer) {
+    // `this` is the fragment of the new renderer
+    const node    = getDescendant(renderer.path, this);
+    const element = isTextNode(node) ? node.parentNode : node ;
+    return new renderer.constructor(node, renderer, element);
+}
+
 export default function TemplateRenderer(template) {
     // TemplateRenderer may be called with a string id or a template element
     const id = typeof template === 'string' ?
@@ -110,14 +115,12 @@ export default function TemplateRenderer(template) {
     if (cache[id]) {
         this.consts    = cache[id].consts;
         this.content   = cache[id].content;
-        this.context   = {};
+        //this.context   = {};
         this.fragment  = cache[id].content.cloneNode(true);
         this.first     = this.fragment.childNodes[0];
         this.last      = this.fragment.childNodes[this.fragment.childNodes.length - 1];
-        this.renderers = cache[id].renderers.map((renderer) =>
-            new renderer.constructor(getDescendant(renderer.path, this.fragment), this.context, renderer)
-        );
-        this.sets      = nothing;
+        this.renderers = cache[id].renderers.map(newRenderer, this.fragment);
+        this.observers = nothing;
         return;
     }
 
@@ -149,14 +152,14 @@ export default function TemplateRenderer(template) {
     this.first     = this.fragment.childNodes[0];
     this.last      = this.fragment.childNodes[this.fragment.childNodes.length - 1];
 
-    this.renderers = compileNode([], this.consts.join(', '), '', this.fragment, {
-        /* Context object `this` inside template */
-        id: id
-    });
-
-    this.sets      = nothing;
+    this.renderers = compileNode([], this.consts.join(', '), '', this.fragment);
+    this.observers = nothing;
 
     cache[id] = this;
+}
+
+function stop(object) {
+    object.stop();
 }
 
 assign(TemplateRenderer.prototype, {
@@ -174,13 +177,27 @@ assign(TemplateRenderer.prototype, {
         const observer  = Observer(data);
         const renderers = this.renderers;
 
+        this.observers.forEach(stop);
+        this.observers = observer ?
+            renderers.flatMap((renderer) => (renderer.paths ?
+                keys(renderer.paths).map((path) =>
+                    observe(path, observer).each((value) =>
+                        render(renderer, observer, data)
+                    )
+                ) :
+                nothing
+            )) :
+            nothing ;
+
+        /*
         this.sets.stop();
         this.sets = observer ?
-            Observer.sets(observer, (name, value) => {
+            Observer.sets(data).each((name, value) => {
                 // If the last render did not access this name assume there 
                 // is no need to render. Eh? Is this right?
                 const renders = renderers.map((renderer) => (
-                    renderer.rendered[name] ?
+console.log(name, Object.keys(renderer.paths)),
+                    renderer.paths[name] ?
                         render(renderer, observer, data) :
                         0
                 ));
@@ -193,6 +210,7 @@ assign(TemplateRenderer.prototype, {
                 Promise.all(renders).then(logCounts);
             }) :    
             nothing ;
+        */
 
         return Promise
         .all(renderers.map((renderer) => render(renderer, observer, data)))

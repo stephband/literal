@@ -51,7 +51,7 @@ to provide default or fallback content.
 **/
 
 import element from '../../dom/modules/element.js';
-import requestData from '../modules/request-data.js';
+import request from '../library/request.js';
 
 const rpath = /^\.|^https?:\/\//;
 
@@ -66,7 +66,7 @@ function parseValue(string) {
 
 function resolveValue(value) {
     return rpath.test(value) ?
-        requestData(value) :
+        request(value) :
         parseValue(value) ;
 }
 
@@ -124,7 +124,7 @@ element('<html-include>', {
     },
 
     connect: function() {
-        // Where a data attribute has not been defined resolve with an 
+        // Where no data or data-* attribute has been defined resolve with an 
         // empty object
         this.resolveData && this.resolveData({});
     }
@@ -142,7 +142,7 @@ console.log('BOO dont know why this is triggered multiple times', value)
                 throw new Error('<html-include> may possess either data-* attributes or a single data attribute, not both');
             }
 
-            this.resolveData(requestData(value));
+            this.resolveData(request(value));
         }
     },
 

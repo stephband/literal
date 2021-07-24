@@ -5,12 +5,16 @@ import noop from '../../fn/modules/noop.js';
 
 const $target   = Symbol('target');
 const $observer = Symbol('observer');
-const $handlers = Symbol('sets');
+const $handlers = Symbol('handlers');
 
 
 const A            = Array.prototype;
+const assign       = Object.assign;
+const define       = Object.defineProperties;
+const keys         = Object.keys;
 const nothing      = Object.freeze([]);
 const isExtensible = Object.isExtensible;
+const values       = Object.values;
 
 
 // Utils
@@ -34,7 +38,13 @@ function fire(fns, name, value) {
     fns = fns.slice(0);
     var n = -1;
     while (fns[++n]) {
-        fns[n](name, value);
+        // Support objects or functions (TEMP)
+        if (fns[n].fn) {
+            fns[n].fn(name, value);
+        }
+        else {
+            fns[n](name, value);
+        }
     }
 }
 
@@ -174,9 +184,15 @@ const arrayHandlers = {
     }*/
 };
 
+const properties = {
+    [$handlers]: {},
+    [$observer]: {},
+    [$target]:   {}
+};
 
 function createObserver(target) {
     const handlers = {
+        observables: {},
         gets: [],
         sets: []
     };
@@ -188,31 +204,24 @@ console.trace('T', target === Object.prototype, target, name);
     }
 */
 
-    target[$handlers] = handlers;
-
-    return target[$observer] = new Proxy(target, {
+    const observer = new Proxy(target, {
         // Inside handlers, observer is the observer proxy or an object that 
         // inherits from it
         get: function get(target, name, proxy) {
-            if (typeof name === 'symbol') {
-                    // Handle observer symbols
-                return name === $target ? target :
-                    name === $observer ? proxy :
-                    name === $handlers ? handlers :
-                    // Return the symbol property value directly
-                    target[name] ;
-            }
-
-            // Don't allow Safari to log __proto__ as a Proxy. Dangerous!
-            // Pollutes Object.prototpye with [$observer] which breaks everything 
-            if (name === '__proto__') {
+            // Don't observe changes to symbol properties, and
+            // don't allow Safari to log __proto__ as a Proxy. That's dangerous!
+            // It pollutes Object.prototpye with [$observer] which breaks everything.
+            // Also, we're not interested in observing the prototype chain so
+            // stick to hasOwnProperty.
+            if (typeof name === 'symbol' || name === '__proto__' || !target.hasOwnProperty(name)) {
                 return target[name];
             }
 
-            // Mutable if the property's not a symbol
-            let desc;
-            const mutable = ((desc = Object.getOwnPropertyDescriptor(target, name)), !desc || desc.writable);
-//console.log('GET', name, mutable, Observer(target[name]), target[name]);
+// console.log(this) ?? Can we use this object to store stuff?
+            // Is the property mutable
+            const descriptor = Object.getOwnPropertyDescriptor(target, name);
+            const mutable    = !descriptor || descriptor.writable || descriptor.set;
+
             if (mutable) {
                 fire(handlers.gets, name);
             }
@@ -220,24 +229,57 @@ console.trace('T', target === Object.prototype, target, name);
                 return target[name];
             }
 
-            // Return the observer of its value or its value
-            return Observer(target[name]) || target[name] ;
+            // Get the observer of its value
+            const observer = Observer(target[name]); 
+            
+            if (!observer) {
+                return target[name];
+            }
+
+            // If get operations are being monitored, make them monitor the
+            // object at the named key also
+            var n = -1;
+            while(handlers.gets[++n]) {
+                handlers.gets[n].watch(name);
+            }
+
+            return observer;
         },
         
         set: function set(target, name, value, proxy) {
             // If we are setting the same value, we're not really setting at all
             if (target[name] === value) { return true; }
-    
+
+            var n = -1;
+            while(handlers.gets[++n]) {
+                handlers.gets[n].unwatch(name);
+            }
+
             // Set the target of value on target. Then use that as value just 
             // in case target is doing something funky with property descriptors
-            target[name] = value && typeof value === 'object' && value[$target] || value ;
+            // that return a different value from the value that was set
+            target[name] = Observer.target(value);
             value = target[name];
+
+            const observables = handlers.observables[name]; 
+            if (observables) {
+                fire(observables, value);
+            }
+
             fire(handlers.sets, name, value);
 
             // Return true to indicate success to Proxy
             return true;
         }
     });
+
+    properties[$handlers].value = handlers;
+    properties[$observer].value = observer;
+    properties[$target].value   = target;
+
+    define(target, properties);
+
+    return observer;
 }
 
 
@@ -283,22 +325,6 @@ Observer.target = function target(object) {
 };
 
 
-/*
-Ops()
-Ops object with a stop method for efficient unbinding.
-*/
-
-function Ops(type, observer, fn, done) {
-    this.fns = observer[$handlers][type + 's'];
-    this.fn  = fn;
-    this.fns.push(fn);
-    this.done = done;
-}
-
-Ops.prototype.stop = function() {
-    remove(this.fns, this.fn);
-    this.done && this.done();
-};
 
 
 /** 
@@ -307,19 +333,184 @@ Calls `fn` for every property of `object` read via a get operation. Returns an
 object with the method `.stop()`.
 **/
 
-Observer.gets = function gets(observer, fn) {
-    return new Ops('get', observer, fn);
+function stop(gets) {
+    gets.stop();
+}
+
+function ChildGets(target, path, parent) {
+    this.children = {};
+    // For some reason chilg proxies are being set... dunno...
+    this.target   = Observer.target(target);
+    this.parent   = parent;
+    this.path     = path;
+    target[$handlers].gets.push(this);
+}
+
+assign(ChildGets.prototype, {
+    watch: function(key) {
+        // We may only create one child observer per key
+        if (this.children[key]) { return; }
+        
+        this.children[key] = new ChildGets(this.target[key], key, this);
+    },
+
+    unwatch: function(key) {
+        // Can't unobserve the unobserved
+        if (!this.children[key]) { return; }
+        this.children[key].stop();
+        delete this.children[key];
+    },
+
+    fn: function(name) {
+        // Pass concated path to parent fn
+        this.parent.fn(this.path + '.' + name);
+    },
+
+    stop: function() {
+        remove(this.target[$handlers].gets, this);
+        values(this.children).forEach(stop);
+    }
+});
+
+function Gets(target, done) {
+    //console.log('TARG', target);
+    this.children = {};
+    this.target   = target;
+    this.done     = done;
+    target[$handlers].gets.push(this);
+}
+
+assign(Gets.prototype, ChildGets.prototype, {
+    done: function(fn) {
+        this.fnDone = fn;
+        return this;
+    },
+
+    each: function(fn) {
+        this.fn = fn;
+        return this;
+    },
+
+    stop: function() {
+        ChildGets.prototype.stop.apply(this);
+        this.fnDone && this.fnDone();
+    }
+});
+
+Observer.gets = function gets(observer) {
+    return new Gets(Observer.target(observer));
 };
 
 
+
+
+
 /** 
-Observer.sets(object, fn)
-Calls `fn` for every property of `object` set. Returns an object with the 
+observe
+**/
+
+const rkey = /(^\.?|\.)\s*([\w-]*)\s*/g;
+
+function getObservables(key, target) {
+    const handlers = target[$handlers];
+    const observables = handlers.observables || (handlers.observables = {});
+    return observables[key] || (observables[key] = []);
+}
+
+function Observable(path, lastIndex, target) {
+    if (lastIndex >= path.length) { return; }
+
+    rkey.lastIndex = lastIndex || 0;
+    const r = rkey.exec(path);
+
+    if (!r) {
+        return;
+    }
+
+    if (!r[1]) {
+        console.log('r[0] must be "."', r[0], 'Todo: observe all mutations');
+        return;
+    }
+
+    this.key       = r[1];
+    this.target    = target;
+
+    getObservables(this.key, this.target).push(this);
+
+    const value = this.target[this.key];
+    this.child = value ?
+        new Observable(path, rkey.lastIndex, value) :
+        undefined ;
+}
+
+assign(Observable.prototype, {
+    each: function(fn) {
+        this.fnEach = fn;
+        // Apply fn to all children
+        var child = this;
+        while (child = child.child) {
+            child.fnEach = fn;
+        }
+        return this;
+    },
+
+    /* Called by fire() */
+    fn: function() {
+        this.fnEach && this.fnEach(this.target[this.key]);
+        return 
+    },
+
+    stop: function() {
+        remove(getObservables(this.key, this.target), this);
+        this.child && this.child.stop();
+        this.child = undefined;
+        this.fnDone && this.fnDone();
+    },
+
+    done: function(fn) {
+        this.fnDone = fn;
+        return this;
+    }
+});
+
+export function observe(path, object) {
+    console.log('observe', path, Observer.target(object));
+    return new Observable(path, 0, Observer.target(object));
+}
+
+
+
+
+/** 
+Observer.sets(target).each(fn)
+Calls `fn` for every property of `target` set. Returns an object with the 
 method `.stop()`.
 **/
 
-Observer.sets = function sets(observer, fn) {
-    return new Ops('set', observer, fn);
+function Sets(target, done) {
+    this.target = target;
+}
+
+assign(Sets.prototype, {
+    done: function(fn) {
+        this.fnDone = fn;
+        return this;
+    },
+
+    each: function(fn) {
+        this.fn = fn;
+        this.target[$handlers].sets.push(fn);
+        return this;
+    },
+
+    stop: function() {
+        remove(this.target[$handlers].sets, this.fn);
+        this.fnDone && this.fnDone();
+    }
+});
+
+Observer.sets = function sets(observer) {
+    return new Sets(Observer.target(observer));
 };
 
 
@@ -337,7 +528,8 @@ export function mutations(selector, object, fn) {
         names.length = 0;
     }
 
-    return new Ops('set', observer, (name) => {
+    return new Sets(observer)
+    .each((name) => {
         // If selector does not include this property name, ignore
         if (!selector.includes(name)) {
             return;
@@ -350,5 +542,6 @@ export function mutations(selector, object, fn) {
 
         // Then collect mutated names
         names.push(name);
-    }, () => fn = noop);
+    })
+    .done(() => fn = noop);
 }

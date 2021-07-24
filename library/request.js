@@ -13,7 +13,7 @@ requestData('./path/to/data.json');
 Where a `url` to a module is relative it is normalised to `window.location` so 
 that imports written in templates are treated relative to their location 
 (dynamic `import()` would otherwise try and import relative to this 
-`request-data.js` module).
+`request.js` module).
 
 ```
 requestData('./path/to/module.js');
@@ -42,6 +42,7 @@ requestData('./path/to/module#default("parameter")');
 **/
 
 import overload from '../../fn/modules/overload.js';
+import cache from '../../fn/modules/cache.js';
 import { requestGet } from '../../dom/modules/request.js';
 
 const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
@@ -64,8 +65,7 @@ export default overload((url) => rextension.exec(url)[1], {
         return params ?
             // Where params have been captured, assume the export is a constructor
             // and call it with params as values
-            import(absolute)
-            .then((data) => {
+            import(absolute).then((data) => {
                 if (typeof data[name] !== 'function') {
                     throw new Error('Export ' + absolute + ' is not a function');
                 }
@@ -73,9 +73,10 @@ export default overload((url) => rextension.exec(url)[1], {
                 return new data[name](...JSON.parse('[' + params.replace(/'/g, '"') + ']'))
             }) :
             // Otherwise use the export as data directly
-            import(absolute)
-            .then((data) => data[name]) ;
+            import(absolute).then((data) => data[name]) ;
     },
 
-    'json': (url) => requestGet(url)
+    // Cache JSON requests in memory so that all requests to a given URL result 
+    // in the same object.
+    'json': cache((url) => requestGet(url))
 });

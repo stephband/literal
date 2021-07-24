@@ -35,13 +35,14 @@ export default element('<template is="literal-template">', {
 }, {
     /** 
     .render(data)
-    Returns a promise containing a document fragment of DOM rendered from
-    the template contents.
+    Returns a fragment of DOM rendered from the template contents.
     **/
     render: {
         value: function(data) {
             const renderer = new TemplateRenderer(this);
             ++this.instanceCount;
+            // Todo: pass element into template renderer from 
+            // html-include.parentNode ?
             renderer.render(data);
             return renderer.fragment;
         }
