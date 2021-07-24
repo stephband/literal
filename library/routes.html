@@ -111,13 +111,13 @@
         render:   ${ this.count }
         number:   ${ typeof data.number } ${ data.number }
     
-        pk:       ${ data.location.pk }
-        base:     ${ data.location.base }
-        path:     ${ data.location.path }
-        route:    ${ data.location.route }
-        params:   ${ data.location.params }
-        id:       ${ data.location.id }
-        state:    ${ data.location.state }
+        pk:       ${ location.pk }
+        base:     ${ location.base }
+        path:     ${ location.path }
+        route:    ${ location.route }
+        params:   ${ location.params }
+        id:       ${ location.id }
+        state:    ${ location.state }
         </pre>
 
         <pre>
@@ -131,7 +131,7 @@
                 '^add(?:\\.html)?$':    include('#add.html'),
                 '^routes/':             include('#routes/')
             })
-        }, data.location) }
+        }, data) }
         </pre>
     </template>
 
@@ -149,7 +149,7 @@
     <a href="#id-1">#hashref-1</a>
     <a href="#id-2">#hashref-2</a-->
 
-    <html-include src="#main-template" data-number="9" data-location="../data/location.js"></html-include>
+    <html-include src="#main-template" data="../data/location.js"></html-include>
 
     <!-- Document interactivity -->
     <script type="module">
