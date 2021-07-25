@@ -10,7 +10,6 @@ import log         from '../log.js';
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
 const assign = Object.assign;
-const keys   = Object.keys;
 const cache  = {};
 
 function add(a, b) {
@@ -42,24 +41,38 @@ function getDescendant(path, root) {
 }
 
 function empty(renderer) {
-    const paths = renderer.paths;
-
-    if (!paths) {
-        renderer.paths = {};
-        return;
+    if (renderer.paths) {
+        renderer.paths.length = 0;
     }
-
-    let key;
-    for (key in paths) {
-        delete paths[key];
+    else {
+        renderer.paths = [];
     }
 }
 
 function render(renderer, observer, data) {
     empty(renderer);
+    const paths = renderer.paths;
+    const gets = Observer.gets(observer).each((path) => {
+        // Keep paths unique
+        if (paths.includes(path)) { return; }
 
-    const gets = Observer.gets(observer)
-        .each((name, value) => renderer.paths[name] = true);
+        var prev;
+
+        // Make some attempt to remove intermediate paths traversed
+        // while getting the value at the end of the path. Warning: not 100% 
+        // robust. If we want to be robust about this we need to collect gets
+        // async inside the observer, I think.
+        while(
+            (prev = paths[paths.length - 1])
+            && prev.length < path.length
+            && path.startsWith(prev)
+        ) {
+            --paths.length;
+        }
+
+        // store the path
+        paths.push(path);
+    });
 
     const promise = renderer.render(observer, data);
 
@@ -120,7 +133,7 @@ export default function TemplateRenderer(template) {
         this.first     = this.fragment.childNodes[0];
         this.last      = this.fragment.childNodes[this.fragment.childNodes.length - 1];
         this.renderers = cache[id].renderers.map(newRenderer, this.fragment);
-        this.observers = nothing;
+        this.observables = nothing;
         return;
     }
 
@@ -153,7 +166,7 @@ export default function TemplateRenderer(template) {
     this.last      = this.fragment.childNodes[this.fragment.childNodes.length - 1];
 
     this.renderers = compileNode([], this.consts.join(', '), '', this.fragment);
-    this.observers = nothing;
+    this.observables = nothing;
 
     cache[id] = this;
 }
@@ -176,44 +189,21 @@ assign(TemplateRenderer.prototype, {
 
         const observer  = Observer(data);
         const renderers = this.renderers;
+        const promises  = renderers.map((renderer) => render(renderer, observer, data));
 
-        this.observers.forEach(stop);
-        this.observers = observer ?
-            renderers.flatMap((renderer) => (renderer.paths ?
-                keys(renderer.paths).map((path) =>
+        this.observables.forEach(stop);
+        this.observables = observer ?
+            renderers.flatMap((renderer) => 
+                renderer.paths.map((path) =>
                     observe(path, observer).each((value) =>
                         render(renderer, observer, data)
                     )
-                ) :
-                nothing
-            )) :
+                )
+            ) :
             nothing ;
-
-        /*
-        this.sets.stop();
-        this.sets = observer ?
-            Observer.sets(data).each((name, value) => {
-                // If the last render did not access this name assume there 
-                // is no need to render. Eh? Is this right?
-                const renders = renderers.map((renderer) => (
-console.log(name, Object.keys(renderer.paths)),
-                    renderer.paths[name] ?
-                        render(renderer, observer, data) :
-                        0
-                ));
-
-                // Quick out if there were no renders performed
-                if (!renders.find(not0)) {
-                    return;
-                }
-
-                Promise.all(renders).then(logCounts);
-            }) :    
-            nothing ;
-        */
 
         return Promise
-        .all(renderers.map((renderer) => render(renderer, observer, data)))
+        .all(promises)
         .then((counts) => {
             logCounts(counts);
             return this.fragment;
@@ -224,7 +214,7 @@ console.log(name, Object.keys(renderer.paths)),
         // We must not empty .renderers, they are compiled and cached and may 
         // be used again. We can stop listening to sets and make .render() a
         // noop.
-        this.sets.stop();
+        this.observables.forEach(stop);
         this.render = noop;
     },
     

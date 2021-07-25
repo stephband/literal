@@ -139,29 +139,71 @@
 
         console.group('gets');
 
+        const paths = [];
+
         const gets = Observer.gets(object)
-            .each((path) => console.log('get', path));
+            .each((path) => {
+                console.log('get', path);
+
+                var prev;
+
+                // Keep paths unique
+                if (paths.includes(path)) {
+                    return;
+                }
+
+                // Make some attempt to remove intermediate paths traversed
+                // while getting the value at the end of the path
+                while(
+                    (prev = paths[paths.length - 1])
+                    && prev.length < path.length
+                    && path.startsWith(prev)
+                ) {
+                    --paths.length;
+                }
+
+                // store the path
+                paths.push(path);
+            });
 
         // Should log get value
         const a = data.value;
 
         // Should log get child.value
         const b = data.child.value;
+        
+        // Should log get child
+        const child = data.child;
+
+        // Should log get child.value
+        const c = child.value;
+        const j = child.value;
+
+        data.child = {};
 
         // Should log nothing
-        const c = data.method;
-        
+        const d = child.value;
+
+        // Should log "child.value"
+        const e = data.child.value;
+
+        // Should log nothing
+        const f = data.method;
+
         // Should log model.method()
-        const d = data.method();
+        const g = data.method();
 
         // Should log 0, 'child', function, Proxy
-        console.log(a, b, c, d);
+        //console.log(a, b, c, d);
 
         gets.stop();
+
+        console.log(paths);
+
         console.log('No more tests in this group');
         
         // Should log nothing
-        const e = data.value;
+        const h = data.value;
 
         console.groupEnd();
 
@@ -180,7 +222,7 @@
         // Should log observable "value" 1 1
         data.value = 1;
 
-        const child = data.child;
+        //const child = data.child;
 
         // Test observables
         const childValues = observe('child.value', object)

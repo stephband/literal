@@ -213,7 +213,7 @@ assign(ObjectTrap.prototype, {
         // It pollutes Object.prototpye with [$observer] which breaks everything.)
         // Also, we're not interested in observing the prototype chain so
         // stick to hasOwnProperty.
-        if (typeof name === 'symbol' || name === '__proto__' || !target.hasOwnProperty(name)) {
+        if (typeof name === 'symbol' || name === '__proto__' /*|| !target.hasOwnProperty(name)*/) {
             return target[name];
         }
 
@@ -225,6 +225,7 @@ assign(ObjectTrap.prototype, {
             fire(this.gets, name);
         }
         else if (typeof target[name] === 'function') {
+            console.log('GET FN', target[name]);
             return target[name];
         }
 
@@ -239,7 +240,7 @@ assign(ObjectTrap.prototype, {
         // object at the named key also
         var n = -1;
         while(this.gets[++n]) {
-            this.gets[n].watch(name);
+            this.gets[n].listen(name);
         }
 
         return observer;
@@ -258,7 +259,7 @@ assign(ObjectTrap.prototype, {
 
         var n = -1;
         while(this.gets[++n]) {
-            this.gets[n].unwatch(name);
+            this.gets[n].unlisten(name);
         }
 
         // Set the target of value on target. Then use that as value just 
@@ -377,33 +378,37 @@ function stop(gets) {
     gets.stop();
 }
 
-function ChildGets(target, path, parent) {
+function ChildGets(target, path, parent, output) {
     this.children = {};
     // For some reason chilg proxies are being set... dunno...
     this.target   = Observer.target(target);
     this.parent   = parent;
     this.path     = path;
+    this.output   = output;
+
     target[$handlers].gets.push(this);
 }
 
 assign(ChildGets.prototype, {
-    watch: function(key) {
+    listen: function(key) {
         // We may only create one child observer per key
         if (this.children[key]) { return; }
-        
-        this.children[key] = new ChildGets(this.target[key], key, this);
+        const path = this.path ? this.path + '.' : '';
+
+        this.children[key] = new ChildGets(this.target[key], path + key, this, this.output);
     },
 
-    unwatch: function(key) {
+    unlisten: function(key) {
         // Can't unobserve the unobserved
         if (!this.children[key]) { return; }
         this.children[key].stop();
         delete this.children[key];
     },
 
-    fn: function(name) {
+    fn: function(key) {
+        const path = this.path ? this.path + '.' : '';
         // Pass concated path to parent fn
-        this.parent.fn(this.path + '.' + name);
+        this.output(path + key);
     },
 
     stop: function() {
@@ -416,12 +421,18 @@ function Gets(target, done) {
     this.children = {};
     this.target   = target;
     this.done     = done;
+    this.path     = '';
+
+    this.output = (path) => {
+        this.fnEach && this.fnEach(path);
+    };
+
     target[$handlers].gets.push(this);
 }
 
 assign(Gets.prototype, ChildGets.prototype, {
     each: function(fn) {
-        this.fn = fn;
+        this.fnEach = fn;
         return this;
     },
 
