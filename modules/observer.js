@@ -219,15 +219,16 @@ assign(ObjectTrap.prototype, {
 
         // Is the property mutable
         const descriptor = Object.getOwnPropertyDescriptor(target, name);
-        const mutable    = !descriptor || descriptor.writable || descriptor.set;
+        const mutable    = descriptor && (descriptor.writable || descriptor.set);
 
         if (mutable) {
             fire(this.gets, name);
         }
+        /*
         else if (typeof target[name] === 'function') {
             console.log('GET FN', target[name]);
             return target[name];
-        }
+        }*/
 
         // Get the observer of its value
         const observer = Observer(target[name]); 
@@ -380,7 +381,8 @@ function stop(gets) {
 
 function ChildGets(target, path, parent, output) {
     this.children = {};
-    // For some reason chilg proxies are being set... dunno...
+
+    // For some reason child proxies are being set... dunno how...
     this.target   = Observer.target(target);
     this.parent   = parent;
     this.path     = path;
@@ -394,7 +396,6 @@ assign(ChildGets.prototype, {
         // We may only create one child observer per key
         if (this.children[key]) { return; }
         const path = this.path ? this.path + '.' : '';
-
         this.children[key] = new ChildGets(this.target[key], path + key, this, this.output);
     },
 

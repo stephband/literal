@@ -51,6 +51,7 @@ function empty(renderer) {
 
 function render(renderer, observer, data) {
     empty(renderer);
+
     const paths = renderer.paths;
     const gets = Observer.gets(observer).each((path) => {
         // Keep paths unique
@@ -209,7 +210,7 @@ assign(TemplateRenderer.prototype, {
             return this.fragment;
         });
     },
-    
+
     stop: function() {
         // We must not empty .renderers, they are compiled and cached and may 
         // be used again. We can stop listening to sets and make .render() a
@@ -217,7 +218,7 @@ assign(TemplateRenderer.prototype, {
         this.observables.forEach(stop);
         this.render = noop;
     },
-    
+
     remove: function() {
         let count = 0;
         // Remove this.first and this.last and all nodes in between
