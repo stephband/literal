@@ -217,15 +217,19 @@
     <template is="literal-template" id="values-template">
         <p>This is how various values are rendered in a <code>&lt;template is="literal-template"&gt;</code>:</p>
         <dl style="display: grid; grid-template-columns: min-content 1fr; text-align: left;">
-            <dt>string</dt>    <dd>${ 'hello' }</dd>
-            <dt>number</dt>    <dd>${ 123.45 }</dd>
+            <dt>String</dt>    <dd>${ 'hello' }</dd>
+            <dt>Number</dt>    <dd>${ 123.45 }</dd>
+            <!-- Not yet supported by Safari -->
+            <!--dt>BigInt</dt>    <dd>${ 12345n }</dd-->
             <dt>Infinity</dt>  <dd>${ Infinity }, ${ -Infinity }</dd>
             <dt>boolean</dt>   <dd>${ true }, ${ false }</dd>
             <dt>function</dt>  <dd>${ function fn(param) {} }</dd>
             <dt>arrow</dt>     <dd>${ (param) => {} }</dd>
             <dt>array</dt>     <dd>${ [0, 1, 2, 3] }</dd>
             <dt>object</dt>    <dd>${ { property: 'hello' } }</dd>
+            <dt>NaN</dt>       <dd>${ NaN }</dd>
             <dt>null</dt>      <dd>${ null }</dd>
+            <dt>symbol</dt>    <dd>${ Symbol('symbol') }</dd>
             <dt>undefined</dt> <dd>${ undefined }</dd>
         </dl>
 
