@@ -1,24 +1,26 @@
 
 import noop from '../../fn/modules/noop.js';
+import nothing from '../../fn/modules/nothing.js';
 
-/* Observer */
+const DEBUG     = window.DEBUG && window.DEBUG === true || window.DEBUG.includes('Observer');
 
 const $target   = Symbol('target');
 const $observer = Symbol('observer');
 const $handlers = Symbol('handlers');
 
-
-const A            = Array.prototype;
 const assign       = Object.assign;
 const define       = Object.defineProperties;
-const keys         = Object.keys;
-const nothing      = Object.freeze([]);
 const isExtensible = Object.isExtensible;
 const values       = Object.values;
 
+export const analytics = {
+    observables: 0,
+    observes: 0
+}
 
 // Utils
 
+/*
 function isArrayLike(object) {
     return object
     && typeof object === 'object'
@@ -26,6 +28,7 @@ function isArrayLike(object) {
     //&& object.hasOwnProperty('length')
     && typeof object.length === 'number' ;
 }
+*/
 
 function remove(array, value) {
     const i = array.indexOf(value);
@@ -184,101 +187,135 @@ const arrayHandlers = {
     }*/
 };
 
+
+/** 
+ObjectTrap()
+**/
+
 const properties = {
     [$handlers]: {},
     [$observer]: {},
     [$target]:   {}
 };
 
-function createObserver(target) {
-    const handlers = {
-        observables: {},
-        gets: [],
-        sets: []
-    };
-/*
-console.trace('T', target === Object.prototype, target, name);
+function ObjectTrap() {
+    this.observables = {};
+    this.gets = [];
+    this.sets = [];
+}
 
-    if (Object.prototype === target) {
-        throw new Error('NO');
-    }
-*/
+assign(ObjectTrap.prototype, {
+    // Inside handlers, observer is the observer proxy or an object that 
+    // inherits from it
+    get: function get(target, name, proxy) {
+        // Don't observe changes to symbol properties, and
+        // don't allow Safari to log __proto__ as a Proxy. (That's dangerous!
+        // It pollutes Object.prototpye with [$observer] which breaks everything.)
+        // Also, we're not interested in observing the prototype chain so
+        // stick to hasOwnProperty.
+        if (typeof name === 'symbol' || name === '__proto__' || !target.hasOwnProperty(name)) {
+            return target[name];
+        }
 
-    const observer = new Proxy(target, {
-        // Inside handlers, observer is the observer proxy or an object that 
-        // inherits from it
-        get: function get(target, name, proxy) {
-            // Don't observe changes to symbol properties, and
-            // don't allow Safari to log __proto__ as a Proxy. That's dangerous!
-            // It pollutes Object.prototpye with [$observer] which breaks everything.
-            // Also, we're not interested in observing the prototype chain so
-            // stick to hasOwnProperty.
-            if (typeof name === 'symbol' || name === '__proto__' || !target.hasOwnProperty(name)) {
-                return target[name];
-            }
+        // Is the property mutable
+        const descriptor = Object.getOwnPropertyDescriptor(target, name);
+        const mutable    = !descriptor || descriptor.writable || descriptor.set;
 
-// console.log(this) ?? Can we use this object to store stuff?
-            // Is the property mutable
-            const descriptor = Object.getOwnPropertyDescriptor(target, name);
-            const mutable    = !descriptor || descriptor.writable || descriptor.set;
+        if (mutable) {
+            fire(this.gets, name);
+        }
+        else if (typeof target[name] === 'function') {
+            return target[name];
+        }
 
-            if (mutable) {
-                fire(handlers.gets, name);
-            }
-            else if (typeof target[name] === 'function') {
-                return target[name];
-            }
-
-            // Get the observer of its value
-            const observer = Observer(target[name]); 
-            
-            if (!observer) {
-                return target[name];
-            }
-
-            // If get operations are being monitored, make them monitor the
-            // object at the named key also
-            var n = -1;
-            while(handlers.gets[++n]) {
-                handlers.gets[n].watch(name);
-            }
-
-            return observer;
-        },
+        // Get the observer of its value
+        const observer = Observer(target[name]); 
         
-        set: function set(target, name, value, proxy) {
-            // If we are setting the same value, we're not really setting at all
-            if (target[name] === value) { return true; }
+        if (!observer) {
+            return target[name];
+        }
 
-            var n = -1;
-            while(handlers.gets[++n]) {
-                handlers.gets[n].unwatch(name);
-            }
+        // If get operations are being monitored, make them monitor the
+        // object at the named key also
+        var n = -1;
+        while(this.gets[++n]) {
+            this.gets[n].watch(name);
+        }
 
-            // Set the target of value on target. Then use that as value just 
-            // in case target is doing something funky with property descriptors
-            // that return a different value from the value that was set
-            target[name] = Observer.target(value);
-            value = target[name];
-
-            const observables = handlers.observables[name]; 
-            if (observables) {
-                fire(observables, value);
-            }
-
-            fire(handlers.sets, name, value);
-
-            // Return true to indicate success to Proxy
+        return observer;
+    },
+    
+    set: function set(target, name, value, proxy) {
+        if (typeof name === 'symbol' || name === '__proto__') {
+            target[name] = value;
             return true;
         }
-    });
 
-    properties[$handlers].value = handlers;
+        // If we are setting the same value, we're not really setting at all
+        if (target[name] === value) {
+            return true;
+        }
+
+        var n = -1;
+        while(this.gets[++n]) {
+            this.gets[n].unwatch(name);
+        }
+
+        // Set the target of value on target. Then use that as value just 
+        // in case target is doing something funky with property descriptors
+        // that return a different value from the value that was set. Rare,
+        // but it can happen.
+        target[name] = Observer.target(value);
+        value = target[name];
+
+        const observables = this.observables[name]; 
+        if (observables) {
+            fire(observables, value);
+        }
+
+        fire(this.sets, name, value);
+
+        // Return true to indicate success to Proxy
+        return true;
+    },
+    
+    deleteProperty: function(target, name) {
+        if (typeof name === 'symbol' || name === '__proto__') {
+            // Delete without notifying
+            delete target[name];
+            return true;
+        }
+
+        if (!target.hasOwnProperty(name)) {
+            // Nothing to delete
+            return true;
+        }
+
+        delete target[name];
+
+        const observables = this.observables[name]; 
+        if (observables) {
+            fire(observables, target[name]);
+        }
+        
+        // Indicate success to the Proxy
+        return true;
+    }
+});
+
+function createObserver(target) {
+    const traps    = new ObjectTrap();
+    const observer = new Proxy(target, traps);
+
     properties[$observer].value = observer;
     properties[$target].value   = target;
+    properties[$handlers].value = {
+        gets:        traps.gets,
+        sets:        traps.sets,
+        observables: traps.observables
+    };
 
     define(target, properties);
-
     return observer;
 }
 
@@ -312,7 +349,10 @@ Observer.notify = function notify(path, object, value) {
     if (!observer) { return; }
     const target = observer[$target];
     const sets   = observer[$handlers].sets;
+    const key    = path;
+    value = value === undefined ? target[path] : value;
     fire(sets, path, value === undefined ? target[path] : value);
+    fire(getObservables(path, target), value);
 };
 
 
@@ -373,7 +413,6 @@ assign(ChildGets.prototype, {
 });
 
 function Gets(target, done) {
-    //console.log('TARG', target);
     this.children = {};
     this.target   = target;
     this.done     = done;
@@ -381,11 +420,6 @@ function Gets(target, done) {
 }
 
 assign(Gets.prototype, ChildGets.prototype, {
-    done: function(fn) {
-        this.fnDone = fn;
-        return this;
-    },
-
     each: function(fn) {
         this.fn = fn;
         return this;
@@ -405,8 +439,19 @@ Observer.gets = function gets(observer) {
 
 
 
+
 /** 
-observe
+Observe()
+An object whose fn is called by the proxy traps set and delete when a value
+changes. This object is internal-only.
+
+```
+.path   - full observable path
+.index  - index of path consumed
+.target - observer target object
+.key    - last parsed key from path
+```
+
 **/
 
 const rkey = /(^\.?|\.)\s*([\w-]*)\s*/g;
@@ -417,66 +462,162 @@ function getObservables(key, target) {
     return observables[key] || (observables[key] = []);
 }
 
-function Observable(path, lastIndex, target) {
-    if (lastIndex >= path.length) { return; }
+function Observe(path, index, target, output) {
+    if (!path.length) {
+        throw new Error('Path is empty!');
+    }
 
-    rkey.lastIndex = lastIndex || 0;
+    // Parse path
+    rkey.lastIndex = index;
     const r = rkey.exec(path);
 
+    // Check that path is valid
     if (!r) {
+        throw new Error('Cant parse path ' + this.path + ' at index ' + this.index);
+    }
+
+    // Check that if there is no key we are being instructed to observe all 
+    // mutations with a '.' at the end of path (TODO)
+    if (!r[2]) {
+        console.log('r[1] must be "." (', r[1], path, ') Todo: observe all mutations');
         return;
     }
 
-    if (!r[1]) {
-        console.log('r[0] must be "."', r[0], 'Todo: observe all mutations');
-        return;
+    this.target = target;
+    this.path   = path;
+    this.index  = rkey.lastIndex;
+    this.key    = r[2];
+    this.output = output;
+
+    //console.log('Observe', path.slice(0, rkey.lastIndex), this.target, this.key);
+
+    // Are we at the end of the path?
+    if (this.index >= this.path.length) {
+        this.fn = this.output;
     }
 
-    this.key       = r[1];
-    this.target    = target;
+    this.listen();    
+    this.fn(this.target[this.key]);
 
-    getObservables(this.key, this.target).push(this);
+    if (DEBUG) { ++analytics.observes; }
+}
 
-    const value = this.target[this.key];
-    this.child = value ?
-        new Observable(path, rkey.lastIndex, value) :
-        undefined ;
+assign(Observe.prototype, {
+    fn: function(value) {
+        const type = typeof value;
+
+        // We already know that we are not at path end here, as this.fn is 
+        // replaced with a consumer at path end (in the contructor).
+
+        // If the value is immutable we have no business observing it
+        if (!value || (type !== 'object' && type !== 'function')) {
+            if (this.child) {
+                this.child.stop();
+                this.child = undefined;
+            }
+
+            // We are not at path end, and have just received an object that
+            // cannot have deep properties, so value must be undefined
+            this.output(undefined);
+            return;
+        }
+
+        if (this.child) {
+            this.child.unlisten();
+            this.child.target = value;
+            this.child.listen();
+            //this.child.fn(value);
+        }
+        else {
+            this.child = new Observe(this.path, this.index, value, this.output);
+        }
+
+        this.child.fn(value[this.child.key]);
+    },
+
+    listen: function() {
+        const observer = Observer(this.target);
+
+        if (!observer) {
+            console.log('CANNOT LISTEN TO UNOBSERVABLE', this.target);
+            return;
+        }
+
+        const observables = getObservables(this.key, this.target);
+        if (observables.includes(this)) {
+            throw new Error('observe.listen this is already bound');
+        }
+        observables.push(this);
+    },
+    
+    unlisten: function() {
+        const observables = getObservables(this.key, this.target);
+        remove(observables, this);
+    },
+    
+    stop: function() {
+        this.unlisten();
+        this.child && this.child.stop();
+        this.child = undefined;
+        if (DEBUG) { --analytics.observes; }
+    }
+});
+
+/** 
+Observable
+
+```
+.each(fn)
+.pipe(consumer)
+.stop()
+```
+**/
+
+function Observable(path, target) {
+    let value;
+
+    this.path  = path;
+
+    this.child = new Observe(path, 0, target, (v) => {
+        // Deduplicate
+        if (v === value) { return; }
+        value = v;
+        this.consumer.push(value);
+    });
+    
+    if (DEBUG) { ++analytics.observables; }
 }
 
 assign(Observable.prototype, {
+    consumer: nothing,
+
     each: function(fn) {
-        this.fnEach = fn;
-        // Apply fn to all children
-        var child = this;
-        while (child = child.child) {
-            child.fnEach = fn;
-        }
+        this.consumer = { push: fn };
         return this;
     },
 
-    /* Called by fire() */
-    fn: function() {
-        this.fnEach && this.fnEach(this.target[this.key]);
-        return 
+    pipe: function(consumer) {
+        this.consumer = consumer;
+        return consumer;
     },
 
     stop: function() {
-        remove(getObservables(this.key, this.target), this);
-        this.child && this.child.stop();
-        this.child = undefined;
-        this.fnDone && this.fnDone();
-    },
-
-    done: function(fn) {
-        this.fnDone = fn;
+        this.child.stop();
+        if (DEBUG) { --analytics.observables; }
         return this;
     }
 });
 
+
+/** 
+observe(path, target)
+Returns an Observable.
+**/
+
 export function observe(path, object) {
-    console.log('observe', path, Observer.target(object));
-    return new Observable(path, 0, Observer.target(object));
+    return new Observable(path, Observer.target(object));
 }
+
 
 
 
