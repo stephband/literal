@@ -1,11 +1,11 @@
 
 /** 
-<html-include>
+<literal-include>
 
 Include templates allow you to mix static and dynamic content, inserting
 chunks of JS-rendered DOM where you like in a document.
 
-An `<html-include>` finds a source template identified by its `src` attribute
+An `<literal-include>` finds a source template identified by its `src` attribute
 and replaces itself with the template content:
 
 ```html
@@ -13,39 +13,39 @@ and replaces itself with the template content:
     Hello you.
 </template>
 
-<html-include src="#greetings"></html-include>
+<literal-include src="#greetings"></literal-include>
 ```
 
 If the source template is a `<template is="literal-template">`, its `.render()` 
-method is called with data resolved from data attributes on the `<html-include>`.
+method is called with data resolved from data attributes on the `<literal-include>`.
 
 ```html
 <template is="literal-template" id="greetings">
     Hello ${ data.name }.
 </template>
 
-<html-include src="#greetings" data-name="Bartholemew"></html-include>
+<literal-include src="#greetings" data-name="Bartholemew"></literal-include>
 ```
 
 To get data from an external JSON file specify a path to JSON:
 
 ```html
-<html-include src="#greetings" data="./package.json"></html-include>
+<literal-include src="#greetings" data="./package.json"></literal-include>
 ```
 
 Or import the default export of a JS module:
 
 ```html
-<html-include src="#greetings" data="./modules/literal.js"></html-include>
+<literal-include src="#greetings" data="./modules/literal.js"></literal-include>
 ```
 
 Or indeed the named export of JS module:
 
 ```html
-<html-include src="#greetings" data="./modules/literal.js#name"></html-include>
+<literal-include src="#greetings" data="./modules/literal.js#name"></literal-include>
 ```
 
-Should the `html-include` contain html, note that that content is 
+Should the `literal-include` contain html, note that that content is 
 displayed until templated content has been fetched and rendered, allowing you
 to provide default or fallback content.
 **/
@@ -77,10 +77,10 @@ function zipObject(keys, values) {
     return object;
 }
 
-element('<html-include>', {
+element('<literal-include>', {
     construct: function() {
         if (!this.hasAttribute('src')) {
-            console.error('<html-include> a src attribute is required', this);
+            console.error('<literal-include> a src attribute is required', this);
         }
 
         // Resolve data
@@ -139,7 +139,7 @@ element('<html-include>', {
         attribute: function(value) {
             if (!this.resolveData) {
 console.log('BOO dont know why this is triggered multiple times', value)
-                throw new Error('<html-include> may possess either data-* attributes or a single data attribute, not both');
+                throw new Error('<literal-include> may possess either data-* attributes or a single data attribute, not both');
             }
 
             this.resolveData(request(value));
@@ -149,20 +149,20 @@ console.log('BOO dont know why this is triggered multiple times', value)
     /** 
     src="#id"
     Define a source template whose rendered content replaces this
-    `html-include`. This is a required attribute.
+    `literal-include`. This is a required attribute.
     **/
 
     src: {
         attribute: function(value) {
             if (!value) {
-                return this.rejectSrc('<html-include> source src="' + value + '" is empty');
+                return this.rejectSrc('<literal-include> source src="' + value + '" is empty');
             }
 
             const id = value.replace(/^#/, '');
             const template = document.getElementById(id);
 
             if (!template) {
-                return this.rejectSrc('<html-include> src template not found');
+                return this.rejectSrc('<literal-include> src template not found');
             }
 
             this.resolveSrc(template);

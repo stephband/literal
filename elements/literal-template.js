@@ -12,12 +12,12 @@ data when rendered:
 </template>
 ```
 
-Use an `<html-include>` to render this template into the document with some 
+Use an `<literal-include>` to render this template into the document with some 
 data:
 
 ```html
 <p>Ooo matron, what a lovely package.json:</p>
-<html-include src="#log" data="./package.json"></html-include>
+<literal-include src="#log" data="./package.json"></literal-include>
 ```
 **/
 
@@ -42,7 +42,7 @@ export default element('<template is="literal-template">', {
             const renderer = new TemplateRenderer(this);
             ++this.instanceCount;
             // Todo: pass element into template renderer from 
-            // html-include.parentNode ?
+            // literal-include.parentNode ?
             renderer.render(data);
             return renderer.fragment;
         }

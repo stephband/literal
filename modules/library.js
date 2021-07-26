@@ -93,6 +93,9 @@ export function register(name, fn) {
     }
 
     lib[name] = fn;
+
+    // Allow registered fns to be exported directly from their modules    
+    return fn;
 }
 
 window.s = slugify;

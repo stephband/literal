@@ -132,7 +132,7 @@ console.log('STOP route ', route.pk, base, path, name);
     return fn.call(this, scope);
 }
 
-register('routes', function routes(patterns) {
+export default register('routes', function routes(patterns) {
     const keys    = Object.keys(patterns);
     const regexps = keys.map((pattern) => RegExp(pattern));
 

@@ -129,9 +129,9 @@ export default function compile(scope, varstring, string, id, consts = 'data', t
             // Todo: test does outer function's name 'anonymous', which appears to 
             // be automatic, appear in scope?
             const fn = compileAsync(scope, 'data = {}', 
-                // Wrap code in a try/catch so we get better errors
+                // Wrap code in a try/catch and append template info to error messages
                 'try {' + code + '} catch(e) ' +
-                '{e.message += " in template #" + this.template.id + ", element <" + this.element.tagName.toLowerCase() + ">" + (this.name ? ", attribute " + this.name : ""); throw e; }'
+                '{e.message += " in template #" + this.template + ", element <" + this.element.tagName.toLowerCase() + ">" + (this.name ? ", attribute " + this.name : ""); throw e; }'
             );
 
             return cache[key] = function literal() {

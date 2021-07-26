@@ -166,12 +166,16 @@ export default function TemplateRenderer(template) {
     this.first     = this.fragment.childNodes[0];
     this.last      = this.fragment.childNodes[this.fragment.childNodes.length - 1];
 
-    this.renderers = compileNode([], {
+    // The options object contains information for renderer objects. It is 
+    // mutated as it is passed to each renderer (specifically path, name, 
+    // source properties) as renderer construction is synchronous.
+    const options = {
+        template: id,
         consts:   this.consts.join(', '),
-        path:     '',
-        template: template
-    }, this.fragment, template);
+        path:     ''
+    };
 
+    this.renderers = compileNode([], options, this.fragment, template);
     this.observables = nothing;
 
     cache[id] = this;

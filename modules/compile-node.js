@@ -10,34 +10,11 @@ import ContentRenderer   from './renderers/content-renderer.js';
 import TokensRenderer    from './renderers/tokens-renderer.js';
 import ValueRenderer, { StringValueRenderer } from './renderers/value-renderer.js';
 
-import log      from './log.js';
 import decode   from './decode.js';
 
 const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
 const A = Array.prototype;
-
-const config = {
-    /*
-    types: {
-        // Form types
-        'button':   ['name', 'value'],
-        'checkbox': ['required', 'value', 'checked'],
-        'date':     ['required', 'min', 'max', 'step', 'value'],
-        'hidden':   ['value'],
-        'image':    ['src'],
-        'number':   ['required', 'min', 'max', 'step', 'value'],
-        'radio':    ['required', 'value', 'checked'],
-        'range':    ['min', 'max', 'step', 'value'],
-        'reset':    ['value'],
-        'submit':   ['value'],
-        'time':     ['required', 'min', 'max', 'step', 'value'],
-
-        // Defaults
-        'default':  ['required', 'value']
-    }
-    */
-};
 
 const rliteral = /\$\{/;
 
@@ -156,18 +133,17 @@ function compileChildren(renderers, options, node) {
     const children = node.childNodes;
 
     if (children) {
+        const path = options.path;
         let n = -1;
-        while(children[++n]) {
-            // Todo: can we get away with overwriting path on the same options object here? 
-            // Instead of creating a new object?
-            const opts = Object.assign({}, options, {
-                source: '',
-                name: null,
-                path: (options.path ? options.path + '.' + n : '' + n) 
-            });
 
-            compileNode(renderers, opts, children[n], node);
+        while(children[++n]) {
+            options.path = path ? path + '.' + n : '' + n;
+            compileNode(renderers, options, children[n], node);
         }
+
+        // Put path back to what it was or subsequent renderers will get an
+        // erroneous path
+        options.path = path;
     }
 
     return renderers;
