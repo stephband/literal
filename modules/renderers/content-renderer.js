@@ -147,7 +147,6 @@ function setContent(node, children, contents) {
 export default function ContentRenderer(node, options, element) {
     Renderer.apply(this, arguments);
     const children = this.children = [];
-    this.element = element;
     this.literal = options.literal || compile(contentLibrary, options.consts, options.source, null, 'arguments[1]');
     this.update = (contents) => setContent(node, children, contents);
 }

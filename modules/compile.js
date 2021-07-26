@@ -75,6 +75,7 @@ Returns a function that renders a literal template.
 // Store render functions against their template strings
 export const cache = {};
 
+/*
 function renderToString(strings) {
     let n = 0;
     let string = strings[n];
@@ -84,6 +85,7 @@ function renderToString(strings) {
     }
     return string;
 }
+*/
 
 function isValidConst(namevalue) {
     const name = namevalue[0];
@@ -95,7 +97,7 @@ function sanitiseVars(vars) {
     return names.join(', ');
 }
 
-export default function compile(scope, varstring, string, id, consts = 'data') {
+export default function compile(scope, varstring, string, id, consts = 'data', templateName) {
     if (typeof string !== 'string') {
         throw new Error('Template is not a string');
     }
@@ -120,13 +122,17 @@ export default function compile(scope, varstring, string, id, consts = 'data') {
     if (DEBUG) {
         try {
             logCompile(id ? id : key.trim().length > 45 ? '`' + key.trim().slice(0, 33).replace(/ *\n */g, ' ') + ' ... ' +  key.trim().slice(-8).replace(/ *\n */g, ' ') + '`' : '`' + key.trim().replace(/ *\n */g, ' ') + '`', scope, 'data' + (vars ? ', ' + vars : ''));
-    
+
             // Allow passing nothing to a render function by defaulting data to an 
             // empty object. Compiled function cannot be given a name as it will 
             // appear in template scope. 
             // Todo: test does outer function's name 'anonymous', which appears to 
             // be automatic, appear in scope?
-            const fn = compileAsync(scope, 'data = {}', code);
+            const fn = compileAsync(scope, 'data = {}', 
+                // Wrap code in a try/catch so we get better errors
+                'try {' + code + '} catch(e) ' +
+                '{e.message += " in template #" + this.template.id + ", element <" + this.element.tagName.toLowerCase() + ">" + (this.name ? ", attribute " + this.name : ""); throw e; }'
+            );
 
             return cache[key] = function literal() {
                 //log('render ', id ? id : key.trim().length > 45 ? '`' + key.trim().slice(0, 33).replace(/ *\n */g, ' ') + ' ... ' +  key.trim().slice(-8).replace(/ *\n */g, ' ') + '`' : '`' + key.trim().replace(/ *\n */g, ' ') + '`', 'orange');    

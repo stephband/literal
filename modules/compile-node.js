@@ -43,53 +43,65 @@ const rliteral = /\$\{/;
 
 
 /** 
-compileAttributes(renderers, vars, path, nodeames)
+compileAttributes(renderers, options, nodeames)
 **/
 
-function compileAttr(renderers, consts, path, node, attribute) {
+function compileAttr(renderers, options, node, attribute) {
     const source = attribute.value;
     if (!source || !rliteral.test(source)) { return; }
     const name = attribute.localName;
-    renderers.push(new AttributeRenderer(node, { consts, source, path, name }));
+    options.source = source;
+    options.name   = name;
+    renderers.push(new AttributeRenderer(node, options));
 }
 
-function compileBoolean(renderers, consts, path, node, attribute) {
+function compileBoolean(renderers, options, node, attribute) {
     const source = attribute.value;
     if (!source || !rliteral.test(source)) { return; }
     const name = attribute.localName;
-    renderers.push(new BooleanRenderer(node, { consts, source, path, name }));
+    options.source = source;
+    options.name   = name;
+    renderers.push(new BooleanRenderer(node, options));
 }
 
-function compileTokens(renderers, consts, path, node, attribute) {
+function compileTokens(renderers, options, node, attribute) {
     const source = attribute.value;
     if (!source || !rliteral.test(source)) { return; }
     const name = attribute.localName;
-    renderers.push(new TokensRenderer(node, { consts, source, path, name }));
+    options.source = source;
+    options.name   = name;
+    renderers.push(new TokensRenderer(node, options));
 }
 
-function compileValue(renderers, consts, path, node, attribute) {
+function compileValue(renderers, options, node, attribute) {
     const source = attribute.value;
     if (!source || !rliteral.test(source)) { return; }
-    renderers.push(new ValueRenderer(node, { consts, source, path }));
+    options.source = source;
+    options.name   = 'value';
+    renderers.push(new ValueRenderer(node, options));
 }
 
-function compileValueString(renderers, consts, path, node, attribute) {
+function compileValueString(renderers, options, node, attribute) {
     const source = attribute.value;
     if (!source || !rliteral.test(source)) { return; }
-    renderers.push(new StringValueRenderer(node, { consts, source, path }));
+    options.source = source;
+    options.name   = 'value';
+    renderers.push(new StringValueRenderer(node, options));
 }
 
-function compileChecked(renderers, consts, path, node, attribute) {
+function compileChecked(renderers, options, node, attribute) {
     const source = attribute.value;
     if (!source || !rliteral.test(source)) { return; }
-    renderers.push(new CheckedRenderer(node, { consts, source, path }));
+    options.source = source;
+    options.name   = 'checked';
+    renderers.push(new CheckedRenderer(node, options));
 }
 
-const compileAttribute = overload((renderers, vars, path, node, attribute) => attribute.localName, {
+const compileAttribute = overload((renderers, options, node, attribute) => attribute.localName, {
     'checked':  compileChecked,
     'class':    compileTokens,
 
-    'datetime': function compileDatetime(renderers, vars, path, node, attribute) {
+    'datetime': function compileDatetime(renderers, options, node, attribute) {
         console.log('Todo: compile datetime');
     },
 
@@ -98,16 +110,18 @@ const compileAttribute = overload((renderers, vars, path, node, attribute) => at
 
     // Special workaround attribute used in cases where ${} cannot be added
     // directly to the HTML content, such as in <tbody> or <tr>
-    'inner-content': function(renderers, consts, path, node, attribute) {
+    'inner-content': function(renderers, options, node, attribute) {
         const string = attribute.value;
         if (!string || !rliteral.test(string)) { return; }
         node.removeAttribute(attribute.localName);
-        renderers.push(new ContentRenderer(node, { consts, source: decode(string), path }));
+        options.source = decode(string);
+        options.name   = 'innerHTML';
+        renderers.push(new ContentRenderer(node, options));
     },
 
     'required': compileBoolean,
 
-    'value': overload((renderers, vars, path, node, attribute) => ('' + node.type), {
+    'value': overload((renderers, options, node, attribute) => ('' + node.type), {
         //'checkbox':  compileValueChecked,
         //'date':      compileValueDate,
         //'number':    compileValueNumber,
@@ -123,13 +137,13 @@ const compileAttribute = overload((renderers, vars, path, node, attribute) => at
     'default':  compileAttr
 });
 
-function compileAttributes(renderers, vars, path, node) {
+function compileAttributes(renderers, options, node) {
     // Attributes may be removed during parsing so copy the list before looping
     const attributes = A.slice.apply(node.attributes);
     var n = -1, attribute;
     // Todo: order attributes so that min, max, value come last?
     while (attribute = attributes[++n]) {
-        compileAttribute(renderers, vars, path, node, attribute);
+        compileAttribute(renderers, options, node, attribute);
     }
 }
 
@@ -138,35 +152,43 @@ function compileAttributes(renderers, vars, path, node) {
 compileElement()
 **/
 
-function compileChildren(renderers, vars, path, node) {
+function compileChildren(renderers, options, node) {
     const children = node.childNodes;
 
     if (children) {
         let n = -1;
         while(children[++n]) {
-            compileNode(renderers, vars, (path ? path + '.' + n : path + n), children[n], node);
+            // Todo: can we get away with overwriting path on the same options object here? 
+            // Instead of creating a new object?
+            const opts = Object.assign({}, options, {
+                source: '',
+                name: null,
+                path: (options.path ? options.path + '.' + n : '' + n) 
+            });
+
+            compileNode(renderers, opts, children[n], node);
         }
     }
 
     return renderers;
 }
 /*
-function compileType(renderers, vars, path, node) {
+function compileType(renderers, options, node) {
     // Compile element type attributes
     const type = node.type;
     if (!type) { return; }
     //const names = config.types[type] || config.types['default'];
-    compileAttributes(renderers, vars, path, node);
+    compileAttributes(renderers, options, node);
 }
 */
-const compileElement = overload((renderers, vars, path, node) => node.tagName.toLowerCase(), {
+const compileElement = overload((renderers, options, node) => node.tagName.toLowerCase(), {
     // Ignore SVG <defs>, which for our purposes we consider as inert like 
     // HTML's <template>
     'defs': noop,
 
-    'default': (renderers, vars, path, node) => {
+    'default': (renderers, options, node) => {
         // Children first
-        compileChildren(renderers, vars, path, node);
+        compileChildren(renderers, options, node);
 
         // We must wait until custom elements are upgraded before we may 
         // interact with their non-standard properties and attributes
@@ -176,13 +198,13 @@ const compileElement = overload((renderers, vars, path, node) => node.tagName.to
         /*const tag = node.getAttribute('is') || node.tagName.toLowerCase();
         if (/-/.test(tag)) {
             window.customElements.whenDefined(node.tagName).then(() => {
-                compileAttributes(renderers, vars, path, node);
-                compileType(renderers, vars, path, node);
+                compileAttributes(renderers, options, node);
+                compileType(renderers, options, node);
             });
         }
         else {*/
-            compileAttributes(renderers, vars, path, node);
-            //compileType(renderers, vars, path, node);
+            compileAttributes(renderers, options, node);
+            //compileType(renderers, options, node);
         /*}*/
         
         return renderers;
@@ -194,18 +216,20 @@ const compileElement = overload((renderers, vars, path, node) => node.tagName.to
 compileNode()
 **/
 
-const compileNode = overload((renderers, vars, path, node) => toType(node), {
+const compileNode = overload((renderers, options, node) => toType(node), {
     'comment': noop,
 
     'element': compileElement,
 
     'fragment': compileChildren,
 
-    'text': (renderers, consts, path, node, element) => {
+    'text': (renderers, options, node, element) => {
         const string = node.nodeValue;
 
         if (string && rliteral.test(string)) {
-            renderers.push(new ContentRenderer(node, { consts, source: decode(string), path }, element));
+            options.source = decode(string);
+            options.name   = null;
+            renderers.push(new ContentRenderer(node, options, element));
         }
 
         return renderers;
@@ -213,8 +237,8 @@ const compileNode = overload((renderers, vars, path, node) => toType(node), {
 
     'doctype': noop,
 
-    'document': (renderers, vars, path, node) => {
-        compileChildren(renderers, vars, path, node);
+    'document': (renderers, options, node) => {
+        compileChildren(renderers, options, node);
         return renderers;
     },
 

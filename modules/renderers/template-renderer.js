@@ -166,7 +166,12 @@ export default function TemplateRenderer(template) {
     this.first     = this.fragment.childNodes[0];
     this.last      = this.fragment.childNodes[this.fragment.childNodes.length - 1];
 
-    this.renderers = compileNode([], this.consts.join(', '), '', this.fragment);
+    this.renderers = compileNode([], {
+        consts:   this.consts.join(', '),
+        path:     '',
+        template: template
+    }, this.fragment, template);
+
     this.observables = nothing;
 
     cache[id] = this;

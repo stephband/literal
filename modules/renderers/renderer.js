@@ -73,14 +73,13 @@ Base class/mixin for providing renderers with the properties
 
 let id = 0;
 
-export default function Renderer(node, options) {
-    this.element = node;
-    this.node    = node;
-    this.path    = options.path;
-    this.id      = ++id;
-    this.count   = 0;
-    this.templateId = options.templateId;
-    //this.literal = options.literal || compile(library, options.consts, options.source, null, 'arguments[1]', toPromise);
+export default function Renderer(node, options, element) {
+    this.element   = element || node;
+    this.node      = node;
+    this.path      = options.path;
+    this.id        = ++id;
+    this.count     = 0;
+    this.template  = options.template;
 }
 
 assign(Renderer.prototype, {
