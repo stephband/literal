@@ -21,11 +21,15 @@ Constructs an object responsible for rendering to a plain text attribute.
 **/
 
 function setChecked(node, value) {
-    // Where value is defined check against it, otherwise
-    // value is "on", uselessly. Set checked state directly.
-    const checked = isDefined(node.getAttribute('value')) ?
-        value + '' === node.value :
-        !!value ;
+    const checked = typeof value === 'boolean' ?
+            // Where value is a boolean set it directly
+            value :
+        isDefined(node.getAttribute('value')) ?
+            // Otherwise where the value attribute is defined check against
+            // the value property
+            value + '' === node.value :
+            // Otherwise treat value as a boolean
+            !!value ;
 
     if (checked === node.checked) {
         return 0;
