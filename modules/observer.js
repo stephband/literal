@@ -220,6 +220,7 @@ assign(ObjectTrap.prototype, {
         // Is the property mutable
         const descriptor = Object.getOwnPropertyDescriptor(target, name);
         const mutable    = descriptor && (descriptor.writable || descriptor.set);
+        //const mutable    = !descriptor || descriptor.writable || descriptor.set;
 
         if (mutable) {
             fire(this.gets, name);
@@ -332,6 +333,10 @@ via `Observer.gets(object)`.
 export default function Observer(object) {
     //console.log(('jgv')[$observer]);
     //console.log(object[$observer], isObservable(object));
+    //if (object && object.then) {
+    //    throw new Error('Trying to make apromise observer?')
+    //}
+
     return !object ? undefined :
         (object[$observer] || (isObservable(object) ?
             createObserver(object) :

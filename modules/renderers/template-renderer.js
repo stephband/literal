@@ -194,7 +194,7 @@ assign(TemplateRenderer.prototype, {
 
         this.observables.forEach(stop);
         this.observables = observer ?
-            renderers.flatMap((renderer) => 
+            renderers.flatMap((renderer) =>
                 renderer.paths.map((path) =>
                     observe(path, observer).each((value) =>
                         render(renderer, observer, data)
