@@ -127,6 +127,9 @@ function updateData(location, data) {
 }
 */
 
+// Synchronise root location
+updateDataFromLocation(window.location, window.history, root);
+
 location.on(function(location) {
     const names = updateDataFromLocation(location, window.history, root);
     var n = -1;

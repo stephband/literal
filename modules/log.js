@@ -4,6 +4,7 @@ import noop from '../../fn/modules/noop.js';
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
 const colors = {
+    'aqua':   '#00a8a9',
     'green':  '#d8cd17',
     'yellow': '#eac60c',
     'orange': '#ffa000',
