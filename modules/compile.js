@@ -4,8 +4,6 @@ import log          from './log.js';
 
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
-const assign = Object.assign;
-
 const illegals = [
     // Reserved by literal
     "render",
@@ -49,43 +47,14 @@ function logCompile(source, scope, vars) {
     });
 }
 
-function logError(source, template, e) {
-    // Print source code to console
-    console.log('');
-    console.log(template.slice(0, 1000) + (template.length > 1000 ? '\n\n...\n' : '\n'));
-    console.log(
-        e.constructor.name + ':',
-        e.message, 
-        'parsing', 
-        '"' + (source.length < 60 ? source : source.slice(0,16) + ' ... ' + source.slice(-8)) + '"'
-    );
-    const key = e.message.slice(0, 10);
-    if (hints[key]) { console.log('\nHints\n' + hints[key]); }
-    console.log('');
-    //console.log(e.stack);
-    console.log('');
-}
-
 
 /**
 compile(scope, params, template)
 Returns a function that renders a literal template.
 **/
 
-// Store render functions against their template strings
+// Store render functions against their source
 export const cache = {};
-
-/*
-function renderToString(strings) {
-    let n = 0;
-    let string = strings[n];
-    while (strings[++n] !== undefined) {
-        string += arguments[n];
-        string += strings[n];
-    }
-    return string;
-}
-*/
 
 function isValidConst(namevalue) {
     const name = namevalue[0];
@@ -97,7 +66,8 @@ function sanitiseVars(vars) {
     return names.join(', ');
 }
 
-export default function compile(scope, varstring, string, id, consts = 'data', templateName) {
+// Last two params, info and element, are purely for debug messages
+export default function compile(scope, varstring, string, id, consts = 'data', info, element) {
     if (typeof string !== 'string') {
         throw new Error('Template is not a string');
     }
@@ -107,13 +77,9 @@ export default function compile(scope, varstring, string, id, consts = 'data', t
     // Return cached fn
     if (cache[key]) { return cache[key]; }
 
-    // Render function must be contained in scope
-    // Since compilation is synchronous we can assign to scope at compile time
-    //scope.render = render;
-
     // Alphabetise and format
     const vars = varstring && sanitiseVars(varstring) ;
-    //const context = new Context(render);
+
     const code = '\n'
         + (id ? indent + '// Render ' + id + '\n' : '')
         + (vars ? indent + 'const { ' + vars + ' } = ' + consts + ';\n' : '')
@@ -129,19 +95,15 @@ export default function compile(scope, varstring, string, id, consts = 'data', t
             // Todo: test does outer function's name 'anonymous', which appears to 
             // be automatic, appear in scope?
             const fn = compileAsync(scope, 'data = {}', 
-                // Wrap code in a try/catch and append template info to error messages
+                // Wrap code in a try/catch and append template info to error message
                 'try {' + code + '} catch(e) ' +
                 '{e.message += " in template #" + this.template + ", element <" + this.element.tagName.toLowerCase() + ">" + (this.name ? ", attribute " + this.name : ""); throw e; }'
             );
 
-            return cache[key] = function literal() {
-                //log('render ', id ? id : key.trim().length > 45 ? '`' + key.trim().slice(0, 33).replace(/ *\n */g, ' ') + ' ... ' +  key.trim().slice(-8).replace(/ *\n */g, ' ') + '`' : '`' + key.trim().replace(/ *\n */g, ' ') + '`', 'orange');    
-                // Where this is global, neuter it
-                return fn.apply(this, arguments);
-            };
+            return cache[key] = fn;
         }
         catch(e) {
-            logError(key, code, e);
+            e.message += " in template #" + info.template + (element ? ', <' + element.tagName.toLowerCase() + (info.name ? ' ' + info.name + '="' + string + '">' : '>') : '') ;
             throw e;
         }
     }

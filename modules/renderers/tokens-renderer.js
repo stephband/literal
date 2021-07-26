@@ -82,7 +82,7 @@ export default function TokensRenderer(node, options) {
     const list = getTokenList(node, options.name);
     let cached = nothing;
 
-    this.literal = options.literal || compile(library, options.consts, options.source, null, 'arguments[1]');
+    this.literal = options.literal || compile(library, options.consts, options.source, null, 'arguments[1]', options, node);
     this.name    = options.name;
     this.update  = (tokens) => {
         const count = setTokens(list, cached, tokens, 0);

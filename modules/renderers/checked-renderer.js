@@ -49,7 +49,7 @@ function setChecked(node, value) {
 export default function CheckedRenderer(node, options) {
     Renderer.apply(this, arguments);
     this.name    = 'checked';
-    this.literal = options.literal || compile(library, options.consts, options.source, null, 'arguments[1]');
+    this.literal = options.literal || compile(library, options.consts, options.source, null, 'arguments[1]', options, this.element);
     this.update  = (value) => setChecked(node, value);
 
     // Negate the effects of having template content in the checked attribute
