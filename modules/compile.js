@@ -7,8 +7,11 @@ const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('l
 const illegals = [
     // Reserved by literal
     "render",
+
     // Globals
     'NaN', 'Infinity', 'undefined',
+
+/*  These are now caught by our better error handling
     // ES reserved words
     'do', 'if', 'in', 'for', 'let', 'new', 'try', 'var', 'case', 'else', 
     'enum', 'eval', 'null', 'this', 'true', 'void', 'with', 'await', 'break', 
@@ -17,21 +20,15 @@ const illegals = [
     'typeof', 'default', 'extends', 'finally', 'package', 'private', 'continue', 
     'debugger', 'function', 'arguments', 'interface', 'protected', 'implements', 
     'instanceof'
+*/
 ];
 
-const hints = {
-    'Unexpected':
-        '• Non-template backticks must be escaped: \\`\n' +
-        '• ${} accepts any valid JS expression\n'
-};
-
-const indent = '  ';
-
+/*
 function logCompile(source, scope, vars) {
     log('compile', source + ' { ' + vars + ' }');
 
     // Sanity check params for scope overrides
-    vars.split(/\s*,\s*/).forEach((name) => {
+    vars.split(/\s*,\s*          REMOVE SPACE       /).forEach((name) => {
         if (illegals.includes(name)) {
             throw new SyntaxError('Reserved word ' + name + ' cannot be used as template variable');
         }
@@ -46,12 +43,14 @@ function logCompile(source, scope, vars) {
         }
     });
 }
-
+*/
 
 /**
-compile(scope, params, template)
-Returns a function that renders a literal template.
+compile(scope, consts, source, id, constsObjectName, debugInfo)
+Compiles a literal template to a function.
 **/
+
+const indent = '  ';
 
 // Store render functions against their source
 export const cache = {};
@@ -67,27 +66,27 @@ function sanitiseVars(vars) {
 }
 
 // Last two params, info and element, are purely for debug messages
-export default function compile(scope, varstring, string, id, consts = 'data', info, element) {
-    if (typeof string !== 'string') {
+export default function compile(scope, consts, source, id, constsObjectName = 'data', info, element) {
+    if (typeof source !== 'string') {
         throw new Error('Template is not a string');
     }
 
-    const key = id || string;
+    const key = id || source;
 
     // Return cached fn
     if (cache[key]) { return cache[key]; }
 
     // Alphabetise and format
-    const vars = varstring && sanitiseVars(varstring) ;
+    const vars = consts && sanitiseVars(consts) ;
 
     const code = '\n'
-        + (id ? indent + '// Render ' + id + '\n' : '')
-        + (vars ? indent + 'const { ' + vars + ' } = ' + consts + ';\n' : '')
-        + indent + 'return render`' + string + '`;\n';
+        + (id ? indent + '// Template #' + id + '\n' : '')
+        + (vars ? indent + 'const { ' + vars + ' } = ' + constsObjectName + ';\n' : '')
+        + indent + 'return render`' + source + '`;\n';
 
     if (DEBUG) {
         try {
-            logCompile(id ? id : key.trim().length > 45 ? '`' + key.trim().slice(0, 33).replace(/ *\n */g, ' ') + ' ... ' +  key.trim().slice(-8).replace(/ *\n */g, ' ') + '`' : '`' + key.trim().replace(/ *\n */g, ' ') + '`', scope, 'data' + (vars ? ', ' + vars : ''));
+            //logCompile(id ? id : key.trim().length > 45 ? '`' + key.trim().slice(0, 33).replace(/ *\n */g, ' ') + ' ... ' +  key.trim().slice(-8).replace(/ *\n */g, ' ') + '`' : '`' + key.trim().replace(/ *\n */g, ' ') + '`', scope, 'data' + (vars ? ', ' + vars : ''));
 
             // Allow passing nothing to a render function by defaulting data to an 
             // empty object. Compiled function cannot be given a name as it will 
@@ -95,15 +94,18 @@ export default function compile(scope, varstring, string, id, consts = 'data', i
             // Todo: test does outer function's name 'anonymous', which appears to 
             // be automatic, appear in scope?
             const fn = compileAsync(scope, 'data = {}', 
-                // Wrap code in a try/catch and append template info to error message
-                'try {' + code + '} catch(e) ' +
-                '{e.message += " in template #" + this.template + ", element <" + this.element.tagName.toLowerCase() + ">" + (this.name ? ", attribute " + this.name : ""); throw e; }'
+                // Wrap code in a try/catch and append useful info to error message
+                'try {' + code + '} catch(e) {' +
+                indent + 'e.message += " in template #" + this.template + (this.element && this.element.tagName ? ", <" + this.element.tagName.toLowerCase() + (this.name ? " " + this.name + "=\\"...\\">" : ">") : "");' +
+                indent + 'throw e;' +
+                '}'
             );
 
             return cache[key] = fn;
         }
         catch(e) {
-            e.message += " in template #" + info.template + (element ? ', <' + element.tagName.toLowerCase() + (info.name ? ' ' + info.name + '="' + string + '">' : '>') : '') ;
+            // Append useful info to error message
+            e.message += ' in template #' + info.template + (element && element.tagName ? ', <' + element.tagName.toLowerCase() + (info.name ? ' ' + info.name + '="' + source + '">' : '>') : '') ;
             throw e;
         }
     }
