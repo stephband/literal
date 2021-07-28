@@ -1,10 +1,10 @@
 
 <template is="literal-template" id="checkbox">
     <input type="checkbox" class="masked" name="${ data.name }" value="${ data.value + '' }" checked="${ data.data && data.data[data.name] ? data.data[data.name] + '' : '' }" id="${ data.name }=${ slugify(data.value) }" disabled="${ data.disabled }" />
-    <label class="tag-label" for="${ data.name }=${ slugify(data.value) }">${ data.label }</label>
+    <label class="filter-label" for="${ data.name }=${ slugify(data.value) }">${ data.label }</label>
 </template>
 
 <template is="literal-template" id="radio">
     <input type="radio" class="masked" name="${ data.name }" value="${ data.value + '' }" checked="${ data.data && data.data[data.name] ? data.data[data.name] + '' : '' }" disabled="${ data.disabled }" id="${ data.name }=${ slugify(data.value) }" />
-    <label class="tag-label" for="${ data.name }=${ slugify(data.value) }">${ data.label }</label>
+    <label class="filter-label" for="${ data.name }=${ slugify(data.value) }">${ data.label }</label>
 </template>

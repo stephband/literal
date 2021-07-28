@@ -1,6 +1,6 @@
 
 import compileAsync from '../../fn/modules/compile-async.js';
-import log          from './log.js';
+//import log          from './log.js';
 
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 

@@ -122,7 +122,7 @@ console.log('STOP route ', route.pk, base, path, name);
     });
 
     const m2 = mutations('params id state', location, (names) => {
-//console.log('Route mutated', names, route.pk);
+//console.log('Route mutated', names, route.pk, location);
         var n = -1, name;
         while ((name = names[++n]) !== undefined) {
             scope[name] = location[name];
@@ -142,7 +142,7 @@ export default register('routes', function routes(patterns) {
     var route;
 
     function routes(location) {
-//console.log('routes()', '\n  ' + Object.keys(patterns).join('\n  '));
+        //console.log('routes()', '\n  ' + Object.keys(patterns).join('\n  '));
         return route = updateRoute(patterns, keys, regexps, location, route /* internal */);
         //return internal.route || undefined;
     }
@@ -155,6 +155,3 @@ export default register('routes', function routes(patterns) {
         routes(arguments[1]) :
         routes ;
 });
-
-window.O = Observer;
-window.m = mutations;
