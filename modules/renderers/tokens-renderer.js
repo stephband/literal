@@ -19,43 +19,35 @@ const getTokenList = overload((node, name) => name, {
     'class': (node) => node.classList
 });
 
-function valueify(values, value) {
-    // If value is an array, it may have come from on include and be a set of 
-    // DOM nodes, ... right ? This is probably not the best way to detect that.
-    if (value instanceof Node) {
-        values.push(value);
-    }
-    else if (value && typeof value === 'object' && value.length !== undefined) {
-        values.push.apply(values, value);
-    }
-    else {
-        values.push(toText(value));
-    }
+function valueify(value) {
+    return (value && typeof value === 'object' && value.length !== undefined) ?
+        value.join(' ') :
+        toText(value) ;
 }
 
 function renderValues(args) {
     const [strings] = args;
-    const values = [];
+    var string = '';
     var n = -1 ;
     var value;
 
     while (strings[++n] !== undefined) {
         // Don't strip spaces, but do ignore empty strings
         if (strings[n]) {
-            values.push(strings[n]);
+            string += ' ' + strings[n];
         }
 
         // If a value is more than nothing push it in
         value = args[n + 1];
         if (value !== undefined && value !== '') {
-            valueify(values, value);
+            string += ' ' + valueify(value);
         }
     }
 
-    return values;
+    return string;
 }
 
-function setTokens(list, cached, tokens, count) {
+function setTokens(tokens, cached, values, count) {
     // Remove tokens from the cache that are found in new tokens.
     let n = cached.length;
     while (n--) {
@@ -64,34 +56,35 @@ function setTokens(list, cached, tokens, count) {
         }
     }
 
-    // Remove the remainder from the list
+    // Remove the remainder from the tokens
     if (cached.length) {
-        list.remove.apply(list, cached);
+        tokens.remove.apply(tokens, cached);
         ++count;
     }
 
     // Then add the new tokens. The TokenList object ignores tokens it 
-    // already contains.
-    list.add.apply(list, tokens);
+    // already contains so doubles are not set.
+    tokens.add.apply(tokens, values);
     return ++count;
 }
 
 export default function TokensRenderer(node, options) {
     Renderer.apply(this, arguments);
     
-    const list = getTokenList(node, options.name);
+    const tokens = getTokenList(node, options.name);
     let cached = nothing;
 
     this.literal = options.literal || compile(library, options.consts, options.source, null, 'arguments[1]', options, node);
     this.name    = options.name;
-    this.update  = (tokens) => {
-        const count = setTokens(list, cached, tokens, 0);
-        cached = tokens;
-        // Count 1 for removing, 1 for adding
+    this.update  = (string) => {
+        const classes = string.trim().split(/\s+/);
+        const count   = setTokens(tokens, cached, classes, 0);
+        cached = classes;
         return count;
     };
 
-    // Empty the token list until it is rendered
+    // Empty the tokens until it is rendered to avoid words in literal tags
+    // being interpreted as classes
     node.setAttribute(this.name, '');
 }
 

@@ -55,6 +55,11 @@ export function setProperty(node, name, value) {
     //
     // So don't, if property is not in node. Set the attribute, it will be
     // picked up on upgrade.
+if (value === null) {
+    throw new Error('VALUE');
+}
+//console.log('VALUE', value);
+    
     if (name in node) {
         node[name] = value;
     }
@@ -73,8 +78,10 @@ function setValue(node, value) {
         return 0;
     }
 
-    const type = types[node.type] || 'string';
-    value = typeof value === type ? value : null ;
+    const type = types[node.type];
+    value = type === undefined ? value :
+        typeof value === type ? value :
+        null ;
 
     // Avoid updating with the same value. Support node values of any type to 
     // support custom elements (like <range-control>), as well as values that 
