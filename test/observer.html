@@ -134,6 +134,7 @@
         const object = new Model(0, new Model('child'));
         const data = Observer(object);
 
+        var n = 0;
 
         // Test gets()
 
@@ -143,7 +144,7 @@
 
         const gets = Observer.gets(object)
             .each((path) => {
-                console.log('get', path);
+                console.log(++n, 'get', path);
 
                 var prev;
 
@@ -211,23 +212,28 @@
 
 
 
-/*
+
         console.group('observables');
 
         // Test observables
-        const values = observe('value', object)
-            .each((value) => console.log('observable "value"', object.value, value));
-            //.done(() => console.log('observable "value" done'));
+        // Should log immediately (synchronously) because object.value is not
+        // undefined, and effectively we call observe('value', object, undefined) here
+        const values =
+            observe('value', object)
+            .each((value) => console.log(++n, 'observable "value"', object.value, value));
+
+        // This, by contrast, shouldn't log because this path is undefined
+        const nerfs =
+            observe('nerf.powder', object)
+            .each((value) => console.error('Meh. Shouldn\'t log nothin\'', object.value, value));
 
         // Should log observable "value" 1 1
         data.value = 1;
 
-        //const child = data.child;
-
         // Test observables
-        const childValues = observe('child.value', object)
-            .each((value) => console.log('observable "child.value"', object.child && object.child.value, value));
-            //.done(() => console.log('observable "child.value" done'));
+        const childValues =
+            observe('child.value', object, object.child.value)
+            .each((value) => console.log(++n, 'observable "child.value"', object.child && object.child.value, value));
 
         // Should log observe child.value child-1 child-1
         data.child.value = 'child-1';
@@ -263,9 +269,9 @@
         // Should log nothing
         data.child = null;
 
-        const methods = observe('method', object)
-            .each((value) => console.log('observable "method"', object.method, value));
-            //.done(() => console.log('observable "method" done'));
+        const methods =
+            observe('method', object, object.method)
+            .each((value) => console.log(++n, 'observable "method"', object.method, value));
 
         // Should log model.method function function
         data.method = function() {};
@@ -282,6 +288,7 @@
         values.stop();
         childValues.stop();
         methods.stop();
+        nerfs.stop();
         console.log('No more tests in this group');
 
         // Should log nothing
@@ -289,10 +296,10 @@
         data.value = 3;
         delete data.method;
         delete data.value;
+        data.nerf = { powder: 3 };
         child.value = 'this-definitely-shouldnt-happen';
         data.child = { value: 'child-7' };
 
         console.groupEnd();
-*/
     </script>
 </body>

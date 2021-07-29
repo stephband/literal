@@ -1,4 +1,5 @@
    
+import getPath     from '../../../fn/modules/get-path.js';
 import noop        from '../../../fn/modules/noop.js';
 import nothing     from '../../../fn/modules/nothing.js';
 import identify    from '../../../dom/modules/identify.js';
@@ -205,7 +206,8 @@ assign(TemplateRenderer.prototype, {
         this.observables = observer ?
             renderers.flatMap((renderer) =>
                 renderer.paths.map((path) =>
-                    observe(path, observer).each((value) =>
+                    // Don't getPath() of the observer here, that really makes the machine think hard
+                    observe(path, data, getPath(path, data)).each((value) =>
                         render(renderer, observer, data)
                     )
                 )

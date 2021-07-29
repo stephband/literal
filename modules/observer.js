@@ -1,6 +1,7 @@
 
 import noop from '../../fn/modules/noop.js';
 import nothing from '../../fn/modules/nothing.js';
+import getPath from '../../fn/modules/get-path.js';
 
 const DEBUG     = window.DEBUG && window.DEBUG === true || window.DEBUG.includes('Observer');
 
@@ -588,34 +589,38 @@ Observable
 ```
 **/
 
+function start(observable, consumer, current) {
+    observable.child = new Observe(observable.path, 0, observable.target, typeof consumer === 'function' ?
+        (value) => {
+            // Deduplicate
+            if (value === current) { return; }
+            current = value;
+            consumer(value);
+        } : 
+        (value) => {
+            // Deduplicate
+            if (value === current) { return; }
+            current = value;
+            consumer.push(value);
+        }
+    );
+}
+
 function Observable(path, target, initial) {
     this.path    = path;
     this.target  = target;
     this.initial = initial;
-
     if (DEBUG) { ++analytics.observables; }
 }
 
 assign(Observable.prototype, {
-    //consumer: nothing,
-
     each: function(fn) {
-        const consumer = { push: fn };
-        let value = this.initial;
-
-        this.child = new Observe(this.path, 0, this.target, (v) => {
-            //console.log(v, value)
-            // Deduplicate
-            if (v === value) { return; }
-            value = v;
-            consumer.push(value);
-        });
-
+        start(this, fn, this.initial);
         return this;
     },
 
     pipe: function(consumer) {
-        this.consumer = consumer;
+        start(this, consumer, this.initial);
         return consumer;
     },
 
@@ -628,12 +633,25 @@ assign(Observable.prototype, {
 
 
 /** 
-observe(path, target, [initial])
+observe(path, target)
+Returns an Observable with the methods:
+
+```
+.each(fn)
+.pipe(pushable)
+.stop()
+```
+
+May also
+
+```
+observe(path, target, initial)
+```
+
 Returns an Observable.
 **/
 
 export function observe(path, object, initial) {
-    //initial = arguments.length < 3 ? $ANY : initial ;
     return new Observable(path, Observer.target(object), initial);
 }
 
