@@ -19,7 +19,7 @@ function add(a, b) {
 function logCounts(counts) {
     const count = counts.reduce(add, 0);
     if (count === 0) { return; }
-    log('mutate ', counts.reduce(add, 0), '#ff7246');
+    //log('mutate ', counts.reduce(add, 0), '#ff7246');
 }
 
 /*

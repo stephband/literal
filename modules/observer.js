@@ -506,8 +506,6 @@ function Observe(path, index, target, output) {
     this.key    = r[2];
     this.output = output;
 
-    //console.log('Observe', path.slice(0, rkey.lastIndex), this.target, this.key);
-
     // Are we at the end of the path?
     if (this.index >= this.path.length) {
         this.fn = this.output;
@@ -590,26 +588,29 @@ Observable
 ```
 **/
 
-function Observable(path, target) {
-    let value;
+function Observable(path, target, initial) {
+    this.path    = path;
+    this.target  = target;
+    this.initial = initial;
 
-    this.path  = path;
-
-    this.child = new Observe(path, 0, target, (v) => {
-        // Deduplicate
-        if (v === value) { return; }
-        value = v;
-        this.consumer.push(value);
-    });
-    
     if (DEBUG) { ++analytics.observables; }
 }
 
 assign(Observable.prototype, {
-    consumer: nothing,
+    //consumer: nothing,
 
     each: function(fn) {
-        this.consumer = { push: fn };
+        const consumer = { push: fn };
+        let value = this.initial;
+
+        this.child = new Observe(this.path, 0, this.target, (v) => {
+            //console.log(v, value)
+            // Deduplicate
+            if (v === value) { return; }
+            value = v;
+            consumer.push(value);
+        });
+
         return this;
     },
 
@@ -627,12 +628,13 @@ assign(Observable.prototype, {
 
 
 /** 
-observe(path, target)
+observe(path, target, [initial])
 Returns an Observable.
 **/
 
-export function observe(path, object) {
-    return new Observable(path, Observer.target(object));
+export function observe(path, object, initial) {
+    //initial = arguments.length < 3 ? $ANY : initial ;
+    return new Observable(path, Observer.target(object), initial);
 }
 
 

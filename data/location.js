@@ -13,6 +13,9 @@ export const defaults = {
     state:  null
 };
 
+const config = window.config && window.config.location || {};
+
+
 // Router scope
 
 const root  = assign({}, defaults);
@@ -39,6 +42,65 @@ function parseParam(string) {
         string ;
 }
 
+function parseSchemaValue(Type, defaultValue, value) {
+    if (value === undefined || value === '') {
+        return defaultValue;
+    }
+
+    if (typeof Type === 'function') {
+        if (Type === Boolean) {
+            return Boolean(value);
+        }
+    
+        if (Type === Number) {
+            return Number(value);
+        }
+    
+        if (Type === String) {
+            return String(value);
+        }
+    
+        if (Type === Symbol) {
+            return Symbol(value);
+        }
+    
+        return new Type(value);
+    }
+
+    throw new Error('Location params schema for arrays must be of the form: [constructor], other item values not yet supported. Or even thought about.');
+}
+
+function parseSchemaKey(config, params, key) {
+    const schema = config[key];
+
+    if (!schema) {
+        throw new Error('config.location.params[' + key + '] not set');
+    }
+
+    if (!schema.type) {
+        throw new Error('config.location.params[' + key + '].type is required');
+    }
+console.log(key, schema, typeof params.get(key), params.get(key));
+    // Is schema.type a constructor?
+    if (typeof schema.type === 'function') {
+        return parseSchemaValue(schema.type, schema.default, params.get(key));
+    }
+
+    if (schema.type.constructor === Array) {
+        if (schema.type.length > 1) {
+            // Array must match length of schema array
+            throw new Error('Location params schema Array multiple values not yet supported');
+        }
+        
+        // Schema array contains a single value, which we take to mean it may
+        // contain any number of values (else why not accept a single value?)
+        return params.getAll(key)
+        .map((value) => parseSchemaValue(schema.type[0], schema.default, value));
+    }
+
+    throw new Error('config.location.params[' + key + '].schema is not a constructor and not an array');
+}
+
 function fromEntries(entries) {
     // Keep a note of what state each param is in: single, multiple or 
     // undefined (unparsed)
@@ -60,8 +122,17 @@ function fromEntries(entries) {
             state[key] = 'multiple';
         }
         else {
-            object[key] = parseParam(value);
-            state[key] = 'single';
+            // Where a schema exists in config for this key, use it to parse the
+            // value or values
+            if (config.params && config.params[key]) {
+                object[key] = parseSchemaKey(config.params, entries, key);
+                // Tell the automatic system not to look at this key again
+                state[key] = 'multiple';
+            }
+            else {
+                object[key] = parseParam(value);
+                state[key] = 'single';
+            }
         }
     }
 
@@ -84,6 +155,9 @@ function updateDataFromLocation(location, history, data) {
         data.params = location.search ?
             fromEntries(new URLSearchParams(location.search)) :
             defaults.params ;
+        
+        console.log('location.params', data.params);
+        
         names.push('params');
     }
 
@@ -102,7 +176,6 @@ function updateDataFromLocation(location, history, data) {
 
     return names;
 }
-
 
 /*
 const nostate = {
@@ -126,6 +199,7 @@ function updateData(location, data) {
         updateDataFromLocation(location, nostate, data) ;
 }
 */
+
 
 // Synchronise root location
 updateDataFromLocation(window.location, window.history, root);
