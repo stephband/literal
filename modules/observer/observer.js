@@ -1,10 +1,10 @@
 
-import { $target, $handlers, $observer } from './symbols.js';
-
 const DEBUG = window.DEBUG === true;
 const assign = Object.assign;
 const define = Object.defineProperties;
 const isExtensible = Object.isExtensible;
+
+export const $observer = Symbol('oberver');
 
 export const analytics = {
     observables: 0,
@@ -18,11 +18,11 @@ export function remove(array, value) {
 }
 
 export function getTarget(object) {
-    return object && object[$target] || object ;
+    return object && object[$observer] && object[$observer].target || object ;
 }
 
 export function getObservables(key, target) {
-    const handlers = target[$handlers];
+    const handlers = target[$observer];
     const observables = handlers.observables || (handlers.observables = {});
     return observables[key] || (observables[key] = []);
 }
@@ -51,11 +51,8 @@ to override the value actually at the end of the path.
 export function notify(path, object, value) {
     const observer = object[$observer];
     if (!observer) { return; }
-    const target = observer[$target];
-    const sets   = observer[$handlers].sets;
-    //const key    = path;
+    const target = observer.target;
     value = value === undefined ? target[path] : value;
-    fire(sets, path, value === undefined ? target[path] : value);
     fire(getObservables(path, target), value);
 }
 
@@ -201,15 +198,12 @@ ObjectTrap()
 **/
 
 const properties = {
-    [$handlers]: {},
-    [$observer]: {},
-    [$target]:   {}
+    [$observer]: {}
 };
 
 function ObjectTrap() {
     this.observables = {};
     this.gets = [];
-    this.sets = [];
 }
 
 assign(ObjectTrap.prototype, {
@@ -233,11 +227,6 @@ assign(ObjectTrap.prototype, {
         if (mutable) {
             fire(this.gets, name);
         }
-        /*
-        else if (typeof target[name] === 'function') {
-            console.log('GET FN', target[name]);
-            return target[name];
-        }*/
 
         // Get the observer of its value
         const observer = Observer(target[name]); 
@@ -284,8 +273,6 @@ assign(ObjectTrap.prototype, {
             fire(observables, value);
         }
 
-        fire(this.sets, name, value);
-
         // Return true to indicate success to Proxy
         return true;
     },
@@ -318,14 +305,10 @@ function createObserver(target) {
     const traps    = new ObjectTrap();
     const observer = new Proxy(target, traps);
 
-    properties[$observer].value = observer;
-    properties[$target].value   = target;
-    properties[$handlers].value = {
-        gets:        traps.gets,
-        sets:        traps.sets,
-        observables: traps.observables
-    };
+    traps.observer = observer;
+    traps.target   = target;
 
+    properties[$observer].value = traps;
     define(target, properties);
     return observer;
 }
@@ -339,7 +322,7 @@ observable via `observe(path, object` and `mutations(paths, object)`.
 
 export function Observer(object) {
     return !object ? undefined :
-        (object[$observer] || (isObservable(object) ?
+        (object[$observer] && object[$observer].observer || (isObservable(object) ?
             createObserver(object) :
             undefined
         ));

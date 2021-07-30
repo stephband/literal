@@ -1,6 +1,5 @@
 
-import { Observer, remove, getTarget } from './observer.js';
-import { $handlers } from './symbols.js';
+import { remove, getTarget, $observer } from './observer.js';
 
 const DEBUG = window.DEBUG === true;
 const assign = Object.assign;
@@ -25,7 +24,7 @@ function ChildGets(target, path, parent, output) {
     this.path     = path;
     this.output   = output;
 
-    target[$handlers].gets.push(this);
+    target[$observer].gets.push(this);
 }
 
 assign(ChildGets.prototype, {
@@ -50,7 +49,7 @@ assign(ChildGets.prototype, {
     },
 
     stop: function() {
-        remove(this.target[$handlers].gets, this);
+        remove(this.target[$observer].gets, this);
         values(this.children).forEach(stop);
     }
 });
@@ -65,7 +64,7 @@ function Gets(target, done) {
         this.fnEach && this.fnEach(path);
     };
 
-    target[$handlers].gets.push(this);
+    target[$observer].gets.push(this);
 }
 
 assign(Gets.prototype, ChildGets.prototype, {
