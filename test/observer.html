@@ -119,8 +119,9 @@
 
     <script type="module">
         //import "../module.js";
-        import Observer, { observe } from "../modules/observer.js";
-        
+        import { Observer, notify, observe } from "../modules/observer.js";
+        import reads from "../modules/observer/reads.js";
+
         function Model(value, child) {
             this.value = value;
             this.child = child;
@@ -142,7 +143,7 @@
 
         const paths = [];
 
-        const gets = Observer.gets(object)
+        const gets = reads(object)
             .each((path) => {
                 console.log(++n, 'get', path);
 
@@ -283,7 +284,7 @@
         data.value = 2;
 
         // Should it log
-        Observer.notify('value', data);
+        notify('value', data);
 
         values.stop();
         childValues.stop();
@@ -301,5 +302,7 @@
         data.child = { value: 'child-7' };
 
         console.groupEnd();
+
+        console.log(n, 'tests, should be', 20);
     </script>
 </body>

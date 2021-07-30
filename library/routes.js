@@ -1,6 +1,6 @@
 
 import { register } from '../modules/library.js';
-import Observer, { mutations } from '../modules/observer.js';
+import { Observer, mutations, observe, getTarget } from '../modules/observer.js';
 import { defaults } from '../data/location.js';
 import log from '../modules/log.js';
 
@@ -64,13 +64,8 @@ function updateRoute(patterns, keys, regexps, location, route) {
 
     // Ignore unmatching handlers
     if (!captures) {
-        console.log('NO   route should be undefined', route)
-        return route;
-        //m.stop();
-        //data.mutations && data.mutations.stop();
-        //data.route = undefined;
-        //data.mutations = undefined;
-        //return data;
+        //console.log('NO   route should be undefined', route)
+        return;
     }
 
     const key  = keys[n];
@@ -100,7 +95,7 @@ route.pk = ++pk;
     // Update params, id, state. Reading these properties should not alert the
     // template renderer to rerender if they change, as we are about to observe
     // them independently, so use the location observer's target object
-    const target = Observer.target(location);
+    const target = getTarget(location);
     route.params = target.params;
     route.id     = target.id;
     route.state  = target.state;
@@ -109,20 +104,19 @@ route.pk = ++pk;
 
     // Kill everything when route changes, which we know will cause a rerender...
     // what if something else causes a rerender? Ooooh.
-    const m1 = Observer.sets(location, (prop) => {
-        if (prop === 'route') {
+    const m1 = observe('route', location, location.route)
+    .each(() => {
 console.log('STOP route ', route.pk, base, path, name);
-            m1.stop();
-            m2.stop();
-            //data.mutations && data.mutations.stop();
-            //data.route = undefined;
-            //data.mutations = undefined;
-            //if (DEBUG) { console.groupEnd(); }
-        }
+        m1.stop();
+        m2.stop();
+        //data.mutations && data.mutations.stop();
+        //data.route = undefined;
+        //data.mutations = undefined;
+        //if (DEBUG) { console.groupEnd(); }
     });
 
-    const m2 = mutations('params id state', location, (names) => {
-//console.log('Route mutated', names, route.pk, location);
+    const m2 = mutations('params id state', location)
+    .each((names) => {
         var n = -1, name;
         while ((name = names[++n]) !== undefined) {
             scope[name] = location[name];

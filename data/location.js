@@ -1,6 +1,6 @@
 
-import Observer from '../modules/observer.js';
-import location from '../../dom/modules/location.js';
+import { Observer, notify } from '../modules/observer.js';
+import '../../dom/modules/navigate.js';
 
 const assign = Object.assign;
 
@@ -51,7 +51,7 @@ function parseSchemaValue(Type, defaultValue, value) {
         if (Type === Boolean) {
             return Boolean(value);
         }
-    
+
         if (Type === Number) {
             return Number(value);
         }
@@ -80,7 +80,9 @@ function parseSchemaKey(config, params, key) {
     if (!schema.type) {
         throw new Error('config.location.params[' + key + '].type is required');
     }
-console.log(key, schema, typeof params.get(key), params.get(key));
+
+//console.log(key, schema, typeof params.get(key), params.get(key));
+
     // Is schema.type a constructor?
     if (typeof schema.type === 'function') {
         return parseSchemaValue(schema.type, schema.default, params.get(key));
@@ -154,10 +156,7 @@ function updateDataFromLocation(location, history, data) {
         data.search = location.search;
         data.params = location.search ?
             fromEntries(new URLSearchParams(location.search)) :
-            defaults.params ;
-        
-        console.log('location.params', data.params);
-        
+            defaults.params ;        
         names.push('params');
     }
 
@@ -177,38 +176,14 @@ function updateDataFromLocation(location, history, data) {
     return names;
 }
 
-/*
-const nostate = {
-    json:     'null',
-    state:    null
-};
-
-function updateData(location, data) {
-    return typeof location === 'string' ?
-        updateDataFromLocation({
-            pathname: location.replace(/(?:\?|#).*$/, ''),
-            search:   location.replace(/^[^?]* REMOVESPACE /, '').replace(/#.*$/, ''),
-            hash:     location.replace(/^[^#]* REMOVESPACE /, '')
-        }, nostate, data) :
-
-    // Or the global location object
-    location === window.location ?
-        updateDataFromLocation(location, window.history, data) :
-    
-    // Or another URL object
-        updateDataFromLocation(location, nostate, data) ;
-}
-*/
-
-
 // Synchronise root location
 updateDataFromLocation(window.location, window.history, root);
 
-location.on(function(location) {
-    const names = updateDataFromLocation(location, window.history, root);
+window.addEventListener('dom-navigate', function(e) {
+    const names = updateDataFromLocation(window.location, window.history, root);
     var n = -1;
     while (names[++n] !== undefined) {
-        Observer.notify(names[n], scope);
+        notify(names[n], scope);
     }
 });
 

@@ -5,7 +5,8 @@ import nothing     from '../../../fn/modules/nothing.js';
 import identify    from '../../../dom/modules/identify.js';
 import isTextNode  from '../../../dom/modules/is-text-node.js';
 import compileNode from '../compile-node.js';
-import Observer, { observe } from '../observer.js';
+import { Observer, observe, getTarget } from '../observer.js';
+import reads       from '../observer/reads.js';
 import log         from '../log.js';
 
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
@@ -54,7 +55,7 @@ function render(renderer, observer, data) {
     empty(renderer);
 
     const paths = renderer.paths;
-    const gets = Observer.gets(observer).each((path) => {
+    const gets = reads(observer).each((path) => {
         // Keep paths unique
         if (paths.includes(path)) { return; }
 
@@ -189,7 +190,7 @@ function stop(object) {
 assign(TemplateRenderer.prototype, {
     // Default data is an empty object
     render: function(object = {}) {
-        const data = Observer.target(object);
+        const data = getTarget(object);
 
         // Deduplicate. Not sure this is entirely necessary.
         if (data === this.data) {

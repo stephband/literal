@@ -20,11 +20,11 @@ CheckedRenderer()
 Constructs an object responsible for rendering to a plain text attribute.
 **/
 
-function setChecked(node, value) {
+function setChecked(node, value, hasValue) {
     const checked = typeof value === 'boolean' ?
             // Where value is a boolean set it directly
             value :
-        isDefined(node.getAttribute('value')) ?
+        hasValue ?
             // Otherwise where the value attribute is defined check against
             // the value property
             value + '' === node.value :
@@ -50,11 +50,13 @@ export default function CheckedRenderer(node, options) {
     Renderer.apply(this, arguments);
     this.name    = 'checked';
     this.literal = options.literal || compile(library, options.consts, options.source, null, 'arguments[1]', options, this.element);
-    this.update  = (value) => setChecked(node, value);
+    
+    const hasValue = isDefined(node.getAttribute('value'));
+    this.update  = (value) => setChecked(node, value, hasValue);
 
     // Negate the effects of having template content in the checked attribute
     //node.checked = false;
-    node.removeAttribute('checked');
+    //node.removeAttribute('checked');
 }
 
 assign(CheckedRenderer.prototype, Renderer.prototype, {
