@@ -54,9 +54,10 @@ export default function CheckedRenderer(node, options) {
     const hasValue = isDefined(node.getAttribute('value'));
     this.update  = (value) => setChecked(node, value, hasValue);
 
-    // Negate the effects of having template content in the checked attribute
+    // Negate the effects of having template content in the checked attribute -
+    // resetting the form sets it back to attribute state
     //node.checked = false;
-    //node.removeAttribute('checked');
+    node.removeAttribute('checked');
 }
 
 assign(CheckedRenderer.prototype, Renderer.prototype, {

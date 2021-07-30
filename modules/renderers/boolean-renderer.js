@@ -37,7 +37,7 @@ export default function BooleanRenderer(node, options) {
     this.update  = (value) => setBooleanProperty(node, this.name, value);
 
     // Remove the boolean until it is processed
-    //node.removeAttribute(this.name);
+    node.removeAttribute(this.name);
 }
 
 assign(BooleanRenderer.prototype, Renderer.prototype);
