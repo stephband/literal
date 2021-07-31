@@ -53,7 +53,6 @@ function empty(renderer) {
 
 function render(renderer, op, observer, data) {
     empty(renderer);
-
     const paths = renderer.paths;
     const gets = reads(observer).each((path) => {
         // Keep paths unique
@@ -129,9 +128,7 @@ export default function TemplateRenderer(template) {
     // If the template is already compiled, clone the compiled consts and 
     // renderers to this renderer and bind them to a new fragment
     if (cache[id]) {
-        this.consts    = cache[id].consts;
         this.content   = cache[id].content;
-        //this.context   = {};
         this.fragment  = cache[id].content.cloneNode(true);
         this.first     = this.fragment.childNodes[0];
         this.last      = this.fragment.childNodes[this.fragment.childNodes.length - 1];
@@ -162,7 +159,6 @@ export default function TemplateRenderer(template) {
 
     // Pick up const names from data-name attributes, such that the attribute 
     // data-hello makes the const ${ hello } available inside the template.
-    this.consts    = template.dataset ? Object.keys(template.dataset) : nothing ;
     this.content   = template.content;
     this.fragment  = template.content.cloneNode(true);
     this.first     = this.fragment.childNodes[0];
@@ -173,7 +169,6 @@ export default function TemplateRenderer(template) {
     // source properties) as renderer construction is synchronous.
     const options = {
         template: id,
-        consts:   this.consts.join(', '),
         path:     ''
     };
 
@@ -209,9 +204,10 @@ assign(TemplateRenderer.prototype, {
         this.observables = observer ?
             renderers.flatMap((renderer) =>
                 renderer.paths.map((path) =>
-                    // Don't getPath() of the observer here, that really makes the machine think hard
+                    // Don't getPath() of the observer here, that really makes 
+                    // the machine think too hard
                     observe(path, data, getPath(path, data)).each((value) =>
-                        // Next renders are pushed which batches them to ticks
+                        // Next renders are cued which batches them to ticks
                         render(renderer, 'cue', observer, data)
                     )
                 )
@@ -224,6 +220,9 @@ assign(TemplateRenderer.prototype, {
         return Promise
         .all(promises)
         .then((counts) => {
+            // Now that template is rendered put the rest of its content after
+            // its first node, which is already in the parent DOM (because ContentRenderer)
+            this.first.after(this.fragment);
             logCounts(counts);
             return this.fragment;
         });

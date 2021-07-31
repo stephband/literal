@@ -74,7 +74,7 @@ export default function TokensRenderer(node, options) {
     const tokens = getTokenList(node, options.name);
     let cached = nothing;
 
-    this.literal = options.literal || compile(library, options.consts, options.source, null, 'arguments[1]', options, node);
+    this.literal = options.literal || compile(library, 'data, state', options.source, null, options, node);
     this.name    = options.name;
     this.update  = (string) => {
         const classes = string.trim().split(/\s+/);

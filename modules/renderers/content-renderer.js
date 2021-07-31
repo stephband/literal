@@ -1,4 +1,5 @@
 
+import isFragmentNode from '../../../dom/modules/is-fragment-node.js';
 import isTextNode     from '../../../dom/modules/is-text-node.js';
 import library        from '../library.js';
 import include        from '../../library/include.js';
@@ -6,7 +7,6 @@ import request        from '../../library/request.js';
 import compile        from '../compile.js';
 import toText         from '../to-text.js';
 import Renderer       from './renderer.js';
-import TemplateRenderer from './template-renderer.js';
 
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
@@ -57,21 +57,18 @@ that DOM after the text node.
 **/
 
 function after(target, node) {
-    if (target.after) {
-        target.after(node);
-    }
-    else {
-        target.last.after(node);
-    }
-
+    target.after(node);
     return 1;
 }
 
-function remove(count, node) {
-    // Todo: Express this more clearly
-    node.stop && node.stop();
-    count += (node.remove() || 1);
-    return count;
+function remove(first, last) {
+    var node, n = 0;
+    while ((node = last.previousNode) && last !== first) {
+        last.remove();
+        ++n;
+        last = node;
+    }
+    return n;
 }
 
 function setNodeValue(node, value) {
@@ -103,11 +100,12 @@ function setContent(node, children, contents) {
 
     // Deal with rest of contents
     while (content = contents[++c]) {
+//console.log('CONTENT', content, content.childNodes);
         // If content is a string look for the next text node
         if (typeof content === 'string') {
             // Throw away any non-text entries
             while (n < children.length && !isTextNode(children[n])) {
-                count = children.splice(n, 1).reduce(remove, count);
+                count += remove(children[n - 1] || node, children[n]);
             }
 
             // If child exists we know it is a text node, fill it with content
@@ -125,15 +123,21 @@ function setContent(node, children, contents) {
 
         // If content is a fragment or other DOM node
         else {
-            count += after((children[n - 1] || node), content);
-            children.splice(n, 0, content);
+//console.log('CHILDREN', n, children);
+            //const first = isFragmentNode(content) ? content.childNodes[0] : content;
+            const last  = isFragmentNode(content) ? content.childNodes[content.childNodes.length - 1] : content;
+            count += after(children[n - 1] || node, content);
+            children.splice(n, 0, last);
         }
 
         ++n;
     }
 
     // Throw away any remaining children
-    count = children.splice(n).reduce(remove, count);
+    const dead = children.splice(n);
+    if (dead.length) {
+        count += remove(children[n - 1] || node, dead[dead.length - 1]);
+    }
 
     // Return the number of contents appended to DOM
     return count;
@@ -142,7 +146,7 @@ function setContent(node, children, contents) {
 export default function ContentRenderer(node, options, element) {
     Renderer.apply(this, arguments);
     const children = this.children = [];
-    this.literal = options.literal || compile(contentLibrary, options.consts, options.source, null, 'arguments[1]', options, element);
+    this.literal = options.literal || compile(contentLibrary, 'data, state', options.source, null, options, element);
     this.update  = (contents) => setContent(node, children, contents);
 }
 

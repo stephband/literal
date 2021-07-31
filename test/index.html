@@ -113,7 +113,7 @@
         </ul-->
     </header>
 
-    <!--h3 class="text-03"><code>&lt;literal-include&gt;</code> <span class="test-count">(1 test)</span></h3>
+    <h3 class="text-03"><code>&lt;literal-include&gt;</code> <span class="test-count">(1 test)</span></h3>
 
     <literal-include>
         <p>✓ Default content of an <code>&lt;literal-include&gt;</code> element. Should warn about missing <code>src</code> attribute in the console.</p>
@@ -256,7 +256,7 @@
 
     <hr/>
 
-    <h3 class="text-03"><code>include(template, data)</code> <span class="test-count">(3 tests)</span></h3-->
+    <h3 class="text-03"><code>include(template, data)</code> <span class="test-count">(3 tests)</span></h3>
 
     <template id="paragraph-template">
         <p>✓ Standard template included.</p>
@@ -272,7 +272,7 @@
 
     <literal-include src="#include-standard-template"></literal-include>
 
-    <!--hr/>
+    <hr/>
 
     <template is="literal-template" id="data-template">
         <p>✓ Literal template included.</p>
@@ -282,13 +282,13 @@
     <template is="literal-template" id="include-literal-template">
         <div>
             Before include.
-            ${ include('#data-template', data) }
+            ${ include('#data-template', {}) }
             After include.
         </div>
     </template>
-    
+
     <literal-include src="#include-literal-template"></literal-include>
-    
+
     <hr/>
     
     <literal-include src="#include-literal-template" data="./test.json"></literal-include>
@@ -377,7 +377,7 @@
 
     <literal-include src="#objects-template" data="./test-objects.json"></literal-include>
 
-    <hr/-->
+    <hr/>
 
     <script type="module">
         import "../module.js";

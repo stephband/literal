@@ -46,7 +46,7 @@ function logCompile(source, scope, vars) {
 */
 
 /**
-compile(scope, consts, source, id, constsObjectName, debugInfo)
+compile(scope, source, id, constsObjectName, debugInfo)
 Compiles a literal template to a function.
 **/
 
@@ -55,18 +55,8 @@ const indent = '  ';
 // Store render functions against their source
 export const cache = {};
 
-function isValidConst(namevalue) {
-    const name = namevalue[0];
-    return /^\w/.test(name);
-}
-
-function sanitiseVars(vars) {
-    const names = vars.split(/\s*[,\s]\s*/).filter(isValidConst).sort();
-    return names.join(', ');
-}
-
 // Last two params, info and element, are purely for debug messages
-export default function compile(scope, consts, source, id, constsObjectName = 'data', info, element) {
+export default function compile(scope, params, source, id, info, element) {
     if (typeof source !== 'string') {
         throw new Error('Template is not a string');
     }
@@ -76,12 +66,8 @@ export default function compile(scope, consts, source, id, constsObjectName = 'd
     // Return cached fn
     if (cache[key]) { return cache[key]; }
 
-    // Alphabetise and format
-    const vars = consts && sanitiseVars(consts) ;
-
     const code = '\n'
         + (id ? indent + '// Template #' + id + '\n' : '')
-        + (vars ? indent + 'const { ' + vars + ' } = ' + constsObjectName + ';\n' : '')
         + indent + 'return render`' + source + '`;\n';
 
     if (DEBUG) {
@@ -93,7 +79,7 @@ export default function compile(scope, consts, source, id, constsObjectName = 'd
             // appear in template scope. 
             // Todo: test does outer function's name 'anonymous', which appears to 
             // be automatic, appear in scope?
-            const fn = compileAsync(scope, 'data = {}', 
+            const fn = compileAsync(scope, params, 
                 // Wrap code in a try/catch and append useful info to error message
                 'try {' + code + '} catch(e) {' +
                 indent + 'e.message += " in template #" + this.template + (this.element && this.element.tagName ? ", <" + this.element.tagName.toLowerCase() + (this.name ? " " + this.name + "=\\"...\\">" : ">") : "");' +
@@ -110,5 +96,5 @@ export default function compile(scope, consts, source, id, constsObjectName = 'd
         }
     }
 
-    return cache[key] = compileAsync(scope, 'data = {}', code);
+    return cache[key] = compileAsync(scope, params, code);
 }

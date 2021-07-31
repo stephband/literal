@@ -23,7 +23,6 @@ export function include(url, data) {
 
     // Accept a promise of data
     if (data.then) {
-console.log('WOOOOO', url, first);
         data.then((data) => first.after(renderer.render(data)));
         return first;
     }
