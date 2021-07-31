@@ -10,5 +10,5 @@ compileString()
 
 export default function compileString(string) {
     // library, varstring, string, id, consts = 'data'
-    return compile(library, string);
+    return compile(library, 'data', string);
 }

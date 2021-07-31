@@ -56,7 +56,7 @@ const indent = '  ';
 export const cache = {};
 
 // Last two params, info and element, are purely for debug messages
-export default function compile(scope, source, id, constsObjectName = 'data', info, element) {
+export default function compile(scope, params, source, id, info, element) {
     if (typeof source !== 'string') {
         throw new Error('Template is not a string');
     }
@@ -79,7 +79,7 @@ export default function compile(scope, source, id, constsObjectName = 'data', in
             // appear in template scope. 
             // Todo: test does outer function's name 'anonymous', which appears to 
             // be automatic, appear in scope?
-            const fn = compileAsync(scope, 'data = {}', 
+            const fn = compileAsync(scope, params, 
                 // Wrap code in a try/catch and append useful info to error message
                 'try {' + code + '} catch(e) {' +
                 indent + 'e.message += " in template #" + this.template + (this.element && this.element.tagName ? ", <" + this.element.tagName.toLowerCase() + (this.name ? " " + this.name + "=\\"...\\">" : ">") : "");' +
@@ -96,5 +96,5 @@ export default function compile(scope, source, id, constsObjectName = 'data', in
         }
     }
 
-    return cache[key] = compileAsync(scope, 'data = {}', code);
+    return cache[key] = compileAsync(scope, params, code);
 }
