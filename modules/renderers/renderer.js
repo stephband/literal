@@ -73,6 +73,12 @@ Base class/mixin for providing renderers with the properties
 
 let id = 0;
 
+function stop(stopable) {
+    return stopable.stop ?
+        stopable.stop() :
+        stopable() ;
+}
+
 export default function Renderer(node, options, element) {
     this.element   = element || node;
     this.node      = node;
@@ -83,12 +89,32 @@ export default function Renderer(node, options, element) {
 }
 
 assign(Renderer.prototype, {
+    push: function() {
+        // Cue .render() to be called on the next frame
+    },
+
     render: function() {
         ++this.count;
-        return this.literal.apply(this, arguments)
+        return this.stop()
+        .literal.apply(this, arguments)
         .then(this.resolve)
         .then(this.update);
     },
 
-    resolve: renderString
+    resolve: renderString,
+    
+    stop: function() {
+        if (this.stopables) {
+            this.stopables.forEach(stop);
+            this.stopables.length = 0;
+        }
+
+        return this;
+    },
+
+    done: function(stopable) {
+        const stopables = this.stopables || (this.stopables = []);
+        stopables.push(stopable);
+        return this;
+    }
 });

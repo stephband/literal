@@ -227,6 +227,7 @@ assign(TemplateRenderer.prototype, {
         // We must not empty .renderers, they are compiled and cached and may 
         // be used again. We can stop listening to sets and make .render() a
         // noop.
+        this.renderers.forEach(stop);
         this.observables.forEach(stop);
         this.render = noop;
     },

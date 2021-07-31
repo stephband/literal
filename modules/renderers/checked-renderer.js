@@ -20,16 +20,24 @@ CheckedRenderer()
 Constructs an object responsible for rendering to a plain text attribute.
 **/
 
+function toString(value) {
+    return '' + value;
+}
+
 function setChecked(node, value, hasValue) {
-    const checked = typeof value === 'boolean' ?
-            // Where value is a boolean set it directly
-            value :
+        // Value may be a boolean in which case we use it directly
+    const checked = typeof value === 'boolean' ? value :
+        // If the element has a value attribute defined, we compare against it
         hasValue ?
-            // Otherwise where the value attribute is defined check against
-            // the value property
-            value + '' === node.value :
-            // Otherwise treat value as a boolean
-            !!value ;
+            // Is value an array of values? It's important to include this here, 
+            // at least for checkboxes, of which multiple may be checked. It 
+            // cuts down on tag parsing in lists of inputs.
+            node.type === 'checkbox' && value && value.map ?
+                value.map(toString).includes(node.value) :
+                // Or a string or a number?
+                value + '' === node.value :
+        // Otherwise treat value as a boolean
+        !!value ;
 
     if (checked === node.checked) {
         return 0;
@@ -56,7 +64,6 @@ export default function CheckedRenderer(node, options) {
 
     // Negate the effects of having template content in the checked attribute -
     // resetting the form sets it back to attribute state
-    //node.checked = false;
     node.removeAttribute('checked');
 }
 
