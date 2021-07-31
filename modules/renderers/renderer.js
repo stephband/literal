@@ -1,6 +1,7 @@
 
 //import library from '../library.js';
 //import compile from '../compile.js';
+import { cue, uncue } from './batcher.js';
 import toText  from '../to-text.js';
 
 const assign = Object.assign;
@@ -89,14 +90,20 @@ export default function Renderer(node, options, element) {
 }
 
 assign(Renderer.prototype, {
-    push: function() {
-        // Cue .render() to be called on the next frame
+    cue: function() {
+        // Cue .render() to be called on the next batch
+        return cue(this, arguments);
     },
 
     render: function() {
         ++this.count;
-        return this.stop()
-        .literal.apply(this, arguments)
+        
+        if (this.stopables) {
+            this.stopables.forEach(stop);
+            this.stopables.length = 0;
+        }
+
+        return this.literal.apply(this, arguments)
         .then(this.resolve)
         .then(this.update);
     },
@@ -108,6 +115,8 @@ assign(Renderer.prototype, {
             this.stopables.forEach(stop);
             this.stopables.length = 0;
         }
+
+        uncue(this);
 
         return this;
     },

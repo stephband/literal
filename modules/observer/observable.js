@@ -102,6 +102,7 @@ assign(Observe.prototype, {
         if (observables.includes(this)) {
             throw new Error('observe.listen this is already bound');
         }
+
         observables.push(this);
     },
     
@@ -159,7 +160,7 @@ assign(Observable.prototype, {
     },
 
     pipe: function(consumer) {
-        start(this, consumer, this.initial);
+        this.child = start(this, consumer, this.initial);
         return consumer;
     },
 

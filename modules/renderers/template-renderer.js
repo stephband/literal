@@ -51,7 +51,7 @@ function empty(renderer) {
     }
 }
 
-function render(renderer, observer, data) {
+function render(renderer, op, observer, data) {
     empty(renderer);
 
     const paths = renderer.paths;
@@ -77,7 +77,7 @@ function render(renderer, observer, data) {
         paths.push(path);
     });
 
-    const promise = renderer.render(observer, data);
+    const promise = renderer[op](observer, data);
 
     // We may only collect synchronous gets – other templates may use 
     // this data object while we are promising and we don't want to
@@ -201,7 +201,9 @@ assign(TemplateRenderer.prototype, {
 
         const observer  = Observer(data);
         const renderers = this.renderers;
-        const promises  = renderers.map((renderer) => render(renderer, observer, data));
+
+        // First render is called synchronously
+        const promises  = renderers.map((renderer) => render(renderer, 'render', observer, data));
 
         this.observables.forEach(stop);
         this.observables = observer ?
@@ -209,7 +211,8 @@ assign(TemplateRenderer.prototype, {
                 renderer.paths.map((path) =>
                     // Don't getPath() of the observer here, that really makes the machine think hard
                     observe(path, data, getPath(path, data)).each((value) =>
-                        render(renderer, observer, data)
+                        // Next renders are pushed which batches them to ticks
+                        render(renderer, 'cue', observer, data)
                     )
                 )
             ) :
