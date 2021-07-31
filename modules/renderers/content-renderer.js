@@ -130,7 +130,7 @@ function setContent(node, children, contents) {
             }
         }
         else {
-            count += after((children[n - 1] || node), content.fragment);
+            count += after((children[n - 1] || node), content.first);
             children.splice(n, 0, content);
         }
 

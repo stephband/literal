@@ -217,6 +217,9 @@ assign(TemplateRenderer.prototype, {
         return Promise
         .all(promises)
         .then((counts) => {
+            // Now that template is rendered put the rest of its content after
+            // its first node, which is already in the parent DOM (because ContentRenderer)
+            this.first.after(this.fragment);
             logCounts(counts);
             return this.fragment;
         });
