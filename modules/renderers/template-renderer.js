@@ -218,12 +218,16 @@ assign(TemplateRenderer.prototype, {
             ) :
             nothing ;
 
+        return this.fragment;
+
+        /*
         return Promise
         .all(promises)
         .then((counts) => {
             logCounts(counts);
             return this.fragment;
         });
+        */
     },
 
     stop: function() {

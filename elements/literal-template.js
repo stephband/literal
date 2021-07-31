@@ -30,7 +30,7 @@ import TemplateRenderer from '../modules/renderers/template-renderer.js';
 export default element('<template is="literal-template">', {
     construct: function() {
         // Keep tabs on the number of renders
-        this.instanceCount = 0;
+        //this.instanceCount = 0;
     }
 }, {
     /** 
@@ -40,11 +40,8 @@ export default element('<template is="literal-template">', {
     render: {
         value: function(data) {
             const renderer = new TemplateRenderer(this);
-            ++this.instanceCount;
-            // Todo: pass element into template renderer from 
-            // literal-include.parentNode ?
-            renderer.render(data);
-            return renderer.fragment;
+            //++this.instanceCount;
+            return renderer.render(data);
         }
     }
 });

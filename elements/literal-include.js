@@ -107,7 +107,7 @@ element('<literal-include>', {
             this.rejectSrc = reject;
         })
         .then((template) => {
-            // Template has a render method
+            // Template is a literal-template with a .render() method
             if (template.render) {
                 // It requires data to be rendered
                 return dataPromise.then((data) => {

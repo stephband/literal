@@ -113,7 +113,7 @@
         </ul-->
     </header>
 
-    <h3 class="text-03"><code>&lt;literal-include&gt;</code> <span class="test-count">(1 test)</span></h3>
+    <!--h3 class="text-03"><code>&lt;literal-include&gt;</code> <span class="test-count">(1 test)</span></h3>
 
     <literal-include>
         <p>✓ Default content of an <code>&lt;literal-include&gt;</code> element. Should warn about missing <code>src</code> attribute in the console.</p>
@@ -183,7 +183,7 @@
     <hr/>
 
     <literal-include src="#literal-template">
-        <p>✓ Default content of an <code>&lt;literal-include src="#literal-template"&gt;</code> element.</p>
+        <p>✗ Default content of an <code>&lt;literal-include src="#literal-template"&gt;</code> element.</p>
     </literal-include>
 
     <hr/>
@@ -192,7 +192,7 @@
         <p>✗ Default content of an <code>&lt;literal-include src="#literal-template" data="./test.json"&gt;</code> element.</p>
     </literal-include>
 
-    <hr/>
+    <!hr/>
 
     <literal-include src="#literal-template" data="./test.js">        
         <p>✗ Default content of an <code>&lt;literal-include src="#literal-template" data="./test.js"&gt;</code> element.</p>
@@ -219,8 +219,6 @@
         <dl style="display: grid; grid-template-columns: min-content 1fr; text-align: left;">
             <dt>String</dt>    <dd>${ 'hello' }</dd>
             <dt>Number</dt>    <dd>${ 123.45 }</dd>
-            <!-- Not yet supported by Safari -->
-            <!--dt>BigInt</dt>    <dd>${ 12345n }</dd-->
             <dt>Infinity</dt>  <dd>${ Infinity }, ${ -Infinity }</dd>
             <dt>boolean</dt>   <dd>${ true }, ${ false }</dd>
             <dt>function</dt>  <dd>${ function fn(param) {} }</dd>
@@ -258,7 +256,7 @@
 
     <hr/>
 
-    <h3 class="text-03"><code>include(template, data)</code> <span class="test-count">(3 tests)</span></h3>
+    <h3 class="text-03"><code>include(template, data)</code> <span class="test-count">(3 tests)</span></h3-->
 
     <template id="paragraph-template">
         <p>✓ Standard template included.</p>
@@ -267,14 +265,14 @@
     <template is="literal-template" id="include-standard-template">
         <div>
             Before include.
-            ${ include('#paragraph-template', {}) }
+            ${ include('#paragraph-template', new Promise((resolve) => setTimeout(() => resolve({}), 4000))) }
             After include.
         </div>
     </template>
 
     <literal-include src="#include-standard-template"></literal-include>
 
-    <hr/>
+    <!--hr/>
 
     <template is="literal-template" id="data-template">
         <p>✓ Literal template included.</p>
@@ -379,7 +377,7 @@
 
     <literal-include src="#objects-template" data="./test-objects.json"></literal-include>
 
-    <hr/>
+    <hr/-->
 
     <script type="module">
         import "../module.js";

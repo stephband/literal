@@ -32,19 +32,12 @@ function renderValues(string, contents, array) {
 function renderValue(string, contents, value) {
     if (value && typeof value === 'object') {
         // Array-like values are flattened recursively
-        if (typeof value.length === 'number') {
+        if (value && !value.nodeType && typeof value.length === 'number') {
             return renderValues(string, contents, value);
         }
 
         // Nodes are pushed into contents directly
         if (value instanceof Node) {
-            string && contents.push(string);
-            contents.push(value);
-            return '';
-        }
-
-        // Ditto template renderers
-        if (value instanceof TemplateRenderer) {
             string && contents.push(string);
             contents.push(value);
             return '';
@@ -129,8 +122,10 @@ function setContent(node, children, contents) {
                 children.push(child);
             }
         }
+
+        // If content is a fragment or other DOM node
         else {
-            count += after((children[n - 1] || node), content.fragment);
+            count += after((children[n - 1] || node), content);
             children.splice(n, 0, content);
         }
 

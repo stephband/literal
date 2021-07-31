@@ -9,25 +9,27 @@ import TemplateRenderer from '../modules/renderers/template-renderer.js';
 
 export function include(url, data) {
     if (!/^#/.test(url)) {
-        throw new Error('Template: Only #fragment identifiers currently supported as include() urls ("' + url + '")');
+        throw new Error('Literal include() - Only #fragment identifiers currently supported as template src ("' + url + '")');
     }
 
     const renderer = new TemplateRenderer(url.slice(1));
+    const first    = renderer.first;
 
     // Accept a url, fetch or import it before rendering
     if (typeof data === 'string') {
-        request(data).then((data) => renderer.render(data));
-    }
-    // Accept a promise of data
-    else if (data.then) {
-        data.then((data) => renderer.render(data));
-    }
-    // Accept an object or undefined
-    else {
-        renderer.render(data || {});
+        request(data).then((data) => first.after(renderer.render(data)));
+        return first;
     }
 
-    return renderer;
+    // Accept a promise of data
+    if (data.then) {
+console.log('WOOOOO', url, first);
+        data.then((data) => first.after(renderer.render(data)));
+        return first;
+    }
+
+    // Accept an object or undefined
+    return renderer.render(data || {});
 }
 
 export default curry(include);
