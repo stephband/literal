@@ -1,13 +1,16 @@
 
 const renderers = [];
 const promise   = Promise.resolve(renderers);
+let cued;
 
 function render(renderers) {
     var renderer;
     while (renderer = renderers.shift()) {
         // Call .render() with latest arguments
-        renderer.render.apply(renderer, renderer._batcherArgs);
+        renderer.render.apply(renderer, renderer.cuedArguments);
+        renderer.cuedArguments = undefined;
     }
+    cued = undefined;
 }
 
 /** 
@@ -17,15 +20,17 @@ renderer is already cued args are replaced with latest args.
 **/
 
 export function cue(renderer, args) {
-    renderer._batcherArgs = args;
+    renderer.cuedArguments = args;
 
-    if (!renderers.length) {
-        promise.then(render);
+    if (!cued) {
+        cued = promise.then(render);
         renderers.push(renderer);
     }
     else if (!renderers.includes(renderer)) {
         renderers.push(renderer);
     }
+
+    return cued;
 }
 
 /** 
@@ -39,4 +44,5 @@ export function uncue(renderer) {
     const i = renderers.indexOf(renderer);
     if (i === -1) { return; }
     renderers.splice(i, 1);
+    renderer.cuedArguments = undefined;
 }

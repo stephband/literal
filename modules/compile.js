@@ -46,7 +46,7 @@ function logCompile(source, scope, vars) {
 */
 
 /**
-compile(scope, consts, source, id, constsObjectName, debugInfo)
+compile(scope, source, id, constsObjectName, debugInfo)
 Compiles a literal template to a function.
 **/
 
@@ -55,18 +55,8 @@ const indent = '  ';
 // Store render functions against their source
 export const cache = {};
 
-function isValidConst(namevalue) {
-    const name = namevalue[0];
-    return /^\w/.test(name);
-}
-
-function sanitiseVars(vars) {
-    const names = vars.split(/\s*[,\s]\s*/).filter(isValidConst).sort();
-    return names.join(', ');
-}
-
 // Last two params, info and element, are purely for debug messages
-export default function compile(scope, consts, source, id, constsObjectName = 'data', info, element) {
+export default function compile(scope, source, id, constsObjectName = 'data', info, element) {
     if (typeof source !== 'string') {
         throw new Error('Template is not a string');
     }
@@ -76,12 +66,8 @@ export default function compile(scope, consts, source, id, constsObjectName = 'd
     // Return cached fn
     if (cache[key]) { return cache[key]; }
 
-    // Alphabetise and format
-    const vars = consts && sanitiseVars(consts) ;
-
     const code = '\n'
         + (id ? indent + '// Template #' + id + '\n' : '')
-        + (vars ? indent + 'const { ' + vars + ' } = ' + constsObjectName + ';\n' : '')
         + indent + 'return render`' + source + '`;\n';
 
     if (DEBUG) {
