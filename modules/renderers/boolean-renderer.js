@@ -32,9 +32,9 @@ export function setBooleanProperty(node, name, value) {
 
 export default function BooleanRenderer(node, options) {
     Renderer.apply(this, arguments);
-    this.literal = options.literal || compile(library, 'data, state', options.source, null, options, this.element);
-    this.name    = options.name;
-    this.update  = (value) => setBooleanProperty(node, this.name, value);
+    this.literally = options.literally || compile(library, 'data, state', options.source, null, options, this.element);
+    this.name      = options.name;
+    this.update    = (value) => setBooleanProperty(node, this.name, value);
 
     // Remove the boolean until it is processed
     node.removeAttribute(this.name);

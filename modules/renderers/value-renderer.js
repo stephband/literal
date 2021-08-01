@@ -106,9 +106,9 @@ function setValue(node, value) {
 
 export default function ValueRenderer(node, options) {
     Renderer.apply(this, arguments);
-    this.name    = 'value';
-    this.literal = options.literal || compile(library, 'data, state', options.source, null, options, node);
-    this.update  = (value) => setValue(node, value);
+    this.name      = 'value';
+    this.literally = options.literally || compile(library, 'data, state', options.source, null, options, node);
+    this.update    = (value) => setValue(node, value);
 }
 
 assign(ValueRenderer.prototype, Renderer.prototype, {
@@ -124,9 +124,9 @@ Constructs an object responsible for rendering to a value property as a string.
 
 export function StringValueRenderer(node, options) {
     Renderer.apply(this, arguments);
-    this.name    = 'value';
-    this.literal = options.literal || compile(library, 'data, state', options.source, null, options, node);
-    this.update  = (value) => setValue(node, value);
+    this.name      = 'value';
+    this.literally = options.literally || compile(library, 'data, state', options.source, null, options, node);
+    this.update    = (value) => setValue(node, value);
 }
 
 assign(StringValueRenderer.prototype, Renderer.prototype);

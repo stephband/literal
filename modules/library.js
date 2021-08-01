@@ -32,7 +32,7 @@ const library = {
     // The principal render function
     render: function() {
         // Wait for user-side promises to resolve before sending to render
-        return Promise.all(arguments);
+        return arguments;
     }
 };
 

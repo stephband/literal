@@ -62,9 +62,11 @@ export function renderString(values) {
     )));
 }
 
+/*
 export function toPromise() {
     return Promise.all(arguments);
 }
+*/
 
 /** 
 Renderer()
@@ -95,7 +97,7 @@ assign(Renderer.prototype, {
         return cue(this, arguments);
     },
 
-    render: function() {
+    render: function(data, state) {
         ++this.count;
         
         if (this.stopables) {
@@ -103,9 +105,9 @@ assign(Renderer.prototype, {
             this.stopables.length = 0;
         }
 
-        return this.literal.apply(this, arguments)
-        .then(this.resolve)
-        .then(this.update);
+        const p = this.literally(data, state);
+        const q = this.resolve(p);
+        return this.update(q);
     },
 
     resolve: renderString,

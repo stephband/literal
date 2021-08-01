@@ -76,14 +76,13 @@ function render(renderer, op, observer, data) {
         paths.push(path);
     });
 
-    const promise = renderer[op](observer, data);
+    renderer[op](observer, data);
 
     // We may only collect synchronous gets – other templates may use 
     // this data object while we are promising and we don't want to
     // include their gets by stopping on .then(). Stop now. If we want to
     // fix this, making a proxy per template instance would be the way to go.
     gets.stop();
-    return promise;
 }
 
 function prepareContent(content) {
@@ -198,7 +197,7 @@ assign(TemplateRenderer.prototype, {
         const renderers = this.renderers;
 
         // First render is called synchronously
-        const promises  = renderers.map((renderer) => render(renderer, 'render', observer, data));
+        renderers.map((renderer) => render(renderer, 'render', observer, data));
 
         this.observables.forEach(stop);
         this.observables = observer ?
@@ -215,24 +214,12 @@ assign(TemplateRenderer.prototype, {
             nothing ;
 
         return this.fragment;
-
-        /*
-        return Promise
-        .all(promises)
-        .then((counts) => {
-            // Now that template is rendered put the rest of its content after
-            // its first node, which is already in the parent DOM (because ContentRenderer)
-            this.first.after(this.fragment);
-            logCounts(counts);
-            return this.fragment;
-        });
-        */
     },
 
     stop: function() {
         // We must not empty .renderers, they are compiled and cached and may 
         // be used again. We can stop listening to sets and make .render() a
-        // noop.
+        // noop though.
         this.renderers.forEach(stop);
         this.observables.forEach(stop);
         this.render = noop;
