@@ -5,11 +5,19 @@ include(url, data)
 
 import curry from '../../fn/modules/curry.js';
 import request from './request.js';
+import create from '../../dom/modules/create.js';
+import { requestGet } from '../../dom/modules/request.js';
+import { fragmentFromHTML } from '../../dom/modules/fragments.js';
 import TemplateRenderer from '../modules/renderers/template-renderer.js';
 
 export function include(url, data) {
     if (!/^#/.test(url)) {
-        throw new Error('Literal include() - Only #fragment identifiers currently supported as template src ("' + url + '")');
+        // Plonk raw HTML as a fragment into the DOM
+        const last = create('text', '');
+        requestGet(url).then((html) => last.before(fragmentFromHTML(html)));
+        return last;
+
+        //throw new Error('Literal include() - Only #fragment identifiers currently supported as template src ("' + url + '")');
     }
 
     const renderer = new TemplateRenderer(url.slice(1));

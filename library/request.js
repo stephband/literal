@@ -51,7 +51,7 @@ const rextension = /\.([\w-]+)(?:#|\?|$)/;
 const rfragment  = /#(\w+)(?:\(([^\)]*)\))?$/;
 const defaultexp = ['', 'default', ''];
 
-export default overload((url) => rextension.exec(url)[1], {
+export default overload((url) => (rextension.exec(url) || [0,'none'])[1], {
     'js': (url) => {
         // Support named exports via the #fragment identifier
         const [string, name, params] = rfragment.exec(url) || defaultexp;
@@ -78,5 +78,8 @@ export default overload((url) => rextension.exec(url)[1], {
 
     // Cache JSON requests in memory so that all requests to a given URL result 
     // in the same object.
-    'json': cache((url) => requestGet(url))
+    'json': cache((url) => requestGet(url)),
+
+    // Request HTML
+    //'none': (url) => requestGet(url)
 });
