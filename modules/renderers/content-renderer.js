@@ -1,6 +1,7 @@
 
 import isFragmentNode from '../../../dom/modules/is-fragment-node.js';
 import isTextNode     from '../../../dom/modules/is-text-node.js';
+import trigger        from '../../../dom/modules/trigger.js';
 import library        from '../library.js';
 import include        from '../../library/include.js';
 import request        from '../../library/request.js';
@@ -63,7 +64,8 @@ function after(target, node) {
 
 function remove(first, last) {
     var node, n = 0;
-    while ((node = last.previousNode) && last !== first) {
+    while (last && last !== first) {
+        node = last.previousSibling;
         last.remove();
         ++n;
         last = node;
@@ -106,6 +108,7 @@ function setContent(node, children, contents) {
             // Throw away any non-text entries
             while (n < children.length && !isTextNode(children[n])) {
                 count += remove(children[n - 1] || node, children[n]);
+                children.splice(n, 1).forEach(trigger('literal-stop'));
             }
 
             // If child exists we know it is a text node, fill it with content
@@ -117,15 +120,17 @@ function setContent(node, children, contents) {
             else {
                 const child = document.createTextNode(content);
                 count += after(children[n - 1], child);
-                children.push(child);
+                children[n] = child;
             }
         }
 
         // If content is a fragment or other DOM node
         else {
 //console.log('CHILDREN', n, children);
-            //const first = isFragmentNode(content) ? content.childNodes[0] : content;
-            const last  = isFragmentNode(content) ? content.childNodes[content.childNodes.length - 1] : content;
+            const last = isFragmentNode(content) ? 
+                content.childNodes[content.childNodes.length - 1] : 
+                content ;
+
             count += after(children[n - 1] || node, content);
             children.splice(n, 0, last);
         }
@@ -137,6 +142,7 @@ function setContent(node, children, contents) {
     const dead = children.splice(n);
     if (dead.length) {
         count += remove(children[n - 1] || node, dead[dead.length - 1]);
+        dead.forEach(trigger('literal-stop'));
     }
 
     // Return the number of contents appended to DOM

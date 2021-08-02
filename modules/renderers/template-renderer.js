@@ -1,7 +1,9 @@
-   
+
+import get         from '../../../fn/modules/get.js';
 import getPath     from '../../../fn/modules/get-path.js';
 import noop        from '../../../fn/modules/noop.js';
 import nothing     from '../../../fn/modules/nothing.js';
+import overload    from '../../../fn/modules/overload.js';
 import identify    from '../../../dom/modules/identify.js';
 import isTextNode  from '../../../dom/modules/is-text-node.js';
 import compileNode from '../compile-node.js';
@@ -92,19 +94,21 @@ function prepareContent(content) {
     // end of templated content, to enable removal even after templated content
     // has mutated. If the template does NOT start or end with a text node, we
     // should insert a couple of empty ones to enable this.
-    const first = content.childNodes[0];
+    //const first = content.childNodes[0];
     const last  = content.childNodes[content.childNodes.length - 1];
 
-    if (!isTextNode(first)) {
-        content.prependChild(document.createTextNode(''));
-    }
+    //if (!isTextNode(first)*/) {
+    //    content.prepend(document.createTextNode(''));
+    //}
 
     if (isTextNode(last)) {
         // Slice off space from the end of the last node and use it to create an
         // end delimiter.
         const space = /\s*$/.exec(last.nodeValue);
-        last.nodeValue = space.input.slice(0, space.index);
-        content.appendChild(document.createTextNode(space[0]));
+        if (space.index > 0) {
+            last.nodeValue = space.input.slice(0, space.index);
+            content.appendChild(document.createTextNode(space[0]));
+        }
     }
     else {
         content.appendChild(document.createTextNode(''));
@@ -133,6 +137,10 @@ export default function TemplateRenderer(template) {
         this.last      = this.fragment.childNodes[this.fragment.childNodes.length - 1];
         this.renderers = cache[id].renderers.map(newRenderer, this.fragment);
         this.observables = nothing;
+
+        this.template  = cache[id].template;
+
+        this.last.addEventListener('literal-stop', this);
         return;
     }
 
@@ -156,20 +164,22 @@ export default function TemplateRenderer(template) {
 
     prepareContent(template.content);
 
-    // Pick up const names from data-name attributes, such that the attribute 
-    // data-hello makes the const ${ hello } available inside the template.
     this.content   = template.content;
     this.fragment  = template.content.cloneNode(true);
     this.first     = this.fragment.childNodes[0];
     this.last      = this.fragment.childNodes[this.fragment.childNodes.length - 1];
+    this.last.addEventListener('literal-stop', this);
 
     // The options object contains information for renderer objects. It is 
     // mutated as it is passed to each renderer (specifically path, name, 
-    // source properties) as renderer construction is synchronous.
+    // source properties) as renderer construction is synchronous within a 
+    // template.
     const options = {
         template: id,
         path:     ''
     };
+
+    this.template = id;
 
     this.renderers = compileNode([], options, this.fragment, template);
     this.observables = nothing;
@@ -182,6 +192,18 @@ function stop(object) {
 }
 
 assign(TemplateRenderer.prototype, {
+    // Events literal-remove
+    handleEvent: overload(get('type'), {
+        'literal-remove': function(e) {
+            this.remove();
+        },
+
+        'literal-stop': function(e) {
+            console.log('literal-stop', e.target, this.template);
+            this.stop();
+        }
+    }),
+
     // Default data is an empty object
     render: function(object = {}) {
         const data = getTarget(object);
@@ -223,6 +245,8 @@ assign(TemplateRenderer.prototype, {
         this.renderers.forEach(stop);
         this.observables.forEach(stop);
         this.render = noop;
+        this.last.removeEventListener('literal-stop', this);
+        return this;
     },
 
     remove: function() {

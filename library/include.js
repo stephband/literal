@@ -13,18 +13,18 @@ export function include(url, data) {
     }
 
     const renderer = new TemplateRenderer(url.slice(1));
-    const first    = renderer.first;
+    const last     = renderer.last;
 
     // Accept a url, fetch or import it before rendering
     if (typeof data === 'string') {
-        request(data).then((data) => first.after(renderer.render(data)));
-        return first;
+        request(data).then((data) => last.before(renderer.render(data)));
+        return last;
     }
 
     // Accept a promise of data
     if (data.then) {
-        data.then((data) => first.after(renderer.render(data)));
-        return first;
+        data.then((data) => last.before(renderer.render(data)));
+        return last;
     }
 
     // Accept an object or undefined
