@@ -5,6 +5,7 @@ import by              from '../../fn/modules/by.js';
 import equals          from '../../fn/modules/equals.js';
 import matches         from '../../fn/modules/matches.js';
 import get             from '../../fn/modules/get-path.js';
+import noop            from '../../fn/modules/noop.js';
 import slugify         from '../../fn/modules/slugify.js';
 import last            from '../../fn/modules/last.js';
 import overload        from '../../fn/modules/overload.js';
@@ -22,6 +23,7 @@ const library = {
     keys: Object.keys,
     last,
     matches,
+    noop,
     observe,
     overload,
     px,
