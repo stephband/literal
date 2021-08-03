@@ -43,6 +43,27 @@ function renderValue(string, contents, value) {
             contents.push(value);
             return '';
         }
+
+        if (value instanceof Promise) {
+            const marker = document.createTextNode('');
+            contents.splice(n, 0, marker);
+            value.then((content) => {
+                if (typeof content === 'string') {
+                    // TODO: accept strings from promise
+                    throw new Error('TODO: Promise(string) not supported as content yet');
+                }
+
+                const last = isFragmentNode(content) ? 
+                    content.childNodes[content.childNodes.length - 1] : 
+                    content ;
+
+                marker.before(node);
+                marker.remove();
+
+                const n = children.indexOf(marker);
+                children[n] = last;
+            });
+        }
     }
 
     // If none of the above conditions were met value must coerce to a string
@@ -99,10 +120,10 @@ function setContent(node, children, contents) {
 
     let n = 0;
     let content;
-
+console.log('CONTENTS', contents);
     // Deal with rest of contents
     while (content = contents[++c]) {
-//console.log('CONTENT', content);
+console.log(' CONTENT', content);
         // If content is a string look for the next text node ...
         if (typeof content === 'string') {
             // Throw away any non-text entries
@@ -180,7 +201,11 @@ export default function ContentRenderer(node, options, element) {
     Renderer.apply(this, arguments);
     const children = this.children = [];
     this.literally = options.literally || compile(contentLibrary, 'data, state', options.source, null, options, element);
-    this.update  = (contents) => setContent(node, children, contents);
+    this.update  = (contents) => {
+        console.log('setContent', contents);
+        setContent(node, children, contents)
+    };
+    //console.log('ContentRenderer', this.id, this.element);
 }
 
 assign(ContentRenderer.prototype, Renderer.prototype, {

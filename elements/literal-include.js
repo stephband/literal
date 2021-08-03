@@ -110,13 +110,11 @@ element('<literal-include>', {
             // Template is a literal-template with a .render() method
             if (template.render) {
                 // It requires data to be rendered
-                return dataPromise
-                .then((data) => {
+                return dataPromise.then((data) => {
                     // But once it has data we know we can render it?
                     template.render(data).then((content) => {
-                        // console.log(content);
                         this.before(content);
-                        this.remove(); 
+                        this.remove();
                     });
                 });
             }
