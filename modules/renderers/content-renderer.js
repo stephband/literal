@@ -88,6 +88,10 @@ function setNodeValue(node, value) {
     return 0;
 }
 
+function stopRenderer(node) {
+    node.stopRenderer && node.stopRenderer();
+}
+
 function setContent(node, children, contents) {
     let count = 0;
     let c;
@@ -114,7 +118,7 @@ function setContent(node, children, contents) {
             // Throw away any non-text entries
             while (n < children.length && !isTextNode(children[n])) {
                 count += remove(children[n - 1] || node, children[n]);
-                children.splice(n, 1).forEach(trigger('literal-stop'));
+                children.splice(n, 1).forEach(stopRenderer);
             }
 
             // If child exists we know it is a text node, fill it with content
@@ -180,8 +184,8 @@ function setContent(node, children, contents) {
     // Throw away any remaining children
     const dead = children.splice(n);
     if (dead.length) {
+        dead.forEach(stopRenderer);
         count += remove(children[n - 1] || node, dead[dead.length - 1]);
-        dead.forEach(trigger('literal-stop'));
     }
 
     // Return the number of contents appended to DOM
@@ -191,12 +195,18 @@ function setContent(node, children, contents) {
 export default function ContentRenderer(node, options, element) {
     Renderer.apply(this, arguments);
     const children = this.children = [];
-    this.literally = options.literally || compile(contentLibrary, 'data, state', options.source, null, options, element);
+    this.literally = options.literally || compile(contentLibrary, 'data, state, element', options.source, null, options, element);
     this.update  = (contents) => setContent(node, children, contents);
     //console.log('ContentRenderer', this.id, this.element);
 }
 
 assign(ContentRenderer.prototype, Renderer.prototype, {
+    cue: function() {
+        this.children.forEach(stopRenderer);
+        //this.children.length = 0;
+        return Renderer.prototype.cue.apply(this, arguments);
+    },
+
     resolve: function(values) {
         const strings  = values[0];
         const contents = [];
@@ -212,5 +222,10 @@ assign(ContentRenderer.prototype, Renderer.prototype, {
     
         string && contents.push(string);
         return contents;
+    },
+
+    stop: function() {
+        this.children.forEach(stopRenderer);
+        return Renderer.prototype.stop.apply(this, arguments);
     }
 });

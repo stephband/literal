@@ -21,15 +21,17 @@ function render(renderers) {
 
     if (DEBUG) {
         console.log('rendered', Object.keys(ids).slice(0, 12).join(', ') + (Object.keys(ids).length > 12 ? ', ...' : ''));
-        console.groupEnd();
+
         var t1 = window.performance.now() / 1000;
         if (t1 - t0 > 0.016) {
             console.error('Literal', 'batch took >0.016s', t1 - t0);
         }
-
+        
         if (Object.values(ids).find((n) => n > 1)) {
             console.warn('Literal', 'same renderer rendered multiple times in batch', ids);
         }
+
+        console.groupEnd();
     }
 }
 
@@ -39,7 +41,7 @@ Cues a renderer to be rendered in the next batch with latest args. If the
 renderer is already cued args are replaced with latest args.
 **/
 
-export function cue(renderer, args, fnend) {
+export function cue(renderer, args) {
     renderer.cuedArguments = args;
 
     if (!cued) {

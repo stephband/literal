@@ -146,10 +146,10 @@ function updateDataFromLocation(location, history, data) {
 
     if (location.pathname !== data.pathname) {
         data.pathname = location.pathname;
-        data.base  = '/';
-        data.path  = '';
-        data.route = location.pathname.slice(1);
-        names.push('route');
+        data.base = '/';
+        data.path = '';
+        data.name = location.pathname.slice(1);
+        names.push('name');
     }
 
     if (location.search !== data.search) {

@@ -96,7 +96,6 @@ function prepareContent(content) {
     //    content.prepend(document.createTextNode(''));
     //}
 
-    // We dont care about last under the new scheme of things, do we?
     if (isTextNode(last)) {
         // Slice off space from the end of the last node and use it to create an
         // end delimiter.
@@ -132,7 +131,7 @@ export default function TemplateRenderer(template) {
         this.content   = cache[id].template.content.cloneNode(true);
         this.first     = this.content.childNodes[0];
         this.last      = this.content.childNodes[this.content.childNodes.length - 1];
-        this.last.addEventListener('literal-stop', this);
+        //this.last.addEventListener('literal-stop', this);
         this.renderers = cache[id].renderers.map(newRenderer, this.content);
         this.observables = nothing;
         return;
@@ -163,7 +162,7 @@ export default function TemplateRenderer(template) {
     this.content   = template.content.cloneNode(true);
     this.first     = this.content.childNodes[0];
     this.last      = this.content.childNodes[this.content.childNodes.length - 1];
-    this.last.addEventListener('literal-stop', this);
+    //this.last.addEventListener('literal-stop', this);
 
     // The options object contains information for renderer objects. It is 
     // mutated as it is passed to each renderer (specifically path, name, 
@@ -186,7 +185,7 @@ function stop(object) {
 
 assign(TemplateRenderer.prototype, {
     // Events literal-remove
-    handleEvent: overload(get('type'), {
+    /*handleEvent: overload(get('type'), {
         'literal-remove': function(e) {
             console.log('literal-remove', e.target, this.template);
             this.remove();
@@ -196,9 +195,10 @@ assign(TemplateRenderer.prototype, {
             console.log('literal-stop', e.target, this.template);
             this.stop();
         }
-    }),
+    }),*/
 
     cue: function() {
+        //this.renderers.forEach(stop);
         this.observables.forEach(stop);
         this.observables = nothing;
         return cue(this, arguments);
@@ -254,8 +254,9 @@ assign(TemplateRenderer.prototype, {
         // noop though.
         this.renderers.forEach(stop);
         this.observables.forEach(stop);
-        this.cue = noop;
-        this.last.removeEventListener('literal-stop', this);
+        this.observables = nothing;
+        this.render = noop;
+        //this.last.removeEventListener('literal-stop', this);
         uncue(this);
         return this;
     },

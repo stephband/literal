@@ -21,7 +21,7 @@ function setAttribute(node, name, value) {
 
 export default function AttributeRenderer(node, options) {
     Renderer.apply(this, arguments);
-    this.literally = options.literally || compile(library, 'data, state', options.source, null, options, this.element);
+    this.literally = options.literally || compile(library, 'data, state, element', options.source, null, options, this.element);
     this.name      = options.name;
     this.update    = (value) => setAttribute(node, this.name, value);
 }

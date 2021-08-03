@@ -105,7 +105,7 @@ assign(Renderer.prototype, {
             this.stopables.length = 0;
         }
 
-        const p = this.literally(data, state);
+        const p = this.literally(data, state, this.element);
         const q = this.resolve(p);
         return this.update(q);
     },

@@ -57,7 +57,7 @@ function setChecked(node, value, hasValue) {
 export default function CheckedRenderer(node, options) {
     Renderer.apply(this, arguments);
     this.name    = 'checked';
-    this.literally = options.literally || compile(library, 'data, state', options.source, null, options, this.element);
+    this.literally = options.literally || compile(library, 'data, state, element', options.source, null, options, this.element);
     const hasValue = isDefined(node.getAttribute('value'));
     this.update  = (value) => setChecked(node, value, hasValue);
 
