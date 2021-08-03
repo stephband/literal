@@ -2,3 +2,10 @@
 
 
 literal-include{display:contents}
+
+.literal-debug-message {
+    font-size: 12px;
+    font-family: monospace;
+    color: red;
+    background-color: red;
+}

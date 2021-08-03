@@ -26,6 +26,23 @@ const library = {
     noop,
     observe,
     overload,
+    print: DEBUG ?
+        function print(object) {
+            // Print renderer
+            const pre = document.createElement('pre');
+            pre.setAttribute('class', 'literal-debug-message');
+
+            // Print different kinds of objects differently
+            if (typeof object === 'object' && object.template) {
+                pre.innerHTML = '<strong>' + object.id + '.' + object.count + '</strong> #' + object.template;
+            }
+            else if (typeof object === 'object') {
+                pre.innerHTML = object.constructor.name + ' ' + JSON.stringify(object);
+            }
+
+            return pre;
+        } :
+        noop,
     px,
     rem,
     slugify,
