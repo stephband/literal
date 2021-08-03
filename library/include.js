@@ -22,7 +22,7 @@ export function include(url, data) {
 
     const renderer = new TemplateRenderer(url.slice(1));
     const last     = renderer.last;
-console.log('include', url, data);
+//console.log('include', url, data);
     // Accept a url, fetch or import it before rendering
     if (typeof data === 'string') {
         return request(data).then((data) => renderer.cue(data)).then(() => renderer.content);

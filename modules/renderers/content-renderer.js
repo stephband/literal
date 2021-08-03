@@ -45,24 +45,9 @@ function renderValue(string, contents, value) {
         }
 
         if (value instanceof Promise) {
-            const marker = document.createTextNode('');
-            contents.splice(n, 0, marker);
-            value.then((content) => {
-                if (typeof content === 'string') {
-                    // TODO: accept strings from promise
-                    throw new Error('TODO: Promise(string) not supported as content yet');
-                }
-
-                const last = isFragmentNode(content) ? 
-                    content.childNodes[content.childNodes.length - 1] : 
-                    content ;
-
-                marker.before(node);
-                marker.remove();
-
-                const n = children.indexOf(marker);
-                children[n] = last;
-            });
+            string && contents.push(string);
+            contents.push(value);
+            return '';
         }
     }
 
@@ -120,10 +105,10 @@ function setContent(node, children, contents) {
 
     let n = 0;
     let content;
-console.log('CONTENTS', contents);
+//console.log('CONTENTS', contents);
     // Deal with rest of contents
     while (content = contents[++c]) {
-console.log(' CONTENT', content);
+//console.log(' CONTENT', content);
         // If content is a string look for the next text node ...
         if (typeof content === 'string') {
             // Throw away any non-text entries
@@ -148,24 +133,30 @@ console.log(' CONTENT', content);
         // If content is a promise put a marker node in place and replace it
         // when the promise produces content
         else if (content instanceof Promise) {
-            const marker = document.createTextNode('');
-            count += after(children[n - 1] || node, marker);
-            children.splice(n, 0, marker);
-            content.then((content) => {
-                if (typeof content === 'string') {
-                    // TODO: accept strings from promise
-                    throw new Error('TODO: Promise(string) not supported as content yet');
-                }
+            // Insert a temporary marker node into children
+            const tempMarker = document.createTextNode('');
+            count += after(children[n - 1] || node, tempMarker);
+            children.splice(n, 0, tempMarker);
 
-                const last = isFragmentNode(content) ? 
+            // When content is ready
+            content.then((content) => {
+                // Convert string to text node
+                content = typeof content === 'string' ?
+                    create('text', content) :
+                    content ;
+
+                // Find the last node, the new marker node, in fragment
+                const marker = isFragmentNode(content) ? 
                     content.childNodes[content.childNodes.length - 1] : 
                     content ;
 
-                marker.before(node);
-                marker.remove();
+                // Replace tempMarker with new content
+                tempMarker.before(content);
+                tempMarker.remove();
 
-                const n = children.indexOf(marker);
-                children[n] = last;
+                // Replace tempMarker in children with the new marker
+                const n = children.indexOf(tempMarker);
+                children[n] = marker;
             });
         }
 
@@ -201,10 +192,7 @@ export default function ContentRenderer(node, options, element) {
     Renderer.apply(this, arguments);
     const children = this.children = [];
     this.literally = options.literally || compile(contentLibrary, 'data, state', options.source, null, options, element);
-    this.update  = (contents) => {
-        console.log('setContent', contents);
-        setContent(node, children, contents)
-    };
+    this.update  = (contents) => setContent(node, children, contents);
     //console.log('ContentRenderer', this.id, this.element);
 }
 
