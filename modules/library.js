@@ -9,8 +9,19 @@ import noop            from '../../fn/modules/noop.js';
 import slugify         from '../../fn/modules/slugify.js';
 import last            from '../../fn/modules/last.js';
 import overload        from '../../fn/modules/overload.js';
-import { observe }     from './observer.js';
+import { observe, getTarget }     from './observer.js';
 import px, { em, rem } from './parse-length.js';
+
+function toHTML(object) {
+    // Print different kinds of objects differently
+    if (typeof object === 'object' && object.template) {
+        return '<strong>' + object.id + '.' + object.count + '</strong> #' + object.template;
+    }
+    
+    if (typeof object === 'object') {
+        return '<code><strong>' + object.constructor.name + '</strong> ' + JSON.stringify(object) + '</code>';
+    }
+}
 
 const library = {
     assign: Object.assign,
@@ -26,20 +37,16 @@ const library = {
     noop,
     observe,
     overload,
-    print: DEBUG ?
+    print: window.DEBUG ?
         function print(object) {
             // Print renderer
             const pre = document.createElement('pre');
             pre.setAttribute('class', 'literal-debug-message');
-
-            // Print different kinds of objects differently
-            if (typeof object === 'object' && object.template) {
-                pre.innerHTML = '<strong>' + object.id + '.' + object.count + '</strong> #' + object.template;
+            let html = '', n = -1;
+            while (arguments[++n] !== undefined) {
+                html += toHTML(getTarget(arguments[n]));
             }
-            else if (typeof object === 'object') {
-                pre.innerHTML = object.constructor.name + ' ' + JSON.stringify(object);
-            }
-
+            pre.innerHTML = html;
             return pre;
         } :
         noop,

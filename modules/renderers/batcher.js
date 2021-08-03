@@ -24,7 +24,7 @@ function render(renderers) {
 
         var t1 = window.performance.now() / 1000;
         if (t1 - t0 > 0.016) {
-            console.error('Literal', 'batch took >0.016s', t1 - t0);
+            console.error('batch took longer than a frame (0.016s)', (t1 - t0).toFixed(3) + 's');
         }
         
         if (Object.values(ids).find((n) => n > 1)) {

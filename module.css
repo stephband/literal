@@ -7,14 +7,27 @@
     color: black;
     background-color: #e6da14;
     border-radius: 0.25rem;
-    padding: 0 0.3125rem;
-    box-shadow:
-        inset 0 0 0 1px #8a830b,
-        inset 0 0 12px 1px #d8cd17;
+    border: 1px solid #8a830b;
+    padding: 0 0.25rem;
+    box-shadow: inset 0 0 12px 1px #d8cd17;
+    /* Try to not interfere with layout of surrounding content */
+    overflow: hidden;
 }
 
 .literal-debug-message + * {
     margin-top: 0.5rem;
+}
+
+.literal-debug-message > code {
+    display: block;
+    line-height: 1.4375em;
+    border-top: inherit;
+    border-bottom: inherit;
+    background-color: #fff8d5;
+    margin-bottom: 0.25rem;
+    margin-left: -0.25rem;
+    margin-right: -0.25rem;
+    padding: 0.25rem;
 }
 
 @import './elements/literal-include.css';
