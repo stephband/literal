@@ -111,6 +111,19 @@
             <li><strong>repo:</strong> <a href="https://github.com/stephband/literal.git">github.com/stephband/literal.git</a></li>
             <li><strong>bugs:</strong> <a href="https://github.com/stephband/literal/issues/">github.com/stephband/literal/issues/</a></li>
         </ul-->
+        
+        <template is="literal-template" id="window-time">
+            <time>${
+                // Set local variables on `this`, the renderer
+                this.n = window.performance.now() / 1000,
+                // Schedule next render in a second
+                setTimeout(() => { this.cue() }, (Math.ceil(this.n) - this.n) * 1000),
+                // Output current time in seconds
+                Math.round(this.n) + 's'
+            }</time>
+        </template>
+
+        <literal-include src="#window-time"></literal-include>
     </header>
 
     <h3 class="text-03"><code>&lt;literal-include&gt;</code> <span class="test-count">(1 test)</span></h3>
@@ -327,6 +340,7 @@
     <hr/>
 
     <template is="literal-template" id="numbers-template">
+        ${ data }
         <input type="number" value="${ parseInt(data.time, 10) }" />
         <input type="range" min="0" max="10" value="${ parseInt(data.time, 10) }" />
 

@@ -50,8 +50,9 @@ const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('li
 const rextension = /\.([\w-]+)(?:#|\?|$)/;
 const rfragment  = /#(\w+)(?:\(([^\)]*)\))?$/;
 const defaultexp = ['', 'default', ''];
+const empty = [];
 
-export default overload((url) => (rextension.exec(url) || [0,'none'])[1], {
+export default overload((url) => (rextension.exec(url) || empty)[1], {
     'js': (url) => {
         // Support named exports via the #fragment identifier
         const [string, name, params] = rfragment.exec(url) || defaultexp;

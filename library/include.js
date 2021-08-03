@@ -25,14 +25,12 @@ export function include(url, data) {
 
     // Accept a url, fetch or import it before rendering
     if (typeof data === 'string') {
-        request(data).then((data) => last.before(renderer.render(data)));
-        return last;
+        return request(data).then((data) => renderer.cue(data)).then(() => renderer.content);
     }
 
     // Accept a promise of data
     if (data.then) {
-        data.then((data) => last.before(renderer.render(data)));
-        return last;
+        return data.then((data) => renderer.cue(data)).then(() => renderer.content);
     }
 
     // Accept an object or undefined

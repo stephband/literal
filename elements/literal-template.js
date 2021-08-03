@@ -41,7 +41,7 @@ export default element('<template is="literal-template">', {
         value: function(data) {
             const renderer = new TemplateRenderer(this);
             //++this.instanceCount;
-            return renderer.render(data);
+            return renderer.cue(data).then(() => renderer.content);
         }
     }
 });

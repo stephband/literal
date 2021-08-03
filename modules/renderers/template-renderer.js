@@ -10,6 +10,7 @@ import compileNode from '../compile-node.js';
 import { Observer, observe, getTarget } from '../observer.js';
 import reads       from '../observer/reads.js';
 import log         from '../log.js';
+import { cue, uncue } from './batcher.js';
 
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
@@ -33,6 +34,8 @@ cloning of template instances without retraversing their DOMs looking for
 literal attributes and text.
 */
 
+var renderid = 0;
+
 function child(parent, index) {
     return /^[a-zA-Z]/.test(index) ?
         parent :
@@ -44,18 +47,10 @@ function getDescendant(path, root) {
     return p.reduce(child, root);
 }
 
-function empty(renderer) {
-    if (renderer.paths) {
-        renderer.paths.length = 0;
-    }
-    else {
-        renderer.paths = [];
-    }
-}
+function render(renderer, observer, data) {
+    const paths = renderer.paths || (renderer.paths = []);
+    paths.length = 0;
 
-function render(renderer, op, observer, data) {
-    empty(renderer);
-    const paths = renderer.paths;
     const gets = reads(observer).each((path) => {
         // Keep paths unique
         if (paths.includes(path)) { return; }
@@ -78,12 +73,12 @@ function render(renderer, op, observer, data) {
         paths.push(path);
     });
 
-    renderer[op](observer, data);
+    renderer.render(observer, data);
 
     // We may only collect synchronous gets – other templates may use 
     // this data object while we are promising and we don't want to
     // include their gets by stopping on .then(). Stop now. If we want to
-    // fix this, making a proxy per template instance would be the way to go.
+    // change this, making a proxy per template instance would be the way to go.
     gets.stop();
 }
 
@@ -101,6 +96,7 @@ function prepareContent(content) {
     //    content.prepend(document.createTextNode(''));
     //}
 
+    // We dont care about last under the new scheme of things, do we?
     if (isTextNode(last)) {
         // Slice off space from the end of the last node and use it to create an
         // end delimiter.
@@ -116,7 +112,7 @@ function prepareContent(content) {
 }
 
 function newRenderer(renderer) {
-    // `this` is the fragment of the new renderer
+    // `this` is the content fragment of the new renderer
     const node    = getDescendant(renderer.path, this);
     const element = isTextNode(node) ? node.parentNode : node ;
     return new renderer.constructor(node, renderer, element);
@@ -131,16 +127,14 @@ export default function TemplateRenderer(template) {
     // If the template is already compiled, clone the compiled consts and 
     // renderers to this renderer and bind them to a new fragment
     if (cache[id]) {
-        this.content   = cache[id].content;
-        this.fragment  = cache[id].content.cloneNode(true);
-        this.first     = this.fragment.childNodes[0];
-        this.last      = this.fragment.childNodes[this.fragment.childNodes.length - 1];
-        this.renderers = cache[id].renderers.map(newRenderer, this.fragment);
-        this.observables = nothing;
-
+        this.id        = -1 * (++renderid);
         this.template  = cache[id].template;
-
+        this.content   = cache[id].template.content.cloneNode(true);
+        this.first     = this.content.childNodes[0];
+        this.last      = this.content.childNodes[this.content.childNodes.length - 1];
         this.last.addEventListener('literal-stop', this);
+        this.renderers = cache[id].renderers.map(newRenderer, this.content);
+        this.observables = nothing;
         return;
     }
 
@@ -164,10 +158,11 @@ export default function TemplateRenderer(template) {
 
     prepareContent(template.content);
 
-    this.content   = template.content;
-    this.fragment  = template.content.cloneNode(true);
-    this.first     = this.fragment.childNodes[0];
-    this.last      = this.fragment.childNodes[this.fragment.childNodes.length - 1];
+    this.id        = -1 * (++renderid);
+    this.template  = template;
+    this.content   = template.content.cloneNode(true);
+    this.first     = this.content.childNodes[0];
+    this.last      = this.content.childNodes[this.content.childNodes.length - 1];
     this.last.addEventListener('literal-stop', this);
 
     // The options object contains information for renderer objects. It is 
@@ -179,9 +174,7 @@ export default function TemplateRenderer(template) {
         path:     ''
     };
 
-    this.template = id;
-
-    this.renderers = compileNode([], options, this.fragment, template);
+    this.renderers = compileNode([], options, this.content, template);
     this.observables = nothing;
 
     cache[id] = this;
@@ -195,6 +188,7 @@ assign(TemplateRenderer.prototype, {
     // Events literal-remove
     handleEvent: overload(get('type'), {
         'literal-remove': function(e) {
+            console.log('literal-remove', e.target, this.template);
             this.remove();
         },
 
@@ -204,13 +198,19 @@ assign(TemplateRenderer.prototype, {
         }
     }),
 
+    cue: function() {
+        this.observables.forEach(stop);
+        this.observables = nothing;
+        return cue(this, arguments);
+    },
+
     // Default data is an empty object
     render: function(object = {}) {
         const data = getTarget(object);
 
         // Deduplicate. Not sure this is entirely necessary.
         if (data === this.data) {
-            return this.fragment;
+            return this.content;
         }
 
         this.data = data;
@@ -218,24 +218,34 @@ assign(TemplateRenderer.prototype, {
         const observer  = Observer(data);
         const renderers = this.renderers;
 
-        // First render is called synchronously
-        renderers.map((renderer) => render(renderer, 'render', observer, data));
-
+        // Stop any previous observables
         this.observables.forEach(stop);
+
+        // This has to happen synchronously in order to collect gets
+        renderers.forEach((renderer) => render(renderer, observer, data));
+
         this.observables = observer ?
-            renderers.flatMap((renderer) =>
-                renderer.paths.map((path) =>
+            renderers.flatMap((renderer) => {
+                // We only want to run render() on cue so we need to proxy the 
+                // renderer and call render() when cued ... a bit pants this 
+                // TODO: clean up
+                const cueRenderer = {
+                    id:     renderer.id,
+                    render: () => render(renderer, observer, data)
+                };
+
+                return renderer.paths.map((path) =>
                     // Don't getPath() of the observer here, that really makes 
                     // the machine think too hard
                     observe(path, data, getPath(path, data)).each((value) =>
-                        // Next renders are cued which batches them to ticks
-                        render(renderer, 'cue', observer, data)
+                        // Next renders are cued which batches them
+                        cue(cueRenderer, [observer, data])
                     )
                 )
-            ) :
+            }) :
             nothing ;
 
-        return this.fragment;
+        return this.content;
     },
 
     stop: function() {
@@ -244,8 +254,9 @@ assign(TemplateRenderer.prototype, {
         // noop though.
         this.renderers.forEach(stop);
         this.observables.forEach(stop);
-        this.render = noop;
+        this.cue = noop;
         this.last.removeEventListener('literal-stop', this);
+        uncue(this);
         return this;
     },
 

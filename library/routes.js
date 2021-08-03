@@ -27,15 +27,16 @@ function stop(route) {
 }
 */
 
-function Route(base, path, route, captures) {
+function Route(base, path, route/*, captures*/) {
     this.base       = base;
     this.path       = path;
     this.route      = route;
-
+    /*
     var n = -1;
     while(captures[++n] !== undefined) {
         this['$' + n] = captures[n];
     }
+    */
 }
 
 assign(Route.prototype, {
@@ -60,7 +61,8 @@ function updateRoute(patterns, keys, regexps, location, route) {
     while(
         (regexp = regexps[++n]) && 
         !(captures = regexp.exec(string))
-    ); // Semicolon important here, don't remove or next code counted as while block
+    ); // Semicolon important here, don't remove or following code is counted 
+       // as a while block
 
     // Ignore unmatching handlers
     if (!captures) {
@@ -125,7 +127,8 @@ console.log('STOP route ', route.pk, base, path, name);
 
     // Call route handler with current context (should be undefined) and scope
     const fn = patterns[key];
-    return fn.call(this, scope);
+    captures[0] = scope;
+    return fn.apply(this, captures);
 }
 
 export default register('routes', function routes(patterns) {
