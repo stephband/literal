@@ -1,6 +1,7 @@
 
 /* Scope functions */
 
+import id              from '../../fn/modules/id.js';
 import by              from '../../fn/modules/by.js';
 import equals          from '../../fn/modules/equals.js';
 import matches         from '../../fn/modules/matches.js';
@@ -23,6 +24,18 @@ function toHTML(object) {
     }
 }
 
+function print(object) {
+    // Print renderer
+    const pre = document.createElement('pre');
+    pre.setAttribute('class', 'literal-debug-message');
+    let html = '', n = -1;
+    while (arguments[++n] !== undefined) {
+        html += toHTML(getTarget(arguments[n]));
+    }
+    pre.innerHTML = html;
+    return pre;
+}
+
 const library = {
     assign: Object.assign,
     by,
@@ -31,25 +44,14 @@ const library = {
     em,
     equals,
     get,
+    id,
     keys: Object.keys,
     last,
     matches,
     noop,
     observe,
     overload,
-    print: window.DEBUG ?
-        function print(object) {
-            // Print renderer
-            const pre = document.createElement('pre');
-            pre.setAttribute('class', 'literal-debug-message');
-            let html = '', n = -1;
-            while (arguments[++n] !== undefined) {
-                html += toHTML(getTarget(arguments[n]));
-            }
-            pre.innerHTML = html;
-            return pre;
-        } :
-        noop,
+    print: DEBUG ? print : noop,
     px,
     rem,
     slugify,
