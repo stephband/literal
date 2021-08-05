@@ -97,7 +97,7 @@ route.pk = ++pk;
     // what if something else causes a rerender? Ooooh.
     const m1 = observe('name', location, target.name)
     .each(() => {
-console.log('STOP route ', route.pk, base, path, '    ', name);
+log('route ', route.pk + ', ' + base + ', ' + path + ', ' + name, 'orange');
         m1.stop();
         m2.stop();
         //data.mutations && data.mutations.stop();
