@@ -212,21 +212,30 @@ assign(TemplateRenderer.prototype, {
 
     remove: function() {
         // Remove this.first and this.last and all nodes in between
-        let node = this.last;
+        let node = this.last.previousSibling;
         let count = 0;
 
+        // Treat the last node special or we continuous loopdiloop
+        // We may have overridden .remove() on this.last
+
+        this.last.constructor.prototype.remove.apply(this.last);
+        ++count;
+
+        if (this.last === this.first) {
+            return count;
+        }
+
         while (node !== this.first) {
-            const previous = node.previousSibling;
-            // We may have overridden .remove() on renderer.last
-            node.constructor.prototype.remove.apply(node);
-            //node.remove();
-            node = previous;
+            const next = node.nextSibling;
+            node.remove();
+            node = next.previousSibling;
             ++count;
         }
 
         this.first.remove();
+        ++count;
 
 console.log('removed ', this.id, '#' + this.template.id, 'TemplateRenderer');
-        return ++count;
+        return count;
     }
 });

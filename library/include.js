@@ -22,18 +22,14 @@ export function include(url, data) {
 
     const renderer = new TemplateRenderer(url.slice(1));
     const marker   = renderer.last;
-    marker.stop = () => renderer.stop();
+    marker.stop   = () => renderer.stop();
     marker.remove = () => renderer.remove();
 
     //console.log('include', url, data);
 
     // Accept a url, fetch or import it before rendering
     if (typeof data === 'string') {
-        request(data).then((data) => renderer.cue(data)).then(() => {
-            console.log('Replace marker', renderer.template.id, renderer.path);
-            marker.before(renderer.content)
-        });
-        console.log('Return  marker', renderer.template.id, renderer.path);
+        request(data).then((data) => renderer.cue(data)).then(() => marker.before(renderer.content));
         return marker;
     }
 
@@ -43,8 +39,10 @@ export function include(url, data) {
         return marker;
     }
 
-    // Accept an object or undefined and render immediately, returning content
-    return renderer.render(data || {});
+    // Cue the renderer so that we do not end up collecting read paths read by
+    // the child renderer in the parent.
+    renderer.cue(data || {}).then(() => marker.before(renderer.content));
+    return marker;
 }
 
 export default curry(include);
