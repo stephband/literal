@@ -1,5 +1,6 @@
 
-const DEBUG = window.DEBUG === true;
+//const DEBUG = window.DEBUG === true;
+
 const assign = Object.assign;
 const define = Object.defineProperties;
 const isExtensible = Object.isExtensible;

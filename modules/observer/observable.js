@@ -14,7 +14,7 @@ changes. This object is internal-only.
 
 import { Observer, analytics, remove, getObservables } from './observer.js';
 
-const DEBUG = window.DEBUG === true;
+//const DEBUG = window.DEBUG === true;
 const assign = Object.assign;
 
 const rkey = /(^\.?|\.)\s*([\w-]*)\s*/g;

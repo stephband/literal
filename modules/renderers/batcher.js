@@ -1,5 +1,5 @@
 
-import { group } from '../log.js';
+import { log, group, groupEnd } from '../log.js';
 
 const renderers = [];
 const promise   = Promise.resolve(renderers);
@@ -16,14 +16,14 @@ function render(renderers) {
     while (renderer = renderers.shift()) {
         // Call .render() with latest arguments
         renderer.render.apply(renderer, renderer.cuedArguments);
-        renderer.cuedArguments = undefined;
+        //renderer.cuedArguments = undefined;
         ids && (ids[renderer.id] = ids[renderer.id] === undefined ? 1 : ids[renderer.id] + 1);
     }
 
     cued = undefined;
 
     if (DEBUG) {
-        console.log('rendered', Object.keys(ids).slice(0, 12).join(', ') + (Object.keys(ids).length > 12 ? ', ...' : ''));
+        log('rendered', Object.keys(ids).slice(0, 12).join(', ') + (Object.keys(ids).length > 12 ? ', ...' : ''), 'grey');
 
         var t1 = window.performance.now() / 1000;
         if (t1 - t0 > 0.016) {
@@ -34,19 +34,25 @@ function render(renderers) {
             console.warn('Literal', 'same renderer rendered multiple times in batch', ids);
         }
 
-        console.groupEnd();
+        groupEnd();
     }
 }
 
 /**
 cue(renderer, args)
 Cues a renderer to be rendered in the next batch with latest args. If the
-renderer is already cued args are replaced with latest args.
+renderer is already cued, args are replaced with latest args.
 **/
 
 export function cue(renderer, args) {
     renderer.cuedArguments = args;
 
+    // Ignore if renderer is already cued
+    if (renderers.includes(renderer)) {
+        return promise;
+    }
+
+    // Create a new batch end promise where required
     if (!cued) {
         cued = promise.then(render);
     }
