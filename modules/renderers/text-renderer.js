@@ -67,18 +67,7 @@ function after(target, node) {
     target.after(node);
     return 1;
 }
-/*
-function remove(first, last) {
-    var node, n = 0;
-    while (last && last !== first) {
-        node = last.previousSibling;
-        last.remove();
-        ++n;
-        last = node;
-    }
-    return n;
-}
-*/
+
 function setNodeValue(node, value) {
     if (node.nodeValue !== value) {
         node.nodeValue = value;

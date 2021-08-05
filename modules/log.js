@@ -8,7 +8,8 @@ const colors = {
     'green':  '#d8cd17',
     'yellow': '#eac60c',
     'orange': '#ffa000',
-    'red':    '#ff003a'
+    'red':    '#ff003a',
+    'grey':   '#81868f'
 };
 
 export default DEBUG ?

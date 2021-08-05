@@ -96,7 +96,7 @@ export default function Renderer(node, options, element) {
 }
 
 assign(Renderer.prototype, {
-    cue: function() {
+    cue: function(data) {
         if (DEBUG && this.render === renderStopped) {
             console.error('Attempt to .cue() stopped renderer', this.id, '#' + (this.template.id || this.template), (this.path ? this.path + ' ' : '') + this.constructor.name);
         }
@@ -105,7 +105,7 @@ assign(Renderer.prototype, {
         return cue(this, arguments);
     },
 
-    render: function(data = null, state) {
+    render: function(data, state) {
         const paths = this.paths || (this.paths = []);
         paths.length = 0;
 
@@ -135,11 +135,6 @@ assign(Renderer.prototype, {
 
         ++this.count;
 
-        /*if (this.stopables) {
-            this.stopables.forEach(stop);
-            this.stopables.length = 0;
-        }*/
-
         const p = this.literally(data, state, this.element);
         const q = this.resolve(p);
         this.update(q);
@@ -162,7 +157,7 @@ assign(Renderer.prototype, {
         uncue(this);
 
         if (DEBUG) {
-            console.log('stopped ', this.id, '#' + (this.template.id || this.template), (this.path ? this.path + ' ' : '') + this.constructor.name);
+//console.log('stopped ', this.id, '#' + (this.template.id || this.template), (this.path ? this.path + ' ' : '') + this.constructor.name);
             this.render = renderStopped;
         }
 
