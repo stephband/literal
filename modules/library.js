@@ -10,31 +10,9 @@ import noop            from '../../fn/modules/noop.js';
 import slugify         from '../../fn/modules/slugify.js';
 import last            from '../../fn/modules/last.js';
 import overload        from '../../fn/modules/overload.js';
-import { observe, getTarget }     from './observer.js';
+import { observe }     from './observer.js';
 import px, { em, rem } from './parse-length.js';
-
-function toHTML(object) {
-    // Print different kinds of objects differently
-    if (typeof object === 'object' && object.template) {
-        return '<strong>' + object.id + '.' + object.count + '</strong> #' + object.template;
-    }
-    
-    if (typeof object === 'object') {
-        return '<code><strong>' + object.constructor.name + '</strong> ' + JSON.stringify(object) + '</code>';
-    }
-}
-
-function print(object) {
-    // Print renderer
-    const pre = document.createElement('pre');
-    pre.setAttribute('class', 'literal-debug-message');
-    let html = '', n = -1;
-    while (arguments[++n] !== undefined) {
-        html += toHTML(getTarget(arguments[n]));
-    }
-    pre.innerHTML = html;
-    return pre;
-}
+import print           from '../library/print.js';
 
 const library = {
     assign: Object.assign,

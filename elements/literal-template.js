@@ -27,21 +27,14 @@ data:
 import element from '../../dom/modules/element.js';
 import TemplateRenderer from '../modules/renderers/template-renderer.js';
 
-export default element('<template is="literal-template">', {
-    construct: function() {
-        // Keep tabs on the number of renders
-        //this.instanceCount = 0;
-    }
-}, {
+export default element('<template is="literal-template">', {}, {
     /** 
-    .render(data)
-    Returns a fragment of DOM rendered from the template contents.
+    .Renderer()
+    Returns a TemplateRenderer instance.
     **/
-    render: {
+    Renderer: {
         value: function(data) {
-            const renderer = new TemplateRenderer(this);
-            //++this.instanceCount;
-            return renderer.render(data);
+            return new TemplateRenderer(this);
         }
     }
 });

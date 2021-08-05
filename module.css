@@ -30,4 +30,8 @@
     padding: 0.25rem;
 }
 
+.literal-debug-message > code:last-child {
+    margin-bottom: -1px;
+}
+
 @import './elements/literal-include.css';

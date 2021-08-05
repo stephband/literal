@@ -11,6 +11,7 @@ import { Observer, observe, getTarget } from '../observer.js';
 import reads       from '../observer/reads.js';
 import log         from '../log.js';
 import { cue, uncue } from './batcher.js';
+import Renderer, { renderStopped } from './renderer.js';
 
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
@@ -45,41 +46,6 @@ function child(parent, index) {
 function getDescendant(path, root) {
     const p = path.split(/\./);
     return p.reduce(child, root);
-}
-
-function render(renderer, observer, data) {
-    const paths = renderer.paths || (renderer.paths = []);
-    paths.length = 0;
-
-    const gets = reads(observer).each((path) => {
-        // Keep paths unique
-        if (paths.includes(path)) { return; }
-
-        var prev;
-
-        // Make some attempt to remove intermediate paths traversed
-        // while getting the value at the end of the path. Warning: not 100% 
-        // robust. If we want to be robust about this we need to collect gets
-        // async inside the observer, I think.
-        while(
-            (prev = paths[paths.length - 1])
-            && prev.length < path.length
-            && path.startsWith(prev)
-        ) {
-            --paths.length;
-        }
-
-        // store the path
-        paths.push(path);
-    });
-
-    renderer.render(observer, data);
-
-    // We may only collect synchronous gets – other templates may use 
-    // this data object while we are promising and we don't want to
-    // include their gets by stopping on .then(). Stop now. If we want to
-    // change this, making a proxy per template instance would be the way to go.
-    gets.stop();
 }
 
 function prepareContent(content) {
@@ -126,14 +92,16 @@ export default function TemplateRenderer(template) {
     // If the template is already compiled, clone the compiled consts and 
     // renderers to this renderer and bind them to a new fragment
     if (cache[id]) {
+        const template = cache[id].template;
+
         this.id        = -1 * (++renderid);
-        this.template  = cache[id].template;
-        this.content   = cache[id].template.content.cloneNode(true);
+        this.template  = template;
+        this.content   = template.content.cloneNode(true);
         this.first     = this.content.childNodes[0];
         this.last      = this.content.childNodes[this.content.childNodes.length - 1];
-        //this.last.addEventListener('literal-stop', this);
         this.renderers = cache[id].renderers.map(newRenderer, this.content);
         this.observables = nothing;
+
         return;
     }
 
@@ -162,7 +130,6 @@ export default function TemplateRenderer(template) {
     this.content   = template.content.cloneNode(true);
     this.first     = this.content.childNodes[0];
     this.last      = this.content.childNodes[this.content.childNodes.length - 1];
-    //this.last.addEventListener('literal-stop', this);
 
     // The options object contains information for renderer objects. It is 
     // mutated as it is passed to each renderer (specifically path, name, 
@@ -184,65 +151,49 @@ function stop(object) {
 }
 
 assign(TemplateRenderer.prototype, {
-    // Events literal-remove
-    /*handleEvent: overload(get('type'), {
-        'literal-remove': function(e) {
-            console.log('literal-remove', e.target, this.template);
-            this.remove();
-        },
-
-        'literal-stop': function(e) {
-            console.log('literal-stop', e.target, this.template);
-            this.stop();
-        }
-    }),*/
-
-    cue: function() {
-        //this.renderers.forEach(stop);
+    cue: function(data) {
         this.observables.forEach(stop);
         this.observables = nothing;
-        return cue(this, arguments);
+        return Renderer.prototype.cue.apply(this, arguments);
     },
 
     // Default data is an empty object
-    render: function(object = {}) {
+    render: function(object) {
         const data = getTarget(object);
 
         // Deduplicate. Not sure this is entirely necessary.
         if (data === this.data) {
+            if (DEBUG) {
+                console.error('Attempt to render with same object as last render');
+            }
+
             return this.content;
         }
 
         this.data = data;
 
+        // Stop any previous observables where they have not already 
+        // been stoppped (if we remove render() such that this can only be cued
+        // remove this line
+        this.observables.forEach(stop);
+
         const observer  = Observer(data);
         const renderers = this.renderers;
 
-        // Stop any previous observables
-        this.observables.forEach(stop);
-
-        // This has to happen synchronously in order to collect gets
-        renderers.forEach((renderer) => render(renderer, observer, data));
+        // This has to happen synchronously in order to collect gets...
+        renderers.forEach((renderer) => renderer.render(observer, data));
 
         this.observables = observer ?
-            renderers.flatMap((renderer) => {
-                // We only want to run render() on cue so we need to proxy the 
-                // renderer and call render() when cued ... a bit pants this 
-                // TODO: clean up
-                const cueRenderer = {
-                    id:     renderer.id,
-                    render: () => render(renderer, observer, data)
-                };
-
-                return renderer.paths.map((path) =>
+            renderers.flatMap((renderer) => 
+                renderer.paths.map((path) =>
                     // Don't getPath() of the observer here, that really makes 
                     // the machine think too hard
                     observe(path, data, getPath(path, data)).each((value) =>
                         // Next renders are cued which batches them
-                        cue(cueRenderer, [observer, data])
+                        renderer.cue(observer, data)
                     )
                 )
-            }) :
+            ) :
             nothing ;
 
         return this.content;
@@ -250,30 +201,32 @@ assign(TemplateRenderer.prototype, {
 
     stop: function() {
         // We must not empty .renderers, they are compiled and cached and may 
-        // be used again. We can stop listening to sets and make .render() a
+        // be cloned. We can stop listening to sets and make .render() a
         // noop though.
         this.renderers.forEach(stop);
         this.observables.forEach(stop);
         this.observables = nothing;
-        this.render = noop;
-        //this.last.removeEventListener('literal-stop', this);
-        uncue(this);
-        return this;
+        
+        return Renderer.prototype.stop.apply(this, arguments);
     },
 
     remove: function() {
-        let count = 0;
         // Remove this.first and this.last and all nodes in between
         let node = this.last;
+        let count = 0;
 
         while (node !== this.first) {
             const previous = node.previousSibling;
-            node.remove();
-            ++count;
+            // We may have overridden .remove() on renderer.last
+            node.constructor.prototype.remove.apply(node);
+            //node.remove();
             node = previous;
+            ++count;
         }
 
         this.first.remove();
+
+console.log('removed ', this.id, '#' + this.template.id, 'TemplateRenderer');
         return ++count;
     }
 });

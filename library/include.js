@@ -22,7 +22,8 @@ export function include(url, data) {
 
     const renderer = new TemplateRenderer(url.slice(1));
     const marker   = renderer.last;
-    marker.stopRenderer = () => renderer.stop();
+    marker.stop = () => renderer.stop();
+    marker.remove = () => renderer.remove();
 
     //console.log('include', url, data);
 

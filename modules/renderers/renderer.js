@@ -1,8 +1,8 @@
 
-//import library from '../library.js';
-//import compile from '../compile.js';
+import nothing from '../../../fn/modules/nothing.js';
 import { cue, uncue } from './batcher.js';
 import toText  from '../to-text.js';
+import reads       from '../observer/reads.js';
 
 const assign = Object.assign;
 
@@ -14,6 +14,10 @@ const reduce = (values) => values.reduce((output, value) => (
         output :
         output + value
 ));
+
+export function renderStopped() {
+    console.trace('Attempted .render() of stopped renderer', this.id, '#' + this.template, this.path, this.name);
+}
 
 function stringify(value, string, render) {
     return value && typeof value === 'object' ? (
@@ -93,21 +97,58 @@ export default function Renderer(node, options, element) {
 
 assign(Renderer.prototype, {
     cue: function() {
+        if (DEBUG && this.render === renderStopped) {
+            console.error('Attempt to .cue() stopped renderer', this.id, '#' + (this.template.id || this.template), (this.path ? this.path + ' ' : '') + this.constructor.name);
+        }
+
         // Cue .render() to be called on the next batch
         return cue(this, arguments);
     },
 
-    render: function(data, state) {
+    render: function(data = null, state) {
+        const paths = this.paths || (this.paths = []);
+        paths.length = 0;
+
+        const gets = data ?
+            reads(data).each((path) => {
+                // Keep paths unique
+                if (paths.includes(path)) { return; }
+
+                var prev;
+
+                // Make some attempt to remove intermediate paths traversed
+                // while getting the value at the end of the path. Warning: not 100% 
+                // robust. If we want to be robust about this we need to collect gets
+                // async inside the observer, I think.
+                while(
+                    (prev = paths[paths.length - 1])
+                    && prev.length < path.length
+                    && path.startsWith(prev)
+                ) {
+                    --paths.length;
+                }
+
+                // store the path
+                paths.push(path);
+            }) :
+            nothing;
+
         ++this.count;
-        
-        if (this.stopables) {
+
+        /*if (this.stopables) {
             this.stopables.forEach(stop);
             this.stopables.length = 0;
-        }
+        }*/
 
         const p = this.literally(data, state, this.element);
         const q = this.resolve(p);
-        return this.update(q);
+        this.update(q);
+
+        // We may only collect synchronous gets – other templates may use 
+        // this data object while we are promising and we don't want to
+        // include their gets by stopping on .then(). Stop now. If we want to
+        // change this, making a proxy per template instance would be the way to go.
+        gets.stop();
     },
 
     resolve: renderString,
@@ -119,6 +160,11 @@ assign(Renderer.prototype, {
         }
 
         uncue(this);
+
+        if (DEBUG) {
+            console.log('stopped ', this.id, '#' + (this.template.id || this.template), (this.path ? this.path + ' ' : '') + this.constructor.name);
+            this.render = renderStopped;
+        }
 
         return this;
     },

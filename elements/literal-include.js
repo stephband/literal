@@ -52,7 +52,6 @@ to provide default or fallback content.
 
 import element from '../../dom/modules/element.js';
 import request from '../library/request.js';
-import { cue } from '../modules/renderers/batcher.js';
 
 const rpath = /^\.|^https?:\/\//;
 
@@ -109,13 +108,15 @@ element('<literal-include>', {
         })
         .then((template) => {
             // Template is a literal-template with a .render() method
-            if (template.render) {
+            if (template.Renderer) {
                 // It requires data to be rendered
                 return dataPromise.then((data) => {
+                    const renderer = template.Renderer();
+
                     // But once it has data we know we can render it, but we 
                     // want to do that in the next batch
-                    cue(template, [data]).then(() => {
-                        this.before(template.content);
+                    renderer.cue(data).then(() => {
+                        this.before(renderer.content);
                         this.remove();
                     });
                 });

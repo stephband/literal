@@ -35,7 +35,7 @@
     <link rel="stylesheet" href="../../bolt/css/label.css" />
     <link rel="stylesheet" href="../../bolt/css/block.css" />
     <link rel="stylesheet" href="../../bolt/css/debug.css" />
-    <link rel="stylesheet" href="../elements/literal-include.css" />
+    <link rel="stylesheet" href="../module.css" />
 
     <style>
         @font-face{
@@ -106,11 +106,6 @@
 <body>
     <header>
         <h1 class="doctext-01">Literal <span class="doctext-06">0.2.0</span></h1>
-        <!--p class="doctext-08"></p>
-        <ul class="link-index index">
-            <li><strong>repo:</strong> <a href="https://github.com/stephband/literal.git">github.com/stephband/literal.git</a></li>
-            <li><strong>bugs:</strong> <a href="https://github.com/stephband/literal/issues/">github.com/stephband/literal/issues/</a></li>
-        </ul-->
         
         <template is="literal-template" id="window-time">
             <time>${
@@ -205,7 +200,7 @@
         <p>✗ Default content of an <code>&lt;literal-include src="#literal-template" data="./test.json"&gt;</code> element.</p>
     </literal-include>
 
-    <!hr/>
+    <hr/>
 
     <literal-include src="#literal-template" data="./test.js">        
         <p>✗ Default content of an <code>&lt;literal-include src="#literal-template" data="./test.js"&gt;</code> element.</p>
@@ -340,7 +335,8 @@
     <hr/>
 
     <template is="literal-template" id="numbers-template">
-        ${ data }
+        ${ print(this, data) }
+
         <input type="number" value="${ parseInt(data.time, 10) }" />
         <input type="range" min="0" max="10" value="${ parseInt(data.time, 10) }" />
 
