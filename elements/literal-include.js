@@ -52,6 +52,7 @@ to provide default or fallback content.
 
 import element from '../../dom/modules/element.js';
 import request from '../library/request.js';
+import { cue } from '../modules/renderers/batcher.js';
 
 const rpath = /^\.|^https?:\/\//;
 
@@ -111,9 +112,10 @@ element('<literal-include>', {
             if (template.render) {
                 // It requires data to be rendered
                 return dataPromise.then((data) => {
-                    // But once it has data we know we can render it?
-                    template.render(data).then((content) => {
-                        this.before(content);
+                    // But once it has data we know we can render it, but we 
+                    // want to do that in the next batch
+                    cue(template, [data]).then(() => {
+                        this.before(template.content);
                         this.remove();
                     });
                 });
@@ -141,7 +143,7 @@ element('<literal-include>', {
     data: {
         attribute: function(value) {
             if (!this.resolveData) {
-console.log('BOO dont know why this is triggered multiple times', value)
+                //console.log('BOO dont know why this is triggered multiple times', value)
                 throw new Error('<literal-include> may possess either data-* attributes or a single data attribute, not both');
             }
 

@@ -43,6 +43,7 @@ renderer is already cued args are replaced with latest args.
 
 export function cue(renderer, args) {
     renderer.cuedArguments = args;
+    renderer.cuedPromise   = renderer.cuedPromise || (renderer.cuedPromise = Promise.resolve(renderer.content));
 
     if (!cued) {
         cued = promise.then(render);
