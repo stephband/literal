@@ -29,7 +29,11 @@ export function include(url, data) {
 
     // Accept a url, fetch or import it before rendering
     if (typeof data === 'string') {
-        request(data).then((data) => renderer.cue(data)).then(() => marker.before(renderer.content));
+        request(data).then((data) => renderer.cue(data)).then(() => {
+            console.log('Replace marker', renderer.template.id, renderer.path);
+            marker.before(renderer.content)
+        });
+        console.log('Return  marker', renderer.template.id, renderer.path);
         return marker;
     }
 
