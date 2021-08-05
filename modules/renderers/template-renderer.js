@@ -9,7 +9,7 @@ import isTextNode  from '../../../dom/modules/is-text-node.js';
 import compileNode from '../compile-node.js';
 import { Observer, observe, getTarget } from '../observer.js';
 import reads       from '../observer/reads.js';
-import log         from '../log.js';
+import { log }     from '../log.js';
 import { cue, uncue } from './batcher.js';
 import Renderer, { renderStopped } from './renderer.js';
 

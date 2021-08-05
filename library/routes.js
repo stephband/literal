@@ -2,7 +2,7 @@
 import { register } from '../modules/library.js';
 import { Observer, mutations, observe, getTarget } from '../modules/observer.js';
 import { defaults } from '../data/location.js';
-import log from '../modules/log.js';
+import { log } from '../modules/log.js';
 
 const DEBUG = window.DEBUG && (window.DEBUG === true || window.DEBUG.includes('routes'));
 
@@ -79,8 +79,8 @@ function updateRoute(patterns, keys, regexps, location, route) {
 
     // Create a new route object
     route = new Route(base, path, name);
-
 route.pk = ++pk;
+
     log('route', pk + ' ' + base + ' ' + path + ' ' + name, 'aqua');
 
     // Update params, id, state. Reading these properties should not alert the

@@ -1,5 +1,5 @@
 
-import log, { group } from '../log.js';
+import { log, group, groupEnd } from '../log.js';
 
 const renderers = [];
 const promise   = Promise.resolve(renderers);
@@ -34,7 +34,7 @@ function render(renderers) {
             console.warn('Literal', 'same renderer rendered multiple times in batch', ids);
         }
 
-        console.groupEnd();
+        groupEnd();
     }
 }
 

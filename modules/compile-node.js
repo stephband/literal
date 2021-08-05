@@ -12,7 +12,7 @@ import ValueRenderer, { StringValueRenderer } from './renderers/value-renderer.j
 
 import decode   from './decode.js';
 
-const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
+//const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
 const A = Array.prototype;
 
@@ -23,55 +23,35 @@ const rliteral = /\$\{/;
 compileAttributes(renderers, options, nodeames)
 **/
 
-function compileAttr(renderers, options, node, attribute) {
-    const source = attribute.value;
+function addAttributeRenderer(renderers, Renderer, node, source, name, options) {
     if (!source || !rliteral.test(source)) { return; }
-    const name = attribute.localName;
     options.source = source;
     options.name   = name;
-    renderers.push(new AttributeRenderer(node, options));
+    renderers.push(new Renderer(node, options));
+}
+
+function compileAttr(renderers, options, node, attribute) {
+    addAttributeRenderer(renderers, AttributeRenderer, node, attribute.value, attribute.localName, options);
 }
 
 function compileBoolean(renderers, options, node, attribute) {
-    const source = attribute.value;
-    if (!source || !rliteral.test(source)) { return; }
-    const name = attribute.localName;
-    options.source = source;
-    options.name   = name;
-    renderers.push(new BooleanRenderer(node, options));
+    addAttributeRenderer(renderers, BooleanRenderer, node, attribute.value, attribute.localName, options);
 }
 
 function compileTokens(renderers, options, node, attribute) {
-    const source = attribute.value;
-    if (!source || !rliteral.test(source)) { return; }
-    const name = attribute.localName;
-    options.source = source;
-    options.name   = name;
-    renderers.push(new TokensRenderer(node, options));
+    addAttributeRenderer(renderers, TokensRenderer, node, attribute.value, attribute.localName, options);
 }
 
 function compileValue(renderers, options, node, attribute) {
-    const source = attribute.value;
-    if (!source || !rliteral.test(source)) { return; }
-    options.source = source;
-    options.name   = 'value';
-    renderers.push(new ValueRenderer(node, options));
+    addAttributeRenderer(renderers, ValueRenderer, node, attribute.value, 'value', options);
 }
 
 function compileValueString(renderers, options, node, attribute) {
-    const source = attribute.value;
-    if (!source || !rliteral.test(source)) { return; }
-    options.source = source;
-    options.name   = 'value';
-    renderers.push(new StringValueRenderer(node, options));
+    addAttributeRenderer(renderers, StringValueRenderer, node, attribute.value, 'value', options);
 }
 
 function compileChecked(renderers, options, node, attribute) {
-    const source = attribute.value;
-    if (!source || !rliteral.test(source)) { return; }
-    options.source = source;
-    options.name   = 'checked';
-    renderers.push(new CheckedRenderer(node, options));
+    addAttributeRenderer(renderers, CheckedRenderer, node, attribute.value, 'checked', options);
 }
 
 const compileAttribute = overload((renderers, options, node, attribute) => attribute.localName, {
@@ -148,15 +128,7 @@ function compileChildren(renderers, options, node) {
 
     return renderers;
 }
-/*
-function compileType(renderers, options, node) {
-    // Compile element type attributes
-    const type = node.type;
-    if (!type) { return; }
-    //const names = config.types[type] || config.types['default'];
-    compileAttributes(renderers, options, node);
-}
-*/
+
 const compileElement = overload((renderers, options, node) => node.tagName.toLowerCase(), {
     // Ignore SVG <defs>, which for our purposes we consider as inert like 
     // HTML's <template>

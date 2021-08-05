@@ -1,7 +1,8 @@
 
 import { remove, getTarget, $observer } from './observer.js';
 
-const DEBUG = window.DEBUG === true;
+//const DEBUG = window.DEBUG === true;
+
 const assign = Object.assign;
 const values = Object.values;
 

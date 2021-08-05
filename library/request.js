@@ -45,7 +45,7 @@ import overload from '../../fn/modules/overload.js';
 import cache from '../../fn/modules/cache.js';
 import { requestGet } from '../../dom/modules/request.js';
 
-const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
+//const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
 const rextension = /\.([\w-]+)(?:#|\?|$)/;
 const rfragment  = /#(\w+)(?:\(([^\)]*)\))?$/;
@@ -79,8 +79,5 @@ export default overload((url) => (rextension.exec(url) || empty)[1], {
 
     // Cache JSON requests in memory so that all requests to a given URL result 
     // in the same object.
-    'json': cache((url) => requestGet(url)),
-
-    // Request HTML
-    //'none': (url) => requestGet(url)
+    'json': cache((url) => requestGet(url))
 });

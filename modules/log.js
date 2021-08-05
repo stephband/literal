@@ -1,8 +1,6 @@
 
 import noop from '../../fn/modules/noop.js';
 
-const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
-
 const colors = {
     'aqua':   '#00a8a9',
     'green':  '#d8cd17',
@@ -12,12 +10,12 @@ const colors = {
     'grey':   '#81868f'
 };
 
-export default DEBUG ?
+export const log = DEBUG ?
     function log($1, $2, color = '#d8cd17') {
         console.log('%cLiteral %c' + $1 + ' %c' + $2,
-            'color: #81868f; font-weight: 600;', 
+            'color: ' + (colors.grey) + '; font-weight: 600;', 
             'color: ' + (colors[color] || color) + '; font-weight: 300;', 
-            'color: #81868f; font-weight: 300;'
+            'color: ' + (colors.grey) + '; font-weight: 300;'
         );
     } :
     noop ;
@@ -25,9 +23,13 @@ export default DEBUG ?
 export const group = DEBUG ?
     function log($1, $2, color = '#d8cd17') {
         console.group('%cLiteral %c' + $1 + ' %c' + $2,
-            'color: #81868f; font-weight: 600;', 
+            'color: ' + (colors.grey) + '; font-weight: 600;', 
             'color: ' + (colors[color] || color) + '; font-weight: 300;', 
-            'color: #81868f; font-weight: 300;'
+            'color: ' + (colors.grey) + '; font-weight: 300;'
         );
     } :
+    noop ;
+
+export const groupEnd = DEBUG ?
+    console.groupEnd :
     noop ;
