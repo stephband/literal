@@ -47,7 +47,7 @@ function getDescendant(path, root) {
     const p = path.split(/\./);
     return p.reduce(child, root);
 }
-
+var i = 0;
 function prepareContent(content) {
     // Due to the way HTML is usually written the vast majority of templates
     // start an end with a text node, usually containing some white space
@@ -214,6 +214,7 @@ assign(TemplateRenderer.prototype, {
         // Remove this.first and this.last and all nodes in between
         let node = this.last.previousSibling;
         let count = 0;
+        const parent = this.last.parentNode;
 
         // Treat the last node special or we continuous loopdiloop
         // We may have overridden .remove() on this.last
@@ -228,14 +229,14 @@ assign(TemplateRenderer.prototype, {
         while (node !== this.first) {
             const next = node.nextSibling;
             node.remove();
-            node = next.previousSibling;
+            node = next && next.previousSibling || parent.lastChild;
             ++count;
         }
 
         this.first.remove();
         ++count;
 
-console.log('removed ', this.id, '#' + this.template.id, 'TemplateRenderer');
+//console.log('removed ', this.id, '#' + this.template.id, 'TemplateRenderer');
         return count;
     }
 });

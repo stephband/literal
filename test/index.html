@@ -335,8 +335,6 @@
     <hr/>
 
     <template is="literal-template" id="numbers-template">
-        ${ print(this, data) }
-
         <input type="number" value="${ parseInt(data.time, 10) }" />
         <input type="range" min="0" max="10" value="${ parseInt(data.time, 10) }" />
 
@@ -378,10 +376,12 @@
     <h3 class="text-03">Mapped include() <span class="test-count">(1 test)</span></h3>
 
     <template is="literal-template" id="title-template">
+        ${ print(this, data) }
         <p>${ data.title }</p>
     </template>
 
     <template is="literal-template" id="objects-template">
+        ${ print(this, data) }
         <div>Before ${ data.map(include('#title-template')) } After</div>
     </template>
 

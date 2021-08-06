@@ -33,7 +33,7 @@ function renderValues(string, contents, array) {
 function renderValue(string, contents, value) {
     if (value && typeof value === 'object') {
         // Array-like values are flattened recursively
-        if (value && !value.nodeType && typeof value.length === 'number') {
+        if (value && typeof value === 'object' && !value.nodeType && typeof value.length === 'number') {
             return renderValues(string, contents, value);
         }
 
@@ -98,6 +98,7 @@ function setContent(node, nodes, contents) {
     // of contents[0] (if it is a string)
     if (typeof contents[0] === 'string') {
         count += setNodeValue(node, contents[0]);
+        contents = contents.slice(1);
         c = 0;
     }
     else {
@@ -108,6 +109,15 @@ function setContent(node, nodes, contents) {
     let n = 0;
     let content;
 
+    // The easy way - throw evrything away and reinsert, no caching
+    nodes.forEach(stopAndRemove);
+    count += nodes.length;
+    node.after.apply(node, contents);
+    assign(nodes, contents);
+    nodes.length = contents.length;
+    return count + nodes.length;
+
+/*
     // Deal with rest of contents
     while (content = contents[++c]) {
 //console.log(' CONTENT', content);
@@ -167,6 +177,7 @@ function setContent(node, nodes, contents) {
 
         // If content is a fragment or other DOM node
         else {
+console.log(content, content.remove);
             const last = isFragmentNode(content) ? 
                 content.childNodes[content.childNodes.length - 1] : 
                 content ;
@@ -187,6 +198,7 @@ function setContent(node, nodes, contents) {
 
     // Return the number of contents appended to DOM
     return count;
+*/
 }
 
 export default function TextRenderer(node, options, element) {
