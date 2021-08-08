@@ -211,29 +211,32 @@ assign(ObjectTrap.prototype, {
     // Inside handlers, observer is the observer proxy or an object that 
     // inherits from it
     get: function get(target, name, proxy) {
+        const value = target[name];
+
         // Don't observe changes to symbol properties, and
         // don't allow Safari to log __proto__ as a Proxy. (That's dangerous!
         // It pollutes Object.prototpye with [$observer] which breaks everything.)
         // Also, we're not interested in observing the prototype chain so
         // stick to hasOwnProperty.
-        if (typeof name === 'symbol' || name === '__proto__' /*|| !target.hasOwnProperty(name)*/) {
-            return target[name];
+        if (typeof name === 'symbol' || name === '__proto__') {
+            return value;
         }
 
-        // Is the property mutable
+        // Is the property mutable? Note that unset properties have no descriptor
         const descriptor = Object.getOwnPropertyDescriptor(target, name);
-        const mutable    = descriptor && (descriptor.writable || descriptor.set);
-        //const mutable    = !descriptor || descriptor.writable || descriptor.set;
+        const mutable    = descriptor ?
+            descriptor.writable || descriptor.set :
+            value === undefined ;
 
         if (mutable) {
             fire(this.gets, name);
         }
 
         // Get the observer of its value
-        const observer = Observer(target[name]); 
+        const observer = Observer(value); 
         
         if (!observer) {
-            return target[name];
+            return value;
         }
 
         // If get operations are being monitored, make them monitor the

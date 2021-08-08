@@ -10,7 +10,7 @@ import noop            from '../../fn/modules/noop.js';
 import slugify         from '../../fn/modules/slugify.js';
 import last            from '../../fn/modules/last.js';
 import overload        from '../../fn/modules/overload.js';
-import { observe }     from './observer.js';
+import { Observer, observe } from './observer.js';
 import px, { em, rem } from './parse-length.js';
 import print           from '../library/print.js';
 
@@ -28,6 +28,7 @@ const library = {
     matches,
     noop,
     observe,
+    Observer,
     overload,
     print: DEBUG ? print : noop,
     px,

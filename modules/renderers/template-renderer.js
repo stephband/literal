@@ -188,7 +188,7 @@ assign(TemplateRenderer.prototype, {
 
         this.observables = observer ?
             renderers.flatMap((renderer) => 
-                renderer.paths.map((path) =>
+                renderer.paths.map((path) => 
                     // Don't getPath() of the observer here, that really makes 
                     // the machine think too hard
                     observe(path, data, getPath(path, data)).each((value) =>

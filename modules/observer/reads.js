@@ -7,7 +7,7 @@ const assign = Object.assign;
 const values = Object.values;
 
 /** 
-reads(object, fn)
+reads(object)
 Calls `fn` for every property of `object` read via a get operation. Returns an
 object with the method `.stop()`.
 **/
@@ -16,14 +16,13 @@ function stop(gets) {
     gets.stop();
 }
 
-function ChildGets(target, path, parent, output) {
+function ChildGets(target, path, output) {
     this.children = {};
 
     // For some reason child proxies are being set... dunno how...
-    this.target   = getTarget(target);
-    this.parent   = parent;
-    this.path     = path;
-    this.output   = output;
+    this.target = getTarget(target);
+    this.path   = path;
+    this.output = output;
 
     target[$observer].gets.push(this);
 }
@@ -33,7 +32,7 @@ assign(ChildGets.prototype, {
         // We may only create one child observer per key
         if (this.children[key]) { return; }
         const path = this.path ? this.path + '.' : '';
-        this.children[key] = new ChildGets(this.target[key], path + key, this, this.output);
+        this.children[key] = new ChildGets(this.target[key], path + key, this.output);
     },
 
     unlisten: function(key) {
@@ -43,6 +42,7 @@ assign(ChildGets.prototype, {
         delete this.children[key];
     },
 
+    // Named fn because that is what is called by Observer's ObjectTrap
     fn: function(key) {
         const path = this.path ? this.path + '.' : '';
         // Pass concated path to parent fn
@@ -55,10 +55,9 @@ assign(ChildGets.prototype, {
     }
 });
 
-function Gets(target, done) {
+function Gets(target) {
     this.children = {};
     this.target   = target;
-    this.done     = done;
     this.path     = '';
 
     this.output = (path) => {
@@ -76,7 +75,7 @@ assign(Gets.prototype, ChildGets.prototype, {
 
     stop: function() {
         ChildGets.prototype.stop.apply(this);
-        this.fnDone && this.fnDone();
+        return this;
     }
 });
 

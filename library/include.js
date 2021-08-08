@@ -3,12 +3,13 @@
 include(url, data)
 **/
 
-import curry from '../../fn/modules/curry.js';
+import curry   from '../../fn/modules/curry.js';
 import request from './request.js';
-import create from '../../dom/modules/create.js';
-import { requestGet } from '../../dom/modules/request.js';
+import create  from '../../dom/modules/create.js';
+import { requestGet }   from '../../dom/modules/request.js';
 import { fragmentFromHTML } from '../../dom/modules/fragments.js';
 import TemplateRenderer from '../modules/renderers/template-renderer.js';
+import { getTarget }    from '../modules/observer.js';
 
 export function include(url, data) {
     if (!/^#/.test(url)) {
@@ -30,6 +31,10 @@ export function include(url, data) {
         return marker;
     }
 
+    // Operate on target to be sure we are not registering gets for data.then 
+    // in parent renderer 
+    data = getTarget(data);
+    
     // Accept a promise of data
     if (data && data.then) {
         data.then((data) => renderer.cue(data)).then(() => marker.after(renderer.content));
