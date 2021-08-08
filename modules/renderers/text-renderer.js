@@ -7,7 +7,7 @@ import include        from '../../library/include.js';
 import request        from '../../library/request.js';
 import compile        from '../compile.js';
 import toText         from '../to-text.js';
-import Renderer       from './renderer.js';
+import Renderer, { removeNodes } from './renderer.js';
 
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
@@ -78,7 +78,7 @@ function setNodeValue(node, value) {
 }
 
 function stop(node) {
-    node.stop && node.stop();
+    node && typeof node === 'object' && node.stop && node.stop();
 }
 
 function remove(node) {
@@ -90,135 +90,61 @@ function stopAndRemove(node) {
     node.remove && node.remove();
 }
 
-function setContent(node, nodes, contents) {
+function setContent(first, last, contents) {
     let count = 0;
-    let c;
 
-    // Deal with the principal text node, setting it's text to the value
-    // of contents[0] (if it is a string)
+    // Remove existing nodes, leaving first and last alone
+    if (last.previousSibling !== first) {
+        count += removeNodes(first.nextSibling, last.previousSibling);
+    }
+
+    // Set first tet node
     if (typeof contents[0] === 'string') {
-        count += setNodeValue(node, contents[0]);
-        contents = contents.slice(1);
-        c = 0;
+        count += setNodeValue(first, contents.shift());
     }
     else {
-        count += setNodeValue(node, '');
-        c = -1;
+        count += setNodeValue(first, '');
     }
 
-    let n = 0;
-    let content;
-
-    // The easy way - throw evrything away and reinsert, no caching
-    nodes.forEach(stopAndRemove);
-    count += nodes.length;
-    node.after.apply(node, contents);
-    assign(nodes, contents);
-    nodes.length = contents.length;
-    return count + nodes.length;
-
-/*
-    // Deal with rest of contents
-    while (content = contents[++c]) {
-//console.log(' CONTENT', content);
-        // If content is a string look for the next text node ...
-        if (typeof content === 'string') {
-            // Throw away any non-text entries
-            while (n < nodes.length && !isTextNode(nodes[n])) {
-                //count += remove(nodes[n - 1] || node, nodes[n]);
-                nodes.splice(n, 1).forEach(stopAndRemove);
-            }
-
-            // If child exists we know it is a text node, fill it with content
-            if (nodes[n]) {
-                count += setNodeValue(nodes[n], content);
-            }
-
-            // Otherwise create a text node with content
-            else {
-                const child = document.createTextNode(content);
-                count += after(nodes[n - 1], child);
-                nodes[n] = child;
-            }
-        }
-
-        // If content is a promise put a marker node in place and replace it
-        // when the promise produces content
-        else if (content instanceof Promise) {
-            // Insert a temporary marker node into nodes
-            const tempMarker = document.createTextNode('');
-            count += after(nodes[n - 1] || node, tempMarker);
-            nodes.splice(n, 0, tempMarker);
-
-            // When content is ready
-            content.then((content) => {
-                // Convert string to text node
-                content = typeof content === 'string' ?
-                    create('text', content) :
-                    content ;
-
-                // Find the last node, the new marker node, in fragment
-                const marker = isFragmentNode(content) ? 
-                    content.childNodes[content.childNodes.length - 1] : 
-                    content ;
-
-                // Replace tempMarker with new content
-                tempMarker.before(content);
-                tempMarker.remove();
-
-                // Replace tempMarker in nodes with the new marker
-                const n = nodes.indexOf(tempMarker);
-                nodes[n] = marker;
-            });
-        }
-
-        // If content is an array ?
-        // Move array code in here from renderValue()
-
-        // If content is a fragment or other DOM node
-        else {
-console.log(content, content.remove);
-            const last = isFragmentNode(content) ? 
-                content.childNodes[content.childNodes.length - 1] : 
-                content ;
-
-            count += after(nodes[n - 1] || node, content);
-            nodes.splice(n, 0, last);
-        }
-
-        ++n;
+    // Set last text node
+    if (typeof contents[contents.length - 1] === 'string') {
+        count += setNodeValue(last, contents.pop());
+    }
+    else {
+        count += setNodeValue(last, '');
     }
 
-    // Throw away any remaining nodes
-    const dead = nodes.splice(n);
-    if (dead.length) {
-        dead.forEach(stopAndRemove);
-        //count += remove(nodes[n - 1] || node, dead[dead.length - 1]);
+    if (contents.length) {
+        first.after.apply(first, contents);
+        count += contents.length;
     }
 
-    // Return the number of contents appended to DOM
     return count;
-*/
 }
 
 export default function TextRenderer(node, options, element) {
     Renderer.apply(this, arguments);
-    const nodes = this.nodes = [];
+    this.first     = node;
+    this.last      = document.createTextNode('');
+    this.first.after(this.last);
+    this.contents  = [];
     this.literally = options.literally || compile(contentLibrary, 'data, state, element', options.source, null, options, element);
-    this.update  = (contents) => setContent(node, nodes, contents);
 }
 
 assign(TextRenderer.prototype, Renderer.prototype, {
     cue: function() {
         // Stop all nodes, they are about to be recreated
-        this.nodes.forEach(stop);
+        this.contents.forEach(stop);
+        this.contents.length = 0;
         return Renderer.prototype.cue.apply(this, arguments);
     },
 
     resolve: function(values) {
         const strings  = values[0];
-        const contents = [];
-    
+        const contents = this.contents;
+        contents.forEach(stop);
+        contents.length = 0;
+
         let n = -1;
         let string = '';
     
@@ -227,13 +153,14 @@ assign(TextRenderer.prototype, Renderer.prototype, {
             // a node or renderer has to be pushed in behind it
             string = renderValue(string + strings[n], contents, values[n + 1]);
         }
-    
+
         string && contents.push(string);
-        return contents;
+        return setContent(this.first, this.last, contents);
     },
 
     stop: function() {
-        this.nodes.forEach(stop);
+        this.contents.forEach(stop);
+        this.contents.length = 0;
         return Renderer.prototype.stop.apply(this, arguments);
     }
 });

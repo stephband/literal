@@ -11,7 +11,7 @@ import { Observer, observe, getTarget } from '../observer.js';
 import reads       from '../observer/reads.js';
 import { log }     from '../log.js';
 import { cue, uncue } from './batcher.js';
-import Renderer, { renderStopped } from './renderer.js';
+import Renderer, { renderStopped, removeNodes } from './renderer.js';
 
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
@@ -48,31 +48,38 @@ function getDescendant(path, root) {
     return p.reduce(child, root);
 }
 var i = 0;
+
+function isMarkerNode(node) {
+    // Markers should be spaces-only else we risk unrendered content being 
+    // inserted into the DOM. If it's not a text node, it's not a marker 
+    // node because it could contain something that contains unrendered code.
+    if (!isTextNode(node)) { 
+        return false;
+    }
+
+    const text  = node.nodeValue;
+    const space = /^\s*/.exec(text);
+
+    // If text is more than just space return false
+    return space[0].length === text.length;
+}
+
 function prepareContent(content) {
     // Due to the way HTML is usually written the vast majority of templates
-    // start an end with a text node, usually containing some white space
+    // start and end with a text node, usually containing some white space
     // and new lines. The renderer uses these as delimiters for the start and
-    // end of templated content, to enable removal even after templated content
-    // has mutated. If the template does NOT start or end with a text node, we
-    // should insert a couple of empty ones to enable this.
-    //const first = content.childNodes[0];
+    // end of templated content – where it can. If the template does NOT start 
+    // or end with a text node, we insert text nodes where needed.
+    const first = content.childNodes[0];
     const last  = content.childNodes[content.childNodes.length - 1];
 
-    //if (!isTextNode(first)*/) {
-    //    content.prepend(document.createTextNode(''));
-    //}
 
-    if (isTextNode(last)) {
-        // Slice off space from the end of the last node and use it to create an
-        // end delimiter.
-        const space = /\s*$/.exec(last.nodeValue);
-        if (space.index > 0) {
-            last.nodeValue = space.input.slice(0, space.index);
-            content.appendChild(document.createTextNode(space[0]));
-        }
+    if (!isMarkerNode(first)) {
+        content.prepend(document.createTextNode(''));
     }
-    else {
-        content.appendChild(document.createTextNode(''));
+
+    if (!isMarkerNode(last)) {
+        content.append(document.createTextNode(''));
     }
 }
 
@@ -116,10 +123,6 @@ export default function TemplateRenderer(template) {
         
         if (!template.content) {
             throw new Error('Element id="' + id + '" is not a <template> (no content fragment)');
-        }
-        
-        if (template.dataset.data !== undefined) {
-            log('render', 'data-data attribute will be ignored', 'red');
         }
     }
 
@@ -206,37 +209,10 @@ assign(TemplateRenderer.prototype, {
         this.renderers.forEach(stop);
         this.observables.forEach(stop);
         this.observables = nothing;
-        
         return Renderer.prototype.stop.apply(this, arguments);
     },
 
     remove: function() {
-        // Remove this.first and this.last and all nodes in between
-        let node = this.last.previousSibling;
-        let count = 0;
-        const parent = this.last.parentNode;
-
-        // Treat the last node special or we continuous loopdiloop
-        // We may have overridden .remove() on this.last
-
-        this.last.constructor.prototype.remove.apply(this.last);
-        ++count;
-
-        if (this.last === this.first) {
-            return count;
-        }
-
-        while (node !== this.first) {
-            const next = node.nextSibling;
-            node.remove();
-            node = next && next.previousSibling || parent.lastChild;
-            ++count;
-        }
-
-        this.first.remove();
-        ++count;
-
-//console.log('removed ', this.id, '#' + this.template.id, 'TemplateRenderer');
-        return count;
+        return removeNodes(this.first, this.last);
     }
 });

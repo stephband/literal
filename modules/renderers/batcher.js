@@ -16,8 +16,12 @@ function render(renderers) {
     while (renderer = renderers.shift()) {
         // Call .render() with latest arguments
         renderer.render.apply(renderer, renderer.cuedArguments);
-        //renderer.cuedArguments = undefined;
-        ids && (ids[renderer.id] = ids[renderer.id] === undefined ? 1 : ids[renderer.id] + 1);
+        renderer.cuedArguments = undefined;
+        renderer.cued = false;
+
+        if (DEBUG) {
+            ids && (ids[renderer.id] = ids[renderer.id] === undefined ? 1 : ids[renderer.id] + 1);
+        }
     }
 
     cued = undefined;
@@ -48,7 +52,7 @@ export function cue(renderer, args) {
     renderer.cuedArguments = args;
 
     // Ignore if renderer is already cued
-    if (renderers.includes(renderer)) {
+    if (renderer.cued) {
         return promise;
     }
 
@@ -58,6 +62,7 @@ export function cue(renderer, args) {
     }
     
     renderers.push(renderer);
+    renderer.cued = true;
     return promise;
 }
 
@@ -67,11 +72,11 @@ Removes renderer from the render queue.
 **/
 
 export function uncue(renderer) {
-    if (!renderers.length) { return; } 
+    if (!renderers.length) { return; }
+    if (!renderer.cued) { return; }
 
     const i = renderers.indexOf(renderer);
-    if (i === -1) { return; }
-
     renderers.splice(i, 1);
     renderer.cuedArguments = undefined;
+    renderer.cued = false;
 }

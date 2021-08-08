@@ -66,11 +66,24 @@ export function renderString(values) {
     )));
 }
 
-/*
-export function toPromise() {
-    return Promise.all(arguments);
+export function removeNodes(first, last) {
+    // Remove last to first and all nodes in between
+    let node  = last;
+    let count = 0;
+
+    while (node !== first) {
+        const previous = node.previousSibling;
+        node.remove();
+        node = previous;
+        ++count;
+    }
+
+    first.remove();
+    ++count;
+
+    return count;
 }
-*/
+
 
 /** 
 Renderer()
@@ -106,6 +119,11 @@ assign(Renderer.prototype, {
     },
 
     render: function(data, state) {
+        if (this.stopables) {
+            this.stopables.forEach(stop);
+            this.stopables.length = 0;
+        }
+
         const paths = this.paths || (this.paths = []);
         paths.length = 0;
 
@@ -137,12 +155,15 @@ assign(Renderer.prototype, {
 
         const p = this.literally(data, state, this.element);
         const q = this.resolve(p);
-        this.update(q);
+        
+        // TextRenderer no longer has .update() - should the others follow suit?
+        this.update && this.update(q);
 
         // We may only collect synchronous gets – other templates may use 
         // this data object while we are promising and we don't want to
         // include their gets by stopping on .then(). Stop now. If we want to
-        // change this, making a proxy per template instance would be the way to go.
+        // change this, making a data proxy per template instance would be the 
+        // way to go.
         gets.stop();
     },
 
