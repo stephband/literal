@@ -62,19 +62,9 @@ export default overload((url) => (rextension.exec(url) || empty)[1], {
         const absolute = url[0] === '.' ?
             new URL(url, window.location) :
             url ;
-
-        return params ?
-            // Where params have been captured, assume the export is a constructor
-            // and call it with params as values
-            import(absolute).then((data) => {
-                if (typeof data[name] !== 'function') {
-                    throw new Error('Export ' + absolute + ' is not a function');
-                }
-
-                return new data[name](...JSON.parse('[' + params.replace(/'/g, '"') + ']'))
-            }) :
-            // Otherwise use the export as data directly
-            import(absolute).then((data) => data[name]) ;
+console.log(absolute + '');
+        // Otherwise use the export as data directly
+        return import(absolute).then((data) => data[name]) ;
     },
 
     // Cache JSON requests in memory so that all requests to a given URL result 
