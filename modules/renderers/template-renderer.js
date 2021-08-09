@@ -162,7 +162,7 @@ assign(TemplateRenderer.prototype, {
 
     // Default data is an empty object
     render: function(object) {
-console.log('-----', argument[0], arguments[1]);
+console.log('-----', arguments[0], arguments[1]);
         const data = getTarget(object);
 
         // Deduplicate. Not sure this is entirely necessary.
