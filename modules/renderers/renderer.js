@@ -1,9 +1,9 @@
 
-import nothing        from '../../../fn/modules/nothing.js';
+import nothing from '../../../fn/modules/nothing.js';
 import { cue, uncue } from './batcher.js';
-import toText         from '../to-text.js';
-import reads          from '../observer/reads.js';
-import { getTarget }  from '../observer/observer.js';
+import toText  from '../to-text.js';
+import reads       from '../observer/reads.js';
+import analytics from './analytics.js';
 
 const assign = Object.assign;
 
@@ -92,8 +92,6 @@ Base class/mixin for providing renderers with the properties
 `{ node, path }` and a generic `.render()` method.
 **/
 
-let id = 0;
-
 function stop(stopable) {
     return stopable.stop ?
         stopable.stop() :
@@ -104,9 +102,13 @@ export default function Renderer(node, options, element) {
     this.element   = element || node;
     this.node      = node;
     this.path      = options.path;
-    this.id        = ++id;
+    this.id        = ++analytics.count;
     this.count     = 0;
     this.template  = options.template;
+
+    // Count renderers generated from this template
+    const id = options.template + '.' + options.path;
+    analytics.templates[id] ? ++analytics.templates[id]  : (analytics.templates[id] = 1) ;
 }
 
 assign(Renderer.prototype, {
@@ -119,7 +121,7 @@ assign(Renderer.prototype, {
         return cue(this, arguments);
     },
 
-    render: function(data) {
+    render: function(data, state) {
         if (this.stopables) {
             this.stopables.forEach(stop);
             this.stopables.length = 0;
@@ -154,7 +156,7 @@ assign(Renderer.prototype, {
 
         ++this.count;
 
-        const p = this.literally(data, getTarget(data), this.element);
+        const p = this.literally(data, state, this.element);
         const q = this.resolve(p);
         
         // TextRenderer no longer has .update() - should the others follow suit?

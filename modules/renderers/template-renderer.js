@@ -10,6 +10,7 @@ import compileNode from '../compile-node.js';
 import { Observer, observe, getTarget } from '../observer.js';
 import reads       from '../observer/reads.js';
 import { log }     from '../log.js';
+import analytics   from './analytics.js';
 import { cue, uncue } from './batcher.js';
 import Renderer, { renderStopped, removeNodes } from './renderer.js';
 
@@ -96,19 +97,21 @@ export default function TemplateRenderer(template) {
         template :
         identify(template) ;
 
-    // If the template is already compiled, clone the compiled consts and 
-    // renderers to this renderer and bind them to a new fragment
+    this.id          = ++analytics.count;
+    this.observables = nothing;
+
+    // Count renderers generated from this template
+    analytics.templates[id] ? ++analytics.templates[id] : (analytics.templates[id] = 1) ;
+
+    // If the template is already compiled, clone the compiled renderers to 
+    // this renderer and bind them to a new fragment
     if (cache[id]) {
         const template = cache[id].template;
-
-        this.id        = -1 * (++renderid);
         this.template  = template;
         this.content   = template.content.cloneNode(true);
         this.first     = this.content.childNodes[0];
         this.last      = this.content.childNodes[this.content.childNodes.length - 1];
         this.renderers = cache[id].renderers.map(newRenderer, this.content);
-        this.observables = nothing;
-
         return;
     }
 
@@ -128,23 +131,20 @@ export default function TemplateRenderer(template) {
 
     prepareContent(template.content);
 
-    this.id        = -1 * (++renderid);
     this.template  = template;
     this.content   = template.content.cloneNode(true);
     this.first     = this.content.childNodes[0];
     this.last      = this.content.childNodes[this.content.childNodes.length - 1];
 
+    // compileNode(renderers, options, content, template)
     // The options object contains information for renderer objects. It is 
     // mutated as it is passed to each renderer (specifically path, name, 
-    // source properties) as renderer construction is synchronous within a 
-    // template.
-    const options = {
+    // source properties). We can do this because renderer construction is 
+    // synchronous within a template.
+    this.renderers = compileNode([], {
         template: id,
-        path:     ''
-    };
-
-    this.renderers = compileNode([], options, this.content, template);
-    this.observables = nothing;
+        path: ''
+    }, this.content, template.content);
 
     cache[id] = this;
 }
@@ -184,7 +184,7 @@ assign(TemplateRenderer.prototype, {
         const renderers = this.renderers;
 
         // This has to happen synchronously in order to collect gets...
-        renderers.forEach((renderer) => renderer.render(observer));
+        renderers.forEach((renderer) => renderer.render(observer, data));
 
         this.observables = observer ?
             renderers.flatMap((renderer) => 

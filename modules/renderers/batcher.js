@@ -1,5 +1,5 @@
 
-import { log, group, groupEnd } from '../log.js';
+import { log, group, groupCollapsed, groupEnd } from '../log.js';
 
 const renderers = [];
 const promise   = Promise.resolve(renderers);
@@ -8,7 +8,7 @@ let cued;
 function render(renderers) {
     if (DEBUG) {
         var t0 = window.performance.now() / 1000;
-        group('batch', t0.toFixed(3) + ' (' + renderers.length + ' renderer' + (renderers.length > 1 ? 's)' : ')'), 'green');
+        groupCollapsed('batch', t0.toFixed(3) + ' (' + renderers.length + ' renderer' + (renderers.length > 1 ? 's)' : ')'), 'green');
         var ids = {};
     }
 
@@ -31,7 +31,7 @@ function render(renderers) {
 
         var t1 = window.performance.now() / 1000;
         if (t1 - t0 > 0.016) {
-            console.error('batch took longer than a frame (0.016s)', (t1 - t0).toFixed(3) + 's');
+            console.warn('batch took longer than a frame (0.016s)', (t1 - t0).toFixed(3) + 's');
         }
         
         if (Object.values(ids).find((n) => n > 1)) {

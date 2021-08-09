@@ -30,6 +30,16 @@ export const group = DEBUG ?
     } :
     noop ;
 
+export const groupCollapsed = DEBUG ?
+    function log($1, $2, color = '#d8cd17') {
+        console.groupCollapsed('%cLiteral %c' + $1 + ' %c' + $2,
+            'color: ' + (colors.grey) + '; font-weight: 600;', 
+            'color: ' + (colors[color] || color) + '; font-weight: 300;', 
+            'color: ' + (colors.grey) + '; font-weight: 300;'
+        );
+    } :
+    noop ;
+
 export const groupEnd = DEBUG ?
     console.groupEnd :
     noop ;

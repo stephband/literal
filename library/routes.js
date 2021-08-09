@@ -79,9 +79,9 @@ function updateRoute(patterns, keys, regexps, location, route) {
 
     // Create a new route object
     route = new Route(base, path, name);
-route.pk = ++pk;
 
-    log('route', pk + ' ' + base + ' ' + path + ' ' + name, 'aqua');
+    route.pk = ++pk;
+    log('route', route.pk + '  ' + base + ' - ' + path + (name ? ' - ' + name : ''), 'aqua');
 
     // Update params, id, state. Reading these properties should not alert the
     // template renderer to rerender if they change, as we are about to observe
@@ -97,7 +97,8 @@ route.pk = ++pk;
     // what if something else causes a rerender? Ooooh.
     const m1 = observe('name', location, target.name)
     .each(() => {
-log('route ', route.pk + ', ' + base + ', ' + path + ', ' + name, 'orange');
+        log('route ', route.pk + '  ' + base + ' - ' + path + (name ? ' - ' + name : ''), 'red');
+
         m1.stop();
         m2.stop();
         //data.mutations && data.mutations.stop();
