@@ -1,7 +1,7 @@
 
 import { register } from '../modules/library.js';
 import { Observer, mutations, observe, getTarget } from '../modules/observer.js';
-import { defaults } from '../data/location.js';
+import root, { defaults } from './location.js';
 import { log } from '../modules/log.js';
 
 const DEBUG = window.DEBUG && (window.DEBUG === true || window.DEBUG.includes('routes'));
@@ -128,7 +128,8 @@ export default register('routes', function routes(patterns) {
     var route;
 
     function routes(location) {
-        return route = updateRoute(patterns, keys, regexps, location, route);
+        // Replace references to window.location with our root location wrapper
+        return route = updateRoute(patterns, keys, regexps, location === window.location ? root : location, route);
     }
 
     // Allow partial application:
