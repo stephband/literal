@@ -3,7 +3,7 @@ import nothing        from '../../../fn/modules/nothing.js';
 import { cue, uncue } from './batcher.js';
 import toText         from '../to-text.js';
 import reads          from '../observer/reads.js';
-import { getTarget }  from '../observer/observer.js';
+import { getTarget , Observer, observe }  from '../observer/observer.js';
 
 const assign = Object.assign;
 
@@ -192,3 +192,7 @@ console.log('DATA', data, 'STATE', getTarget(data));
         return this;
     }
 });
+
+window.gt = getTarget;
+window.Observer = Observer;
+window.observe = observe;
