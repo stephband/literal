@@ -119,6 +119,11 @@ assign(Renderer.prototype, {
     },
 
     render: function(data, state) {
+        if (data === state) {
+            console.log(data, state);
+            throw new Error('DATA AND STATE ARE SAME');
+        }
+
         if (this.stopables) {
             this.stopables.forEach(stop);
             this.stopables.length = 0;
