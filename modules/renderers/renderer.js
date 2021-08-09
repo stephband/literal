@@ -153,7 +153,7 @@ assign(Renderer.prototype, {
             nothing;
 
         ++this.count;
-
+console.log('RENDER', data, getTarget(data));
         const p = this.literally(data, getTarget(data), this.element);
         const q = this.resolve(p);
         
