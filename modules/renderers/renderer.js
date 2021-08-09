@@ -156,6 +156,7 @@ assign(Renderer.prototype, {
 console.log('DATA', data, 'STATE', getTarget(data));
 window.gt = getTarget;
 window.Observer = Observer;
+console.log('FUUCK YOU');
         const p = this.literally(data, getTarget(data), this.element);
         const q = this.resolve(p);
         
