@@ -5,7 +5,7 @@ const assign = Object.assign;
 const define = Object.defineProperties;
 const isExtensible = Object.isExtensible;
 
-export const $observer = Symbol('oberver');
+export const $observer = Symbol('observer');
 
 export const analytics = {
     observables: 0,

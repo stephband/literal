@@ -3,7 +3,7 @@ import nothing        from '../../../fn/modules/nothing.js';
 import { cue, uncue } from './batcher.js';
 import toText         from '../to-text.js';
 import reads          from '../observer/reads.js';
-import { getTarget , Observer, observe }  from '../observer/observer.js';
+import { getTarget }  from '../observer/observer.js';
 
 const assign = Object.assign;
 
@@ -153,10 +153,9 @@ assign(Renderer.prototype, {
             nothing;
 
         ++this.count;
+
 console.log('DATA', data, 'STATE', getTarget(data));
-window.gt = getTarget;
-window.Observer = Observer;
-console.log('FUUCK YOU');
+
         const p = this.literally(data, getTarget(data), this.element);
         const q = this.resolve(p);
         
@@ -195,7 +194,3 @@ console.log('FUUCK YOU');
         return this;
     }
 });
-
-window.gt = getTarget;
-window.Observer = Observer;
-window.observe = observe;
