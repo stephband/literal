@@ -165,7 +165,7 @@ assign(TemplateRenderer.prototype, {
         const data = getTarget(object);
 
         // Deduplicate. Not sure this is entirely necessary.
-        if (data === this.data) {
+        if (data === this.state) {
             if (DEBUG) {
                 console.error('Attempt to render with same object as last render');
             }
@@ -173,7 +173,7 @@ assign(TemplateRenderer.prototype, {
             return this.content;
         }
 
-        this.data = data;
+        this.state = data;
 
         // Stop any previous observables where they have not already 
         // been stoppped (if we remove render() such that this can only be cued
@@ -184,7 +184,7 @@ assign(TemplateRenderer.prototype, {
         const renderers = this.renderers;
 
         // This has to happen synchronously in order to collect gets...
-        renderers.forEach((renderer) => renderer.render(observer, data));
+        renderers.forEach((renderer) => renderer.render(observer));
 
         this.observables = observer ?
             renderers.flatMap((renderer) => 
@@ -193,7 +193,7 @@ assign(TemplateRenderer.prototype, {
                     // the machine think too hard
                     observe(path, data, getPath(path, data)).each((value) =>
                         // Next renders are cued which batches them
-                        renderer.cue(observer, data)
+                        renderer.cue(observer)
                     )
                 )
             ) :
