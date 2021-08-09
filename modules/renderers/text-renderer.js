@@ -18,9 +18,6 @@ const contentLibrary = assign({}, library, {
     request: request
 });
 
-
-
-
 function renderValues(string, contents, array) {
     const l = array.length;
     let n = -1;
@@ -136,6 +133,8 @@ assign(TextRenderer.prototype, Renderer.prototype, {
         // Stop all nodes, they are about to be recreated
         this.contents.forEach(stop);
         this.contents.length = 0;
+        
+console.log('CUE TEXT RENDERER data', arguments[0], 'state', arguments[1]);
         return Renderer.prototype.cue.apply(this, arguments);
     },
 
