@@ -2,112 +2,170 @@
 
 Literal puts JS into your HTML. Literal customises the template element,
 enhancing it with the native capabilities of JS template tags to render fast, 
-flexible and powerful templates, all in a small library that is just 10kB 
-minified and gzipped.
-
-
-## Literal templates in JS
-
-Import the Literal constructor and render a template:
-
-```js
-import Literal from './module.js';
-
-const render = Literal('#my-template');
-
-render({ name: 'Literal' }).then((nodes) => {
-    // Do something with the generated nodes
-});
-```
-
-The Literal constructor accepts an identifier in the form `'#template-id'`,
-a reference to a template element, or an HTML string.
+flexible and powerful templates.
 
 
 ## Literal templates in HTML
 
-Register the `literal-template` (customised built-in) element:
+Import Literal.
 
 ```html
-<script type="module" src="./elements/literal-template.js"></script> 
+<script type="module" src="./module.js"></script> 
 ```
 
-### &lt;template is="literal-template"&gt;
-
-A literal template is declared using the `is` attribute:
-
-```html
-<template is="literal-template" data="./package.json">
-    <h1>${ data.title }</h1>
-</template>
-```
-
-Literal templates are replaced with their rendered content as soon as data 
-becomes available. In the example above, when `package.json` is fetched 
-the template renders to the DOM as:
+This registers two custom elements, `&lt;template is="literal-template"&gt;` and
+`&lt;literal-include&gt;`.
 
 ```html
-<h1>Literal</h1>
-```
-
-### data="url"
-
-The `data` attribute accepts a url to request some JSON. The resulting object
-is available inside the template as `data`:
-
-```html
-<template is="literal-template" data="./package.json">
-    <ul>
-        <li>${ data.name }</li>
-    </ul>
-</template>
-```
-
-### data="${...}"
-
-The `data` attribute may also contain a literal tag, which can be used to 
-inject any old data for the template's scope.
-
-```html
-<template is="literal-template" data="${ window.location }">
-    <h1>${ data.href }</h1>
-</template>
-```
-
-A literal tag may evaluate to a promise, so `fetch` and `import` can be
-employed to import data:
-
-```html
-<template is="literal-template" data="${ import('./module.js') }">
-    <p>${ data }</p>
-</template>
-```
-
-### data-xxx
-
-`data-xxx` attributes define properties of `data` as constants for use inside 
-a template:
-
-```html
-<template is="literal-template" data="./package.json" data-title data-description>
-    <h1>${ title }</h1>
-    <p>${ description }</p>
-</template>
-```
-
-
-### src="#template-id"
-
-The `src` attribute includes some other template referenced by id:
-
-```html
-<template id="header">
-    <h1>${ data.title }</h1>
-    <p>${ description }</p>
+<!-- Define a template -->
+<template is="literal-template" id="title-template">
+    <h1>I am ${ data.title }</h1>
 </template>
 
-<template is="literal-template" src="#header" data="./package.json"></template>
+<!-- Include the template -->
+<literal-include src="#title-template" data="./package.json"></literal-include>
 ```
+
+A `&lt;literal-include&gt;` is replaced with the rendered content of its `src` 
+template as soon as `data` is fetched. In the example above, when `package.json` 
+is fetched the include renders to the DOM as
+
+```html
+<h1>I am Literal</h1>
+```
+
+A `&lt;template is="literal-template"&gt;` may be reused by multiple 
+`&lt;literal-include&gt;`s.
+
+
+### The data attribute or attributes
+
+A `&lt;literal-include&gt;` may have either a `data` attribute or one or more
+`data-` attributes (but not both). Data attributes may contain
+
+- a URL pointing to a `.json` file
+- a URL pointing to a `.js` module with a default export
+- a primitive (a number, string, boolean, or null)
+- some JSON
+
+Where a single `data` attribute is used, the object `data` inside a template 
+refers to the imported object.
+
+```html
+<template is="literal-template" id="title-template">
+    <h1>I am ${ data.title }</h1>
+</template>
+
+<literal-include src="#title-template" data="./package.json"></literal-include>
+```
+
+Where dataset (`data-`) attributes are used, the object `data` inside a 
+template is given properties with corresponding names.
+
+```html
+<template is="literal-template" id="title-template">
+    <h1>I am ${ data.package.title }. Number is ${ data.number }</h1>
+</template>
+
+<literal-include src="#title-template" data-package="./package.json" data-number="1"></literal-include>
+```
+
+
+
+## Literal functions
+
+A number of functions are available as a base library inside the template.
+
+### assign()
+As `Object.assign()`.
+
+### by()
+by
+
+### define()
+As `Object.define()`.
+
+### entries()
+As `Object.entries()`.
+
+### em()
+Takes a numeric value in px, or a string value of the form `'10px'` and outputs
+a string value in em, eg. `'0.625em'`.
+
+### equals(a, b)
+Compares a and b for deep equality.
+
+### get(path, object)
+Gets the value of `path` in `object`, where `path` is in dot-notation. 
+
+### id(object)
+Returns `object`.
+
+### include(src, data)
+Includes another template. Not available inside attributes.
+
+### keys()
+As `Object.keys()`.
+
+### last()
+Gets the last item from an array or array-like.
+
+### matches(selector, object)
+Returns true where all the properties of `selector` are strictly equal to the 
+same properties of `object`.
+
+### noop()
+Return undefined.
+
+### observe(path, object)
+Returns an observable of mutations to `path` in `object`. Consume mutations
+with its `.each()` method.
+
+```
+observe('title', data).each((title) => console.log(title));
+```
+
+Observables may be stopped when the render is over by subscribing them using the
+current renderer's `.done()` method.
+
+```
+this.done( observe('title', data).each((title) => console.log(title)) );
+```
+
+### Observer(object)
+Returns the Observer proxy of `object`. Use this proxy to make changes to object
+that may be observed using `observe(path, object)` (above).
+
+### overload(fn, object)
+
+### print(object)
+Prints renderers and objects to the DOM. To debug a template in place, print the
+current renderer and data.
+
+```
+${ print(this, data) }
+```
+
+### px()
+Takes a numeric value in px, or a string value of the form `'0.625rem'` and 
+outputs a string value in px, eg. `'10px'`.
+
+### rem()
+Takes a numeric value in px, or a string value of the form `'10px'` and outputs
+a string value in em, eg. `'0.625rem'`.
+
+### request(url)
+Fetches `.json` or imports a `.js` module's default export, returning a promise.
+
+### slugify(string)
+Returns the slug of `string`.
+
+### values()
+As `Object.values()`.
+
+
+
+
 
 
 ### &lt;include src="#template-id"&gt;
@@ -143,6 +201,23 @@ via `render(data)`).
 Incidentally, immutable objects such as frozen objects are not observed for 
 data-binding, that wouldn't make sense. Literal is comfortable working
 mutably or immutably.
+
+## Literal templates in JS
+
+Import the Literal constructor and render a template:
+
+```js
+import Literal from './module.js';
+
+const render = Literal('#my-template');
+
+render({ name: 'Literal' }).then((nodes) => {
+    // Do something with the generated nodes
+});
+```
+
+The Literal constructor accepts an identifier in the form `'#template-id'`,
+a reference to a template element, or an HTML string.
 
 ## Literal for Deno
 
