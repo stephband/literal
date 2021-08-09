@@ -54,17 +54,14 @@ const empty = [];
 
 export default overload((url) => (rextension.exec(url) || empty)[1], {
     'js': (url) => {
-        // Support named exports via the #fragment identifier
-        const [string, name, params] = rfragment.exec(url) || defaultexp;
-
         // Rewrite relative import URLs to be absolute, taking the page as their
         // relative root
         const absolute = url[0] === '.' ?
             new URL(url, window.location) :
             url ;
-console.log(absolute + '');
+
         // Otherwise use the export as data directly
-        return import(absolute).then((data) => data[name]) ;
+        return import(absolute).then((data) => data.default) ;
     },
 
     // Cache JSON requests in memory so that all requests to a given URL result 

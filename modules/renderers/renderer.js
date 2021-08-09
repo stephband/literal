@@ -154,8 +154,6 @@ assign(Renderer.prototype, {
 
         ++this.count;
 
-console.log('DATA', data, 'STATE', getTarget(data));
-
         const p = this.literally(data, getTarget(data), this.element);
         const q = this.resolve(p);
         
