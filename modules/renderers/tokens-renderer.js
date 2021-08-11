@@ -4,6 +4,7 @@ import library   from '../library.js';
 import compile   from '../compile.js';
 import toText    from '../to-text.js';
 import Renderer  from './renderer.js';
+import analytics from './analytics.js';
 
 const assign = Object.assign;
 
@@ -86,6 +87,11 @@ export default function TokensRenderer(node, options) {
     // Empty the tokens until it is rendered to avoid words in literal tags
     // being interpreted as classes
     node.setAttribute(this.name, '');
+    
+    // Analytics
+    const id = '#' + options.template;
+    ++analytics[id].class || (analytics[id].class = 1);
+    ++analytics.Totals.class;
 }
 
 assign(TokensRenderer.prototype, Renderer.prototype, {

@@ -8,7 +8,7 @@ let cued;
 function render(renderers) {
     if (DEBUG) {
         var t0 = window.performance.now() / 1000;
-        groupCollapsed('batch', t0.toFixed(3) + ' (' + renderers.length + ' renderer' + (renderers.length > 1 ? 's)' : ')'), 'green');
+        group('batch', t0.toFixed(3) + ' (' + renderers.length + ' renderer' + (renderers.length > 1 ? 's)' : ')'), 'green');
         var ids = {};
     }
 

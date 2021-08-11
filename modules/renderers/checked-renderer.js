@@ -5,6 +5,7 @@ import config    from '../config.js';
 import library   from '../library.js';
 import compile   from '../compile.js';
 import Renderer  from './renderer.js';
+import analytics from './analytics.js';
 
 const assign = Object.assign;
 
@@ -64,6 +65,11 @@ export default function CheckedRenderer(node, options) {
     // Negate the effects of having template content in the checked attribute -
     // resetting the form sets it back to attribute state
     node.removeAttribute('checked');
+
+    // Analytics
+    const id = '#' + options.template;
+    ++analytics[id].checked || (analytics[id].checked = 1);
+    ++analytics.Totals.checked;
 }
 
 assign(CheckedRenderer.prototype, Renderer.prototype, {

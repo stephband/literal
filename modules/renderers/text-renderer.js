@@ -8,6 +8,7 @@ import request        from '../../library/request.js';
 import compile        from '../compile.js';
 import toText         from '../to-text.js';
 import Renderer, { removeNodes } from './renderer.js';
+import analytics      from './analytics.js';
 
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
@@ -126,6 +127,11 @@ export default function TextRenderer(node, options, element) {
     this.first.after(this.last);
     this.contents  = [];
     this.literally = options.literally || compile(contentLibrary, 'data, state, element', options.source, null, options, element);
+    
+    // Analytics
+    const id = '#' + options.template;
+    ++analytics[id].text || (analytics[id].text = 1);
+    ++analytics.Totals.text;
 }
 
 assign(TextRenderer.prototype, Renderer.prototype, {

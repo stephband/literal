@@ -3,7 +3,7 @@ import nothing from '../../../fn/modules/nothing.js';
 import { cue, uncue } from './batcher.js';
 import toText  from '../to-text.js';
 import reads       from '../observer/reads.js';
-import analytics from './analytics.js';
+import { meta } from './analytics.js';
 
 const assign = Object.assign;
 
@@ -102,13 +102,9 @@ export default function Renderer(node, options, element) {
     this.element   = element || node;
     this.node      = node;
     this.path      = options.path;
-    this.id        = ++analytics.count;
+    this.id        = ++meta.count;
     this.count     = 0;
     this.template  = options.template;
-
-    // Count renderers generated from this template
-    const id = options.template + '.' + options.path;
-    analytics.templates[id] ? ++analytics.templates[id]  : (analytics.templates[id] = 1) ;
 }
 
 assign(Renderer.prototype, {

@@ -72,16 +72,11 @@ function updateRoute(patterns, keys, regexps, location, route) {
         return route;
     }
 
-    // Start of route group ***
-    //if (DEBUG) { console.group('route ' + path); }
-
-    //data.mutations && data.mutations.stop();
-
     // Create a new route object
     route = new Route(base, path, name);
 
     route.pk = ++pk;
-    log('route', route.pk + '  ' + base + ' - ' + path + (name ? ' - ' + name : ''), 'aqua');
+    log('route', route.pk + ' ' + base + ' - ' + path + (name ? ' - ' + name : ''), 'aqua');
 
     // Update params, id, state. Reading these properties should not alert the
     // template renderer to rerender if they change, as we are about to observe
@@ -97,14 +92,9 @@ function updateRoute(patterns, keys, regexps, location, route) {
     // what if something else causes a rerender? Ooooh.
     const m1 = observe('name', location, target.name)
     .each(() => {
-        log('route ', route.pk + '  ' + base + ' - ' + path + (name ? ' - ' + name : ''), 'red');
-
+        log('route', route.pk + ' ' + base + ' - ' + path + (name ? ' - ' + name : ''), 'red');
         m1.stop();
         m2.stop();
-        //data.mutations && data.mutations.stop();
-        //data.route = undefined;
-        //data.mutations = undefined;
-        //if (DEBUG) { console.groupEnd(); }
     });
 
     const m2 = mutations('params id state', location)

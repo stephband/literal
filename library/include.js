@@ -15,7 +15,7 @@ export function include(url, data) {
     if (!/^#/.test(url)) {
         // Plonk raw HTML as a fragment into the DOM
         const marker = create('text', '');
-        requestGet(url).then((html) => marker.before(fragmentFromHTML(html)));
+        requestGet(url).then((html) => marker.after(fragmentFromHTML(html)));
         return marker;
 
         //throw new Error('Literal include() - Only #fragment identifiers currently supported as template src ("' + url + '")');

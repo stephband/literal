@@ -10,7 +10,7 @@ import compileNode from '../compile-node.js';
 import { Observer, observe, getTarget } from '../observer.js';
 import reads       from '../observer/reads.js';
 import { log }     from '../log.js';
-import analytics   from './analytics.js';
+import analytics, { meta } from './analytics.js';
 import { cue, uncue } from './batcher.js';
 import Renderer, { renderStopped, removeNodes } from './renderer.js';
 
@@ -97,11 +97,8 @@ export default function TemplateRenderer(template) {
         template :
         identify(template) ;
 
-    this.id          = ++analytics.count;
+    this.id          = ++meta.count;
     this.observables = nothing;
-
-    // Count renderers generated from this template
-    analytics.templates[id] ? ++analytics.templates[id] : (analytics.templates[id] = 1) ;
 
     // If the template is already compiled, clone the compiled renderers to 
     // this renderer and bind them to a new fragment
@@ -112,6 +109,8 @@ export default function TemplateRenderer(template) {
         this.first     = this.content.childNodes[0];
         this.last      = this.content.childNodes[this.content.childNodes.length - 1];
         this.renderers = cache[id].renderers.map(newRenderer, this.content);
+        ++analytics['#' + id].template;
+        ++analytics.Totals.template;
         return;
     }
 
@@ -135,6 +134,10 @@ export default function TemplateRenderer(template) {
     this.content   = template.content.cloneNode(true);
     this.first     = this.content.childNodes[0];
     this.last      = this.content.childNodes[this.content.childNodes.length - 1];
+
+    // Analytics (must be declared before renderers)
+    analytics['#' + id] = { template: 1 };
+    ++analytics.Totals.template;
 
     // compileNode(renderers, options, content, template)
     // The options object contains information for renderer objects. It is 

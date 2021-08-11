@@ -2,6 +2,7 @@
 import library   from '../library.js';
 import Renderer  from './renderer.js';
 import compile   from '../compile.js';
+import analytics from './analytics.js';
 
 const assign = Object.assign;
 
@@ -38,6 +39,11 @@ export default function BooleanRenderer(node, options) {
 
     // Remove the boolean until it is processed
     node.removeAttribute(this.name);
+
+    // Analytics
+    const id = '#' + options.template;
+    ++analytics[id].boolean || (analytics[id].boolean = 1);
+    ++analytics.Totals.boolean;
 }
 
 assign(BooleanRenderer.prototype, Renderer.prototype);

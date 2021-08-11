@@ -1,9 +1,10 @@
 
-import trigger  from '../../../dom/modules/trigger.js';
-import config   from '../config.js';
-import library  from '../library.js';
-import compile  from '../compile.js';
-import Renderer from './renderer.js';
+import trigger   from '../../../dom/modules/trigger.js';
+import config    from '../config.js';
+import library   from '../library.js';
+import compile   from '../compile.js';
+import Renderer  from './renderer.js';
+import analytics from './analytics.js';
 
 const assign = Object.assign;
 
@@ -109,6 +110,11 @@ export default function ValueRenderer(node, options) {
     this.name      = 'value';
     this.literally = options.literally || compile(library, 'data, state, element', options.source, null, options, node);
     this.update    = (value) => setValue(node, value);
+    
+    // Analytics
+    const id = '#' + options.template;
+    ++analytics[id].value || (analytics[id].value = 1);
+    ++analytics.Totals.value;
 }
 
 assign(ValueRenderer.prototype, Renderer.prototype, {
@@ -127,6 +133,10 @@ export function StringValueRenderer(node, options) {
     this.name      = 'value';
     this.literally = options.literally || compile(library, 'data, state, element', options.source, null, options, node);
     this.update    = (value) => setValue(node, value);
+    
+    // Analytics
+    const id = '#' + options.template;
+    ++analytics[id].value || (analytics[id].value = 1);
 }
 
 assign(StringValueRenderer.prototype, Renderer.prototype);
