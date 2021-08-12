@@ -23,7 +23,8 @@ export function include(url, data) {
 
     const renderer = new TemplateRenderer(url.slice(1));
     const marker   = renderer.first;
-    marker.stop = () => renderer.stop();
+    marker.stop    = () => renderer.stop();
+    marker.remove  = () => renderer.remove();
 
     // Accept a url, fetch or import it before rendering
     if (typeof data === 'string') {
