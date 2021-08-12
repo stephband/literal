@@ -1,11 +1,11 @@
 
+import Pool      from '../../../fn/modules/pool-2.js';
 import library   from '../library.js';
 import compile   from '../compile.js';
 import Renderer  from './renderer.js';
 import analytics from './analytics.js';
 
 const assign = Object.assign;
-
 
 /** 
 AttributeRenderer()
@@ -31,5 +31,3 @@ export default function AttributeRenderer(node, options) {
     ++analytics[id].attribute || (analytics[id].attribute = 1);
     ++analytics.Totals.attribute;
 }
-
-assign(AttributeRenderer.prototype, Renderer.prototype);

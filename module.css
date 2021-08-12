@@ -1,5 +1,5 @@
 
-.literal-debug-message {
+.literal-message {
     font-size: 0.875rem;
     font-family: 'Fira Mono', 'Andale Mono', courier, monospace;
     font-weight: normal;
@@ -14,11 +14,11 @@
     overflow: hidden;
 }
 
-.literal-debug-message + * {
+.literal-message + * {
     margin-top: 0.5rem;
 }
 
-.literal-debug-message > code {
+.literal-message > code {
     display: block;
     line-height: 1.4375em;
     border-top: inherit;
@@ -30,8 +30,14 @@
     padding: 0.25rem;
 }
 
-.literal-debug-message > code:last-child {
+.literal-message > code:last-child {
     margin-bottom: -1px;
+}
+
+.literal-error-message {
+    color: white;
+    background-color: var(--red);
+    border-color: var(red);
 }
 
 @import './elements/literal-include.css';

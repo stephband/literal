@@ -7,9 +7,8 @@ import compile   from '../compile.js';
 import Renderer  from './renderer.js';
 import analytics from './analytics.js';
 
-const assign = Object.assign;
-
-const rempty = /^\s*$/;
+const assign  = Object.assign;
+const rempty  = /^\s*$/;
 
 function isNotEmpty(string) {
     return !rempty.test(string);

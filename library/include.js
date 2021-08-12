@@ -33,6 +33,7 @@ export function include(url, data) {
         .then((data) => renderer.cue(data))
         .then(() => marker.after(renderer.content))
         .catch(print);
+
         return marker;
     }
 
@@ -46,6 +47,7 @@ export function include(url, data) {
         .then((data) => renderer.cue(data))
         .then(() => marker.after(renderer.content))
         .catch(print);
+
         return marker;
     }
 
