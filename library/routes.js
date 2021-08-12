@@ -103,74 +103,13 @@ function capture(regexps, pathname) {
 
     return captureReturn;
 }
-/*
-export default register('routes', function routes(fns) {
-    const keys    = Object.keys(fns);
-    const regexps = keys.map((pattern) => RegExp(pattern));
-    var route, result;
-console.log('routes', keys.join(' '));
-    function routes(root) {
-        root = getTarget(root);
-        root = root === window.location ? location : root ;
-
-        const pathnames = observe('name', root, NaN).each((pathname) => {
-
-            // Reading from location means that if route changes the literal is rerendered
-            // but if this is a sub route .... ?
-            const { index, captures } = capture(regexps, pathname);
-
-            // Ignore unmatching handlers
-            if (!captures) {
-                route && stopRoute(route);
-                route = undefined;
-                return;
-            }
-
-            const fn   = fns[keys[index]];
-            const base = root.base + root.path;
-            const path = captures.input.slice(0, captures.index + captures[0].length);
-            const name = captures.input.slice(captures.index + captures[0].length);
-
-            // If path has not changed update name and exit
-            if (route && path === route.path) {
-                Observer(route).name = name;
-                return;
-            }
-
-            route && stopRoute(route);
-            route = createRoute(root, base, path, name, root.params, root.id, root.state);
-
-            // Call route handler with current context (should be undefined unless 
-            // routes() was made a method of an object) and scope, $1, $2, ...
-            captures[0] = Observer(route);
-            result = fn.apply(this, captures);
-        });
-        
-        // The base route, location, is never done
-        if (route && route.done) {
-            route.done(pathnames);
-        }
-
-        return result;
-    }
-
-    // Allow partial application:
-    // fn = routes(patterns); fn(route);
-    // or
-    // routes(patterns, route);
-    return arguments.length > 1 ?
-        routes(arguments[1]) :
-        routes ;
-});
-*/
-
 
 export default register('routes', function routes(fns) {
     const keys    = Object.keys(fns);
     const regexps = keys.map((pattern) => RegExp(pattern));
     var route, result, marker;
 
-console.log('routes', keys.join(' '));
+//console.log('routes', keys.join(' '));
 
     function routes(root) {
         root = getTarget(root);
@@ -185,6 +124,13 @@ console.log('routes', keys.join(' '));
             if (!captures) {
                 route && stopRoute(route);
                 route = undefined;
+                const dom = document.createTextNode('');
+                if (marker) {
+                    marker.stop && marker.stop();
+                    marker.before(dom);
+                    marker.remove();
+                }
+                marker = dom;
                 return;
             }
 
@@ -196,31 +142,30 @@ console.log('routes', keys.join(' '));
             // If path has not changed update name and exit
             if (route && path === route.path) {
                 Observer(route).name = name;
-                return route;
+                return;
             }
 
             // We want to rerender here
-            route && console.log(route.path + ' STOP', route.pk);
+            //route && console.log(route.path + ' STOP', route.pk);
             route && stopRoute(route);
             route = createRoute(root, base, path, name, root.params, root.id, root.state);
 
             // Call route handler with current context (should be undefined unless 
             // routes() was made a method of an object) and scope, $1, $2, ...
             captures[0] = Observer(route);
+            const output = fn.apply(this, captures);
+            const dom = typeof output === 'string' ?
+                document.createTextNode(output) :
+                output ;
 
-            if (marker) {
-                const output = fn.apply(this, captures);
-                const dom = typeof output === 'string' ?
-                    document.createTextNode(output) :
-                    output ;
-            
+            if (marker) {            
                 marker.stop && marker.stop();
                 marker.before(dom);
                 marker.remove();
                 marker = dom;
             }
             else {
-                marker = fn.apply(this, captures);
+                marker = dom;
             }
         });
 
@@ -231,7 +176,7 @@ console.log('routes', keys.join(' '));
                 pathnames.stop()});
         }
 
-        return marker || (marker = document.createTextNode(''));
+        return marker;
     }
 
     // Allow partial application:
