@@ -29,9 +29,10 @@ export function getObservables(key, target) {
 }
 
 function fire(fns, name, value) {
-    if (!fns) { return; }
+    if (!fns) { return 0; }
     fns = fns.slice(0);
     var n = -1;
+
     while (fns[++n]) {
         // Support objects or functions (TEMP)
         if (fns[n].fn) {
@@ -41,20 +42,20 @@ function fire(fns, name, value) {
             fns[n](name, value);
         }
     }
+
+    return n;
 }
 
 /*
-notify(object, path [, value])
-Force the `object`'s Observer to register a mutation at `path`. Pass in `value`
-to override the value actually at the end of the path.
+notify(object, path)
+Force the `object`'s Observer to register a mutation at `path`.
 */
 
-export function notify(path, object, value) {
+export function notify(path, object) {
     const observer = object[$observer];
     if (!observer) { return; }
     const target = observer.target;
-    value = value === undefined ? target[path] : value;
-    fire(getObservables(path, target), value);
+    return fire(getObservables(path, target), target[path]);
 }
 
 

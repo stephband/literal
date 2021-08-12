@@ -8,25 +8,6 @@ const DEBUG = window.DEBUG && (window.DEBUG === true || window.DEBUG.includes('r
 
 const assign = Object.assign;
 
-/*
-function stop(route) {
-    //console.trace('stop', distributor);
-    const handlers = route.handlers;
-    var n = -1;
-    var handler;
-
-    while (handler = handlers[++n]) {
-        handler.stop && handler.stop();
-    }
-
-    // Throw away references to all handlers
-    handlers.length = 0;
-
-    // End of route group ***
-    if (DEBUG) { console.groupEnd(); }
-}
-*/
-
 let pk = 0;
 
 function stop(stopable) {
@@ -107,9 +88,7 @@ function capture(regexps, pathname) {
 export default register('routes', function routes(fns) {
     const keys    = Object.keys(fns);
     const regexps = keys.map((pattern) => RegExp(pattern));
-    var route, result, marker;
-
-//console.log('routes', keys.join(' '));
+    var route, marker;
 
     function routes(root) {
         root = getTarget(root);
@@ -169,20 +148,18 @@ export default register('routes', function routes(fns) {
             }
         });
 
-        // The base route, location, is never done
+        // The base route, location, is never done. .done() takes an object 
+        // with a .stop() method or a function. pathnames has a .stop() method.
         if (root && root.done) {
-            root.done(() => {
-                console.log(route.path + ' DONE', route.pk);
-                pathnames.stop()});
+            root.done(pathnames);
         }
 
         return marker;
     }
 
     // Allow partial application:
-    // fn = routes(patterns); fn(route);
-    // or
-    // routes(patterns, route);
+    // node = routes(patterns, route), or
+    // fn = routes(patterns), node = fn(route)    
     return arguments.length > 1 ?
         routes(arguments[1]) :
         routes ;

@@ -182,9 +182,15 @@ updateDataFromLocation(window.location, window.history, root);
 window.addEventListener('dom-navigate', function(e) {
     const names = updateDataFromLocation(window.location, window.history, root);
     var n = -1;
+
     while (names[++n] !== undefined) {
         notify(names[n], scope);
     }
+
+    // TODO: devise some way of not preventing default when no routes have been
+    // created. This is a bit tricky because this file is not the place for such
+    // hijinks.
+    e.preventDefault();
 });
 
 export default scope;
