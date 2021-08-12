@@ -10,6 +10,7 @@ import { requestGet }   from '../../dom/modules/request.js';
 import { fragmentFromHTML } from '../../dom/modules/fragments.js';
 import TemplateRenderer from '../modules/renderers/template-renderer.js';
 import { getTarget }    from '../modules/observer.js';
+import print from './print.js';
 
 export function include(url, data) {
     if (!/^#/.test(url)) {
@@ -28,7 +29,10 @@ export function include(url, data) {
 
     // Accept a url, fetch or import it before rendering
     if (typeof data === 'string') {
-        request(data).then((data) => renderer.cue(data)).then(() => marker.after(renderer.content));
+        request(data)
+        .then((data) => renderer.cue(data))
+        .then(() => marker.after(renderer.content))
+        .catch(print);
         return marker;
     }
 
@@ -38,13 +42,19 @@ export function include(url, data) {
     
     // Accept a promise of data
     if (data && data.then) {
-        data.then((data) => renderer.cue(data)).then(() => marker.after(renderer.content));
+        data
+        .then((data) => renderer.cue(data))
+        .then(() => marker.after(renderer.content))
+        .catch(print);
         return marker;
     }
 
     // Cue the renderer so that we do not end up collecting read paths read by
     // the child renderer in the parent.
-    renderer.cue(data || {}).then(() => marker.after(renderer.content));
+    renderer.cue(data || {})
+    .then(() => marker.after(renderer.content))
+    .catch(print);
+
     return marker;
 }
 
