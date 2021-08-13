@@ -30,3 +30,5 @@ export default function AttributeRenderer(node, options) {
     ++analytics[id].attribute || (analytics[id].attribute = 1);
     ++analytics.Totals.attribute;
 }
+
+assign(AttributeRenderer.prototype, Renderer.prototype);
