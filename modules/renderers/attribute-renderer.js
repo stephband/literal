@@ -1,5 +1,4 @@
 
-import Pool      from '../../../fn/modules/pool-2.js';
 import library   from '../library.js';
 import compile   from '../compile.js';
 import Renderer  from './renderer.js';
