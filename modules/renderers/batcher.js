@@ -28,11 +28,11 @@ function render(renderers) {
 
     if (DEBUG) {
         const keys = Object.keys(ids);
-        log('rendered', keys.length + (keys.length > 1 ? ' renderers – ' : ' renderer – ') + keys.slice(0, 12).join(', ') + (keys.length > 12 ? ', ...' : ''), 'orange');
+        log('render', keys.length + (keys.length > 1 ? ' renderers – ' : ' renderer – ') + keys.slice(0, 12).join(', ') + (keys.length > 12 ? ', ...' : ''), 'yellow');
 
         var t1 = window.performance.now() / 1000;
         if (t1 - t0 > 0.016) {
-            console.warn('batch took longer than a frame (0.016s)', (t1 - t0).toFixed(3) + 's');
+            log('render took longer than a frame (0.016s) ' + (t1 - t0).toFixed(3) + 's', '', 'orange');
         }
         
         if (Object.values(ids).find((n) => n > 1)) {

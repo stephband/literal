@@ -10,9 +10,11 @@ const colors = {
     'grey':   '#81868f'
 };
 
+let grouped = false;
+
 export const log = DEBUG ?
     function log($1, $2, color = '#d8cd17') {
-        console.log('%cLiteral %c' + $1 + ' %c' + $2,
+        console.log((grouped ? '%c      %c' : '%cLiteral %c') + $1 + ' %c' + $2,
             'color: ' + (colors.grey) + '; font-weight: 600;', 
             'color: ' + (colors[color] || color) + '; font-weight: 300;', 
             'color: ' + (colors.grey) + '; font-weight: 300;'
@@ -22,24 +24,29 @@ export const log = DEBUG ?
 
 export const group = DEBUG ?
     function log($1, $2, color = '#d8cd17') {
-        console.group('%cLiteral %c' + $1 + ' %c' + $2,
+        console.group((grouped ? '%c      %c' : '%cLiteral %c') + $1 + ' %c' + $2,
             'color: ' + (colors.grey) + '; font-weight: 600;', 
             'color: ' + (colors[color] || color) + '; font-weight: 300;', 
             'color: ' + (colors.grey) + '; font-weight: 300;'
         );
+        grouped = true;
     } :
     noop ;
 
 export const groupCollapsed = DEBUG ?
     function log($1, $2, color = '#d8cd17') {
-        console.groupCollapsed('%cLiteral %c' + $1 + ' %c' + $2,
+        console.groupCollapsed((grouped ? '%c      %c' : '%cLiteral %c') + $1 + ' %c' + $2,
             'color: ' + (colors.grey) + '; font-weight: 600;', 
             'color: ' + (colors[color] || color) + '; font-weight: 300;', 
             'color: ' + (colors.grey) + '; font-weight: 300;'
         );
+        grouped = true;
     } :
     noop ;
 
 export const groupEnd = DEBUG ?
-    console.groupEnd :
+    function() {
+        console.groupEnd();
+        grouped = false;
+    } :
     noop ;
