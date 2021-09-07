@@ -72,14 +72,17 @@ export function removeNodes(first, last) {
     let node  = last;
     let count = 0;
 
-    while (node !== first) {
+    while (node && node !== first) {
         const previous = node.previousSibling;
         node.remove();
         node = previous;
         ++count;
     }
 
-    first.remove();
+    // Treat the marker node specially as it may have been extended with marker.remove()...
+    // see include(). TODO: this could do with a bit of a rethink, maybe go back to
+    // allowing return of renderers rather than just nodes.
+    first.constructor.prototype.remove.apply(first);
     ++count;
 
     return count;

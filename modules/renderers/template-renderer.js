@@ -74,7 +74,6 @@ function prepareContent(content) {
     const first = content.childNodes[0];
     const last  = content.childNodes[content.childNodes.length - 1];
 
-
     if (!isMarkerNode(first)) {
         content.prepend(document.createTextNode(''));
     }

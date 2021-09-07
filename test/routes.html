@@ -42,7 +42,7 @@
 <body class="@3-12-grid grid">
 
     <template is="literal-template" id="index.html">
-        template: index.html
+        template: #index.html
         --------------------
         renderer: ${ this.id }
         render:   ${ this.count }
@@ -56,16 +56,23 @@
         state:    ${ data.state }
     </template>
 
-    <!--template is="literal-template" id="add.html">
+    <template is="literal-template" id="add.html">
         template: #add.html
-        path:     ${ data.base + data.path }
+        ---------------------
+        renderer: ${ this.id }
+        render:   ${ this.count }
+
+        pk:       ${ data.pk }
+        base:     ${ data.base }
+        path:     ${ data.path }
+        route:    ${ data.route }
         params:   ${ data.params }
         id:       ${ data.id }
         state:    ${ data.state }
-    </template-->
+    </template>
 
     <template is="literal-template" id="router.html">
-        template: router.html
+        template: #router.html
         ---------------------
         renderer: ${ this.id }
         render:   ${ this.count }
@@ -105,7 +112,7 @@
         <h3>main-template</h3>
 
         <pre>
-        template: main-template
+        template: #main-template
         -----------------------
         renderer: ${ this.id }
         render:   ${ this.count }
@@ -125,22 +132,25 @@
         render:   ${ this.count }
 
         ${ routes({
-            '^literal/library/': routes({
+            '^literal/test/': routes({
                 '^index(?:\\.html)?$':  include('#index.html'),
-                '^routes(?:\\.html)?$': include('#router.html'),
+                '^routes(?:\\.html)?$': function(route) {
+                    route.done(() => console.log('routes.html DONE'));
+                    return include('#router.html', route);
+                },
                 '^add(?:\\.html)?$':    include('#add.html'),
                 '^routes/':             include('#routes/')
             })
-        }, data) }
+        }, window.location) }
         </pre>
     </template>
 
-    <a href="/literal/library/index.html">index.html</a>
-    <a href="/literal/library/index.html" data-number="9" data-string="boo">index.html { number: 9, string: "boo" }</a>
-    <a href="/literal/library/add.html">add.html</a>
-    <a href="/literal/library/routes.html">routes.html</a>
-    <a href="/literal/library/routes.html#parp">routes.html#parp</a>
-    <a href="/literal/library/unrouted.html">unrouted.html</a>
+    <a href="/literal/test/index.html">index.html</a>
+    <a href="/literal/test/index.html" data-number="9" data-string="boo">index.html { number: 9, string: "boo" }</a>
+    <a href="/literal/test/add.html">add.html</a>
+    <a href="/literal/test/routes.html">routes.html</a>
+    <a href="/literal/test/routes.html#parp">routes.html#parp</a>
+    <a href="/literal/test/unrouted.html">unrouted.html</a>
     <!--a href="/literal/library/routes.html?number=0&strings=one,two,three&string=woo">routes.html?number=0&strings=one,two,three</a>
     <a href="/literal/library/routes/45/">routes/45/</a>
     <a href="/literal/library/routes/45/?number=1&strings=four,five,six#identifier">routes/45/?number=1&strings=four,five,six#identifier</a>
@@ -149,13 +159,13 @@
     <a href="#id-1">#hashref-1</a>
     <a href="#id-2">#hashref-2</a-->
 
-    <literal-include src="#main-template" data="../data/location.js"></literal-include>
+    <literal-include src="#main-template"></literal-include>
 
     <!-- Document interactivity -->
     <script type="module">
         import delegate from '../../dom/modules/delegate.js';
         import events   from '../../dom/modules/events.js';
-        import location from '../../dom/modules/location.js';
+        import navigate from '../../dom/modules/navigate.js';
         import "../library/routes.js";
         import "../module.js";
 
@@ -166,7 +176,7 @@
                     Object.assign({}, a.dataset) :
                     null ;
 
-                const result = location.navigate(a, state);
+                const result = navigate(a, state);
                 console.log('Navigated', result);
                 e.preventDefault();
             }
