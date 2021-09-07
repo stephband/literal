@@ -5,8 +5,6 @@ import compile   from '../compile.js';
 import analytics from './analytics.js';
 
 const assign = Object.assign;
-
-
 /** 
 BooleanRenderer()
 Constructs an object responsible for rendering to a boolean attribute.

@@ -76,7 +76,7 @@ export function uncue(renderer) {
     if (!renderer.cued) { return; }
 
     const i = renderers.indexOf(renderer);
-    renderers.splice(i, 1);
+    if (i > 0) { renderers.splice(i, 1); }
     renderer.cuedArguments = undefined;
     renderer.cued = false;
 }

@@ -4,6 +4,7 @@ import { cue, uncue } from './batcher.js';
 import toText  from '../to-text.js';
 import reads       from '../observer/reads.js';
 import { meta } from './analytics.js';
+import { getTarget } from '../observer/observer.js';
 
 const assign = Object.assign;
 
@@ -120,7 +121,7 @@ assign(Renderer.prototype, {
         return cue(this, arguments);
     },
 
-    render: function(data, state) {
+    render: function(data) {
         if (this.stopables) {
             this.stopables.forEach(stop);
             this.stopables.length = 0;
@@ -155,7 +156,7 @@ assign(Renderer.prototype, {
 
         ++this.count;
 
-        const p = this.literally(data, state, this.element);
+        const p = this.literally(data, getTarget(data), this.element);
         const q = this.resolve(p);
         
         // TextRenderer no longer has .update() - should the others follow suit?

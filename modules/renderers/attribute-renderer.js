@@ -6,7 +6,6 @@ import analytics from './analytics.js';
 
 const assign = Object.assign;
 
-
 /** 
 AttributeRenderer()
 Constructs an object responsible for rendering to a plain text attribute.

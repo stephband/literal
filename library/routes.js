@@ -141,11 +141,9 @@ export default register('routes', function routes(fns) {
                 marker.stop && marker.stop();
                 marker.before(dom);
                 marker.remove();
-                marker = dom;
             }
-            else {
-                marker = dom;
-            }
+
+            marker = dom;
         });
 
         // The base route, location, is never done. .done() takes an object 
