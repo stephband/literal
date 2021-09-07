@@ -8,7 +8,7 @@ let cued;
 function render(renderers) {
     if (DEBUG) {
         var t0 = window.performance.now() / 1000;
-        group('batch', t0.toFixed(3) + ' (' + renderers.length + ' renderer' + (renderers.length > 1 ? 's)' : ')'), 'green');
+        group('batch', t0.toFixed(3) + ' (' + renderers.length + ' renderer' + (renderers.length > 1 ? 's cued)' : ' cued)'), 'green');
         var ids = {};
     }
 
@@ -27,7 +27,8 @@ function render(renderers) {
     cued = undefined;
 
     if (DEBUG) {
-        log('rendered', Object.keys(ids).slice(0, 12).join(', ') + (Object.keys(ids).length > 12 ? ', ...' : ''), 'grey');
+        const keys = Object.keys(ids);
+        log('rendered', keys.length + (keys.length > 1 ? ' renderers – ' : ' renderer – ') + keys.slice(0, 12).join(', ') + (keys.length > 12 ? ', ...' : ''), 'orange');
 
         var t1 = window.performance.now() / 1000;
         if (t1 - t0 > 0.016) {
