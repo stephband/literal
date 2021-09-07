@@ -1,4 +1,6 @@
 
+@import '../bolt/fonts/fira-mono.css';
+
 .literal-message {
     font-size: 0.875rem;
     font-family: 'Fira Mono', 'Andale Mono', courier, monospace;
@@ -7,9 +9,9 @@
     color: black;
     background-color: #e6da14;
     border-radius: 0.25rem;
-    border: 1px solid #8a830b;
+    border: 1px solid #ad9911;
     padding: 0 0.25rem;
-    box-shadow: inset 0 0 12px 1px #d8cd17;
+    box-shadow: inset 0 0 12px 1px #d2bb19;
     /* Try to not interfere with layout of surrounding content */
     overflow: hidden;
 }
@@ -20,6 +22,7 @@
 
 .literal-message > code {
     display: block;
+    font-family: inherit;
     line-height: 1.4375em;
     border-top: inherit;
     border-bottom: inherit;
