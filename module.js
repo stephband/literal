@@ -7,7 +7,3 @@ export { register } from './modules/library.js';
 
 import analytics from './modules/analytics.js';
 export { analytics };
-
-console.log('BARF');
-
-window.ants = analytics;
