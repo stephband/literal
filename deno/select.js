@@ -1,6 +1,6 @@
 
+import { dimyellowdim } from './log.js';
 import { readJSON } from './read.js';
-import noop from '../../fn/modules/noop.js';
 
 const workingdir = Deno.cwd() + '/';
 const defaultConfig = {
@@ -23,25 +23,25 @@ export default async function select(path) {
     const files  = [];
     const config = await readClosest(path, 'literal.json');
 
+    console.log(dimyellowdim, 'Literal', 'seeking', path);
+
     for await (const entry of Deno.readDir(path)) {
         // Ignore hidden files and directories
         if (entry.name[0] === '.') {
             continue;
         }
 
-        // Is entry a file?
-        if (entry.isFile && (/\.\w+\.literal$/.test(path + entry.name))) {
+        const pathname = path + entry.name;
+
+        // Is entry a file with an extension of the form .xxx.literal ?
+        if (entry.isFile && (/\.\w+\.literal$/.test(pathname))) {
             entry.path = path;
             files.push(entry);
-            continue;
         }
 
-        // Is entry a non-hidden directory, one that is not blacklisted?
-        const dirpath = path + entry.name + '/';
-        if (entry.isDirectory && (!config.excludes || !config.excludes.find((pattern) => dirpath.includes(dirpath)))) {
-            console.log('DIR', path + entry.name + '/', config.excludes);
-            if (++n > 5) { throw new Error('STOP'); }
-            files.push.apply(files, await select(path + entry.name + '/'));
+        // Is entry a directory, one that is not excluded by config ?
+        else if (entry.isDirectory && (!config.excludes || !config.excludes.find((pattern) => (pathname + '/').includes(pattern)))) {
+            files.push.apply(files, await select(pathname + '/'));
         }
     }
 

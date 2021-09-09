@@ -1,6 +1,48 @@
 
 @import '../bolt/fonts/fira-mono.css';
 
+@import "../bolt/css/html.css";
+@import "../bolt/css/svg.css";
+@import "../bolt/css/root.css";
+@import "../bolt/css/body.css";
+@import "../bolt/css/type.css";
+@import "../bolt/css/code.css";
+@import "../bolt/css/content.css";
+@import "../bolt/css/button.css";
+/*
+@import "../bolt/css/input.css";
+@import "../bolt/css/label.css";
+@import "../bolt/css/progress.css";
+@import "../bolt/css/table.css";
+@import "../bolt/css/list.css";
+@import "../bolt/css/layer.css";
+@import "../bolt/css/badge.css";
+@import "../bolt/css/pill.css";
+@import "../bolt/css/thumb.css";
+*/
+@import "../bolt/css/block.css";
+@import "../bolt/css/color.css";
+@import "../bolt/css/text.css";
+@import "../bolt/css/modifiers.css";
+@import "../bolt/css/respond.css";
+@import "../bolt/css/grid.css";
+@import "../bolt/css/device.css";
+/*
+@import "../bolt/classes/check-label.css";
+@import "../bolt/classes/switch-label.css";
+@import "../bolt/classes/check-button.css";
+@import "../bolt/classes/menu.css";
+@import "../bolt/classes/message.css";
+@import "../bolt/classes/select-button.css";
+@import "../bolt/classes/pill-input.css";
+@import "../bolt/classes/toggle-button.css";
+@import "../bolt/classes/toggle-block.css";
+@import "../bolt/classes/bubble.css";
+@import "../bolt/classes/card.css";
+@import "../bolt/elements/overflow-toggle.css";
+@import "../bolt/elements/slide-show.css";
+*/
+
 .literal-message {
     font-size: 0.875rem;
     font-family: 'Fira Mono', 'Andale Mono', courier, monospace;

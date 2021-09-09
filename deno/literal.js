@@ -166,7 +166,7 @@ export default function Literal(parameters, template, source) {
 
     // fn(render, data, ...functions)
     return cache[source + '(' + params + ')'] = function literally(data, target) {
-        console.log('====== RENDER ' + source + ' ======');
+        //console.log('====== RENDER ' + source + ' ======');
         return fn
         // Where this is just a reference to the global context, create a new 
         // context object for the `this` keyword inside the template. If this

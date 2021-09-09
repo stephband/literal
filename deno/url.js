@@ -44,6 +44,7 @@ export function rewriteURL(source, target, url) {
     // Resource path relative to current working directory
     const resource  = path.join(sourcedir, url);
     
+    /*
     console.log('====== rewriteURL(source, target, url) ======',
         //'\ntarget:    ' + target,
         //'\ntargetdir: ' + targetdir,
@@ -53,6 +54,7 @@ export function rewriteURL(source, target, url) {
         //'\nresource:  ' + resource,
         '\nrelative:  ' + path.relative(targetdir, resource)
     );
+    */
     
     // Resource path relative to module
     return path.relative(targetdir, resource);

@@ -159,13 +159,13 @@ const renderInclude = overload((source, target, file) => toExtension(file), {
 
     '.html': (source, target, file) => read(file)
         .then(extractBody)
-        .then((html) => rewriteURLs(file, target, html)),
+        .then((html) => rewriteURLs(file, source, html)),
 
     '.css': (source, target, file) => read(file)
-        .then((text) => rewriteURLs(file, target, text)),
+        .then((text) => rewriteURLs(file, source, text)),
 
     '.svg': (source, target, file) => read(file)
-        .then((text) => rewriteURLs(file, target, text)),
+        .then((text) => rewriteURLs(file, source, text)),
 
     // All other files are processed as straight text includes
     'default': (source, target, file) => read(file)
@@ -175,12 +175,14 @@ export function include(source, target, url, scope) {
     // Get absolute OS file path
     const file = getAbsoluteFile(source, url);
     
+    /*
     console.log('====== include(url, scope) ======',
         '\ntarget: ' + target,
         '\nsource: ' + source,
         '\nurl:    ' + url,
         '\nfile:   ' + file
     );
+    */
 
     return renderInclude(source, target, file, scope);
 }
