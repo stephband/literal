@@ -1,0 +1,12 @@
+
+<pre>test/include-3.literal</pre>
+
+<pre>
+Test rewriteURLs()
+All srcs should be "../file.html"
+
+src="../file.html"
+src="${ '../file.html' }"
+</pre>
+
+${ include('./include-4.literal', {}) }

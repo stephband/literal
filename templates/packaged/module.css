@@ -1,0 +1,11 @@
+// Literal 0.3.0 (Built 2021-07-30 02:16)
+
+
+literal-include{display:contents}
+
+.literal-message {
+    font-size: 12px;
+    font-family: monospace;
+    color: red;
+    background-color: red;
+}

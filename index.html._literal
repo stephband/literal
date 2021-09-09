@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    ${ include("../bolt/templates/head.literal", "./package.json") }
+
+    ${ DEBUG && `<script title="debug">
+        window.DEBUG = true;
+    </script>` }
+
+    <!--link rel="stylesheet" href="../nendaz.min.css" /-->
+    <link rel="stylesheet" href="module.css" />
+    ${ include("../bolt/templates/style.html") }
+
+    <style>
+        /* Render some elements visible, just in this styleguide */
+        div.button {
+            font-size: 0.875rem;
+            background-color: rgba(127, 127, 127, 0.15);
+        }
+    
+        /* Colour swatch thumbs */
+        .thumb[class$="bg"] {
+            box-shadow: inset 0 0 0 1px currentcolor;
+        }
+        
+        :root {
+            background-image:
+                url('./assets/brace.svg'),
+                linear-gradient(160deg, #46649a, #42b0b9, #eaf4f9);
+            background-size: calc(22.22222222% - 22px) auto, 100% auto;
+        }
+        
+        body.docs-grid {
+            padding-top: calc(16.666667vw - 20px);
+            padding-left: calc(0.5 * var(--column-gap));
+            padding-right: calc(0.5 * var(--column-gap));
+        }
+        
+        .doctext-01 {
+            color: white;
+            font-family: 'Source Sans Pro';
+            font-weight: 300;
+            font-size: 6rem;
+            text-shadow: 0 0 2px #00163c80;
+        }
+        
+        .doctext-01 > span {
+            font-weight: 400;
+            font-size: 0.3em;
+        }
+        
+        .doctext-08 {
+            font-family: 'Source Sans Pro';
+            font-weight: 400;
+        }
+    </style>
+    
+    <script title="config">
+        window.customElementStylesheetPath = './bolt/elements/';
+    </script>
+</head>
+
+<body class="docs-grid grid 3x-grid @1-6x-grid @2-9x-grid">
+    <header class="x3" style="grid-column-end: span 4;">
+        ${ include("../bolt/templates/header.literal", "./package.json") }
+    </header>
+
+    ${ include("../bolt/templates/element.literal", await comments("./elements/literal-include.js")) }
+    <!--$ { include("../bolt/templates/css.literal", await comments("./modules/literal-template.js")) }-->
+</body>
