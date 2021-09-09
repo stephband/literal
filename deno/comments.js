@@ -6,18 +6,18 @@ Parses documentation comments from files. Returns a promise of an array of
 comments.
 **/
 
-import request         from './request.js';
+import read            from './read.js';
 import { rewriteURLs } from './url.js';
 import parseComments   from './parse-comments.js';
-import { getRootSrc }  from './lib.js';
+import { getAbsoluteFile } from './lib.js';
 import { red, yellow } from './log.js';
 
 export default function comments(source, target, ...urls) {
     console.log('COMMENTS', source, target, urls)
     return Promise.all(urls.map((path) => {
-        const url = getRootSrc(source, path);
+        const url = getAbsoluteFile(source, path);
 
-        return request(url)
+        return read(url)
         .then(parseComments)
         //.then(comments => (console.log('CSS\n' + url + '\n', comments), comments))
         //.then(docsFilters[type])                  

@@ -166,6 +166,7 @@ export default function Literal(parameters, template, source) {
 
     // fn(render, data, ...functions)
     return cache[source + '(' + params + ')'] = function literally(data, target) {
+        console.log('====== RENDER ' + source + ' ======');
         return fn
         // Where this is just a reference to the global context, create a new 
         // context object for the `this` keyword inside the template. If this
@@ -175,7 +176,8 @@ export default function Literal(parameters, template, source) {
             // render()
             render,
             // include()
-            (url, data) => library.include(source, target, rewriteURL(source, target, url), data),
+            //(url, data) => library.include(source, target, rewriteURL(source, target, url), data),
+            (url, data) => library.include(source, target, url, data),
             // imports()
             (url)       => library.imports(source, target, url),
             // comments

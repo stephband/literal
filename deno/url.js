@@ -43,12 +43,24 @@ export function rewriteURL(source, target, url) {
     const targetdir = path.dirname(target);
     // Resource path relative to current working directory
     const resource  = path.join(sourcedir, url);
+    
+    console.log('====== rewriteURL(source, target, url) ======',
+        //'\ntarget:    ' + target,
+        //'\ntargetdir: ' + targetdir,
+        //'\nsource:    ' + source,
+        //'\nsourcedir: ' + sourcedir,
+        '\nurl:       ' + url,
+        //'\nresource:  ' + resource,
+        '\nrelative:  ' + path.relative(targetdir, resource)
+    );
+    
     // Resource path relative to module
     return path.relative(targetdir, resource);
 }
 
-//            1 src=" or href=" or url('                                2 anything not beginning with a / or # or $
-const rURL = /(src=['"]?\s*|href=['"]?\s*|url\(\s*['"]?)(?:[a-z]+\:\/\/|([^\$\/\#'"][\:\.\/\w-\d\%]*))/g;
+//            $1                                                                                                                                     $2
+//            (url(' or      @import " or   src=", html=", cite=" etc.                                                   )   protocol://,/,#,$,',"   (url)
+const rURL = /(url\(\s*['"]?|@import\s*['"]|(?:src|href|cite|action|formaction|codebase|longdesdc|usemap|poster)=['"]?\s*)(?:[a-z]+\:\/\/|[\/\#\$'"]|([\:\.\/\w-\d\%]*))/g;
 
 export function rewriteURLs(source, target, text) {
     // Check for $2 - if a protocol was found $2 is undefined and we don't 
