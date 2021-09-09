@@ -2,7 +2,7 @@
 import * as path from "https://deno.land/std@0.98.0/path/mod.ts";
 import { ensureDir } from "https://deno.land/std@0.98.0/fs/mod.ts";
 
-import request from './request.js';
+import read    from './read.js';
 import Literal from './literal.js';
 import { dimyellow } from './log.js';
 
@@ -15,7 +15,7 @@ const encoder = new TextEncoder('utf-8');
 export default function build(source, target, data) {
     const params = Object.keys(data).join(',');
 
-    return request(source)
+    return read(source)
     .then((template) => Literal(params, template, source))
     .then((render) => render(data, target))
     .then((text) => new Promise(function(resolve, reject) {

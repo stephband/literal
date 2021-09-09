@@ -25,7 +25,7 @@ export { default as slugify } from '../../fn/modules/slugify.js';
 //export { default as Pipe }    from '../modules/pipe.js';
 export { default as comments } from './comments.js';
 
-import request from './request.js';
+import read from './read.js';
 import { rewriteURL, rewriteURLs } from './url.js';
 
 import { red, yellow }     from './log.js';
@@ -36,8 +36,7 @@ export const values  = Object.values;
 
 import Literal from './literal.js';
 
-const toExtension  = exec(/\.[\w\d]+$/, get(0));
-const toExtensions = exec(/\.[\w\d]+\.[\w\d]+$/, get(0))
+const toExtension  = exec(/\.[\w\d.]+$/, get(0));
 
 
 /**
@@ -128,7 +127,7 @@ function extractBody(html) {
     return html.slice(pre.index + pre[0].length, post.index);
 }
 
-export function getRootSrc(source, src) {
+export function getAbsoluteFile(source, src) {
     const root     = path.parse(source);
     const dir      = root.dir;
     const relative = src.replace(/#.*$/, '');
@@ -136,70 +135,55 @@ export function getRootSrc(source, src) {
     return path.join(dir, relative);
 }
 
-export const include = overload((source, target, url) => toExtension(url), {
-    '.literal': overload((source, target, url) => toExtensions(url), {
-        '.html.literal': (source, target, url, scope) => {
-            console.log('INCLUDE 1');
-            // Get src relative to working directory 
-            const src = getRootSrc(source, url);
-            return resolveScope(scope, source, target)
-            .then((data) => {
-                // Get data keys so that we can reference them as params 
-                // inside the template
-                const params = data && Object.keys(data).join(',') || '';
-                return request(src)
-                .then(extractBody)
-                .then((template) => Literal(params, template, src))
-                .then((render) => render(data, target));
-            });
-        },
+const renderInclude = overload((source, target, file) => toExtension(file), {
+    '.html.literal': (source, target, file, scope) => resolveScope(scope, source, target)
+        .then((data) => {
+            // Get data keys so that we can reference them as params 
+            // inside the template
+            const params = data && Object.keys(data).join(',') || '';
+            return read(file)
+            .then(extractBody)
+            .then((template) => Literal(params, template, file))
+            .then((render) => render(data, source));
+        }),
 
-        default: (source, target, url, scope) => {
-            // Get src relative to working directory 
-            const src = getRootSrc(source, url);
-            console.log('----------------------------------\nsource', source, '\nsrc   ', src, '\ntarget', target, '\nurl   ', url);
-            return resolveScope(scope, source, target)
-            .then((data) => {
-                // Get data keys so that we can reference them as params 
-                // inside the template
-                const params = data && Object.keys(data).join(',') || '';
-                return request(src)
-                .then((template) => Literal(params, template, src))
-                .then((render) => render(data, target));
-            });
-        }
-    }),
+    '.literal': (source, target, file, scope) => resolveScope(scope, source, target)
+        .then((data) => {
+            // Get data keys so that we can reference them as params 
+            // inside the template
+            const params = data && Object.keys(data).join(',') || '';
+            return read(file)
+            .then((template) => Literal(params, template, file))
+            .then((render) => render(data, source));
+        }),
 
-    '.html': (source, target, url) => {
-        // Get src relative to working directory 
-        const src = getRootSrc(source, url);
-
-        return request(src)
+    '.html': (source, target, file) => read(file)
         .then(extractBody)
-        .then((html) => rewriteURLs(src, target, html));
-    },
+        .then((html) => rewriteURLs(file, target, html)),
 
-    '.svg': (source, target, url) => {
-        // Get src relative to working directory 
-        const src = getRootSrc(source, url);
+    '.css': (source, target, file) => read(file)
+        .then((text) => rewriteURLs(file, target, text)),
 
-        return request(src)
-        .then((svg) => rewriteURLs(src, target, svg));
-    },
+    '.svg': (source, target, file) => read(file)
+        .then((text) => rewriteURLs(file, target, text)),
 
-    '.css': (source, target, url) => {
-        // Get src relative to working directory 
-        const src = getRootSrc(source, url);
-        return request(src).then((text) => rewriteURLs(src, target, text));
-    },
-
-    default: (source, target, url) => {
-        throw new TypeError('File extension ".'
-            + toExtension(url) 
-            + '" not supported by include("' + url + '")'
-        );
-    }
+    // All other files are processed as straight text includes
+    'default': (source, target, file) => read(file)
 });
+
+export function include(source, target, url, scope) {
+    // Get absolute OS file path
+    const file = getAbsoluteFile(source, url);
+    
+    console.log('====== include(url, scope) ======',
+        '\ntarget: ' + target,
+        '\nsource: ' + source,
+        '\nurl:    ' + url,
+        '\nfile:   ' + file
+    );
+
+    return renderInclude(source, target, file, scope);
+}
 
 
 /**
