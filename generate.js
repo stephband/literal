@@ -18,9 +18,7 @@ const base  = Deno.args[0] === 'debug' ? '.' : (Deno.args[0] || '');
 const dest  = Deno.args[1] === 'debug' ? '' : (Deno.args[1] || '');
 const DEBUG = Deno.args.find((arg) => (arg === 'debug'));
 
-const files = await select({
-    match:  (name) => /\.\w+\.literal$/.test(name)
-}, workingdir);
+const files = await select(workingdir);
 
 files.forEach(function processFile(file) {
     // Build in place... Todo: allow alternative target destination

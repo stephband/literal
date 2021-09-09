@@ -19,7 +19,7 @@ function readClosest(path, name) {
     });
 }
 
-export default async function select(selector, path) {
+export default async function select(path) {
     const files  = [];
     const config = await readClosest(path, 'literal.json');
 
@@ -30,7 +30,7 @@ export default async function select(selector, path) {
         }
 
         // Is entry a file?
-        if (entry.isFile && (!selector.matchfile || selector.matchfile(path + entry.name))) {
+        if (entry.isFile && (/\.\w+\.literal$/.test(path + entry.name))) {
             entry.path = path;
             files.push(entry);
             continue;
@@ -41,7 +41,7 @@ export default async function select(selector, path) {
         if (entry.isDirectory && (!config.excludes || !config.excludes.find((pattern) => dirpath.includes(dirpath)))) {
             console.log('DIR', path + entry.name + '/', config.excludes);
             if (++n > 5) { throw new Error('STOP'); }
-            files.push.apply(files, await select(selector, path + entry.name + '/'));
+            files.push.apply(files, await select(path + entry.name + '/'));
         }
     }
 
