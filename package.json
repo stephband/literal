@@ -1,8 +1,8 @@
 {
   "title": "Literal",
   "name": "literal",
-  "description": "Literal puts JS into your HTML. Literal customises the template element, enhancing it with the native capabilities of JS literals to render fast and powerful templates, all in a small library under 10kB (minified and gzipped).",
-  "version": "0.4.1",
+  "description": "Literal puts JS into your HTML. Literal customises the template element, enhancing it with native JS Literal syntax to render fast and powerful templates, and defines an include element that makes it easy to mix static HTML with templated content, all in a small library under 10kB minified and gzipped.",
+  "version": "0.4.2",
   "author": {
     "name": "stephband",
     "url": "http://stephen.band",
