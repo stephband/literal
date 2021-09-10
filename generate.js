@@ -25,7 +25,7 @@ files.forEach(function processFile(file) {
     const source = file.path + file.name;
     const target = file.path + file.name.replace(/\.literal$/, '');
 
-    build(source, target, { DEBUG: DEBUG })
+    build(source, target, DEBUG)
     //.then(() => { Deno.exit(0); })
     .catch((e) => {
         console.log(e);

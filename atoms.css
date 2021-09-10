@@ -1,0 +1,59 @@
+/* Literal template "/Users/stephband/Sites/literal/atoms.css.literal" */
+
+<!-- Literal template "/Users/stephband/Sites/bolt/css/atoms.literal" -->
+
+/* .\@0-atom, 0em (0px) */
+ARSE
+
+{
+  "prefix": "\\@1-",
+  "width": "50em",
+  "column-gap": 24,
+  "row-gap": 24,
+  "columns": 6,
+  "rows": 6
+}
+
+/* .\@1-atom, 50em (800px) */
+
+@media (min-width: 50em) {ARSE
+
+{
+  "prefix": "\\@1-",
+  "width": "50em",
+  "column-gap": 24,
+  "row-gap": 24,
+  "columns": 6,
+  "rows": 6
+}}
+
+
+/* .\@2-atom, 70em (1120px) */
+
+@media (min-width: 70em) {ARSE
+
+{
+  "prefix": "\\@1-",
+  "width": "50em",
+  "column-gap": 24,
+  "row-gap": 24,
+  "columns": 6,
+  "rows": 6
+}}
+
+
+/* .\@3-atom, 90em (1440px) */
+
+@media (min-width: 90em) {ARSE
+
+{
+  "prefix": "\\@1-",
+  "width": "50em",
+  "column-gap": 24,
+  "row-gap": 24,
+  "columns": 6,
+  "rows": 6
+}}
+
+
+

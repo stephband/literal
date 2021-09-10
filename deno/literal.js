@@ -39,8 +39,8 @@ function logCompile(source, scope, params) {
     console.log(dimgreendim, 'Literal', 'compile', source + ' { ' + params + ' }');
 
     // Sanity check params for scope overrides
-    params
-    .split(/\s*[,\s]\s*/)
+    /*params
+    .split(/\s*[,\s]\s*      /)
     .filter((name) => name !== '')
     .forEach((name) => {
         if (!isValidConst(name)) {
@@ -52,7 +52,7 @@ function logCompile(source, scope, params) {
                 + ' overrides scope ' + typeof scope[name] + ' '
                 + (typeof scope[name] === 'function' ? name + '()' : name));
         }
-    });
+    });*/
 }
 
 function logError(source, template, e) {
@@ -129,28 +129,28 @@ function sanitiseVars(vars) {
     return names.join(', ');
 }
 
-export default function Literal(parameters, template, source) {
+export default function Literal(debug, template, source) {
     if (typeof template !== 'string') {
         throw new Error('Template is not a string ' + source);
     }
 
     // Extract names, throw out illegals, format params
-    const params = sanitiseVars(parameters);
+    //const params = sanitiseVars(parameters);
 
-    if (cache[source + '(' + params + ')']) {
-        return cache[source + '(' + params + ')'];
+    if (cache[source]) {
+        return cache[source];
     }
 
     // Where there are params define them as consts
-    const code = (params.length ? 'const {' + params + '} = data;\n' : '')
-        + 'return render`' + template + '`;\n';
+    const code = /*(params.length ? 'const {' + params + '} = data;\n' : '')
+        +*/ 'return render`' + template + '`;\n';
 
     var fn;
     if (DEBUG) {
-        logCompile(source, library, params);
+        logCompile(source, library);
         // scope, paramString, code [, context]        
         try {
-            fn = compileAsyncFn(library, 'data = {}, render, include, imports, comments', code);
+            fn = compileAsyncFn(library, 'data = {}, render, include, imports, comments, DEBUG', code);
         }
         catch(e) {
             logError(source, template, e);
@@ -158,14 +158,14 @@ export default function Literal(parameters, template, source) {
         }
     }
     else {
-        fn = compileAsyncFn(library, 'data = {}, render, include, imports, comments', code);
+        fn = compileAsyncFn(library, 'data = {}, render, include, imports, comments, DEBUG', code);
     }
 
     // Store a reference to the global object
     const self = this;
 
     // fn(render, data, ...functions)
-    return cache[source + '(' + params + ')'] = function literally(data, target) {
+    return cache[source] = function literally(data, target) {
         //console.log('====== RENDER ' + source + ' ======');
         return fn
         // Where this is just a reference to the global context, create a new 
@@ -181,7 +181,9 @@ export default function Literal(parameters, template, source) {
             // imports()
             (url)       => library.imports(source, target, url),
             // comments
-            (...urls)   => library.comments(source, target, ...urls)
+            (...urls)   => library.comments(source, target, ...urls),
+            // debug
+            !!debug
         )
         .then(DEBUG ?
             (text) => prependComment(source, target, rewriteURLs(source, target, text)) :

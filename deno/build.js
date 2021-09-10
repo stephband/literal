@@ -1,5 +1,5 @@
 
-import * as path from "https://deno.land/std@0.98.0/path/mod.ts";
+import * as path     from "https://deno.land/std@0.98.0/path/mod.ts";
 import { ensureDir } from "https://deno.land/std@0.98.0/fs/mod.ts";
 
 import read    from './read.js';
@@ -12,12 +12,10 @@ build(source, target, data)
 
 const encoder = new TextEncoder('utf-8');
 
-export default function build(source, target, data) {
-    const params = Object.keys(data).join(',');
-
+export default function build(source, target, DEBUG) {
     return read(source)
-    .then((template) => Literal(params, template, source))
-    .then((render) => render(data, target))
+    .then((template) => Literal(DEBUG, template, source))
+    .then((render) => render({}, target))
     .then((text) => new Promise(function(resolve, reject) {
         const root = path.parse(target);
         const dir  = root.dir;

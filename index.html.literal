@@ -29,7 +29,7 @@
         body {
             background-image:
                 url('./assets/brace.svg'),
-                linear-gradient(160deg, #46649a, #42a9b9 40%, #f7f9f1 80%);
+                linear-gradient(160deg, #46649a, #5ab3c1 40%, #f7f9f1 80%);
             background-size: calc(22.22222222% - 22px) auto, 100% auto;
         }
         
@@ -50,6 +50,9 @@
         .doctext-01 > span {
             font-weight: 400;
             font-size: 0.3em;
+            font-family: 'Fira Mono';
+            font-weight: 600;
+            letter-spacing: -0.1em;
         }
         
         .doctext-08 {
