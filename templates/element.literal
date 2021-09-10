@@ -5,7 +5,7 @@
     ${ doc.body }
     `) }
 </header>
-
+${ data }
 <form class="x1 3x @1-x1 @1-2x @2-x1 @2-3x x-stretch y-start">
     ${ data[0].examples[0] }
     <!-- for testing form submission values -->
