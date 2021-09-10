@@ -112,10 +112,12 @@ const cache = {};
 function prependComment(source, target, string) {
     return (target.endsWith('.css') || target.endsWith('.js')) ?
         '/* Literal template "' + source + '" */\n' + string.replace(/^\s*, ''/) :
-    string.replace(/^\s(\<\!DOCTYPE html\>)?/, ($0, doctype) =>
-        (doctype ? doctype + '\n' : '') +
-        '<!-- Literal template "' + source + '" -->\n'
-    );
+    target.endsWith('.html') ?
+        string.replace(/^\s(\<\!DOCTYPE html\>)?/, ($0, doctype) =>
+            (doctype ? doctype + '\n' : '') +
+            '<!-- Literal template "' + source + '" -->\n'
+        ) :
+    string ;
 }
 
 function isValidConst(name) {

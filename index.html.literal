@@ -66,11 +66,11 @@
     </script>
 </head>
 
-<body class="docs-grid grid 3x-grid @1-6x-grid @2-9x-grid">
-    <header class="x3" style="grid-column-end: span 4;">
+<body class="docs-grid @0-grid @0-3x-grid @1-6x-grid @2-9x-grid">
+    <header class="@0-x3" style="grid-column-end: span 4;">
         ${ include("../bolt/templates/header.literal", "./package.json") }
     </header>
 
-    ${ include("../bolt/templates/element.literal", await comments("./elements/literal-include.js")) }
+    ${ include("./templates/element.literal", await comments("./elements/literal-include.js")) }
     <!--$ { include("../bolt/templates/css.literal", await comments("./modules/literal-template.js")) }-->
 </body>
