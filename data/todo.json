@@ -1,0 +1,10 @@
+{
+    "title": "Get up",
+    "tasks": [{
+        "text": "Stop the alarm"
+    }, {
+        "text": "Comb your hair"
+    }, {
+        "text": "Brush your teeth"
+    }]
+}

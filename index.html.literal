@@ -8,8 +8,8 @@
         window.DEBUG = true;
     </script>` }
 
-    <!--link rel="stylesheet" href="../nendaz.min.css" /-->
-    <link rel="stylesheet" href="module.css" />
+    <link rel="stylesheet" href="documentation.css" />
+    <link rel="stylesheet" href="module.css" />    
     ${ include("../bolt/templates/style.html") }
 
     <style>
@@ -30,7 +30,7 @@
             background-image:
                 url('./assets/brace.svg'),
                 linear-gradient(160deg, #46649a, #5ab3c1 40%, #f7f9f1 80%);
-            background-size: calc(22.22222222% - 22px) auto, 100% auto;
+            background-size: calc(22.22222222% - 22px) auto, 100% 200vw;
         }
         
         body.docs-grid {
@@ -71,6 +71,15 @@
         ${ include("../bolt/templates/header.literal", "./package.json") }
     </header>
 
+    <!--section class="@0-x1 @0-3x @1-x3 @1-4x @2-x3"-->
+        ${ include("./templates/section.literal", await comments("./module.js")) }
+        ${ include("./templates/section.literal", await comments("./modules/library.js")) }
+    <!--/section-->
+
     ${ include("./templates/element.literal", await comments("./elements/literal-include.js")) }
     <!--$ { include("../bolt/templates/css.literal", await comments("./modules/literal-template.js")) }-->
+    <script type="module">
+        import './module.js';
+        import './documentation.js';
+    </script>
 </body>

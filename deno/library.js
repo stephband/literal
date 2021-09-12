@@ -4,39 +4,25 @@ import * as path from "https://deno.land/std@0.98.0/path/mod.ts";
 // Absolute path to module
 const moduleAbs = path.dirname(path.fromFileUrl(import.meta.url));
 
-import exec                from '../../fn/modules/exec.js';
-import get                 from '../../fn/modules/get.js';
-import id                  from '../../fn/modules/id.js';
-import overload            from '../../fn/modules/overload.js';
-import toType              from '../../fn/modules/to-type.js';
+import base        from '../modules/library.js';
 
-import { addDate }         from '../../fn/modules/date.js';
-import { addTime }         from '../../fn/modules/time.js';
+import { addDate } from '../../fn/modules/date.js';
+import { addTime } from '../../fn/modules/time.js';
+import exec        from '../../fn/modules/exec.js';
+import get         from '../../fn/modules/get.js';
+import overload    from '../../fn/modules/overload.js';
+import toType      from '../../fn/modules/to-type.js';
 
-export { default as by }      from '../../fn/modules/by.js';
-export { default as equals }  from '../../fn/modules/equals.js';
-export { default as matches } from '../../fn/modules/matches.js';
-export { default as get }     from '../../fn/modules/get-path.js';
-export { default as id }      from '../../fn/modules/id.js';
-export { default as px, em, rem } from '../modules/parse-length.js';
-
-export { default as exec }    from '../../fn/modules/exec.js';
-export { default as slugify } from '../../fn/modules/slugify.js';
-//export { default as Pipe }    from '../modules/pipe.js';
-export { default as comments } from './comments.js';
-
-import read from './read.js';
+import read        from './read.js';
 import { rewriteURL, rewriteURLs } from './url.js';
+import compile     from './compile.js';
+import comments    from './comments.js';
 
 import { red, yellow }     from './log.js';
 
-export const entries = Object.entries;
-export const keys    = Object.keys;
-export const values  = Object.values;
 
-import Literal from './literal.js';
-
-const toExtension  = exec(/\.[\w\d.]+$/, get(0));
+const assign      = Object.assign;
+const toExtension = exec(/\.[\w\d.]+$/, get(0));
 
 
 /**
@@ -48,7 +34,7 @@ Imports all exports of a JS module or JSON file.
 // TextDecoder decodes the Uint8Array to unicode text
 const decoder = new TextDecoder('utf-8');
 
-export const imports = overload((source, target, url) => toExtension(url), {
+const imports = overload((source, target, url) => toExtension(url), {
     '.js': (source, target, url) => {
         // Current directory absolute
         const currentAbs  = Deno.cwd() + '/';
@@ -135,26 +121,60 @@ export function getAbsoluteFile(source, src) {
     return path.join(dir, relative);
 }
 
+export function prependComment(source, target, string) {
+    return (target.endsWith('.css') || target.endsWith('.js')) ?
+        '/* Literal template "' + source + '" */\n' + string.replace(/^\s*, ''/) :
+    target.endsWith('.html') ?
+        string.replace(/^\s(\<\!DOCTYPE html\>)?/, ($0, doctype) =>
+            (doctype ? doctype + '\n' : '') +
+            '<!-- Literal template "' + source + '" -->\n'
+        ) :
+    string ;
+}
+
 const renderInclude = overload((source, target, file) => toExtension(file), {
-    '.html.literal': (source, target, file, scope) => resolveScope(scope, source, target)
-        .then((data) => {
-            // Get data keys so that we can reference them as params 
-            // inside the template
-            const params = data && Object.keys(data).join(',') || '';
-            return read(file)
-            .then(extractBody)
-            .then((template) => Literal(params, template, file))
-            .then((render) => render(data, source));
+    '.html.literal': (source, target, debug, file, scope) => Promise
+        .all([
+            resolveScope(scope, source, target),
+            read(file).then(extractBody)
+        ])
+        .then(([data, template]) => {
+            const include  = (url, data) => library.include(file, target, url, data);
+            const imports  = (url)       => library.imports(file, target, url);
+            const comments = (...urls)   => library.comments(file, target, ...urls);
+            const renderer = {
+                source: file,
+                render: compile(library, 'data, include, imports, comments', template, file)
+            };
+
+            return renderer
+            .render(data, include, imports, comments)
+            .then(library.DEBUG ?
+                (text) => prependComment(file, target, rewriteURLs(source, target, text)) :
+                (text) => rewriteURLs(file, target, text)
+            );
         }),
 
-    '.literal': (source, target, file, scope) => resolveScope(scope, source, target)
-        .then((data) => {
-            // Get data keys so that we can reference them as params 
-            // inside the template
-            const params = data && Object.keys(data).join(',') || '';
-            return read(file)
-            .then((template) => Literal(params, template, file))
-            .then((render) => render(data, source));
+    '.literal': (source, target, file, scope) => Promise
+        .all([
+            resolveScope(scope, source, target),
+            read(file)
+        ])
+        .then(([data, template]) => {
+            const include  = (url, data) => library.include(file, target, url, data);
+            const imports  = (url)       => library.imports(file, target, url);
+            const comments = (...urls)   => library.comments(file, target, ...urls);
+            const renderer = {
+                source: file,
+                render: compile(library, 'data, include, imports, comments', template, file)
+            };
+
+            return renderer
+            .render(data, include, imports, comments)
+            .then(library.DEBUG ?
+                (text) => prependComment(file, target, rewriteURLs(source, target, text)) :
+                (text) => rewriteURLs(file, target, text)
+            );
         }),
 
     '.html': (source, target, file) => read(file)
@@ -171,7 +191,7 @@ const renderInclude = overload((source, target, file) => toExtension(file), {
     'default': (source, target, file) => read(file)
 });
 
-export function include(source, target, url, scope) {
+function include(source, target, url, scope) {
     // Get absolute OS file path
     const file = getAbsoluteFile(source, url);
     
@@ -223,7 +243,7 @@ function toAddType(n) {
     type;
 }
 
-export const add = overload(toAddType, {
+const add = overload(toAddType, {
     'date': addDate,
     'time': addTime,
     'string': (a) => (b) => b + a,
@@ -233,3 +253,56 @@ export const add = overload(toAddType, {
     }
 });
 
+
+
+
+
+
+/**
+render(array, param)
+**/
+
+import renderString        from '../modules/to-text.js';
+
+const join = (strings) => strings.join('');
+const isPromise = (object) => object && object.then;
+
+function stringify(value, string) {
+    return value && typeof value === 'object' ? (
+        // If expression returns a promise
+        value.then ? value.then((value) => string + value) :
+        // If expression returns an array with promises
+        value.join ? value.find(isPromise) ?
+            // Resolve promises and join to string
+            Promise.all(value).then((strings) => string + strings.map(renderString).join('')) :
+            // Otherwise join to string immediately
+            string + value.map(renderString).join('') :
+        // pass any other value to renderString
+        string + renderString(value)
+    ) :
+    string + renderString(value) ;
+}
+
+function render(strings) {
+    return Promise.all(
+        strings.map((string, i) => (i + 1 < arguments.length ?
+            stringify(arguments[i + 1], string) :
+            string
+        ))
+    )
+    .then(join);
+}
+
+
+/* Export library */
+
+const library = assign(base, {
+    add:      add,
+    comments: comments,
+    exec:     exec,
+    include:  include,
+    imports:  imports,
+    render:   render
+});
+
+export default library;

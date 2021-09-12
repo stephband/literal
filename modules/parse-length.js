@@ -34,7 +34,7 @@ const parseLength = overload(toType, {
 export default parseLength;
 
 /**
-toPx(value)
+px(value)
 Takes number in pixels or a CSS value as a string and returns a string
 of the form '10.25rem'.
 **/
@@ -44,7 +44,7 @@ export function px(n) {
 }
 
 /**
-toRem(value)
+rem(value)
 Takes number in pixels or a CSS value as a string and returns a string
 of the form '10.25rem'.
 **/

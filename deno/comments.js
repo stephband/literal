@@ -8,19 +8,16 @@ comments.
 
 import read            from './read.js';
 import { rewriteURLs } from './url.js';
-import parseComments   from './parse-comments.js';
-import { getAbsoluteFile } from './lib.js';
+import parseComments   from '../modules/parse-comments.js';
+import { getAbsoluteFile } from './library.js';
 import { red, yellow } from './log.js';
 
 export default function comments(source, target, ...urls) {
-    console.log('COMMENTS', source, target, urls)
     return Promise.all(urls.map((path) => {
         const url = getAbsoluteFile(source, path);
 
         return read(url)
         .then(parseComments)
-        //.then(comments => (console.log('CSS\n' + url + '\n', comments), comments))
-        //.then(docsFilters[type])                  
         .then((comments) => {
             comments.forEach((comment) => {
                 // Type property or selector tokens by file extension

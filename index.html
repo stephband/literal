@@ -4,8 +4,8 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-<meta name="author" content="stephband" />
-<meta name="description" content="Documentation for Literal. Literal puts JS into your HTML. Literal customises the template element, enhancing it with native JS Literal syntax to render fast and powerful templates, and defines an include element that makes it easy to mix static HTML with templated content, all in a small library under 10kB minified and gzipped." />
+<meta name="author" content="Stephen" />
+<meta name="description" content="Documentation for Literal. Literal puts JS into your HTML. Literal customises the template element, enhancing it with native JS literal syntax to render fast and powerful templates, and defines an include element that makes it easy to mix static HTML with rendered templates, all in a small library under 10kB minified and gzipped." />
 <meta name="viewport" content="width=device-width" />
 
 
@@ -13,7 +13,7 @@
 <meta name="twitter:site" content="@stephband">
 <meta property="og:url" content="https://stephen.band/literal" />
 <meta property="og:title" content="Literal" />
-<meta property="og:description" content="Literal puts JS into your HTML. Literal customises the template element, enhancing it with native JS Literal syntax to render fast and powerful templates, and defines an include element that makes it easy to mix static HTML with templated content, all in a small library under 10kB minified and gzipped." />
+<meta property="og:description" content="Literal puts JS into your HTML. Literal customises the template element, enhancing it with native JS literal syntax to render fast and powerful templates, and defines an include element that makes it easy to mix static HTML with rendered templates, all in a small library under 10kB minified and gzipped." />
 <meta property="og:image" content="$ { data.image }" />
 
 
@@ -35,8 +35,8 @@
         window.DEBUG = true;
     </script>
 
-    <!--link rel="stylesheet" href="../nendaz.min.css" /-->
-    <link rel="stylesheet" href="module.css" />
+    <link rel="stylesheet" href="documentation.css" />
+    <link rel="stylesheet" href="module.css" />    
     <link rel="stylesheet" href="../bolt/documentation/prism-cruncher.css" />
 <link rel="stylesheet" href="../fn/css/tests.css" />
 <link rel="stylesheet" href="../bolt/documentation/atoms.css" />
@@ -63,7 +63,7 @@
             background-image:
                 url('assets/brace.svg'),
                 linear-gradient(160deg, #46649a, #5ab3c1 40%, #f7f9f1 80%);
-            background-size: calc(22.22222222% - 22px) auto, 100% auto;
+            background-size: calc(22.22222222% - 22px) auto, 100% 200vw;
         }
         
         body.docs-grid {
@@ -101,9 +101,9 @@
 
 <body class="docs-grid @0-grid @0-3x-grid @1-6x-grid @2-9x-grid">
     <header class="@0-x3" style="grid-column-end: span 4;">
-        
+        <!-- Literal template "/Users/stephband/Sites/bolt/templates/header.literal" -->
 <h1 class="doctext-01">Literal <span class="doctext-06">0.4.2</span></h1>
-<p class="doctext-08">Literal puts JS into your HTML. Literal customises the template element, enhancing it with native JS Literal syntax to render fast and powerful templates, and defines an include element that makes it easy to mix static HTML with templated content, all in a small library under 10kB minified and gzipped.</p>
+<p class="doctext-08">Literal puts JS into your HTML. Literal customises the template element, enhancing it with native JS literal syntax to render fast and powerful templates, and defines an include element that makes it easy to mix static HTML with rendered templates, all in a small library under 10kB minified and gzipped.</p>
 <ul class="link-index index">
     <li><strong>repo:</strong> <a href="https://github.com/stephband/literal.git">github.com/stephband/literal.git</a></li>
     <li><strong>bugs:</strong> <a href="https://github.com/stephband/literal/issues/">github.com/stephband/literal/issues/</a></li>
@@ -111,7 +111,359 @@
 
     </header>
 
-    
+    <!--section class="@0-x1 @0-3x @1-x3 @1-4x @2-x3"-->
+        <!-- Literal template "/Users/stephband/Sites/literal/templates/section.literal" -->
+<section class="block @0-x1 @0-3x @1-x3 @1-4x @2-x3">
+    <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<h2 class="doctext-02" id="get-started">Get Started</h2>
+<p>Import Literal from the main module in the repo:</p>
+<pre><code class="language-js"><span class="token keyword">import</span> <span class="token string">'http://stephen.band/literal/module.js'</span><span class="token punctuation">;</span></code></pre>
+<p class="right-bubble bubble">Clearly you should not rely on this resource in production. Use a bundler 
+such as <a href="https://esbuild.github.io/">esbuild</a> to package it into your 
+own module.</p>
+
+<p>This registers two custom elements:</p>
+<p><code>&lt;template is=&quot;literal-template&quot;&gt;</code><br/>
+<code>&lt;literal-include&gt;</code></p>
+<p>Here is how to use them:</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-template<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>item<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>${ data.text }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-template<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>todo-list<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Todo list: ${ data.title }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span>${ data.tasks.map(include('#item')) }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#todo-list<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./data/todo.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Fallback content.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
+<p>A <code>literal-include</code> is replaced with the content of its <code>src</code> template when 
+its <code>data</code> is fetched and rendered. Inside a <code>literal-template</code>, data to render 
+is accessed through the variable <code>${ data }</code>. The result of this example is:</p>
+<template is="literal-template" id="item">
+    <li>${ data.text }</li>
+</template>
+
+<template is="literal-template" id="author">
+    <p>Todo list: ${ data.title }</p>
+    <ul>${ data.tasks.map(include('#item')) }</ul>
+</template>
+
+<literal-include src="#author" data="./data/todo.json">
+    <p>Fallback content.</p>
+</literal-include>
+
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<h2 class="doctext-02" id="contents">Contents</h2>
+<ul>
+<li><a href="#literal-include"><code>&lt;literal-include&gt;</code></a></li>
+<li><a href="#literal-template"><code>&lt;template is=&quot;literal-template&quot;&gt;</code></a></li>
+<li><a href="#functions">Template functions</a></li>
+</ul>
+
+
+ 
+</section>
+
+        <!-- Literal template "/Users/stephband/Sites/literal/templates/section.literal" -->
+<section class="block @0-x1 @0-3x @1-x3 @1-4x @2-x3">
+    <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<h2 class="doctext-02" id="functions">Functions</h2>
+<p>Functions that are included in the scope of a <code>&lt;template is=&quot;literal-template&quot;&gt;</code>.
+A few are simply JS built-ins, aliased for brevity inside templates. Others 
+provide <strong>template includes</strong>, <strong>routing</strong> and <strong>value transformations</strong>.</p>
+
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-assign">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-assign">
+        <code class=" language-js">assign(<span class="param">a</span>, <span class="param">b</span>, <span class="param">…</span>)</code>
+    </a>
+</h3>
+
+<p>Alias of <code>Object.assign()</code>.</p>
+
+</div>
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-by">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-by">
+        <code class=" language-js">by(<span class="param">fn</span>, <span class="param">a</span>, <span class="param">b</span>)</code>
+    </a>
+</h3>
+
+<p>Compares <code>fn(a)</code> against <code>fn(b)</code> and returns <code>-1</code>, <code>0</code> or <code>1</code>. Partially 
+applicable and intended for use in <code>array.sort()</code>. For example, to sort an
+array of objects by their ids:</p>
+<pre><code>array<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token function">by</span><span class="token punctuation">(</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'id'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre>
+</div>
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-ceil">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-ceil">
+        <code class=" language-js">ceil(<span class="param">n</span>)</code>
+    </a>
+</h3>
+
+<p>Alias of <code>Math.ceil()</code>.</p>
+
+</div>
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-define">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-define">
+        <code class=" language-js">define(<span class="param"></span>)</code>
+    </a>
+</h3>
+
+<p>Alias of <code>Object.defineProperties()</code>.</p>
+
+</div>
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-entries">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-entries">
+        <code class=" language-js">entries(<span class="param">object</span>)</code>
+    </a>
+</h3>
+
+<p>Alias of <code>Object.entries()</code>.</p>
+
+</div>
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-em">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-em">
+        <code class=" language-js">em(<span class="param"></span>)</code>
+    </a>
+</h3>
+
+<p>Takes a numeric value in px, or a string value of the form <code>&#39;10px&#39;</code> and outputs
+a string value in em, eg. <code>&#39;0.625em&#39;</code>. Depends on the current <code>font-size</code> of 
+the document root.</p>
+
+</div>
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-equals">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-equals">
+        <code class=" language-js">equals(<span class="param">a</span>, <span class="param">b</span>)</code>
+    </a>
+</h3>
+
+<p>Compares <code>a</code> and <code>b</code> for deep equality and returns <code>true</code> or <code>false</code>.</p>
+
+</div>
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-floor">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-floor">
+        <code class=" language-js">floor(<span class="param">n</span>)</code>
+    </a>
+</h3>
+
+<p>Alias of <code>Math.floor()</code>.</p>
+
+</div>
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-get">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-get">
+        <code class=" language-js">get(<span class="param">path</span>, <span class="param">object</span>)</code>
+    </a>
+</h3>
+
+<p>Gets the value of <code>path</code> in <code>object</code>, where <code>path</code> is a string in JS 
+dot-notation. Where a path does not lead to a value, returns <code>undefined</code>:</p>
+<pre><code><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'path.to.value'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span>       <span class="token comment">// undefined</span></code></pre><p>Numbers are accepted as path components:</p>
+<pre><code><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'array.0'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    array<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'first'</span><span class="token punctuation">,</span> <span class="token string">'second'</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>                             <span class="token comment">// 'first'</span></code></pre>
+</div>
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-id">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-id">
+        <code class=" language-js">id(<span class="param">object</span>)</code>
+    </a>
+</h3>
+
+<p>Returns <code>object</code>.</p>
+
+</div>
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-keys">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-keys">
+        <code class=" language-js">keys(<span class="param">object</span>)</code>
+    </a>
+</h3>
+
+<p>Alias of <code>Object.keys()</code>.</p>
+
+</div>
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-last">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-last">
+        <code class=" language-js">last(<span class="param"></span>)</code>
+    </a>
+</h3>
+
+<p>Gets the last item from an array or array-like.</p>
+
+</div>
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-matches">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-matches">
+        <code class=" language-js">matches(<span class="param">selector</span>, <span class="param">object</span>)</code>
+    </a>
+</h3>
+
+<p>Returns true where all the properties of <code>selector</code> are strictly equal to the 
+same properties of <code>object</code>.</p>
+
+</div>
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-noop">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-noop">
+        <code class=" language-js">noop(<span class="param"></span>)</code>
+    </a>
+</h3>
+
+<p>Return undefined.</p>
+
+</div>
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-observe">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-observe">
+        <code class=" language-js">observe(<span class="param">path</span>, <span class="param">object</span>)</code>
+    </a>
+</h3>
+
+<p>Returns an observable of mutations to <code>path</code> in <code>object</code>. Consume mutations
+with an observable’s <code>.each()</code> method.</p>
+<pre><code class="language-js"><span class="token keyword">const</span> observable <span class="token operator">=</span> <span class="token function">observe</span><span class="token punctuation">(</span><span class="token string">'title'</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">title</span><span class="token punctuation">)</span> <span class="token operator">=></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>title<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>Observables may be stopped with the method <code>.stop()</code>:</p>
+<pre><code class="language-js">observable<span class="token punctuation">.</span><span class="token function">stop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>Renderers (which are exposed as <code>this</code> inside templates), have a <code>.done()</code> 
+method that calls a subscriber’s <code>.stop()</code> method when the render is 
+stopped. This pattern observes <code>data.title</code> until the next render:</p>
+<pre><code class="language-js"><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">done</span><span class="token punctuation">(</span><span class="token function">observe</span><span class="token punctuation">(</span><span class="token string">'title'</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">title</span><span class="token punctuation">)</span> <span class="token operator">=></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>title<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
+</div>
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-print">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-print">
+        <code class=" language-js">print(<span class="param">object</span>, <span class="param">…</span>)</code>
+    </a>
+</h3>
+
+<p>For debugging templates.</p>
+<p>Where <code>window.DEBUG</code> is truthy at the time Literal is loaded (or where 
+Literal is packaged into a module with the environment variable DEBUG),
+<code>print(object, ...)</code> renders any number of objects to a debug message in the 
+DOM. For example, to debug a template in place, print the current renderer 
+and data:</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">print</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span> <span class="token punctuation">}</span></code></pre>
+<p>Messages should be styled with the print stylesheet:</p>
+<pre><code class="language-css"><span class="token atrule"><span class="token rule">@import</span> <span class="token string">"http://stephen.band/literal/library/print.css"</span><span class="token punctuation">;</span></span></code></pre>
+<p>Where <code>window.DEBUG</code> is false, <code>print()</code> does nothing.</p>
+
+</div>
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-px">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-px">
+        <code class=" language-js">px(<span class="param">n</span>)</code>
+    </a>
+</h3>
+
+<p>Takes a numeric value in px, or a string value of the form <code>&#39;0.625rem&#39;</code> and 
+outputs a string value in px, eg. <code>&#39;10px&#39;</code>. Depends on the current <code>font-size</code> 
+of the document root.</p>
+
+</div>
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-rem">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-rem">
+        <code class=" language-js">rem(<span class="param">n</span>)</code>
+    </a>
+</h3>
+
+<p>Takes a numeric value in px, or a string value of the form <code>&#39;10px&#39;</code> and outputs
+a string value in rem, eg. <code>&#39;0.625rem&#39;</code>. Depends on the current <code>font-size</code> of
+the document root.</p>
+
+</div>
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-round">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-round">
+        <code class=" language-js">round(<span class="param">n</span>)</code>
+    </a>
+</h3>
+
+<p>Alias of <code>Math.round()</code>;</p>
+
+</div>
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-slugify">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-slugify">
+        <code class=" language-js">slugify(<span class="param">string</span>)</code>
+    </a>
+</h3>
+
+<p>Returns the slug of <code>string</code>.</p>
+
+</div>
+
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-values">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-values">
+        <code class=" language-js">values(<span class="param"></span>)</code>
+    </a>
+</h3>
+
+<p>Alias of <code>Object.values()</code>.</p>
+
+</div>
+
+ 
+</section>
+
+    <!--/section-->
+
+    <!-- Literal template "/Users/stephband/Sites/literal/templates/element.literal" -->
 <header class="@0-x1 @0-3x @1-x3 @1-4x @2-x3">
     
     <h2 class="doctext-02">&lt;literal-include&gt;</h2>
@@ -119,24 +471,24 @@
 chunks of JS-rendered DOM where you like in a document.</p>
 <p>An <code>&lt;literal-include&gt;</code> finds a source template identified by its <code>src</code> attribute
 and replaces itself with the template content:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>greetings<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>greetings<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     Hello you.
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
 <p>If the source template is a <code>&lt;template is=&quot;literal-template&quot;&gt;</code>, its <code>.render()</code> 
 method is called with data resolved from data attributes on the <code>&lt;literal-include&gt;</code>.</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>literal-template<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>greetings<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-template<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>greetings<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     Hello ${ data.name }.
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data-name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Bartholemew<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data-name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Bartholemew<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
 <p>To get data from an external JSON file specify a path to JSON:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>./package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
 <p>Or import the default export of a JS module:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>./modules/literal.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./modules/literal.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
 <p>Or indeed the named export of JS module:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>./modules/literal.js#name<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./modules/literal.js#name<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
 <p>Should the <code>literal-include</code> contain html, note that that content is 
 displayed until templated content has been fetched and rendered, allowing you
 to provide default or fallback content.</p>
@@ -157,31 +509,33 @@ to provide default or fallback content.</p>
 <div class="@0-x1 @0-3x @1-x3 @1-2x @2-x3 @2-3x x-stretch y-start">
     
     <h3 class="doctext-03">Attributes</h3>
-    
-<section class="attribute-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="attribute-attribute-data">
-    <h3 class="attribute-doctext-05 doctext-05">
-        <a href="#attribute-attribute-data">
-            <code class="token  language-html">data <span class="default">=<em>path/to/file.json</em></span></code>
-        </a>
-    </h3>
-    
-    <p>Define a JSON file used to render templates (that have a <code>.render(data)</code> 
-    method). If a data attribute is not defined and empty object is used.</p>
+    <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="attribute-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="attribute-data">
+<h3 class="attribute-doctext-05 doctext-05">
+    <a href="#attribute-data">
+        <code class="token language-html">data <span class="default">=<em>path/to/file.json</em></span></code>
+    </a>
+</h3>
 
-</section>
+<p>Define a JSON file used to render templates (that have a <code>.render(data)</code> 
+method). If a data attribute is not defined and empty object is used.</p>
 
-<section class="attribute-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="attribute-attribute-src">
-    <h3 class="attribute-doctext-05 doctext-05">
-        <a href="#attribute-attribute-src">
-            <code class="token  language-html">src <span class="default">=<em>#id</em></span></code>
-        </a>
-    </h3>
-    
-    <p>Define a source template whose rendered content replaces this
-    <code>literal-include</code>. This is a required attribute.</p>
+</div>
 
-</section>
+ <!-- Literal template "/Users/stephband/Sites/bolt/templates/entry.literal" -->
+<div class="attribute-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="attribute-src">
+<h3 class="attribute-doctext-05 doctext-05">
+    <a href="#attribute-src">
+        <code class="token language-html">src <span class="default">=<em>#id</em></span></code>
+    </a>
+</h3>
 
+<p>Define a source template whose rendered content replaces this
+<code>literal-include</code>. This is a required attribute.</p>
+
+</div>
+
+ 
 
     
     
@@ -207,4 +561,8 @@ to provide default or fallback content.</p>
 </div>
 
     <!--$ { include("../bolt/templates/css.literal", await comments("./modules/literal-template.js")) }-->
+    <script type="module">
+        import './module.js';
+        import './documentation.js';
+    </script>
 </body>

@@ -1,6 +1,6 @@
 
-/** 
-include(url, data)
+/** include(src, data)
+Includes another template. Not available inside attributes.
 **/
 
 import curry   from '../../fn/modules/curry.js';

@@ -19,8 +19,6 @@ import slugify from '../../fn/modules/slugify.js';
 import { parseString } from './parse-string.js';
 import { parseParams } from './parse-params.js';
 
-import { cyan, blue, dim } from './log.js';
-
 const DEBUG = false;//true;
 
 const markedOptions = {
@@ -45,10 +43,12 @@ const parseParensClose = capture(/^\)\s*/, {}, null);
 parseComment(string)
 Where a documentation comment is found, returns a token object of the form:
 
-```js
+```
 {
     id:       unique id for this token object
-    type:     type of comment, one of 'attribute', 'property', 'element'
+    type:     type of comment, one of 'attribute', 'constructor', 'element', 
+              'function', 'method', 'part', 'property', 'selector', 'string', 
+              'text', 'var'
     name:     name of attribute, property, function, element or class
     title:    
     postfix:  syntax characters that follow declaration
@@ -73,7 +73,8 @@ function createId(string) {
     }
 }
 
-//                             1                                2
+//                              1                                        2        3
+//                              .class element attribute=" :pseudo()     ,newline ,
 const parseSelector = capture(/^([\w\d:.[][\w\d:\-[\]="' …>+().]+)(?:,\s*(\n)\s*|,(\s*))?/, {
     // Class, element, attribute, pseudo selector
     1: (selector, captures) => selector + captures[1],
@@ -105,7 +106,7 @@ const parsePropertyToSelector = capture(/^(,\s*\n\s*)|(,\s*)|(\s*[>+]\s*)|(-)/, 
 const parseDotted = capture(/^(\w[\w\d]*)(?:(\(\s*)|(\s*=\s*)|(\s*\n\s*)|(\s*))/, {
     // If it is .xxx it could be a property or selector
     1: (data, captures) => {
-        data.name   = '.' + captures[1];
+        data.name = '.' + captures[1];
         return data;
     },
 
@@ -113,7 +114,7 @@ const parseDotted = capture(/^(\w[\w\d]*)(?:(\(\s*)|(\s*=\s*)|(\s*\n\s*)|(\s*))/
     2: (data, captures) => {
         data.type   = 'method';
         data.name  += captures[2];
-        data.params = parseParams([], captures);
+        data.params = parseParams(captures);
         parseParensClose(captures);
         return data;
     },
@@ -126,7 +127,9 @@ const parseDotted = capture(/^(\w[\w\d]*)(?:(\(\s*)|(\s*=\s*)|(\s*\n\s*)|(\s*))/
         return data;
     },
 
-    // Could be a property without a default value, could be a class selector
+    // Could be a property without a default value, could be a class selector.
+    // This is dependent on context, and we retype this particular type later
+    // depending on file extension.
     4: (data, captures) => {
         data.type = 'property|selector';
         return data;        
@@ -146,7 +149,8 @@ const parseDotted = capture(/^(\w[\w\d]*)(?:(\(\s*)|(\s*=\s*)|(\s*\n\s*)|(\s*))/
     }
 });
 
-//                             1 attribute =    2 key:             3 N     4 n  5 ame function    6 Title
+//                             1                2                  3       4    5                 6                           
+//                             attribute =      key:               N       n    ame function      Title
 const parseName = capture(/^(?:([\w-:]+)\s*=\s*|([\w-]+)\s*:\s*|(?:([A-Z])|(\w))([\w\d]*)\s*\(\s*|([A-Z](?:[^\n]|,\s*)*))\s*/, {
     // name="value" name='value' name=value
     1: (data, captures) => {
@@ -160,33 +164,31 @@ const parseName = capture(/^(?:([\w-:]+)\s*=\s*|([\w-]+)\s*:\s*|(?:([A-Z])|(\w))
     2: (data, captures) => {
         data.type   = 'fn';
         data.name   = captures[2];
-        data.params = parseParams([], captures);
+        data.params = parseParams(captures);
         return data;
     },
 
-    // function or Constructor
+    // Constructor
     3: (data, captures) => {
-        // If first letter is a capital it's a constructor
         data.type   = 'constructor';
         data.name   = captures[3] + captures[5];
-        data.params = parseParams([], captures);
+        data.params = parseParams(captures);
         return data;
     },
-    
-    // function or Constructor
+
+    // function
     4: (data, captures) => {
-        // If first letter is a capital it's a constructor
         data.type   = 'function' ;
         data.name   = captures[4] + captures[5];
-        data.params = parseParams([], captures);
+        data.params = parseParams(captures);
         return data;
     },
 
     // Title (begins with a capital and continues until newline that is not 
     // preceded by a comma)
     6: (data, captures) => {
-        data.type = 'title';
-        data.name = captures[4];
+        data.type = 'text';
+        data.name = captures[6];
         return data;
     },
     
@@ -203,27 +205,24 @@ const parseName = capture(/^(?:([\w-:]+)\s*=\s*|([\w-]+)\s*:\s*|(?:([A-Z])|(\w))
     }
 });
 
-//                                         1 .  2 -- 3 ::part(     4 " 5 < 6 {[        7 word
-const parseComment = capture(/\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(")|(<)|(\{[\{\[%])|(\b))/, {
+//                             1                        2    3    4             5   6   7
+//                             indent                   .    --   ::part(       "   <   word
+const parseComment = capture(/([^\S\r\n]*)\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(")|(<)|(\b))/, {
     // New data object
     0: function(nothing, captures) {
-        //console.log(captures.input.slice(captures.index, captures.index + 16), '(' + captures[1] + ')');
         return {
             defaultValue: null,
             //prefix: '',
-            title: ''
+            title: '',
+            indent: captures[1]
         };
     },
 
-    1: (data, captures) => {
-        data.name   = '.';
-        parseDotted(data, captures);
-        return data;
-    },
+    2: parseDotted,
 
     // CSS Variable (name): (value)
     //           1                 2
-    2: capture(/^([\w-]+)(?:\s*:\s*([\w\d-]+))?\s*/, {
+    3: capture(/^([\w-]+)(?:\s*:\s*([\w\d-]+))?\s*/, {
         // --variable
         1: (data, captures) => {
             data.type   = 'var';
@@ -243,7 +242,7 @@ const parseComment = capture(/\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(")|(<)|(\{[\
     }),
     
     // Part ::part( (name) )
-    3: capture(/^([\w-]+)\s*\)\s*/, {
+    4: capture(/^([\w-]+)\s*\)\s*/, {
         1: (data, captures) => {
             data.type = 'part';
             data.name = '::part(' + captures[1] + ')';
@@ -256,7 +255,7 @@ const parseComment = capture(/\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(")|(<)|(\{[\
     }),
     
     // String "text"
-    4: capture(/^([^"]*)"/, {
+    5: capture(/^([^"]*)"/, {
         1: (data, captures) => {
             data.type = 'string';
             data.name = captures[1];
@@ -269,7 +268,7 @@ const parseComment = capture(/\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(")|(<)|(\{[\
     }),
     
     // Element <tag>
-    5: capture(/^(\w[^>]*)>/, {
+    6: capture(/^(\w[^>]*)>/, {
         // Element name
         1: (data, captures) => {
             data.type = 'element';
@@ -281,23 +280,6 @@ const parseComment = capture(/\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(")|(<)|(\{[\
             throw new SyntaxError('Invalid <tag>');        
         }
     }),
-    
-    // Django or sparky tag {[ tag ]}
-    6: (data, captures) => {
-        data.type = 'tag';
-        data.name = '';
-        /* TODO
-        data.push({
-            id: slugify(captures[7]),
-            prefix: '',
-            name: captures[7],
-            params: '',
-            type: 'title',
-            title: captures[7]
-        });
-        */
-        return data;
-    },
 
     // attribute="", key:, Constructor(, function(, Title or selector
     7: parseName,
@@ -307,8 +289,12 @@ const parseComment = capture(/\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(")|(<)|(\{[\
         1: (data, captures) => {
             data.examples = [];
     
-            // Alias body 
-            data.body = marked(captures[1], Object.assign(markedOptions, {
+            // Strip indentation from body before processing as Markdown
+            const body = data.indent ?
+                captures[1].replaceAll('\n' + data.indent, '\n') :
+                captures[1] ;
+
+            data.body = marked(body, Object.assign(markedOptions, {
                 // Highlight code blocks
                 highlight: function (code, lang, callback) {
                     // Grab HTML code blocks and add to examples
