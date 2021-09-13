@@ -1,6 +1,6 @@
 
-import * as path     from "https://deno.land/std@0.98.0/path/mod.ts";
-import { ensureDir } from "https://deno.land/std@0.98.0/fs/mod.ts";
+import * as path     from "https://deno.land/std@0.106.0/path/mod.ts";
+import { ensureDir } from "https://deno.land/std@0.106.0/fs/mod.ts";
 
 import read    from './read.js';
 import compile from './compile.js';
