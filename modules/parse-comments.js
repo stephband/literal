@@ -101,43 +101,43 @@ const parsePropertyToSelector = capture(/^(,\s*\n\s*)|(,\s*)|(\s*[>+]\s*)|(-)/, 
     // Compound selector
     catch: parseSelector
 });
-        
-//                         1 word     2 (        3 =       4 line     5 anything else
+
+//                            1             2       3         4          5        
+//                            word          (       =         line       anything else
 const parseDotted = capture(/^(\w[\w\d]*)(?:(\(\s*)|(\s*=\s*)|(\s*\n\s*)|(\s*))/, {
     // If it is .xxx it could be a property or selector
     1: (data, captures) => {
-        data.name = '.' + captures[1];
+        data.name = captures[1];
         return data;
     },
 
     // Is it a method
     2: (data, captures) => {
         data.type   = 'method';
-        data.name  += captures[2];
         data.params = parseParams(captures);
-        parseParensClose(captures);
         return data;
     },
 
     // Is it a property with a default value
     3: (data, captures) => {
-        data.type    = 'property';
+        data.type   = 'property';
         // TODO
         //data.default = parseValue(captures);
         return data;
     },
 
-    // Could be a property without a default value, could be a class selector.
-    // This is dependent on context, and we retype this particular type later
-    // depending on file extension.
+    // Fudge. Could be a property without a default value, could be a class 
+    // selector. This is dependent on context, and we retype this particular 
+    // type later depending on file extension.
     4: (data, captures) => {
+        data.name = '.' + data.name;
         data.type = 'property|selector';
         return data;        
     },
 
     5: (data, captures) => {
         // Is it a selector
-        const selector = parsePropertyToSelector(data.name, captures);
+        const selector = parsePropertyToSelector('.' + data.name, captures);
 
         if (!selector) {
             throw new Error('Failed to parse .name ' + captures.input.slice(0, 18));

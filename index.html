@@ -111,8 +111,7 @@
 
     </header>
 
-    <!--section class="@0-x1 @0-3x @1-x3 @1-4x @2-x3"-->
-        
+    
 <section class="block @0-x1 @0-3x @1-x3 @1-4x @2-x3">
     
 <h2 class="doctext-02" id="get-started">Get Started</h2>
@@ -158,16 +157,65 @@ is accessed through the variable <code>${ data }</code>. The result of this exam
  
 <h2 class="doctext-02" id="contents">Contents</h2>
 <ul>
-<li><a href="#functions">Template functions</a></li>
-<li><a href="#literal-include"><code>&lt;literal-include&gt;</code></a></li>
 <li><a href="#literal-template"><code>&lt;template is=&quot;literal-template&quot;&gt;</code></a></li>
+<li><a href="#functions">Literal template functions</a></li>
+<li><a href="#literal-include"><code>&lt;literal-include&gt;</code></a></li>
 </ul>
 
 
  
 </section>
 
-        
+    
+<header class="@0-x1 @0-3x @1-x3 @1-4x @2-x3">
+    
+    <h2 class="doctext-02">&lt;template is="literal-template"&gt;</h2>
+    <p>Literal templates bind the DOM to data, parsing text content, classes and 
+attributes as JS template literals. Here is a literal template that prints out 
+data when rendered:</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-template<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>log<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>pre</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>code</span><span class="token punctuation">></span></span>${ data }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>code</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>pre</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
+
+    
+</header>
+
+<!--form class="@0-x1 @0-3x @1-x1 @1-2x @2-x1 @2-3x x-stretch y-start">
+    <template is="literal-template" id="log">
+    <pre><code>${ data }</code></pre>
+</template>
+    <input hidden class="button" type="submit" />
+</form-->
+
+<div class="@0-x1 @0-3x @1-x3 @1-2x @2-x3 @2-3x x-stretch y-start">
+    
+    
+    
+
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+<div class="@-x1 @0-3x @1-x5 @1-2x @2-x6 @2-3x @0-x-stretch @0-y-start">
+    
+    
+    
+
+    
+    
+    
+</div>
+
+    
 <section class="block @0-x1 @0-3x @1-x3 @1-4x @2-x3">
     
 <h2 class="doctext-02" id="functions">Functions</h2>
@@ -461,8 +509,6 @@ the document root.</p>
  
 </section>
 
-    <!--/section-->
-
     
 <header class="@0-x1 @0-3x @1-x3 @1-4x @2-x3">
     
@@ -494,7 +540,7 @@ content of the template. This works for standard templates:</p>
     
 </header>
 
-<form class="@0-x1 @0-3x @1-x1 @1-2x @2-x1 @2-3x x-stretch y-start">
+<!--form class="@0-x1 @0-3x @1-x1 @1-2x @2-x1 @2-3x x-stretch y-start">
     <template id="greetings">
     Rendered content.
 </template>
@@ -502,9 +548,8 @@ content of the template. This works for standard templates:</p>
 <literal-include src="#greetings">
     Fallback content.
 </literal-include>
-    <!-- for testing form submission values -->
     <input hidden class="button" type="submit" />
-</form>
+</form-->
 
 <div class="@0-x1 @0-3x @1-x3 @1-2x @2-x3 @2-3x x-stretch y-start">
     
@@ -566,7 +611,7 @@ attribute is not defined and empty object is used.</p>
     
 </div>
 
-    <!--$ { include("../bolt/templates/css.literal", await comments("./modules/literal-template.js")) }-->
+
     <script type="module">
         import './module.js';
         import './documentation.js';

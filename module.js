@@ -86,11 +86,11 @@ And the result is:
 </literal-include>
 */
 
-/** Contents
-
-- <a href="#functions">Template functions</a>
-- <a href="#literal-include">`<literal-include>`</a>
+/**
+Contents
 - <a href="#literal-template">`<template is="literal-template">`</a>
+- <a href="#functions">Literal template functions</a>
+- <a href="#literal-include">`<literal-include>`</a>
 **/
 
 import './elements/literal-template.js';
