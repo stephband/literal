@@ -157,7 +157,7 @@ is accessed through the variable <code>${ data }</code>. The result of this exam
  
 <h2 class="doctext-02" id="contents">Contents</h2>
 <ul>
-<li><a href="#literal-template"><code>&lt;template is=&quot;literal-template&quot;&gt;</code></a></li>
+<li><a href="#template-is-literal-template"><code>&lt;template is=&quot;literal-template&quot;&gt;</code></a></li>
 <li><a href="#functions">Literal template functions</a></li>
 <li><a href="#literal-include"><code>&lt;literal-include&gt;</code></a></li>
 </ul>
@@ -169,7 +169,7 @@ is accessed through the variable <code>${ data }</code>. The result of this exam
     
 <header class="@0-x1 @0-3x @1-x3 @1-4x @2-x3">
     
-    <h2 class="doctext-02">&lt;template is="literal-template"&gt;</h2>
+    <h2 class="doctext-02" id="template-is-literal-template">&lt;template is="literal-template"&gt;</h2>
     <p>Literal templates bind the DOM to data, parsing text content, classes and 
 attributes as JS template literals. Here is a literal template that prints out 
 data when rendered:</p>
@@ -199,7 +199,23 @@ data when rendered:</p>
     
     
     
+
     
+    <h3 class="doctext-03">Methods</h3>
+    
+<div class="method-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="method-renderer">
+<h3 class="method-doctext-05 doctext-05">
+    <a href="#method-renderer">
+        <code class=" language-js">.Renderer(<span class="param"></span>)</code>
+    </a>
+</h3>
+
+<p>Returns a TemplateRenderer instance.</p>
+
+</div>
+
+ 
+
     
     
     
@@ -512,7 +528,7 @@ the document root.</p>
     
 <header class="@0-x1 @0-3x @1-x3 @1-4x @2-x3">
     
-    <h2 class="doctext-02">&lt;literal-include&gt;</h2>
+    <h2 class="doctext-02" id="literal-include">&lt;literal-include&gt;</h2>
     <p>A <code>literal-include</code> may be placed pretty much anywhere in your HTML (the normal 
 rules about children of <code>&lt;ul&gt;</code> and <code>&lt;table&gt;</code> apply). This enables the mixing of 
 dynamic content into static HTML, inserting chunks of JS-rendered DOM 
@@ -595,7 +611,11 @@ attribute is not defined and empty object is used.</p>
     
     
     
+
     
+    
+    
+
     
     
     

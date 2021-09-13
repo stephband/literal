@@ -1,7 +1,7 @@
 
 <header class="@0-x1 @0-3x @1-x3 @1-4x @2-x3">
     ${ data.filter((doc) => doc.type === 'element').map((doc) => `
-    <h2 class="doctext-02">&lt;${ doc.name }&gt;</h2>
+    <h2 class="doctext-02" id="${ slugify(doc.name) }">&lt;${ doc.name }&gt;</h2>
     ${ doc.body }
     `) }
 </header>
@@ -23,7 +23,11 @@
     ${ this.properties = data.filter((doc) => doc.type === 'property'), '' }
     ${ this.properties.length ? '<h3 class="doctext-03">Properties</h3>' : '' }
     ${ Promise.all(this.properties.map((doc) => include("../../bolt/templates/entry.literal", doc))).then((array) => array.join(''))  }
-    
+
+    ${ this.methods = data.filter((doc) => doc.type === 'method'), '' }
+    ${ this.methods.length ? '<h3 class="doctext-03">Methods</h3>' : '' }
+    ${ Promise.all(this.methods.map((doc) => include("../../bolt/templates/entry.literal", doc))).then((array) => array.join(''))  }
+
     ${ this.events = data.filter((doc) => doc.type === 'event'), '' }
     ${ this.events.length ? '<h3 class="doctext-03">Events</h3>' : '' }
     ${ Promise.all(this.events.map((doc) => include("../../bolt/templates/entry.literal", doc))).then((array) => array.join(''))  }

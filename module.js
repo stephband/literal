@@ -88,7 +88,7 @@ And the result is:
 
 /**
 Contents
-- <a href="#literal-template">`<template is="literal-template">`</a>
+- <a href="#template-is-literal-template">`<template is="literal-template">`</a>
 - <a href="#functions">Literal template functions</a>
 - <a href="#literal-include">`<literal-include>`</a>
 **/
