@@ -2,9 +2,9 @@
 /**
 Template functions
 
-Functions are contained in the scope of a literal template. Some are simply JS 
-built-ins aliased for brevity. Others provide **template includes**, **routing** 
-and **value transformations**.
+The scope of literal templates contains a small library of functions. Some are 
+simply JS built-ins aliased for brevity. Others provide template includes, 
+routing and value transformations.
 
 **/
 

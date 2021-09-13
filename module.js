@@ -4,13 +4,22 @@ Get Started
 
 Import Literal from the main module in the repo:
 
-```js
+```
 import 'http://stephen.band/literal/module.js';
 ```
 
-<p class="right-bubble bubble">Clearly you should not rely on this resource in production. Use a bundler 
-such as <a href="https://esbuild.github.io/">esbuild</a> to package it into your 
-own module.</p>
+<p class="right-bubble bubble">Clearly you should not rely on this resource in 
+production. Use a bundler such as <a href="https://esbuild.github.io/">esbuild</a> 
+to package it into your own module.</p>
+
+And grab the associated CSS:
+
+```css
+@import 'http://stephen.band/literal/module.css';
+```
+
+<p class="right-bubble bubble">Clearly you should not rely on this resource in 
+production. Use a bundler to package it into your own CSS.</p>
 
 This registers the custom element `<literal-include>`. Here is how to use it:
 
@@ -45,12 +54,10 @@ is accessed through the variable `${ data }`. The result of this example is:
 <literal-include src="#author" data="./data/todo.json">
     <p>Fallback content.</p>
 </literal-include>
-**/
 
-/*
 The template renderer observes `data` objects and updates the DOM if changes are 
 detected. In the following example a mutating `data` object is imported from a 
-JS module:
+JS module and used to rotate an SVG:
 
 ```html
 <template id="clock">
@@ -79,13 +86,13 @@ And the result is:
 <literal-include src="#clock" data="./data/dom-clock.js">
     <p>You loaded this.</p>
 </literal-include>
-*/
+**/
 
-/**
+/*
 Contents
 - <a href="#literal-include">`<literal-include>`</a>
 - <a href="#template-functions">Literal template functions</a>
-**/
+*/
 
 import './elements/literal-include.js';
 

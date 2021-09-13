@@ -116,10 +116,14 @@
     
 <h2 class="doctext-02" id="get-started">Get Started</h2>
 <p>Import Literal from the main module in the repo:</p>
-<pre><code class="language-js"><span class="token keyword">import</span> <span class="token string">'http://stephen.band/literal/module.js'</span><span class="token punctuation">;</span></code></pre>
-<p class="right-bubble bubble">Clearly you should not rely on this resource in production. Use a bundler 
-such as <a href="https://esbuild.github.io/">esbuild</a> to package it into your 
-own module.</p>
+<pre><code><span class="token keyword">import</span> <span class="token string">'http://stephen.band/literal/module.js'</span><span class="token punctuation">;</span></code></pre><p class="right-bubble bubble">Clearly you should not rely on this resource in 
+production. Use a bundler such as <a href="https://esbuild.github.io/">esbuild</a> 
+to package it into your own module.</p>
+
+<p>And grab the associated CSS:</p>
+<pre><code class="language-css"><span class="token atrule"><span class="token rule">@import</span> <span class="token string">'http://stephen.band/literal/module.css'</span><span class="token punctuation">;</span></span></code></pre>
+<p class="right-bubble bubble">Clearly you should not rely on this resource in 
+production. Use a bundler to package it into your own CSS.</p>
 
 <p>This registers the custom element <code>&lt;literal-include&gt;</code>. Here is how to use it:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>item<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
@@ -150,13 +154,32 @@ is accessed through the variable <code>${ data }</code>. The result of this exam
     <p>Fallback content.</p>
 </literal-include>
 
+<p>The template renderer observes <code>data</code> objects and updates the DOM if changes are 
+detected. In the following example a mutating <code>data</code> object is imported from a 
+JS module and used to rotate an SVG:</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>clock<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>svg</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token selector">transform: rotate($</span><span class="token punctuation">{</span> <span class="token function">round</span><span class="token punctuation">(</span>data.time<span class="token punctuation">)</span> * 6 + <span class="token string">'deg'</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="token punctuation">"</span></span></span> <span class="token attr-name">viewBox</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>0 0 24 24<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>circle</span> <span class="token attr-name">cx</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>12<span class="token punctuation">"</span></span> <span class="token attr-name">cy</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>12<span class="token punctuation">"</span></span> <span class="token attr-name">r</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>11<span class="token punctuation">"</span></span> <span class="token attr-name">fill</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>white<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>line</span> <span class="token attr-name">x1</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>12<span class="token punctuation">"</span></span> <span class="token attr-name">y1</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>12<span class="token punctuation">"</span></span> <span class="token attr-name">x2</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>12<span class="token punctuation">"</span></span> <span class="token attr-name">y2</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>1<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>svg</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>You loaded this <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>b</span><span class="token punctuation">></span></span>${ round(data.time) + 's' }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>b</span><span class="token punctuation">></span></span> ago.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 
- 
-<h2 class="doctext-02" id="contents">Contents</h2>
-<ul>
-<li><a href="#literal-include"><code>&lt;literal-include&gt;</code></a></li>
-<li><a href="#template-functions">Literal template functions</a></li>
-</ul>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#clock<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./data/dom-clock.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>You loaded this.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
+<p>And the result is:</p>
+<template id="clock">
+    <svg style="transform: rotate(${ round(data.time) * 6 + 'deg'});" viewBox="0 0 24 24" width="32" height="32">
+        <circle cx="12" cy="12" r="11" fill="white" stroke-width="2" />
+        <line x1="12" y1="12" x2="12" y2="1" stroke-width="1" />
+    </svg>
+    <p>You loaded this <b>${ round(data.time) + 's' }</b> ago.</p>
+</template>
+
+<literal-include src="#clock" data="./data/dom-clock.js">
+    <p>You loaded this.</p>
+</literal-include>
 
 
  
@@ -393,9 +416,9 @@ before being rendered.</p>
 <section class="block @0-x1 @0-3x @1-x3 @1-4x @2-x3">
     
 <h2 class="doctext-02" id="template-functions">Template functions</h2>
-<p>Functions are contained in the scope of a literal template. Some are simply JS 
-built-ins aliased for brevity. Others provide <strong>template includes</strong>, <strong>routing</strong> 
-and <strong>value transformations</strong>.</p>
+<p>The scope of literal templates contains a small library of functions. Some are 
+simply JS built-ins aliased for brevity. Others provide template includes, 
+routing and value transformations.</p>
 
 
  
