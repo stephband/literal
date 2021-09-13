@@ -1,50 +1,52 @@
 
 @import '../bolt/fonts/fira-mono.css';
 
-@import "../bolt/css/html.css";
-@import "../bolt/css/svg.css";
-@import "../bolt/css/root.css";
-@import "../bolt/css/body.css";
-@import "../bolt/css/type.css";
-@import "../bolt/css/code.css";
-@import "../bolt/css/content.css";
-@import "../bolt/css/button.css";
-/*
-@import "../bolt/css/input.css";
-@import "../bolt/css/label.css";
-@import "../bolt/css/progress.css";
-@import "../bolt/css/table.css";
-@import "../bolt/css/list.css";
-@import "../bolt/css/layer.css";
-@import "../bolt/css/badge.css";
-@import "../bolt/css/pill.css";
-@import "../bolt/css/thumb.css";
-*/
-@import "../bolt/css/block.css";
-@import "../bolt/css/color.css";
-@import "../bolt/css/text.css";
-@import "../bolt/css/modifiers.css";
-@import "../bolt/css/respond.css";
-/*@import "../bolt/css/grid.css";*/
-@import "../bolt/css/device.css";
-/*
-@import "../bolt/classes/check-label.css";
-@import "../bolt/classes/switch-label.css";
-@import "../bolt/classes/check-button.css";
-@import "../bolt/classes/menu.css";
-@import "../bolt/classes/message.css";
-@import "../bolt/classes/select-button.css";
-@import "../bolt/classes/pill-input.css";
-@import "../bolt/classes/toggle-button.css";
-*/
-@import "../bolt/classes/toggle-block.css";
-@import "../bolt/classes/bubble.css";
-/*
-@import "../bolt/classes/card.css";
-@import "../bolt/elements/overflow-toggle.css";
-@import "../bolt/elements/slide-show.css";
-*/
+@import "../bolt/tags/html.css";
+@import "../bolt/tags/svg.css";
+@import "../bolt/tags/root.css";
+@import "../bolt/tags/body.css";
+@import "../bolt/tags/type.css";
+@import "../bolt/tags/a.css";
+@import "../bolt/tags/code.css";/*
+@import "../bolt/tags/input.css";
+@import "../bolt/tags/label.css";
+@import "../bolt/tags/progress.css";
+@import "../bolt/tags/table.css";
 
+@import "../bolt/pseudo/content.css";
+@import "../bolt/pseudo/fullscreen.css";
+*/
+@import "classes/js.css";
+@import "classes/button.css";
+@import "classes/list.css";
+@import "classes/layer.css";
+@import "classes/badge.css";
+@import "classes/pill.css";
+@import "classes/thumb.css";
+@import "classes/block.css";
+@import "classes/color.css";
+@import "classes/text.css";
+@import "classes/atoms.css";
+@import "classes/device.css";
+@import "classes/dialog.css";/*
+@import "classes/check-label.css";
+@import "classes/switch-label.css";
+@import "classes/check-button.css";
+@import "classes/menu.css";
+@import "classes/message.css";
+@import "classes/select-button.css";
+@import "classes/pill-input.css";
+@import "classes/toggle-button.css";*/
+@import "classes/toggle-block.css";
+@import "classes/bubble.css";/*
+@import "classes/card.css";*/
+@import "classes/display.css";
+
+@import "attributes/name=location.css";
+/*
+@import "elements/overflow-toggle.css";
+@import "elements/slide-show.css";
+*/
 .block > pre + .bubble {
     top: auto;
     left: auto;

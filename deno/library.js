@@ -139,8 +139,8 @@ const renderInclude = overload((source, target, file) => toExtension(file), {
             read(file).then(extractBody)
         ])
         .then(([data, template]) => {
-            const include  = (url, data) => library.include(file, target, url, data);
-            const imports  = (url)       => library.imports(file, target, url);
+            const include  = (src, data) => library.include(file, target, src, data);
+            const imports  = (src)       => library.imports(file, target, CanvasRenderingContext2D);
             const comments = (...urls)   => library.comments(file, target, ...urls);
             const renderer = {
                 source: file,
@@ -150,8 +150,8 @@ const renderInclude = overload((source, target, file) => toExtension(file), {
             return renderer
             .render(data, include, imports, comments)
             .then(library.DEBUG ?
-                (text) => prependComment(file, target, rewriteURLs(source, target, text)) :
-                (text) => rewriteURLs(file, target, text)
+                (text) => prependComment(file, source, rewriteURLs(file, source, text)) :
+                (text) => rewriteURLs(file, source, text)
             );
         }),
 
@@ -161,8 +161,8 @@ const renderInclude = overload((source, target, file) => toExtension(file), {
             read(file)
         ])
         .then(([data, template]) => {
-            const include  = (url, data) => library.include(file, target, url, data);
-            const imports  = (url)       => library.imports(file, target, url);
+            const include  = (src, data) => library.include(file, target, src, data);
+            const imports  = (src)       => library.imports(file, target, src);
             const comments = (...urls)   => library.comments(file, target, ...urls);
             const renderer = {
                 source: file,
@@ -172,8 +172,8 @@ const renderInclude = overload((source, target, file) => toExtension(file), {
             return renderer
             .render(data, include, imports, comments)
             .then(library.DEBUG ?
-                (text) => prependComment(file, target, rewriteURLs(source, target, text)) :
-                (text) => rewriteURLs(file, target, text)
+                (text) => prependComment(file, source, rewriteURLs(file, source, text)) :
+                (text) => rewriteURLs(file, source, text)
             );
         }),
 
