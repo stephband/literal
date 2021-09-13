@@ -1,7 +1,7 @@
 
 <header class="@0-x1 @0-3x @1-x3 @1-4x @2-x3">
     ${ data.filter((doc) => doc.type === 'element').map((doc) => `
-    <h2 class="doctext-02" id="${ slugify(doc.name) }">&lt;${ doc.name }&gt;</h2>
+    <h2 class="doctext-02" id="${ slugify(doc.name) }"><code>&lt;${ doc.name }&gt;</code></h2>
     ${ doc.body }
     `) }
 </header>

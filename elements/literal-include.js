@@ -2,15 +2,13 @@
 /** 
 <literal-include>
 
-A `literal-include` may be placed pretty much anywhere in your HTML (the normal 
-rules about children of `<ul>` and `<table>` apply). This enables the mixing of 
-dynamic content into static HTML, inserting chunks of JS-rendered DOM 
-wherever you like in a document. A `literal-include` may also contain fallback 
-content.
+A `literal-include` may be placed pretty much anywhere in your HTML, enabling 
+the insertion of chunks of dynamic, JS-rendered DOM wherever you like in a 
+document. A `literal-include` may also contain fallback content.
 
-An `<literal-include>` finds a source template identified by its `src` attribute
-and replaces itself, and any fallback content contained inside, with rendered 
-content of the template. This works for standard templates:
+A `literal-include` finds a source template identified by its `src` attribute
+and replaces itself and its fallback content, with rendered content of the 
+template. This works for standard templates:
 
 ```html
 <template id="greetings">
@@ -157,11 +155,12 @@ element('<literal-include>', {
         }
     },
 
-    /** 
+    /**
     src="#id"
 
     Define a source template whose rendered content replaces this
-    `literal-include`. This is a required attribute.
+    `literal-include`. This is a required attribute and must be in the form of
+    a fragment identifier pointing to a `template` element in the DOM.  
     **/
 
     src: {
