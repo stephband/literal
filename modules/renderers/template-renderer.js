@@ -1,42 +1,50 @@
 
-import get         from '../../../fn/modules/get.js';
+/** 
+TemplateRenderer(template)
+
+Import the `TemplateRenderer` constructor from the main module:
+
+```js
+import TemplateRenderer from 'https://stephen.band/literal/module.js';
+```
+
+The `TemplateRenderer` constructor takes a template element, or the `id` of a 
+template element, and creates a renderer of a clone of the template's content.
+A renderer manages an asynchronous lifecycle of content renders, updating its 
+DOM nodes in response to changing data.
+
+```js
+const renderer = new TemplateRenderer('id');
+const data     = {};
+
+// Cue data for render then add it to the DOM
+renderer
+.cue(data)
+.then(() => document.body.append(renderer.content));
+```
+**/
+
 import getPath     from '../../../fn/modules/get-path.js';
-import noop        from '../../../fn/modules/noop.js';
 import nothing     from '../../../fn/modules/nothing.js';
-import overload    from '../../../fn/modules/overload.js';
 import identify    from '../../../dom/modules/identify.js';
 import isTextNode  from '../../../dom/modules/is-text-node.js';
 import compileNode from '../compile-node.js';
 import { Observer, observe, getTarget } from '../observer.js';
-import reads       from '../observer/reads.js';
-import { log }     from '../log.js';
 import analytics, { meta } from './analytics.js';
-import { cue, uncue } from './batcher.js';
-import Renderer, { renderStopped, removeNodes } from './renderer.js';
+import Renderer, { removeNodes } from './renderer.js';
 
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
 const assign = Object.assign;
 const cache  = {};
 
-function add(a, b) {
-    return b + a;
-}
-
-function logCounts(counts) {
-    const count = counts.reduce(add, 0);
-    if (count === 0) { return; }
-    //log('mutate ', counts.reduce(add, 0), '#ff7246');
-}
 
 /*
 TemplateRenderer
-Descendant paths are stored in the form `"1.12.3.class"`. This enables fast 
+Descendant paths are stored in the form `"1.12.3.class"`, enabling fast 
 cloning of template instances without retraversing their DOMs looking for 
 literal attributes and text.
 */
-
-var renderid = 0;
 
 function child(parent, index) {
     return /^[a-zA-Z]/.test(index) ?
@@ -48,7 +56,6 @@ function getDescendant(path, root) {
     const p = path.split(/\./);
     return p.reduce(child, root);
 }
-var i = 0;
 
 function isMarkerNode(node) {
     // Markers should be spaces-only else we risk unrendered content being 
@@ -127,6 +134,14 @@ export default function TemplateRenderer(template) {
         }
     }
 
+    /** 
+    .content
+    A fragment containing the renderer's DOM nodes. Initially they are in an
+    unrendered state, and are guaranteed to be in a rendered state on resolution
+    of the first `.cue()` promise. This fragment may be inserted into the DOM
+    at any time. The renderer will continue to manage these nodes wherever they
+    end up.
+    **/
     prepareContent(template.content);
 
     this.template  = template;
@@ -156,13 +171,21 @@ function stop(object) {
 }
 
 assign(TemplateRenderer.prototype, {
+    /**
+    .cue(data)
+    Cues `data` to be rendered in the next render batch. Returns a promise that
+    resolves when the batch is finished rendering.
+    
+    The `data` object is observed for mutations, and the renderer updates it 
+    content until either a new data object is cued or the renderer is stopped.
+    **/
+
     cue: function(data) {
         this.observables.forEach(stop);
         this.observables = nothing;
         return Renderer.prototype.cue.apply(this, arguments);
     },
 
-    // Default data is an empty object
     render: function(object) {
         const data = getTarget(object);
 
@@ -204,6 +227,20 @@ assign(TemplateRenderer.prototype, {
         return this.content;
     },
 
+    /* 
+    .done(fn)
+    Registers a `fn` to be called when either a) the current render cycle comes
+    to an end because new data has been cued to render, or b) the renderer is 
+    stopped with the `.stop()` method.
+    */
+
+    /** 
+    .stop()
+    Stops the renderer and all descendent renderers. All observers are stopped,
+    handlers registered with `.done()` are called, and no more data can be cued 
+    for rendering. Rendered content is left in the DOM, but it is now static.
+    **/
+
     stop: function() {
         // We must not empty .renderers, they are compiled and cached and may 
         // be cloned. We can stop listening to sets and make .render() a
@@ -213,6 +250,11 @@ assign(TemplateRenderer.prototype, {
         this.observables = nothing;
         return Renderer.prototype.stop.apply(this, arguments);
     },
+
+    /** 
+    .remove()
+    Removes rendered content from the DOM.
+    **/
 
     remove: function() {
         return removeNodes(this.first, this.last);

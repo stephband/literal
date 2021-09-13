@@ -72,9 +72,15 @@
     </header>
 
     ${ include("./templates/section.literal", await comments("./module.js")) }
-    ${ include("./templates/element.literal", await comments("./elements/literal-template.js")) }
-    ${ include("./templates/section.literal", await comments("./modules/library.js")) }
     ${ include("./templates/element.literal", await comments("./elements/literal-include.js")) }
+    ${ include("./templates/section.literal", await comments("./modules/to-text.js")) }
+    ${ include("./templates/section.literal", await comments("./modules/library.js")) }
+    
+    <div class="@0-x3" style="grid-column-end: span 4;">
+        <h2>Literal in JS</h2>
+    </div>
+
+    ${ include("./templates/constructor.literal", await comments("./modules/renderers/template-renderer.js")) }
 
     <script type="module">
         import './module.js';

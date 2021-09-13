@@ -87,7 +87,7 @@
     <header>
         <h1 class="doctext-01">Literal <span class="doctext-06">0.2.0</span></h1>
         
-        <template is="literal-template" id="window-time">
+        <template id="window-time">
             <time>${
                 // Set local variables on `this`, the renderer
                 this.n = window.performance.now() / 1000,
@@ -147,8 +147,8 @@
 
     <h3 class="text-03"><code>&lt;literal-include src="#literal-template"&gt;</code> <span class="test-count">(8 tests)</span></h3>
 
-    <template is="literal-template" id="literal-template">
-        <p>✓ Content in a <code>&lt;template is="literal-template"&gt;</code> element, with rendered data:</p>
+    <template id="literal-template">
+        <p>✓ Content in a <code>&lt;template&gt;</code> element, with rendered data:</p>
         <pre><code>${ data }</code></pre>
     </template>
     
@@ -202,8 +202,8 @@
 
     <h3 class="text-03">Values <span class="test-count">(1 test)</span></h3>
 
-    <template is="literal-template" id="values-template">
-        <p>This is how various values are rendered in a <code>&lt;template is="literal-template"&gt;</code>:</p>
+    <template id="values-template">
+        <p>This is how various values are rendered in a <code>&lt;template&gt;</code>:</p>
         <dl style="display: grid; grid-template-columns: min-content 1fr; text-align: left;">
             <dt>String</dt>    <dd>${ 'hello' }</dd>
             <dt>Number</dt>    <dd>${ 123.45 }</dd>
@@ -250,7 +250,7 @@
         <p>✓ Standard template included.</p>
     </template>
 
-    <template is="literal-template" id="include-standard-template">
+    <template id="include-standard-template">
         <div>
             Before include.
             ${ include('#paragraph-template', new Promise((resolve) => setTimeout(() => resolve({}), 4000))) }
@@ -262,12 +262,12 @@
 
     <hr/>
 
-    <template is="literal-template" id="data-template">
+    <template id="data-template">
         <p>✓ Literal template included.</p>
         <pre><code>${ data }</code></pre>
     </template>
     
-    <template is="literal-template" id="include-literal-template">
+    <template id="include-literal-template">
         <div>
             Before include.
             ${ include('#data-template', {}) }
@@ -286,7 +286,7 @@
 
     <h3 class="text-03">Live binding <span class="test-count">(4 tests)</span></h3>
 
-    <template is="literal-template" id="clock-template">
+    <template id="clock-template">
         <p>Time since load: ${ parseInt(data.time, 10) }</p>
     </template>
 
@@ -298,15 +298,15 @@
 
     <hr/>
 
-    <template is="literal-template" id="even-template">
+    <template id="even-template">
         <p>Even: ${ parseInt(data.time, 10) }</p>
     </template>
 
-    <template is="literal-template" id="odd-template">
+    <template id="odd-template">
         <p>Odd:  ${ parseInt(data.time, 10) }</p>
     </template>
 
-    <template is="literal-template" id="evenodd-template">
+    <template id="evenodd-template">
         ${ include(parseInt(data.time, 10) % 2 === 0 ? '#even-template' : '#odd-template', data) }
     </template>
 
@@ -314,7 +314,7 @@
 
     <hr/>
 
-    <template is="literal-template" id="numbers-template">
+    <template id="numbers-template">
         <input type="number" value="${ parseInt(data.time, 10) }" />
         <input type="range" min="0" max="10" value="${ parseInt(data.time, 10) }" />
 
@@ -355,12 +355,12 @@
 
     <h3 class="text-03">Mapped include() <span class="test-count">(1 test)</span></h3>
 
-    <template is="literal-template" id="title-template">
+    <template id="title-template">
         ${ print(this, data) }
         <p>${ data.title }</p>
     </template>
 
-    <template is="literal-template" id="objects-template">
+    <template id="objects-template">
         ${ print(this, data) }
         <div>Before ${ data.map(include('#title-template')) } After</div>
     </template>

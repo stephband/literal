@@ -130,7 +130,7 @@ const parseDotted = capture(/^(\w[\w\d]*)(?:(\(\s*)|(\s*=\s*)|(\s*\n\s*)|(\s*))/
     // selector. This is dependent on context, and we retype this particular 
     // type later depending on file extension.
     4: (data, captures) => {
-        data.name = '.' + data.name;
+        //data.name = '.' + data.name;
         data.type = 'property|selector';
         return data;        
     },

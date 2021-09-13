@@ -13,12 +13,12 @@ Import Literal.
 <script type="module" src="./module.js"></script> 
 ```
 
-This registers two custom elements, `&lt;template is="literal-template"&gt;` and
+This registers two custom elements, `&lt;template&gt;` and
 `&lt;literal-include&gt;`.
 
 ```html
 <!-- Define a template -->
-<template is="literal-template" id="title-template">
+<template id="title-template">
     <h1>I am ${ data.title }</h1>
 </template>
 
@@ -34,7 +34,7 @@ is fetched the include renders to the DOM as
 <h1>I am Literal</h1>
 ```
 
-A `&lt;template is="literal-template"&gt;` may be reused by multiple 
+A `&lt;template&gt;` may be reused by multiple 
 `&lt;literal-include&gt;`s.
 
 
@@ -52,7 +52,7 @@ Where a single `data` attribute is used, the object `data` inside a template
 refers to the imported object.
 
 ```html
-<template is="literal-template" id="title-template">
+<template id="title-template">
     <h1>I am ${ data.title }</h1>
 </template>
 
@@ -63,7 +63,7 @@ Where dataset (`data-`) attributes are used, the object `data` inside a
 template is given properties with corresponding names.
 
 ```html
-<template is="literal-template" id="title-template">
+<template id="title-template">
     <h1>I am ${ data.package.title }. Number is ${ data.number }</h1>
 </template>
 
@@ -179,7 +179,7 @@ and `data` attributes. Indeed, an include requires a `src` attribute.
     <p>${ description }</p>
 </template>
 
-<template is="literal-template" data="./package.json">
+<template data="./package.json">
     <h1>${ title }</h1>
     <include src="#description"></include>
 </template>

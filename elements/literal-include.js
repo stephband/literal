@@ -4,31 +4,22 @@
 
 A `literal-include` may be placed pretty much anywhere in your HTML, enabling 
 the insertion of chunks of dynamic, JS-rendered DOM wherever you like in a 
-document. A `literal-include` may also contain fallback content.
+document.
 
-A `literal-include` finds a source template identified by its `src` attribute
-and replaces itself and its fallback content, with rendered content of the 
-template. This works for standard templates:
+A `literal-include` finds a source template identified by its `src` attribute,
+fetches JSON or imports a module referred to by its `data` attribute, renders
+attributes and text found to contain literal tags, then replaces itself with 
+the rendered result.
+
+A `literal-include` may contain fallback content, in case any of that fails.
 
 ```html
 <template id="greetings">
-    Rendered content.
+    Rendered content with ${ tags }.
 </template>
 
-<literal-include src="#greetings">
+<literal-include src="#greetings" data="path/to/data.js">
     Fallback content.
-</literal-include>
-```
-
-And it works for `literal-template`s:
-
-```html
-<template is="literal-template" id="greetings">
-    Hello ${ data.name }.
-</template>
-
-<literal-include src="#greetings" data="user.json">
-    Hello user.
 </literal-include>
 ```
 
@@ -36,6 +27,7 @@ And it works for `literal-template`s:
 
 import element from '../../dom/modules/element.js';
 import request from '../library/request.js';
+import TemplateRenderer from '../modules/renderers/template-renderer.js';
 
 const rpath = /^\.|^https?:\/\//;
 
@@ -85,31 +77,20 @@ element('<literal-include>', {
             }) ;
 
         // Resolve src template
-
         new Promise((resolve, reject) => {
             this.resolveSrc = resolve;
             this.rejectSrc = reject;
         })
-        .then((template) => {
-            // Template is a literal-template with a .Renderer() constructor
-            if (template.Renderer) {
-                // It requires data to be rendered
-                return dataPromise.then((data) => {
-                    const renderer = template.Renderer();
+        .then((template) => dataPromise.then((data) => {
+            const renderer = new TemplateRenderer(template);
 
-                    // But once it has data we know we can render it, but we 
-                    // want to do that in the next batch
-                    renderer.cue(data).then(() => {
-                        this.before(renderer.content);
-                        this.remove();
-                    });
-                });
-            }
-
-            // Template is a standard template with .content property
-            this.after(template.content.cloneNode(true));
-            this.remove();
-        })
+            // But once it has data we know we can render it, but we 
+            // want to do that in the next batch
+            renderer.cue(data).then(() => {
+                this.before(renderer.content);
+                this.remove();
+            });
+        }))
         .catch((message) => console.error(message, this));
     },
 
@@ -120,7 +101,7 @@ element('<literal-include>', {
     }
 }, {
     /** 
-    data="path/to/file.json"
+    data=""
 
     Defines a JSON file or JS module containing data to be rendered. If a data 
     attribute is not defined and empty object is used.
@@ -156,7 +137,7 @@ element('<literal-include>', {
     },
 
     /**
-    src="#id"
+    src=""
 
     Define a source template whose rendered content replaces this
     `literal-include`. This is a required attribute and must be in the form of

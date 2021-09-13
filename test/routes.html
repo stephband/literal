@@ -41,7 +41,7 @@
 
 <body class="@3-12-grid grid">
 
-    <template is="literal-template" id="index.html">
+    <template id="index.html">
         template: #index.html
         --------------------
         renderer: ${ this.id }
@@ -56,7 +56,7 @@
         state:    ${ data.state }
     </template>
 
-    <template is="literal-template" id="add.html">
+    <template id="add.html">
         template: #add.html
         ---------------------
         renderer: ${ this.id }
@@ -71,7 +71,7 @@
         state:    ${ data.state }
     </template>
 
-    <template is="literal-template" id="router.html">
+    <template id="router.html">
         template: #router.html
         ---------------------
         renderer: ${ this.id }
@@ -86,7 +86,7 @@
         state:    ${ data.state }
     </template>
 
-    <!--template is="literal-template" id="routes/">
+    <!--template id="routes/">
         template: #routes/
         path:   ${ data.base + data.path }
         route:  ${ data.route }
@@ -99,7 +99,7 @@
         })(data.route) }
     </template>
 
-    <template is="literal-template" id="number/">
+    <template id="number/">
         template: #number/
         path:   ${ data.base + data.path }
         params: ${ data.params }
@@ -108,7 +108,7 @@
         state:  ${ data.state }
     </template-->
 
-    <template is="literal-template" id="main-template">
+    <template id="main-template">
         <h3>main-template</h3>
 
         <pre>
