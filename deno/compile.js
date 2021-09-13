@@ -64,7 +64,7 @@ export default function compile(scope, params, source, id) {
         }
         catch(e) {
             // Append useful info to error message
-            e.message += ' in template ' + id;
+            e.message += ' in template ' + id.replace(Deno.cwd() + '/', '');
             throw e;
         }
     }

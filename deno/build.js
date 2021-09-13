@@ -34,7 +34,7 @@ export default function build(source, target, debug) {
         );
     })
     .catch((e) => {
-        e.message += ' in template ' + source;
+        e.message += ' in template ' + source.replace(Deno.cwd() + '/', '');
         throw e;
     })
     .then((text) => new Promise(function(resolve, reject) {

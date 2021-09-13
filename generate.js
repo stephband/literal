@@ -28,7 +28,6 @@ files.forEach(function processFile(file) {
     build(source, target, DEBUG)
     //.then(() => { Deno.exit(0); })
     .catch((e) => {
-        console.log(e);
-        Deno.exit(1);
+        throw e;
     });
 });
