@@ -88,9 +88,9 @@ And the result is:
 
 /** Contents
 
+- <a href="#functions">Template functions</a>
 - <a href="#literal-include">`<literal-include>`</a>
 - <a href="#literal-template">`<template is="literal-template">`</a>
-- <a href="#functions">Template functions</a>
 **/
 
 import './elements/literal-template.js';

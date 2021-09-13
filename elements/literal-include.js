@@ -2,52 +2,38 @@
 /** 
 <literal-include>
 
-Include templates allow you to mix static and dynamic content, inserting
-chunks of JS-rendered DOM where you like in a document.
+A `literal-include` may be placed pretty much anywhere in your HTML (the normal 
+rules about children of `<ul>` and `<table>` apply). This enables the mixing of 
+dynamic content into static HTML, inserting chunks of JS-rendered DOM 
+wherever you like in a document. A `literal-include` may also contain fallback 
+content.
 
 An `<literal-include>` finds a source template identified by its `src` attribute
-and replaces itself with the template content:
+and replaces itself, and any fallback content contained inside, with rendered 
+content of the template. This works for standard templates:
 
 ```html
 <template id="greetings">
-    Hello you.
+    Rendered content.
 </template>
 
-<literal-include src="#greetings"></literal-include>
+<literal-include src="#greetings">
+    Fallback content.
+</literal-include>
 ```
 
-If the source template is a `<template is="literal-template">`, its `.render()` 
-method is called with data resolved from data attributes on the `<literal-include>`.
+And it works for `literal-template`s:
 
 ```html
 <template is="literal-template" id="greetings">
     Hello ${ data.name }.
 </template>
 
-<literal-include src="#greetings" data-name="Bartholemew"></literal-include>
+<literal-include src="#greetings" data="user.json">
+    Hello user.
+</literal-include>
 ```
 
-To get data from an external JSON file specify a path to JSON:
-
-```html
-<literal-include src="#greetings" data="./package.json"></literal-include>
-```
-
-Or import the default export of a JS module:
-
-```html
-<literal-include src="#greetings" data="./modules/literal.js"></literal-include>
-```
-
-Or indeed the named export of JS module:
-
-```html
-<literal-include src="#greetings" data="./modules/literal.js#name"></literal-include>
-```
-
-Should the `literal-include` contain html, note that that content is 
-displayed until templated content has been fetched and rendered, allowing you
-to provide default or fallback content.
 **/
 
 import element from '../../dom/modules/element.js';
@@ -137,8 +123,27 @@ element('<literal-include>', {
 }, {
     /** 
     data="path/to/file.json"
-    Define a JSON file used to render templates (that have a `.render(data)` 
-    method). If a data attribute is not defined and empty object is used.
+
+    Defines a JSON file or JS module containing data to be rendered. If a data 
+    attribute is not defined and empty object is used.
+
+    To get data from a JSON file specify a path to JSON:
+
+    ```html
+    <literal-include src="#greetings" data="./package.json"></literal-include>
+    ```
+
+    Or import the default export of a JS module:
+
+    ```html
+    <literal-include src="#greetings" data="./modules/literal.js"></literal-include>
+    ```
+
+    Or import a named export of JS module:
+
+    ```html
+    <literal-include src="#greetings" data="./modules/literal.js#name"></literal-include>
+    ```
     **/
 
     data: {
@@ -154,6 +159,7 @@ element('<literal-include>', {
 
     /** 
     src="#id"
+
     Define a source template whose rendered content replaces this
     `literal-include`. This is a required attribute.
     **/

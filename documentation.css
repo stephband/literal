@@ -16,37 +16,38 @@
 @import "../bolt/pseudo/content.css";
 @import "../bolt/pseudo/fullscreen.css";
 */
-@import "classes/js.css";
-@import "classes/button.css";
-@import "classes/list.css";
-@import "classes/layer.css";
-@import "classes/badge.css";
-@import "classes/pill.css";
-@import "classes/thumb.css";
-@import "classes/block.css";
-@import "classes/color.css";
-@import "classes/text.css";
-@import "classes/atoms.css";
-@import "classes/device.css";
-@import "classes/dialog.css";/*
-@import "classes/check-label.css";
-@import "classes/switch-label.css";
-@import "classes/check-button.css";
-@import "classes/menu.css";
-@import "classes/message.css";
-@import "classes/select-button.css";
-@import "classes/pill-input.css";
-@import "classes/toggle-button.css";*/
-@import "classes/toggle-block.css";
-@import "classes/bubble.css";/*
-@import "classes/card.css";*/
-@import "classes/display.css";
+@import "../bolt/classes/js.css";
+@import "../bolt/classes/button.css";
+@import "../bolt/classes/list.css";
+@import "../bolt/classes/layer.css";
+@import "../bolt/classes/badge.css";
+@import "../bolt/classes/pill.css";
+@import "../bolt/classes/thumb.css";
+@import "../bolt/classes/block.css";
+@import "../bolt/classes/color.css";
+@import "../bolt/classes/text.css";
+@import "../bolt/classes/atoms.css";
+@import "../bolt/classes/device.css";
+@import "../bolt/classes/dialog.css";/*
+@import "../bolt/classes/check-label.css";
+@import "../bolt/classes/switch-label.css";
+@import "../bolt/classes/check-button.css";
+@import "../bolt/classes/menu.css";
+@import "../bolt/classes/message.css";
+@import "../bolt/classes/select-button.css";
+@import "../bolt/classes/pill-input.css";
+@import "../bolt/classes/toggle-button.css";*/
+@import "../bolt/classes/toggle-block.css";
+@import "../bolt/classes/bubble.css";/*
+@import "../bolt/classes/card.css";*/
+@import "../bolt/classes/display.css";
 
-@import "attributes/name=location.css";
+@import "../bolt/attributes/name=location.css";
 /*
-@import "elements/overflow-toggle.css";
-@import "elements/slide-show.css";
+@import "../bolt/elements/overflow-toggle.css";
+@import "../bolt/elements/slide-show.css";
 */
+
 .block > pre + .bubble {
     top: auto;
     left: auto;

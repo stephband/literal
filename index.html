@@ -158,9 +158,9 @@ is accessed through the variable <code>${ data }</code>. The result of this exam
  
 <h2 class="doctext-02" id="contents">Contents</h2>
 <ul>
+<li><a href="#functions">Template functions</a></li>
 <li><a href="#literal-include"><code>&lt;literal-include&gt;</code></a></li>
 <li><a href="#literal-template"><code>&lt;template is=&quot;literal-template&quot;&gt;</code></a></li>
-<li><a href="#functions">Template functions</a></li>
 </ul>
 
 
@@ -171,9 +171,9 @@ is accessed through the variable <code>${ data }</code>. The result of this exam
 <section class="block @0-x1 @0-3x @1-x3 @1-4x @2-x3">
     
 <h2 class="doctext-02" id="functions">Functions</h2>
-<p>Functions that are included in the scope of a <code>&lt;template is=&quot;literal-template&quot;&gt;</code>.
-A few are simply JS built-ins, aliased for brevity inside templates. Others 
-provide <strong>template includes</strong>, <strong>routing</strong> and <strong>value transformations</strong>.</p>
+<p>Functions are contained in the scope of <code>literal-template</code>s. A few are simply JS 
+built-ins aliased for brevity inside templates. Others provide 
+<strong>template includes</strong>, <strong>routing</strong> and <strong>value transformations</strong>.</p>
 
 
  
@@ -467,41 +467,41 @@ the document root.</p>
 <header class="@0-x1 @0-3x @1-x3 @1-4x @2-x3">
     
     <h2 class="doctext-02">&lt;literal-include&gt;</h2>
-    <p>Include templates allow you to mix static and dynamic content, inserting
-chunks of JS-rendered DOM where you like in a document.</p>
+    <p>A <code>literal-include</code> may be placed pretty much anywhere in your HTML (the normal 
+rules about children of <code>&lt;ul&gt;</code> and <code>&lt;table&gt;</code> apply). This enables the mixing of 
+dynamic content into static HTML, inserting chunks of JS-rendered DOM 
+wherever you like in a document. A <code>literal-include</code> may also contain fallback 
+content.</p>
 <p>An <code>&lt;literal-include&gt;</code> finds a source template identified by its <code>src</code> attribute
-and replaces itself with the template content:</p>
+and replaces itself, and any fallback content contained inside, with rendered 
+content of the template. This works for standard templates:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>greetings<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    Hello you.
+    Rendered content.
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
-<p>If the source template is a <code>&lt;template is=&quot;literal-template&quot;&gt;</code>, its <code>.render()</code> 
-method is called with data resolved from data attributes on the <code>&lt;literal-include&gt;</code>.</p>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    Fallback content.
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
+<p>And it works for <code>literal-template</code>s:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-template<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>greetings<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     Hello ${ data.name }.
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data-name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Bartholemew<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
-<p>To get data from an external JSON file specify a path to JSON:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
-<p>Or import the default export of a JS module:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./modules/literal.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
-<p>Or indeed the named export of JS module:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./modules/literal.js#name<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
-<p>Should the <code>literal-include</code> contain html, note that that content is 
-displayed until templated content has been fetched and rendered, allowing you
-to provide default or fallback content.</p>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>user.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    Hello user.
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
 
     
 </header>
 
 <form class="@0-x1 @0-3x @1-x1 @1-2x @2-x1 @2-3x x-stretch y-start">
     <template id="greetings">
-    Hello you.
+    Rendered content.
 </template>
 
-<literal-include src="#greetings"></literal-include>
+<literal-include src="#greetings">
+    Fallback content.
+</literal-include>
     <!-- for testing form submission values -->
     <input hidden class="button" type="submit" />
 </form>
@@ -517,8 +517,14 @@ to provide default or fallback content.</p>
     </a>
 </h3>
 
-<p>Define a JSON file used to render templates (that have a <code>.render(data)</code> 
-method). If a data attribute is not defined and empty object is used.</p>
+<p>Defines a JSON file or JS module containing data to be rendered. If a data 
+attribute is not defined and empty object is used.</p>
+<p>To get data from a JSON file specify a path to JSON:</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
+<p>Or import the default export of a JS module:</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./modules/literal.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
+<p>Or import a named export of JS module:</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./modules/literal.js#name<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
 
 </div>
 

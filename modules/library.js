@@ -1,9 +1,11 @@
 
 /**
 Functions
-Functions that are included in the scope of a `<template is="literal-template">`.
-A few are simply JS built-ins, aliased for brevity inside templates. Others 
-provide **template includes**, **routing** and **value transformations**.
+
+Functions are contained in the scope of `literal-template`s. A few are simply JS 
+built-ins aliased for brevity inside templates. Others provide 
+**template includes**, **routing** and **value transformations**.
+
 **/
 
 import id              from '../../fn/modules/id.js';

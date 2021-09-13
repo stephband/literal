@@ -11,14 +11,6 @@ data when rendered:
     <pre><code>${ data }</code></pre>
 </template>
 ```
-
-Use an `<literal-include>` to render this template into the document with some 
-data:
-
-```html
-<p>Ooo matron, what a lovely package.json:</p>
-<literal-include src="#log" data="./package.json"></literal-include>
-```
 **/
 
 
