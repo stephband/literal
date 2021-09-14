@@ -4,7 +4,7 @@ Template debugging
 
 Where `window.DEBUG` is truthy at the time Literal is loaded (or where Literal 
 is built into a module with the environment variable `DEBUG` set to `true`),
-the function `print(object)` prints one or more objects to the DOM as a debug 
+the function `print(object)` prints an object or objects to the DOM as a debug 
 message.
 
 ```html
