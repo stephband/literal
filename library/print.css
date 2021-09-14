@@ -21,17 +21,22 @@
     display: block;
     font-family: inherit;
     line-height: 1.4375em;
+    white-space: normal;
     border-top: inherit;
     border-bottom: inherit;
+    border-radius: 0;
     background-color: #fff8d5;
     margin-bottom: 0.25rem;
     margin-left: -0.25rem;
     margin-right: -0.25rem;
     padding: 0.25rem;
+    color: inherit;
 }
 
 .literal-message > code:last-child {
     margin-bottom: -1px;
+    border-bottom-left-radius: inherit;
+    border-bottom-right-radius: inherit;
 }
 
 .literal-error-message {

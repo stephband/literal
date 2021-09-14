@@ -605,27 +605,6 @@ stopped. This pattern observes <code>data.title</code> until the next render:</p
 </div>
 
  
-<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-print">
-<h3 class="function-doctext-05 doctext-05">
-    <a href="#function-print">
-        <code class=" language-js">print(<span class="param">object</span>, <span class="param">…</span>)</code>
-    </a>
-</h3>
-
-<p>For debugging templates.</p>
-<p>Where <code>window.DEBUG</code> is truthy at the time Literal is loaded (or where 
-Literal is packaged into a module with the environment variable DEBUG),
-<code>print(object, ...)</code> renders any number of objects to a debug message in the 
-DOM. For example, to debug a template in place, print the current renderer 
-and data:</p>
-<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">print</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span> <span class="token punctuation">}</span></code></pre>
-<p>Messages should be styled with the print stylesheet:</p>
-<pre><code class="language-css"><span class="token atrule"><span class="token rule">@import</span> <span class="token string">"http://stephen.band/literal/library/print.css"</span><span class="token punctuation">;</span></span></code></pre>
-<p>Where <code>window.DEBUG</code> is false, <code>print()</code> does nothing.</p>
-
-</div>
-
- 
 <div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-round">
 <h3 class="function-doctext-05 doctext-05">
     <a href="#function-round">
@@ -730,6 +709,39 @@ numeric value in <code>vh</code>, eg. <code>120</code>. Depends on the height of
 render time.</p>
 
 </div>
+
+ 
+</section>
+
+    
+<section class="block @0-x1 @0-3x @1-x3 @1-4x @2-x3">
+    
+<h2 class="doctext-02" id="template-debugging">Template debugging</h2>
+<p>Where <code>window.DEBUG</code> is truthy at the time Literal is loaded (or where Literal 
+is built into a module with the environment variable <code>DEBUG</code> set to <code>true</code>),
+the function <code>print(object)</code> prints one or more objects to the DOM as a debug 
+message.</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>debug<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token comment">&lt;!-- `this` is the renderer --></span>
+    ${ print(this, data) }
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#debug<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
+<p>Renders as:</p>
+<template id="debug">
+    ${ print(this, data) }
+</template>
+
+<p><literal-include src="#debug" data="./package.json"></literal-include></p>
+<!--
+Messages should be styled with the print stylesheet:
+
+```css
+@import "http://stephen.band/literal/library/print.css";
+```-->
+
+<p>Where <code>window.DEBUG</code> is false, <code>print()</code> does nothing.</p>
+
 
  
 </section>

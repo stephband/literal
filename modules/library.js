@@ -143,28 +143,6 @@ const library = {
     /* overload(fn, object) */
     overload,
     
-    /** print(object, ...)
-
-    For debugging templates.
-
-    Where `window.DEBUG` is truthy at the time Literal is loaded (or where 
-    Literal is packaged into a module with the environment variable DEBUG),
-    `print(object, ...)` renders any number of objects to a debug message in the 
-    DOM. For example, to debug a template in place, print the current renderer 
-    and data:
-
-    ```js
-    ${ print(this, data) }
-    ```
-
-    Messages should be styled with the print stylesheet:
-
-    ```css
-    @import "http://stephen.band/literal/library/print.css";
-    ```
-
-    Where `window.DEBUG` is false, `print()` does nothing.
-    **/
     print: DEBUG ? print : noop,
 
     /** round(n)

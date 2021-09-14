@@ -1,4 +1,39 @@
 
+/** 
+Template debugging
+
+Where `window.DEBUG` is truthy at the time Literal is loaded (or where Literal 
+is built into a module with the environment variable `DEBUG` set to `true`),
+the function `print(object)` prints one or more objects to the DOM as a debug 
+message.
+
+```html
+<template id="debug">
+    <!-- `this` is the renderer -->
+    ${ print(this, data) }
+</template>
+
+<literal-include src="#debug" data="./package.json"></literal-include>
+```
+
+Renders as:
+
+<template id="debug">
+    ${ print(this, data) }
+</template>
+
+<literal-include src="#debug" data="./package.json"></literal-include>
+
+<!--
+Messages should be styled with the print stylesheet:
+
+```css
+@import "http://stephen.band/literal/library/print.css";
+```-->
+
+Where `window.DEBUG` is false, `print()` does nothing.
+**/
+
 import { getTarget }     from '../modules/observer.js';
 
 function toHTML(object) {
