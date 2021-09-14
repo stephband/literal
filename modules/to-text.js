@@ -7,7 +7,7 @@ decides how to render the evaluated output of each tag based on its type and
 constructor. Where an expression evaluates to a promise, the promise resolves 
 before being rendered.
 
-<table class="striped-table">
+<table class="striped-table x-bleed">
     <thead>
         <tr>
             <th style="width:20%;">Type</th>

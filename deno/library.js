@@ -17,6 +17,7 @@ import read        from './read.js';
 import { rewriteURL, rewriteURLs } from './url.js';
 import compile     from './compile.js';
 import comments    from './comments.js';
+import { px, em, rem } from './parse-length.js';
 
 import { red, yellow }     from './log.js';
 
@@ -302,7 +303,12 @@ const library = assign(base, {
     exec:     exec,
     include:  include,
     imports:  imports,
-    render:   render
+    render:   render,
+    px,
+    em,
+    rem,
+    vw:       () => { throw new Error('Template function vw() not available in Deno version') },
+    vh:       () => { throw new Error('Template function vh() not available in Deno version') }
 });
 
 export default library;

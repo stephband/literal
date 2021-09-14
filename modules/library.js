@@ -17,8 +17,8 @@ import noop            from '../../fn/modules/noop.js';
 import slugify         from '../../fn/modules/slugify.js';
 import last            from '../../fn/modules/last.js';
 import overload        from '../../fn/modules/overload.js';
+import { px, em, rem, vw, vh } from '../../dom/modules/parse-length.js';
 import { Observer, observe } from './observer.js';
-import px, { em, rem } from './parse-length.js';
 import print           from '../library/print.js';
 
 const DEBUG  = window.DEBUG;
@@ -55,13 +55,6 @@ const library = {
     Alias of `Object.entries()`.
     **/
     entries: Object.entries,
-
-    /** em()
-    Takes a numeric value in px, or a string value of the form `'10px'` and outputs
-    a string value in em, eg. `'0.625em'`. Depends on the current `font-size` of 
-    the document root.
-    **/
-    em,
 
     /** equals(a, b)
     Compares `a` and `b` for deep equality and returns `true` or `false`.
@@ -174,20 +167,6 @@ const library = {
     **/
     print: DEBUG ? print : noop,
 
-    /** px(n)
-    Takes a numeric value in px, or a string value of the form `'0.625rem'` and 
-    outputs a string value in px, eg. `'10px'`. Depends on the current `font-size` 
-    of the document root.
-    **/
-    px,
-
-    /** rem(n)
-    Takes a numeric value in px, or a string value of the form `'10px'` and outputs
-    a string value in rem, eg. `'0.625rem'`. Depends on the current `font-size` of
-    the document root.
-    **/
-    rem,
-
     /** round(n)
     Alias of `Math.round()`;
     **/
@@ -202,6 +181,12 @@ const library = {
     Alias of `Object.values()`.
     **/
     values: Object.values,
+
+    px,
+    em,
+    rem,
+    vw,
+    vh,
 
     // The principal render function
     render: function() {

@@ -292,7 +292,7 @@ a fragment identifier pointing to a <code>template</code> element in the DOM.  <
 decides how to render the evaluated output of each tag based on its type and 
 constructor. Where an expression evaluates to a promise, the promise resolves 
 before being rendered.</p>
-<table class="striped-table">
+<table class="striped-table x-bleed">
     <thead>
         <tr>
             <th style="width:20%;">Type</th>
@@ -484,20 +484,6 @@ array of objects by their ids:</p>
 </div>
 
  
-<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-em">
-<h3 class="function-doctext-05 doctext-05">
-    <a href="#function-em">
-        <code class=" language-js">em(<span class="param"></span>)</code>
-    </a>
-</h3>
-
-<p>Takes a numeric value in px, or a string value of the form <code>&#39;10px&#39;</code> and outputs
-a string value in em, eg. <code>&#39;0.625em&#39;</code>. Depends on the current <code>font-size</code> of 
-the document root.</p>
-
-</div>
-
- 
 <div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-equals">
 <h3 class="function-doctext-05 doctext-05">
     <a href="#function-equals">
@@ -640,34 +626,6 @@ and data:</p>
 </div>
 
  
-<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-px">
-<h3 class="function-doctext-05 doctext-05">
-    <a href="#function-px">
-        <code class=" language-js">px(<span class="param">n</span>)</code>
-    </a>
-</h3>
-
-<p>Takes a numeric value in px, or a string value of the form <code>&#39;0.625rem&#39;</code> and 
-outputs a string value in px, eg. <code>&#39;10px&#39;</code>. Depends on the current <code>font-size</code> 
-of the document root.</p>
-
-</div>
-
- 
-<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-rem">
-<h3 class="function-doctext-05 doctext-05">
-    <a href="#function-rem">
-        <code class=" language-js">rem(<span class="param">n</span>)</code>
-    </a>
-</h3>
-
-<p>Takes a numeric value in px, or a string value of the form <code>&#39;10px&#39;</code> and outputs
-a string value in rem, eg. <code>&#39;0.625rem&#39;</code>. Depends on the current <code>font-size</code> of
-the document root.</p>
-
-</div>
-
- 
 <div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-round">
 <h3 class="function-doctext-05 doctext-05">
     <a href="#function-round">
@@ -704,9 +662,79 @@ the document root.</p>
 </div>
 
  
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-px">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-px">
+        <code class=" language-js">px(<span class="param">value</span>)</code>
+    </a>
+</h3>
+
+<p>Takes a string of the form ‘10px’, ‘10em’, ‘10rem’, ‘100vw’ or ‘100vh’ and 
+returns a numeric value in pixels. If <code>value</code> is a number it is returned 
+directly.</p>
+
+</div>
+
+ 
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-em">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-em">
+        <code class=" language-js">em(<span class="param">value</span>)</code>
+    </a>
+</h3>
+
+<p>Takes numeric value in px, or CSS length of the form <code>&#39;10px&#39;</code>, and returns 
+a numeric value in <code>em</code>, eg. <code>0.625</code>. Depends on the <code>font-size</code> of the document 
+root at render time.</p>
+
+</div>
+
+ 
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-rem">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-rem">
+        <code class=" language-js">rem(<span class="param">value</span>)</code>
+    </a>
+</h3>
+
+<p>Takes numeric value in px, or CSS length of the form <code>&#39;10px&#39;</code>, and returns 
+a numeric value in <code>rem</code>, eg. <code>0.625</code>. Depends on the <code>font-size</code> of the 
+document root at render time.</p>
+
+</div>
+
+ 
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-vw">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-vw">
+        <code class=" language-js">vw(<span class="param">value</span>)</code>
+    </a>
+</h3>
+
+<p>Takes number in pixels or CSS length of the form <code>&#39;10em&#39;</code> and returns a 
+numeric value in <code>vw</code>, eg. <code>120</code>. Depends on the width of the viewport at 
+render time.</p>
+
+</div>
+
+ 
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-vh">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-vh">
+        <code class=" language-js">vh(<span class="param">value</span>)</code>
+    </a>
+</h3>
+
+<p>Takes number in pixels or CSS length of the form <code>&#39;10em&#39;</code> and returns a 
+numeric value in <code>vh</code>, eg. <code>120</code>. Depends on the height of the viewport at 
+render time.</p>
+
+</div>
+
+ 
 </section>
 
-    
+
     <div class="@0-x3" style="grid-column-end: span 4;">
         <h2>Literal in JS</h2>
     </div>
