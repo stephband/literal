@@ -6,9 +6,9 @@ Find .xxx.literal template files and build them to .xxx files.
 // Directories
 const workingdir = Deno.cwd() + '/';
 
-import select  from './deno/select.js';
-import { yellow, dimyellow, red, dim } from './deno/log.js';
-import build from './deno/build.js';
+import select  from './select.js';
+import { yellow, dimyellow, red, dim } from './log.js';
+import build from './build.js';
 
 if (Deno.args.length < 2) {
     throw new Error("node index.js requires arguments 'source.html.literal' 'target.html'");
