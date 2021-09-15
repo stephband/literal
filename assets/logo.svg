@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200px" height="800px" viewBox="0 0 1200 800" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>logo</title>
+    <defs>
+        <linearGradient x1="26.971459%" y1="24.7394515%" x2="95.8097163%" y2="77.3154428%" id="linearGradient-1">
+            <stop stop-color="#39578C" offset="0%"></stop>
+            <stop stop-color="#24D1E2" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="logo" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect fill="#3886BF" x="0" y="0" width="1200" height="800"></rect>
+        <rect id="Rectangle" stroke="#979797" fill="url(#linearGradient-1)" x="0" y="0" width="1200" height="800"></rect>
+        <path d="M320.6,691.7 L320.6,590.22 L275.304626,590.22 C209.197865,590.22 195.731673,571.34 195.731673,506.44 L195.731673,322.36 C195.731673,213.8 156.557295,178.4 91.6747331,161.88 L91.6747331,158.34 C156.557295,141.82 195.731673,106.42 195.731673,-2.14 L195.731673,-185.04 C195.731673,-249.94 209.197865,-267.64 275.304626,-267.64 L320.6,-267.64 L320.6,-370.3 L266.735231,-370.3 C112.486121,-370.3 69.6391459,-327.82 69.6391459,-187.4 L69.6391459,-10.4 C69.6391459,62.76 58.6213523,111.14 -23.4,111.14 L-23.4,209.08 C58.6213523,209.08 69.6391459,257.46 69.6391459,330.62 L69.6391459,508.8 C69.6391459,649.22 112.486121,691.7 266.735231,691.7 L320.6,691.7 Z" id="{" fill="#FFFFFF" fill-rule="nonzero"></path>
+        <text id="iteral" font-family="EuclidTriangle-Medium, Euclid Triangle" font-size="256.2" font-weight="400" fill="#FFFFFF">
+            <tspan x="345" y="692">iteral</tspan>
+        </text>
+    </g>
+</svg>
