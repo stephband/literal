@@ -1,7 +1,7 @@
 {
   "title": "Literal",
   "name": "literal",
-  "description": "Literal puts JS into your HTML. Literal defines an include element that mixes JS literal enhanced templates into your startic HTML, in a small library under 10kB minified and gzipped.",
+  "description": "Literal puts JS into your HTML. Literal defines an include element that mixes JS literal enhanced templates into your static HTML, in a small library under 10kB minified and gzipped.",
   "version": "0.4.2",
   "author": {
     "name": "Stephen",
