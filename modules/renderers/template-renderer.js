@@ -136,11 +136,14 @@ export default function TemplateRenderer(template) {
 
     /** 
     .content
-    A fragment containing the renderer's DOM nodes. Initially they are in an
-    unrendered state, and are guaranteed to be in a rendered state on resolution
-    of the first `.cue()` promise. This fragment may be inserted into the DOM
-    at any time. The renderer will continue to manage these nodes wherever they
-    end up.
+
+    A fragment that initially contains the renderer's DOM nodes. On creation of
+    a renderer they are in an unrendered state. They are guaranteed to be in a 
+    rendered state on resolution of the first `.cue()` promise. 
+    
+    The fragment may be inserted into the DOM at any time, at which point it 
+    will no longer contain the renderer's DOM nodes, however the renderer 
+    continues to manage these nodes wherever they end up.
     **/
     prepareContent(template.content);
 
