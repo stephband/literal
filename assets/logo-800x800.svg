@@ -10,7 +10,7 @@
     <g id="logo" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <rect fill="#3886BF" x="0" y="0" width="800" height="800"></rect>
         <rect id="Rectangle" stroke="#979797" fill="url(#linearGradient-1)" x="0" y="-62.7261761" width="1113.63088" height="937.032569"></rect>
-        <g id="prototype-3" transform="translate(32.314942, 179.670986)" fill="#FFFFFF" font-family="EuclidTriangle-Medium, Euclid Triangle" font-weight="400">
+        <g id="prototype-3" transform="translate(34.314942, 179.670986)" fill="#FFFFFF" font-family="EuclidTriangle-Medium, Euclid Triangle" font-weight="400">
             <text id="iteral" font-size="256.2">
                 <tspan x="115.685058" y="348.329014">iteral</tspan>
             </text>
