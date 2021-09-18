@@ -1,5 +1,5 @@
 
-<header class="@0-x1 @0-3x @1-x3 @1-4x @2-x3">
+<header class="@0-x1 @0-3x @1-x3 @1-4x @2-x3 @0-x-stretch">
     ${ data.filter((doc) => doc.type === 'element').map((doc) => `
     <h2 class="doctext-02" id="${ slugify(doc.name) }"><code>&lt;${ doc.name }&gt;</code></h2>
     ${ doc.body }
@@ -11,7 +11,7 @@
     <input hidden class="button" type="submit" />
 </form-->
 
-<div class="@0-x1 @0-3x @1-x3 @1-2x @2-x3 @2-3x x-stretch y-start">
+<div class="@0-x1 @0-3x @1-x3 @1-2x @2-x3 @2-3x @0-x-stretch @0-y-start">
     ${ this.attributes = data.filter((doc) => doc.type === 'attribute'), '' }
     ${ this.attributes.length ? '<h3 class="doctext-03">Attributes</h3>' : '' }
     ${ Promise.all(this.attributes.map((doc) => include("../../bolt/templates/entry.literal", doc))).then((array) => array.join('')) }

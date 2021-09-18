@@ -1,4 +1,4 @@
 
-<section class="block @0-x1 @0-3x @1-x3 @1-4x @2-x3">
+<section class="block @0-x1 @0-3x @1-x3 @1-4x @2-x3 @0-x-stretch">
     ${ data.map((doc) => include('../../bolt/templates/entry.literal', doc)) }
 </section>
