@@ -17,7 +17,6 @@ console.log('ENTER');
         node && node.stop && node.stop();
         node && node.remove();
         node = inside();
-        console.log('ENTER', node);
         marker.after(node);
     }, function exit() {
 console.log('EXIT');
