@@ -3,11 +3,11 @@
 media(query, enter, exit)
 
 Includes the result of `enter()` when the document matches `query`, and 
-otherwise the result of `exit()` (where given – the `exit` function may be 
-omitted to include nothing on exit).
+otherwise the result of `exit()` where given – the `exit` function may be 
+omitted to include nothing on exit:
 
 ```
-${ media({ minWidth: '70em' }, () => include('#desktop-banner', data)) }
+${ media({ minWidth: '70em' }, () => include('#desktop-template', data)) }
 ```
 
 A query object may contain any combination of the properties:
