@@ -94,6 +94,10 @@ Contents
 - <a href="#template-functions">Literal template functions</a>
 */
 
+import './library/media.js';
+import './library/routes.js';
+
+/* Importing literal-include registers – and instantiates – <literal-include> */
 import './elements/literal-include.js';
 
 export { cache as compiled } from './modules/compile.js';
