@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Literal template "/Users/stephband/Sites/literal/index.html.literal" -->
+<!-- Literal template "/Users/stephband/Sites/living-archives/living_archives/static/literal/index.html.literal" -->
 
 <html lang="en">
 <head>
@@ -637,6 +637,48 @@ stopped. This pattern observes <code>data.title</code> until the next render:</p
 </h3>
 
 <p>Alias of <code>Object.values()</code>.</p>
+
+</div>
+
+ 
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-media">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-media">
+        <code class=" language-js">media(<span class="param">query</span>, <span class="param">enter</span>, <span class="param">exit</span>)</code>
+    </a>
+</h3>
+
+<p>Includes the result of <code>enter()</code> when the document matches <code>query</code>, and 
+otherwise the result of <code>exit()</code> (where given – the <code>exit</code> function may be 
+omitted to include nothing on exit).</p>
+<pre><code>$<span class="token punctuation">{</span> <span class="token function">media</span><span class="token punctuation">(</span><span class="token punctuation">{</span> minWidth<span class="token operator">:</span> <span class="token string">'70em'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#desktop-banner'</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">}</span></code></pre><p>A query object may contain any combination of the properties:</p>
+<pre><code class="language-js"><span class="token punctuation">{</span>
+    minWidth<span class="token operator">:</span>        number <span class="token operator">|</span> string <span class="token operator">|</span> fn<span class="token punctuation">,</span>
+    maxWidth<span class="token operator">:</span>        number <span class="token operator">|</span> string <span class="token operator">|</span> fn<span class="token punctuation">,</span>
+    minHeight<span class="token operator">:</span>       number <span class="token operator">|</span> string <span class="token operator">|</span> fn<span class="token punctuation">,</span>
+    maxHeight<span class="token operator">:</span>       number <span class="token operator">|</span> string <span class="token operator">|</span> fn<span class="token punctuation">,</span>
+    minScrollTop<span class="token operator">:</span>    number <span class="token operator">|</span> string <span class="token operator">|</span> fn<span class="token punctuation">,</span>
+    maxScrollTop<span class="token operator">:</span>    number <span class="token operator">|</span> string <span class="token operator">|</span> fn<span class="token punctuation">,</span>
+    minScrollBottom<span class="token operator">:</span> number <span class="token operator">|</span> string <span class="token operator">|</span> fn<span class="token punctuation">,</span>
+    maxScrollBottom<span class="token operator">:</span> number <span class="token operator">|</span> string <span class="token operator">|</span> fn
+<span class="token punctuation">}</span></code></pre>
+<p>Where a query property is a number it is assumed to be a value in pixels. Where
+it is a string it must be a CSS length with units, eg. <code>&#39;24rem&#39;</code>. Accepted units
+are <code>&#39;px&#39;</code>, <code>&#39;em&#39;</code>, <code>&#39;rem&#39;</code>, <code>&#39;vw&#39;</code> or <code>&#39;vh&#39;</code>. Where it is a function, the 
+function is evaluated (on window resize or scroll) and must return a number in 
+pixels.</p>
+
+</div>
+
+ 
+<div class="function-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="function-include">
+<h3 class="function-doctext-05 doctext-05">
+    <a href="#function-include">
+        <code class=" language-js">include(<span class="param">src</span>, <span class="param">data</span>)</code>
+    </a>
+</h3>
+
+<p>Includes another template. Not available inside attributes.</p>
 
 </div>
 

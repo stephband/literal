@@ -74,7 +74,12 @@
     ${ include("./templates/section.literal", await comments("./module.js")) }
     ${ include("./templates/element.literal", await comments("./elements/literal-include.js")) }
     ${ include("./templates/section.literal", await comments("./modules/to-text.js")) }
-    ${ include("./templates/section.literal", await comments("./modules/library.js", "../dom/modules/parse-length.js")) }
+    ${ include("./templates/section.literal", await comments(
+        "./modules/library.js",
+        "./library/media.js",
+        "./library/include.js",
+        "../dom/modules/parse-length.js"
+    )) }
     ${ include("./templates/section.literal", await comments("./library/print.js")) }
 
     <div class="@0-x3" style="grid-column-end: span 4;">
