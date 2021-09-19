@@ -1,5 +1,5 @@
 
-/** 
+/**
 media(query, enter, exit)
 
 Includes the result of `enter()` when the document matches `query`, and 
@@ -32,6 +32,18 @@ function is evaluated (on window resize or scroll) and must return a number in
 pixels.
 
 **/
+
+/*
+TODO: maybe it should work differently??
+media(query)
+
+Returns `true` if the document matches `query`, otherwise `false`. Also tells
+the renderer to rerender when the result would change.
+
+```
+${ media(query) ? include('#search-template') : '' }
+```
+*/
 
 import { register } from '../modules/library.js';
 import create  from '../../dom/modules/create.js';
