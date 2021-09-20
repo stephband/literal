@@ -82,6 +82,7 @@ element('<literal-include>', {
             this.rejectSrc = reject;
         })
         .then((template) => dataPromise.then((data) => {
+            console.log('RENDER INCLUDE', template.id);
             const renderer = new TemplateRenderer(template);
 
             // But once it has data we know we can render it, but we 

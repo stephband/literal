@@ -45,7 +45,6 @@ ${ media(query) ? include('#search-template') : '' }
 ```
 */
 
-import { register } from '../modules/library.js';
 import create  from '../../dom/modules/create.js';
 import media   from '../../dom/modules/media.js';
 import { log } from '../modules/log.js';
@@ -54,7 +53,7 @@ const DEBUG = window.DEBUG && (window.DEBUG === true || window.DEBUG.includes('r
 
 const assign = Object.assign;
 
-export default register('media', function(selector, inside, outside) {
+export default function(selector, inside, outside) {
     const marker = create('text', '');
     let node;
 
@@ -75,4 +74,4 @@ console.log('EXIT');
 console.log('RETURN');
     // Temporary measure to let node be returned immediately
     return node || marker;
-});
+}

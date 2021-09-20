@@ -94,16 +94,24 @@ Contents
 - <a href="#template-functions">Literal template functions</a>
 */
 
-import './library/media.js';
-import './library/routes.js';
+import include from './library/include.js';
+import media   from './library/media.js';
+import request from './library/request.js';
+import routes  from './library/routes.js';
 
 /* Importing literal-include registers – and instantiates – <literal-include> */
 import './elements/literal-include.js';
 
 export { cache as compiled } from './modules/compile.js';
-export { register } from './modules/library.js';
+import { register } from './modules/library.js';
 
 import analytics from './modules/analytics.js';
 export { analytics };
 
+register('include', include);
+register('media',   media);
+register('request', request);
+register('routes',  routes);
+
+export { register };
 export { default as Template } from './modules/renderers/template-renderer.js';

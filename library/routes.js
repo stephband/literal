@@ -1,5 +1,4 @@
 
-import { register } from '../modules/library.js';
 import { Observer, mutations, observe, getTarget } from '../modules/observer.js';
 import location, { defaults } from './location.js';
 import { log } from '../modules/log.js';
@@ -85,7 +84,7 @@ function capture(regexps, pathname) {
     return captureReturn;
 }
 
-export default register('routes', function routes(fns) {
+export default function routes(fns) {
     const keys    = Object.keys(fns);
     const regexps = keys.map((pattern) => RegExp(pattern));
     var route, marker;
@@ -161,4 +160,4 @@ export default register('routes', function routes(fns) {
     return arguments.length > 1 ?
         routes(arguments[1]) :
         routes ;
-});
+}

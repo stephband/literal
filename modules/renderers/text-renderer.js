@@ -1,10 +1,7 @@
 
-import isFragmentNode from '../../../dom/modules/is-fragment-node.js';
-import isTextNode     from '../../../dom/modules/is-text-node.js';
-import trigger        from '../../../dom/modules/trigger.js';
 import library        from '../library.js';
 import include        from '../../library/include.js';
-import request        from '../../library/request.js';
+//import request        from '../../library/request.js';
 import compile        from '../compile.js';
 import toText         from '../to-text.js';
 import Renderer, { removeNodes } from './renderer.js';
@@ -13,12 +10,12 @@ import analytics      from './analytics.js';
 const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
 const assign = Object.assign;
-
+/*
 const contentLibrary = assign({}, library, {
     include: include,
     request: request
 });
-
+*/
 function renderValues(string, contents, array) {
     const l = array.length;
     let n = -1;
@@ -79,15 +76,6 @@ function stop(node) {
     node && typeof node === 'object' && node.stop && node.stop();
 }
 
-function remove(node) {
-    node.remove && node.remove();
-}
-
-function stopAndRemove(node) {
-    node.stop && node.stop();
-    node.remove && node.remove();
-}
-
 function setContent(first, last, contents) {
     let count = 0;
 
@@ -126,7 +114,7 @@ export default function TextRenderer(node, options, element) {
     this.last      = document.createTextNode('');
     this.first.after(this.last);
     this.contents  = [];
-    this.literally = options.literally || compile(contentLibrary, 'data, state, element', options.source, null, options, element);
+    this.literally = options.literally || compile(library, 'data, state, element', options.source, null, options, element);
     
     // Analytics
     const id = '#' + options.template;
