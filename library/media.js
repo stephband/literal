@@ -73,5 +73,6 @@ console.log('EXIT');
         marker.after(node);
     });
 console.log('RETURN');
-    return marker;
+    // Temporary measure to let node be returned immediately
+    return node || marker;
 });
