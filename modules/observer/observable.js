@@ -167,9 +167,9 @@ Observable(path, target, currentValue)
 **/
 
 export default function Observable(path, target, current) {
-    return new Stream((push) => new Observe(path, 0, target, (value) => {
+    return new Stream((stream) => new Observe(path, 0, target, (value) => {
         if (value === current) { return; }
         current = value;
-        push(value);
+        stream.push(value);
     }));
 }

@@ -3,6 +3,7 @@ import id      from '../../../fn/modules/id.js';
 import nothing from '../../../fn/modules/nothing.js';
 
 const assign = Object.assign;
+const create = Object.create;
 const define = Object.defineProperties;
 
 
@@ -10,9 +11,23 @@ const define = Object.defineProperties;
 Stream()
 **/
 
-export const properties = {
+const properties = {
     consumer:  { writable: true },
     stopables: { writable: true }
+};
+
+const producerProperties = {
+    push: function() {
+        const length = arguments.length;
+        let n = -1;
+        while (++n < length) {
+            this.consumer.push(arguments[n]);
+        }
+    },
+    
+    stop: function() {
+        console.log('stream.stop()');
+    }
 };
 
 function stop(stopable) {
@@ -26,26 +41,15 @@ function done(stopables) {
     stopables.length = 0;
 }
 
-function start(stream, setup) {
-    const producer = setup(function push() {
-        const length = arguments.length;
-        let n = -1;
-        while (++n < length) {
-            stream.consumer.push(arguments[n]);
-        }
-    });
-    
-    producer && stream.done(producer);
-}
-
-export default function Stream(setup) {
-    if (!setup) {
+export default function Stream(start) {
+    if (!start) {
         return new Pushable();
     }
 
     const stream = this;
+
     this.start = function() {
-        start(stream, setup);
+        start(assign(create(stream), producerProperties));
         return this;
     };
 }
@@ -100,11 +104,9 @@ assign(Stream.prototype, {
     /** 
     .start()
     **/
-    /*
     start: function() {
-        return this;
+        console.log('START not done');
     },
-    */
 
     /** 
     .stop()
@@ -139,7 +141,7 @@ Pushable()
 
 function Pushable() {}
 
-Pushable.prototype = Object.create(Stream.prototype);
+Pushable.prototype = create(Stream.prototype);
 
 Pushable.prototype.push = function(value) {
     if (!this.consumer) { return this; }
@@ -162,7 +164,7 @@ function Map(fn) {
     define(this, mapProperties);
 }
 
-Map.prototype = Object.create(Stream.prototype);
+Map.prototype = create(Stream.prototype);
 
 Map.prototype.push = function push(value) {
     if (value !== undefined) {
@@ -181,7 +183,7 @@ function Filter(fn) {
     define(this, properties);
 }
 
-Filter.prototype = Object.create(Stream.prototype);
+Filter.prototype = create(Stream.prototype);
 
 Filter.prototype.push = function push(value) {
     if (value !== undefined && this.fn(value)) {
@@ -204,7 +206,7 @@ function Reduce(fn, accumulator) {
     define(this, reduceProperties);
 }
 
-Reduce.prototype = Object.create(Stream.prototype);
+Reduce.prototype = create(Stream.prototype);
 
 Reduce.prototype.push = function(value) {
     if (value !== undefined) {
@@ -224,7 +226,7 @@ function Each(fn) {
     this.push = fn;
 }
 
-Each.prototype = Object.create(Stream.prototype);
+Each.prototype = create(Stream.prototype);
 
 Each.prototype.pipe = function() {
     throw new Error('Stream cannot .pipe() from consumed stream');
