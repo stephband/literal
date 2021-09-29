@@ -12,6 +12,7 @@ changes. This object is internal-only.
 
 **/
 
+import Stream from '../stream/stream.js';
 import { Observer, analytics, remove, getObservables } from './observer.js';
 
 //const DEBUG = window.DEBUG === true;
@@ -128,22 +129,15 @@ Observable
 .stop()
 ```
 **/
-
+/*
 function start(observable, consumer, current) {
-    return new Observe(observable.path, 0, observable.target, typeof consumer === 'function' ?
-        (value) => {
-            // Deduplicate
-            if (value === current) { return; }
-            current = value;
-            consumer(value);
-        } : 
-        (value) => {
-            // Deduplicate
-            if (value === current) { return; }
-            current = value;
-            consumer.push(value);
-        }
-    );
+    return new Observe(observable.path, 0, observable.target, (value) => {
+        console.log('CONSUME FN ', value);
+        // Deduplicate
+        if (value === current) { return; }
+        current = value;
+        consumer(value);
+    });
 }
 
 export default function Observable(path, target, initial) {
@@ -159,14 +153,23 @@ assign(Observable.prototype, {
         return this;
     },
 
-    pipe: function(consumer) {
-        this.child = start(this, consumer, this.initial);
-        return consumer;
-    },
-
     stop: function() {
         this.child.stop();
         if (DEBUG) { --analytics.observables; }
         return this;
     }
 });
+*/
+
+
+/**
+Observable(path, target, currentValue)
+**/
+
+export default function Observable(path, target, current) {
+    return new Stream((push) => new Observe(path, 0, target, (value) => {
+        if (value === current) { return; }
+        current = value;
+        push(value);
+    }));
+}

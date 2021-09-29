@@ -1,9 +1,7 @@
 
 import { getTarget } from './observer.js';
-import Observable from './observable.js';
-
-
-import Combiner from '../stream/combiner.js';
+import Observable    from './observable.js';
+import { Combine }   from '../stream/combine.js';
 
 
 /**
@@ -57,6 +55,6 @@ export function observe(paths, object) {
     const observables = paths.map((path, i) => new Observable(path, target, arguments[i + 2]));
 
     return observables.length > 1 ?
-        new Combiner(observables) :
+        new Combine(observables) :
         new Observable(paths, getTarget(object), arguments[0]) ;
 }
