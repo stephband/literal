@@ -10,6 +10,7 @@ routing and value transformations.
 
 import id              from '../../fn/modules/id.js';
 import by              from '../../fn/modules/by.js';
+import capture         from '../../fn/modules/capture.js';
 import equals          from '../../fn/modules/equals.js';
 import matches         from '../../fn/modules/matches.js';
 import get             from '../../fn/modules/get-path.js';
@@ -41,6 +42,11 @@ const library = {
     ```
     **/
     by,
+
+    /** 
+    capture()
+    **/
+    capture: capture,
 
     /** ceil(n)
     Alias of `Math.ceil()`.
