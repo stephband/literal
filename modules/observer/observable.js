@@ -120,56 +120,15 @@ assign(Observe.prototype, {
     }
 });
 
-/** 
-Observable
-
-```
-.each(fn)
-.pipe(consumer)
-.stop()
-```
-**/
-/*
-function start(observable, consumer, current) {
-    return new Observe(observable.path, 0, observable.target, (value) => {
-        console.log('CONSUME FN ', value);
-        // Deduplicate
-        if (value === current) { return; }
-        current = value;
-        consumer(value);
-    });
-}
-
-export default function Observable(path, target, initial) {
-    this.path    = path;
-    this.target  = target;
-    this.initial = initial;
-    if (DEBUG) { ++analytics.observables; }
-}
-
-assign(Observable.prototype, {
-    each: function(fn) {
-        this.child = start(this, fn, this.initial);
-        return this;
-    },
-
-    stop: function() {
-        this.child.stop();
-        if (DEBUG) { --analytics.observables; }
-        return this;
-    }
-});
-*/
-
 
 /**
 Observable(path, target, currentValue)
 **/
 
 export default function Observable(path, target, current) {
-    return new Stream((stream) => new Observe(path, 0, target, (value) => {
+    return new Stream((stream) => stream.done(new Observe(path, 0, target, (value) => {
         if (value === current) { return; }
         current = value;
         stream.push(value);
-    }));
+    })));
 }
