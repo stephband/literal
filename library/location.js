@@ -1,5 +1,5 @@
 
-import { Observer, notify } from '../modules/observer.js';
+import { Observer, notify } from '../../fn/observer/observer.js';
 import '../../dom/modules/navigate.js';
 
 const assign = Object.assign;

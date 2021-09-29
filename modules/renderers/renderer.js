@@ -1,10 +1,10 @@
 
 import nothing        from '../../../fn/modules/nothing.js';
+import reads          from '../../../fn/observer/reads.js';
+import { getTarget }  from '../../../fn/observer/observer.js';
 import { cue, uncue } from './batcher.js';
 import toText         from '../to-text.js';
-import reads          from '../observer/reads.js';
 import { meta }       from './analytics.js';
-import { getTarget }  from '../observer/observer.js';
 
 const assign = Object.assign;
 

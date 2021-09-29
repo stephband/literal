@@ -9,7 +9,7 @@ import create  from '../../dom/modules/create.js';
 import { requestGet }   from '../../dom/modules/request.js';
 import { fragmentFromHTML } from '../../dom/modules/fragments.js';
 import TemplateRenderer from '../modules/renderers/template-renderer.js';
-import { getTarget }    from '../modules/observer.js';
+import { getTarget }    from '../../fn/observer/observer.js';
 import print from './print.js';
 
 export function include(url, data) {

@@ -1,5 +1,7 @@
 
-import { Observer, mutations, observe, getTarget } from '../modules/observer.js';
+import mutations from '../../fn/observer/mutations.js';
+import { Observer, getTarget } from '../../fn/observer/observer.js';
+import observe from '../../fn/observer/observe.js';
 import location, { defaults } from './location.js';
 import { log } from '../modules/log.js';
 

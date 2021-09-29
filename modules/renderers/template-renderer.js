@@ -29,7 +29,8 @@ import nothing     from '../../../fn/modules/nothing.js';
 import identify    from '../../../dom/modules/identify.js';
 import isTextNode  from '../../../dom/modules/is-text-node.js';
 import compileNode from '../compile-node.js';
-import { Observer, observe, getTarget } from '../observer.js';
+import { Observer, getTarget } from '../../../fn/observer/observer.js';
+import observe     from '../../../fn/observer/observe.js';
 import analytics, { meta } from './analytics.js';
 import Renderer, { removeNodes } from './renderer.js';
 

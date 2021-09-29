@@ -1,6 +1,6 @@
 
 import { register } from '../modules/library.js';
-import { Observer, mutations, observe, getTarget } from '../modules/observer.js';
+import { Observer, mutations, observe, getTarget } from '../../fn/observer/observer.js';
 import root, { defaults } from './location.js';
 import { log } from '../modules/log.js';
 

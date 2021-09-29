@@ -116,5 +116,5 @@ register('routes',  routes);
 export { register };
 export { default as Template } from './modules/renderers/template-renderer.js';
 
-export { Observer }  from './modules/observer/observer.js';
-export { default as observe } from './modules/observer/observe.js';
+export { Observer }  from '../fn/observer/observer.js';
+export { default as observe } from '../fn/observer/observe.js';

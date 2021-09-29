@@ -19,8 +19,8 @@ import slugify         from '../../fn/modules/slugify.js';
 import last            from '../../fn/modules/last.js';
 import overload        from '../../fn/modules/overload.js';
 import { px, em, rem, vw, vh } from '../../dom/modules/parse-length.js';
-import { Observer }    from './observer/observer.js';
-import { observe }     from './observer/observe.js';
+import { Observer }    from '../../fn/observer/observer.js';
+import { observe }     from '../../fn/observer/observe.js';
 import print           from '../library/print.js';
 
 const DEBUG  = window.DEBUG;

@@ -34,7 +34,7 @@ Messages should be styled with the print stylesheet:
 Where `window.DEBUG` is false, `print()` does nothing.
 **/
 
-import { getTarget }     from '../modules/observer.js';
+import { getTarget }     from '../../fn/observer/observer.js';
 
 function toHTML(object) {
     // Print different kinds of objects differently

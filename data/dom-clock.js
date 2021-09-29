@@ -1,5 +1,5 @@
 
-import { Observer } from '../modules/observer.js';
+import { Observer } from '../../fn/observer/observer.js';
 
 const clock = Observer({ time: 0 });
 
