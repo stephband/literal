@@ -20,12 +20,6 @@ const config = window.config && window.config.location || {};
 
 const root  = assign({}, defaults);
 const scope = Observer(root);
-
-
-/** 
-routes()
-**/
-
 const names = [];
 
 function parseParam(string) {
