@@ -13,6 +13,7 @@ import by              from '../../fn/modules/by.js';
 import capture         from '../../fn/modules/capture.js';
 import equals          from '../../fn/modules/equals.js';
 import matches         from '../../fn/modules/matches.js';
+import nothing         from '../../fn/modules/nothing.js';
 import get             from '../../fn/modules/get-path.js';
 import noop            from '../../fn/modules/noop.js';
 import slugify         from '../../fn/modules/slugify.js';
@@ -23,8 +24,9 @@ import { Observer }    from '../../fn/observer/observer.js';
 import { observe }     from '../../fn/observer/observe.js';
 import print           from '../library/print.js';
 
-const DEBUG  = window.DEBUG;
-const assign = Object.assign;
+const DEBUG   = window.DEBUG;
+const assign  = Object.assign;
+const entries = Object.entries;
 
 const library = {
     /** assign(a, b, ...)
@@ -61,7 +63,7 @@ const library = {
     /** entries(object)
     Alias of `Object.entries()`.
     **/
-    entries: Object.entries,
+    entries: entries,
 
     /** equals(a, b)
     Compares `a` and `b` for deep equality and returns `true` or `false`.
@@ -156,6 +158,23 @@ const library = {
     Alias of `Math.round()`;
     **/
     round: Math.round,
+
+    /** 
+    paramify(object)
+    Turns an object with enumerable properties into a search parameters object
+    (which stringifies to a search parameter string).
+    **/
+    paramify: function(object) {
+        const params = entries(object).flatMap((entry) => (
+            entry[1] === undefined ? nothing :
+            entry[1] && typeof entry[1] === 'object' && entry[1].map ? entry[1].map((value) => [entry[0], value]) : 
+            [entry]
+        ));
+
+        console.log('PARAMIFY', object, params);
+
+        return new URLSearchParams(params);
+    },
 
     /** slugify(string)
     Returns the slug of `string`.
