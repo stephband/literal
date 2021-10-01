@@ -119,11 +119,11 @@ const library = {
     **/
     noop,
     
-    /** 
+    /* 
     nothing
     A frozen array representing no value.
-    **/
-    nothing,
+    */
+    //nothing,
     
     /** observe(path, object)
     Returns an observable of mutations to `path` in `object`. Consume mutations
