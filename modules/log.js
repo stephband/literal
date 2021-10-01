@@ -15,7 +15,7 @@ let grouped = false;
 export const log = DEBUG ?
     function log($1, $2, color = '#d8cd17') {
         console.log((grouped ? '%c      %c' : '%cLiteral %c') + $1 + ' %c' + $2,
-            'color: ' + (colors.grey) + '; font-weight: 600;', 
+            'color: ' + (colors.grey) + '; font-weight: 300;', 
             'color: ' + (colors[color] || color) + '; font-weight: 300;', 
             'color: ' + (colors.grey) + '; font-weight: 300;'
         );
