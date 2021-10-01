@@ -165,11 +165,15 @@ const library = {
     (which stringifies to a search parameter string).
     **/
     paramify: function(object) {
-        const params = entries(object).flatMap((entry) => (
-            entry[1] === undefined ? nothing :
-            entry[1] && typeof entry[1] === 'object' && entry[1].map ? entry[1].map((value) => [entry[0], value]) : 
-            [entry]
-        ));
+        // If this is an object with properties that may be arrays, flatten it
+        // out into entries
+        const params = typeof object === 'object' && typeof object.length === 'number' ?        
+            entries(object).flatMap((entry) => (
+                entry[1] === undefined ? nothing :
+                entry[1] && typeof entry[1] === 'object' && entry[1].map ? entry[1].map((value) => [entry[0], value]) : 
+                [entry]
+            )) :
+            object ;
 
         console.log('PARAMIFY', object, params);
 
