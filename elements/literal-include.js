@@ -15,12 +15,39 @@ A `literal-include` may contain fallback content, in case any of that fails.
 
 ```html
 <template id="greetings">
-    Rendered content with ${ tags }.
+    Hello ${ data.name }.
 </template>
 
-<literal-include src="#greetings" data="path/to/data.js">
+<literal-include src="#greetings" data="/users/1.json">
     Fallback content.
 </literal-include>
+```
+
+Multiple `data-` attributes may be declared, their values become properties of 
+the `data` object inside the template:
+
+```
+<literal-include src="#add-to-collections-thumb" data-pk="34" ... ></literal-include>
+```
+
+Or a single `data` attribute can be used to pass JSON to use as the `data` 
+object inside the template:
+
+```
+<literal-include src="#add-to-collections-thumb" data='{"pk":34, ... }'></literal-include>
+```
+
+Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a 
+.json file...
+
+```
+<literal-include src="#greetings" data="/users/1.json"></literal-include>
+```
+
+...or import the default export of a .js module:
+
+```
+<literal-include src="#greetings" data="/user-module.js"></literal-include>
 ```
 
 **/
