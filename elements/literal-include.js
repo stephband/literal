@@ -128,7 +128,7 @@ element('<literal-include>', {
         // empty object...
         //
         // ... pfffffft, naaaaah ...
-        // this.resolveData && this.resolveData({});
+        this.resolveData && this.resolveData({});
     }
 }, {
     /** 
