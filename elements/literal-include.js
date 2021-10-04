@@ -117,14 +117,18 @@ element('<literal-include>', {
                 this.before(renderer.content);
                 this.remove();
             });
+
+            this.renderer = renderer;
         }))
         .catch((message) => console.error(message, this));
     },
 
     connect: function() {
         // Where no data or data-* attribute has been defined resolve with an 
-        // empty object
-        this.resolveData && this.resolveData({});
+        // empty object...
+        //
+        // ... pfffffft, naaaaah ...
+        // this.resolveData && this.resolveData({});
     }
 }, {
     /** 
@@ -154,6 +158,21 @@ element('<literal-include>', {
 
     data: {
         attribute: function(value) {
+            this.data = value;
+        },
+
+        get: function() {
+            if (this.renderer) {
+                return this.renderer.data;
+            }
+        },
+
+        set: function(value) {
+            if (this.renderer) {
+                request(value).then((data) => this.renderer.cue(data));
+                return;
+            }
+
             if (!this.resolveData) {
                 //console.log('BOO dont know why this is triggered multiple times', value)
                 throw new Error('<literal-include> may possess either data-* attributes or a single data attribute, not both');
