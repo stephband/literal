@@ -53,7 +53,7 @@ const defaultexp = ['', 'default', ''];
 const empty = [];
 
 export default overload((url) => (rextension.exec(url) || empty)[1], {
-    'js': (url) => {
+    js: (url) => {
         // Rewrite relative import URLs to be absolute, taking the page as their
         // relative root
         const absolute = url[0] === '.' ?
@@ -61,10 +61,10 @@ export default overload((url) => (rextension.exec(url) || empty)[1], {
             url ;
 
         // Otherwise use the export as data directly
-        return import(absolute).then((data) => data.default) ;
+        return import(absolute).then((data) => data.default);
     },
 
     // Cache JSON requests in memory so that all requests to a given URL result 
     // in the same object.
-    'json': cache((url) => requestGet(url))
+    default: cache((url) => requestGet(url))
 });
