@@ -22,6 +22,9 @@ import overload        from '../../fn/modules/overload.js';
 import { px, em, rem, vw, vh } from '../../dom/modules/parse-length.js';
 import { Observer }    from '../../fn/observer/observer.js';
 import { observe }     from '../../fn/observer/observe.js';
+import combine         from '../../fn/stream/combine.js';
+import merge           from '../../fn/stream/merge.js';
+import zip             from '../../fn/stream/zip.js';
 import print           from '../library/print.js';
 
 const DEBUG   = window.DEBUG;
@@ -49,6 +52,12 @@ const library = {
     capture()
     **/
     capture: capture,
+
+    /** 
+    combine(source1, source2, ...)
+    Combines multiple sources into a single stream.
+    **/
+    combine: combine,
 
     /** ceil(n)
     Alias of `Math.ceil()`.
@@ -113,7 +122,13 @@ const library = {
     same properties of `object`.
     **/
     matches,
-    
+
+    /** 
+    merge(source1, source2, ...)
+    Merges multiple sources into a single stream.
+    **/
+    merge: merge,
+
     /** noop()
     Return undefined.
     **/

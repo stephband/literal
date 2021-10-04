@@ -128,7 +128,7 @@ element('<literal-include>', {
         // empty object...
         //
         // ... pfffffft, naaaaah ...
-        this.resolveData && this.resolveData({});
+        //this.resolveData && this.resolveData({});
     }
 }, {
     /** 
@@ -169,7 +169,13 @@ element('<literal-include>', {
 
         set: function(value) {
             if (this.renderer) {
-                request(value).then((data) => this.renderer.cue(data));
+                if (!value) {
+                    this.renderer.cue(null);
+                }
+                else {
+                    request(value).then((data) => this.renderer.cue(data));
+                }
+                
                 return;
             }
 
