@@ -170,7 +170,7 @@ element('<literal-include>', {
         set: function(value) {
             if (this.renderer) {
                 if (!value) {
-                    this.renderer.cue(null);
+                    this.renderer.remove();
                 }
                 else {
                     request(value).then((data) => this.renderer.cue(data));
