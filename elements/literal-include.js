@@ -187,7 +187,15 @@ element('<literal-include>', {
                 throw new Error('<literal-include> may possess either data-* attributes or a single data attribute, not both');
             }
 
-            this.resolveData(request(value));
+            if (!value) {
+                return;
+            }
+            else if (typeof value === 'string') {
+                this.resolveData(request(value));
+            }
+            else {
+                this.resolveData(value);
+            }
         }
     },
 
