@@ -201,8 +201,7 @@ assign(TemplateRenderer.prototype, {
 
     render: function(object) {
         if (!object) {
-            console.log('WOOOWOWO');
-            // Remove all but the first node to the renderer's fragment
+            // Remove all but the first node to the renderer's content fragment
             const nodes = [];
             let node = this.first;
 

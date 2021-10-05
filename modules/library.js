@@ -204,7 +204,14 @@ const library = {
     Returns the slug of `string`.
     **/
     slugify,
-    
+
+    /** 
+    translate()
+    **/
+    translate: function(key) {
+        return window.translations && window.translations[key] || key;
+    },
+
     /** values()
     Alias of `Object.values()`.
     **/
