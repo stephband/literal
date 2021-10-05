@@ -103,12 +103,12 @@ function stop(stopable) {
 }
 
 export default function Renderer(node, options, element) {
-    this.element   = element || node;
-    this.node      = node;
-    this.path      = options.path;
-    this.id        = ++meta.count;
-    this.count     = 0;
-    this.template  = options.template;
+    this.element  = element || node;
+    this.node     = node;
+    this.path     = options.path;
+    this.id       = ++meta.count;
+    this.count    = 0;
+    this.template = options.template;
 }
 
 assign(Renderer.prototype, {

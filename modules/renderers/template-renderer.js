@@ -184,29 +184,42 @@ assign(TemplateRenderer.prototype, {
     content until either a new data object is cued or the renderer is stopped.
     **/
 
-    cue: function(data) {
+    cue: function(object) {
         this.observables.forEach(stop);
         this.observables = nothing;
+
+        const data = object ? getTarget(object) : null ;
+
+        // Deduplicate. Not sure this is entirely necessary.
+        if (data === this.data) {
+            return Promise.reject('Attempt to render with same object as last render');
+        }
+
+        this.data = data;
         return Renderer.prototype.cue.apply(this, arguments);
     },
 
     render: function(object) {
-        const data = getTarget(object);
+        if (!object) {
+            console.log('WOOOWOWO');
+            // Remove all but the first node to the renderer's fragment
+            const nodes = [];
+            let node = this.first;
 
-        // Deduplicate. Not sure this is entirely necessary.
-        if (data === this.state) {
-            if (DEBUG) {
-                console.error('Attempt to render with same object as last render');
+            while (node !== this.last) {
+                node = node.nextSibling;
+                nodes.push(node);
             }
 
-            return this.content;
+            this.content.append.apply(this.content, nodes);
+            return;
         }
-
-        this.state = data;
+    
+        const data = getTarget(object);
 
         // Stop any previous observables where they have not already 
         // been stoppped (if we remove render() such that this can only be cued
-        // remove this line
+        // remove this line, they are already stopped)
         this.observables.forEach(stop);
 
         const observer  = Observer(data);
@@ -214,6 +227,13 @@ assign(TemplateRenderer.prototype, {
 
         // This has to happen synchronously in order to collect gets...
         renderers.forEach((renderer) => renderer.render(observer, data));
+
+        // If this.first is not in the content fragment, it must be in the 
+        // parent DOM being used as a marker. It's time for its freshly rendered 
+        // brethren to join it.
+        if (this.content.firstChild && this.first !== this.content.firstChild) {
+            this.first.after(this.content);
+        }
 
         this.observables = observer ?
             renderers.flatMap((renderer) => 

@@ -170,12 +170,15 @@ element('<literal-include>', {
         set: function(value) {
             if (this.renderer) {
                 if (!value) {
-                    this.renderer.remove();
+                    this.renderer.cue(null);
                 }
-                else {
+                else if (typeof value === 'string') {
                     request(value).then((data) => this.renderer.cue(data));
                 }
-                
+                else {
+                    this.renderer.cue(value);
+                }
+
                 return;
             }
 
