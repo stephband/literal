@@ -5,7 +5,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-.nova
+.nova*
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
@@ -39,6 +39,7 @@ bower_components
 build/Release
 
 # Dependency directories
+archive/
 node_modules/
 jspm_packages/
 

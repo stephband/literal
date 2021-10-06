@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="author" content="stephband" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width" />
+
+    <meta name="twitter:card" content="summary"></meta>
+    <meta name="twitter:site" content="@@stephband"></meta>
+    <meta property="og:url" content="http://stephen.band/literal/" />
+    <meta property="og:title" content="Literal" />
+    <meta property="og:description" content="" />
+    <meta property="og:image" content="" />
+    
+    <title>Literal</title>
+    
+    <link rel="icon" type="image/png" href="./images/logo-32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="./images/logo-64.png" sizes="64x64">
+    <link rel="icon" type="image/png" href="./images/logo-128.png" sizes="128x128">
+    
+    <script title="load">
+    document.documentElement.className += ' js content-loading loading';
+    window.addEventListener('DOMContentLoaded', () => document.documentElement.classList.remove('content-loading'));
+    // Wait for other load handlers to run first - Literal does a few things on
+    // load (eg. data-targetable scrolls) and we want them to run before the loading
+    // class is removed
+    window.addEventListener('load', () => window.requestAnimationFrame(() => document.documentElement.classList.remove('loading')));
+    window.DEBUG = true;
+    </script>
+
+    <link rel="stylesheet" href="../../bolt/css/html.css" />
+    <link rel="stylesheet" href="../../bolt/css/text.css" />
+    <link rel="stylesheet" href="../../bolt/css/input.css" />
+    <link rel="stylesheet" href="../../bolt/css/label.css" />
+    <link rel="stylesheet" href="../../bolt/css/block.css" />
+    <link rel="stylesheet" href="../../bolt/css/debug.css" />
+    <link rel="stylesheet" href="../module.css" />
+
+    <style>
+        body {
+            padding: 3rem 1.5rem 4.5rem;
+        }
+
+        code {
+            font-size: 0.9375em;
+            font-family: 'Fira Mono', 'Andale Mono', courier, monospace;
+            line-height: 1em;
+        }
+
+        .test-count {
+            font-size: 0.875em;
+        }
+        
+        p {
+            padding-left: 1rem;
+            text-indent: -1rem;
+        }
+        
+        pre {
+            padding: 0.375rem;
+            background-color: #eeeeee;
+            border-radius: 0.1875rem;
+        }
+        
+        dl > dd {
+            margin: 0;
+        }
+        
+        .blue-fg {
+            color: blue;
+        }
+        
+        .text-03 {
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        input + hr,
+        select + hr {
+            margin-top: 0.75rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1 class="doctext-01">Literal <span class="doctext-06">0.2.0</span></h1>
+        
+        <template id="window-time">
+            <time>${
+                // Set local variables on `this`, the renderer
+                this.n = window.performance.now() / 1000,
+                // Schedule next render in a second
+                setTimeout(() => { this.cue() }, (Math.ceil(this.n) - this.n) * 1000),
+                // Output current time in seconds
+                Math.round(this.n) + 's'
+            }</time>
+        </template>
+
+        <literal-include src="#window-time"></literal-include>
+    </header>
+
+    <h3 class="text-03"><code>&lt;literal-include&gt;</code> <span class="test-count">(1 test)</span></h3>
+
+    <literal-include>
+        <p>✓ Default content of an <code>&lt;literal-include&gt;</code> element. Should warn about missing <code>src</code> attribute in the console.</p>
+    </literal-include>
+
+    <hr/>
+
+    <h3 class="text-03"><code>&lt;literal-include src="#template"&gt;</code> <span class="test-count">(5 tests)</span></h3>
+
+    <literal-include src="#nonexistant">
+        <p>✓ Default content of an <code>&lt;literal-include src="#nonexistant"&gt;</code> element. Should warn about missing source template in the console.</p>
+    </literal-include>
+
+    <hr/>
+
+    <template id="standard-template">
+        <p>✓ Content in a standard <code>&lt;template&gt;</code> element.</p>
+    </template>
+
+    <literal-include src="#standard-template">
+        <p>✗ Default content of an <code>&lt;literal-include src="#standard-template"&gt;</code> element.</p>
+    </literal-include>
+    
+    <hr/>
+    
+    <literal-include src="#standard-template" data="./nonexistant.json">
+        <p>✗ Default content of an <code>&lt;literal-include src="#standard-template" data="nonexistant"&gt;</code> element.</p>
+    </literal-include>
+
+    <hr/>
+
+    <literal-include src="#standard-template" data="./test-bad.json">        
+        <p>✗ Default content of an <code>&lt;literal-include src="#standard-template" data="./test-bad.json"&gt;</code> element pointing to mal-formed JSON data. Error logged in the console.</p>
+    </literal-include>
+
+    <hr/>
+
+    <literal-include src="#standard-template" data="./test.json">        
+        <p>✗ Default content of an <code>&lt;literal-include src="#standard-template" data="./test.json"&gt;</code> element.</p>
+    </literal-include>
+
+    <hr/>
+
+    <h3 class="text-03"><code>&lt;literal-include src="#literal-template"&gt;</code> <span class="test-count">(8 tests)</span></h3>
+
+    <template id="literal-template">
+        <p>✓ Content in a <code>&lt;template&gt;</code> element, with rendered data:</p>
+        <pre><code>${ data }</code></pre>
+    </template>
+    
+    <literal-include src="#literal-template" data="./nonexistant.json">
+        <p>✓ Default content of an <code>&lt;literal-include src="#literal-template" data="nonexistant"&gt;</code> element.</p>
+    </literal-include>
+
+    <hr/>
+
+    <literal-include src="#literal-template" data="./test-bad.json">
+        <p>✓ Default content of an <code>&lt;literal-include src="#literal-template" data="test-bad.json"&gt;</code> element.</p>
+    </literal-include>
+
+    <hr/>
+    
+    <literal-include src="#literal-template" data="./test-bad.js">
+        <p>✓ Default content of an <code>&lt;literal-include src="#literal-template" data="test-bad.js"&gt;</code> element.</p>
+    </literal-include>
+
+    <hr/>
+
+    <literal-include src="#literal-template">
+        <p>✗ Default content of an <code>&lt;literal-include src="#literal-template"&gt;</code> element.</p>
+    </literal-include>
+
+    <hr/>
+
+    <literal-include src="#literal-template" data="./test.json">        
+        <p>✗ Default content of an <code>&lt;literal-include src="#literal-template" data="./test.json"&gt;</code> element.</p>
+    </literal-include>
+
+    <hr/>
+
+    <literal-include src="#literal-template" data="./test.js">        
+        <p>✗ Default content of an <code>&lt;literal-include src="#literal-template" data="./test.js"&gt;</code> element.</p>
+    </literal-include>
+
+    <hr/>
+
+    <literal-include src="#literal-template" data="./test.js#named">        
+        <p>✗ Default content of an <code>&lt;literal-include src="#literal-template" data="./test.js#named"&gt;</code> element.</p>
+    </literal-include>
+
+    <hr/>
+
+    <literal-include src="#literal-template" data="./test.js#fn('string',1,null)">        
+        <p>✗ Default content of an <code>&lt;literal-include src="#literal-template" data="./test.js#fn('string', 1, null)"&gt;</code> element.</p>
+    </literal-include>
+
+    <hr/>
+
+    <h3 class="text-03">Values <span class="test-count">(1 test)</span></h3>
+
+    <template id="values-template">
+        <p>This is how various values are rendered in a <code>&lt;template&gt;</code>:</p>
+        <dl style="display: grid; grid-template-columns: min-content 1fr; text-align: left;">
+            <dt>String</dt>    <dd>${ 'hello' }</dd>
+            <dt>Number</dt>    <dd>${ 123.45 }</dd>
+            <dt>Infinity</dt>  <dd>${ Infinity }, ${ -Infinity }</dd>
+            <dt>boolean</dt>   <dd>${ true }, ${ false }</dd>
+            <dt>function</dt>  <dd>${ function fn(param) {} }</dd>
+            <dt>arrow</dt>     <dd>${ (param) => {} }</dd>
+            <dt>array</dt>     <dd>${ [0, 1, 2, 3] }</dd>
+            <dt>object</dt>    <dd>${ { property: 'hello' } }</dd>
+            <dt>NaN</dt>       <dd>${ NaN }</dd>
+            <dt>null</dt>      <dd>${ null }</dd>
+            <dt>symbol</dt>    <dd>${ Symbol('symbol') }</dd>
+            <dt>undefined</dt> <dd>${ undefined }</dd>
+        </dl>
+
+        <p>Boolean attributes:</p>
+        <p hidden="${ true }">✗ This paragraph has <code>hidden</code></p>
+        <p hidden="${ false }">✓ This paragraph does not have <code>hidden</code></p>
+
+        <p>Class attributes (TokenLists):</p>
+        <p class="${ 'blue-fg' }">This paragraph has <code>class="blue-fg"</code>.</p>
+
+        <p>Style attributes:</p>
+        <p style="color: ${ 'blue' };">This paragraph has <code>style="color: blue;"</code>.</p>
+
+        <p>Text attributes:</p>
+        <p title="${ '✓ title attribute has literal content' }">This paragraph has a <code>title</code> attribute.</p>
+
+        <p>Data attributes:</p>
+        <p data-thing="${ '✓ data-thing attribute has literal content' }">This paragraph has a <code>data-thing</code> attribute.</p>
+
+        <p>Value property:</p>
+        <input type="text" value="${ 'hello' }" />
+        <input type="number" value="  ${ 5 } " />
+    </template>
+
+    <literal-include src="#values-template"></literal-include>
+
+    <hr/>
+
+    <h3 class="text-03"><code>include(template, data)</code> <span class="test-count">(3 tests)</span></h3>
+
+    <template id="paragraph-template">
+        <p>✓ Standard template included.</p>
+    </template>
+
+    <template id="include-standard-template">
+        <div>
+            Before include.
+            ${ include('#paragraph-template', new Promise((resolve) => setTimeout(() => resolve({}), 4000))) }
+            After include.
+        </div>
+    </template>
+
+    <literal-include src="#include-standard-template"></literal-include>
+
+    <hr/>
+
+    <template id="data-template">
+        <p>✓ Literal template included.</p>
+        <pre><code>${ data }</code></pre>
+    </template>
+    
+    <template id="include-literal-template">
+        <div>
+            Before include.
+            ${ include('#data-template', {}) }
+            After include.
+        </div>
+    </template>
+
+    <literal-include src="#include-literal-template"></literal-include>
+
+    <hr/>
+    
+    <literal-include src="#include-literal-template" data="./test.json"></literal-include>
+    
+    <hr/>
+
+
+    <h3 class="text-03">Live binding <span class="test-count">(4 tests)</span></h3>
+
+    <template id="clock-template">
+        <p>Time since load: ${ parseInt(data.time, 10) }</p>
+    </template>
+
+    <literal-include src="#clock-template" data="./test-clock.js"></literal-include>
+    
+    <hr/>
+
+    <literal-include src="#clock-template" data="./test-clock.js"></literal-include>
+
+    <hr/>
+
+    <template id="even-template">
+        <p>Even: ${ parseInt(data.time, 10) }</p>
+    </template>
+
+    <template id="odd-template">
+        <p>Odd:  ${ parseInt(data.time, 10) }</p>
+    </template>
+
+    <template id="evenodd-template">
+        ${ include(parseInt(data.time, 10) % 2 === 0 ? '#even-template' : '#odd-template', data) }
+    </template>
+
+    <literal-include src="#evenodd-template" data="./test-clock.js"></literal-include>
+
+    <hr/>
+
+    <template id="numbers-template">
+        <input type="number" value="${ parseInt(data.time, 10) }" />
+        <input type="range" min="0" max="10" value="${ parseInt(data.time, 10) }" />
+
+        <label>Checked on odd</label>
+        <input type="checkbox" checked="${ parseInt(data.time, 10) % 2 }" />
+        
+        <label>Checked on 1</label>
+        <input type="checkbox" checked="${ parseInt(data.time, 10) }" value="1" />
+
+        <label>Checked when equal to value 1-9</label>
+        <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="1" />
+        <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="2" />
+        <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="3" />
+        <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="4" />
+        <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="5" />
+        <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="6" />
+        <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="7" />
+        <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="8" />
+        <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="9" />
+
+        <label>Selected when equal to value 1-9</label>
+        <select value="${ parseInt(data.time, 10) }">
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+            <option value="4">Four</option>
+            <option value="5">Five</option>
+            <option value="6">Six</option>
+            <option value="7">Seven</option>
+            <option value="8">Eight</option>
+            <option value="9">Nine</option>
+        </select>
+    </template>
+    
+    <literal-include src="#numbers-template" data="./test-clock.js"></literal-include>
+
+    <hr/>
+
+    <h3 class="text-03">Mapped include() <span class="test-count">(1 test)</span></h3>
+
+    <template id="title-template">
+        ${ print(this, data) }
+        <p>${ data.title }</p>
+    </template>
+
+    <template id="objects-template">
+        ${ print(this, data) }
+        <div>Before ${ data.map(include('#title-template')) } After</div>
+    </template>
+
+    <literal-include src="#objects-template" data="./test-objects.json"></literal-include>
+
+    <hr/>
+
+    <script type="module">
+        import "../module.js";
+    </script>
+</body>

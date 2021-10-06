@@ -1,10 +1,10 @@
 {
   "title": "Literal",
   "name": "literal",
-  "description": "Render strings, <template>s, and files as JS Literals.",
-  "version": "0.1.1",
+  "description": "Literal puts JS into your HTML. Literal defines an include element that mixes JS literal enhanced templates into your static HTML, in a small library under 10kB minified and gzipped.",
+  "version": "0.4.2",
   "author": {
-    "name": "stephband",
+    "name": "Stephen",
     "url": "http://stephen.band",
     "twitter": "@stephband"
   },
@@ -15,34 +15,7 @@
   "bugs": {
     "url": "https://github.com/stephband/literal/issues/"
   },
-  "devDependencies": {
-    "clean-css": "^4.2.3",
-    "esbuild": "^0.8.27",
-    "findit": "^2.0.0",
-    "madge": "^3.12.0",
-    "sass": "^1.30.0"
-  },
   "homepage": "https://stephen.band/literal",
-  "docs": "https://stephen.band/literal",
-  "type": "module",
-  "module": "module.js",
-  "scripts": {
-    "build": "node --experimental-json-modules ../fn/build-module.js",
-    "literal": "node --experimental-json-modules --no-warnings ./index.js ./ ./ debug",
-    "watch": "node ./bolt/literal/build-watch.js"
-  },
-  "literal": {
-    "exclude": [
-      ".git",
-      "bolt",
-      "dom",
-      "fn",
-      "node_modules",
-      "archive",
-      "templates",
-      "fonts",
-      "images",
-      "design"
-    ]
-  }
+  "image": "https://stephen.band/literal/assets/logo.png",
+  "favicons": []
 }
