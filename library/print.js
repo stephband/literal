@@ -56,7 +56,7 @@ export default function print() {
     const pre = document.createElement('pre');
 
     pre.setAttribute('class',
-        (arguments.length === 1 && arguments[0].message ? 'literal-error-message ' : '') +
+        (arguments.length === 1 && arguments[0] && arguments[0].message ? 'literal-error-message ' : '') +
         'literal-message'
     );
 

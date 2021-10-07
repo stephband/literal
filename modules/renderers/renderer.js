@@ -192,5 +192,35 @@ assign(Renderer.prototype, {
         const stopables = this.stopables || (this.stopables = []);
         stopables.push(stopable);
         return this;
+    },
+
+
+    inserted: function(fn) {
+        // Where renderer is inserted already run immediately
+        if (this.insertedIntoDOMState) {
+            fn();
+            return this;
+        }
+
+        const insertables = this.insertables || (this.insertables = []);
+        insertables.push(fn);
+        return this;
+    },
+
+    insertedIntoDOM: function() {
+        // These handlers may only be run once
+        if (this.insertedIntoDOMState) {
+            return;
+        }
+
+        this.insertables && this.insertables.forEach((fn) => fn());
+
+        // Hmmm stopables is now a proxy for children. TODO: give renderers a
+        // proper .children property
+        this.stopables && this.stopables.forEach((child) => {
+            child.insertedIntoDOM && child.insertedIntoDOM();
+        });
+
+        this.insertedIntoDOMState = true;
     }
 });

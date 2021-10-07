@@ -92,8 +92,8 @@ function prepareContent(content) {
 }
 
 function newRenderer(renderer) {
-    // `this` is the content fragment of the new renderer
-    const node    = getDescendant(renderer.path, this);
+    // `this` is the parent renderer of the new renderer
+    const node    = getDescendant(renderer.path, this.content);
     const element = isTextNode(node) ? node.parentNode : node ;
     return new renderer.constructor(node, renderer, element);
 }
@@ -115,7 +115,7 @@ export default function TemplateRenderer(template) {
         this.content   = template.content.cloneNode(true);
         this.first     = this.content.childNodes[0];
         this.last      = this.content.childNodes[this.content.childNodes.length - 1];
-        this.renderers = cache[id].renderers.map(newRenderer, this.content);
+        this.renderers = cache[id].renderers.map(newRenderer, this);
         ++analytics['#' + id].template;
         ++analytics.Totals.template;
         return;
@@ -281,5 +281,39 @@ assign(TemplateRenderer.prototype, {
 
     remove: function() {
         return removeNodes(this.first, this.last);
+    },
+    
+
+    /** 
+    TODO
+    **/
+
+    inserted: function(fn) {
+        // Where renderer is inserted already run immediately
+        if (this.insertedIntoDOMState) {
+            fn();
+            return this;
+        }
+
+        const insertables = this.insertables || (this.insertables = []);
+        insertables.push(fn);
+        return this;
+    },
+
+    insertedIntoDOM: function() {
+        // These handlers may only be run once
+        if (this.insertedIntoDOMState) {
+            return;
+        }
+
+        this.insertables && this.insertables.forEach((fn) => fn());
+
+        // Hmmm stopables is now a proxy for children. TODO: give renderers a
+        // proper .children property
+        this.renderers && this.renderers.forEach((child) => {
+            child.insertedIntoDOM && child.insertedIntoDOM();
+        });
+
+        this.insertedIntoDOMState = true;
     }
 });

@@ -116,6 +116,9 @@ element('<literal-include>', {
             renderer.cue(data).then(() => {
                 this.before(renderer.content);
                 this.remove();
+
+                // Signal to tree of renderers that we are now in the DOM
+                renderer.insertedIntoDOM();
             });
 
             this.renderer = renderer;
