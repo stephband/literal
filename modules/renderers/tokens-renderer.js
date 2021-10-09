@@ -51,6 +51,7 @@ function renderValues(args) {
 function setTokens(tokens, cached, values, count) {
     // Remove tokens from the cache that are found in new tokens.
     let n = cached.length;
+
     while (n--) {
         if (tokens.indexOf(cached[n]) !== -1) {
             cached.splice(n, 1);
@@ -71,23 +72,16 @@ function setTokens(tokens, cached, values, count) {
 
 export default function TokensRenderer(node, options) {
     Renderer.apply(this, arguments);
-    
-    const tokens = getTokenList(node, options.name);
-    let cached = nothing;
 
+    this.name      = options.name;
+    this.tokens    = getTokenList(node, options.name);
+    this.cached    = nothing;
     this.literally = options.literally || compile(library, 'data, state, element', options.source, null, options, node);
-    this.name    = options.name;
-    this.update  = (string) => {
-        const classes = string.trim().split(/\s+/);
-        const count   = setTokens(tokens, cached, classes, 0);
-        cached = classes;
-        return count;
-    };
 
     // Empty the tokens until it is rendered to avoid words in literal tags
     // being interpreted as classes
     node.setAttribute(this.name, '');
-    
+
     // Analytics
     const id = '#' + options.template;
     ++analytics[id].class || (analytics[id].class = 1);
@@ -95,5 +89,11 @@ export default function TokensRenderer(node, options) {
 }
 
 assign(TokensRenderer.prototype, Renderer.prototype, {
-    resolve: renderValues
+    resolve: function(args) {
+        const string  = renderValues(args);
+        const classes = string.trim().split(/\s+/);
+        const count   = setTokens(this.tokens, this.cached, classes, 0);
+        this.cached = classes;
+        return count;
+    }
 });

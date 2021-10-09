@@ -102,6 +102,28 @@ function stop(stopable) {
         stopable() ;
 }
 
+function toPaths(paths, path) {
+    // Keep paths unique
+    if (paths.includes(path)) { return; }
+
+    var prev;
+
+    // Make some attempt to remove intermediate paths traversed
+    // while getting the value at the end of the path. Warning: not 100% 
+    // robust. If we want to be robust about this we need to collect gets
+    // async inside the observer, I think.
+    while(
+        (prev = paths[paths.length - 1])
+        && prev.length < path.length
+        && path.startsWith(prev)
+    ) {
+        --paths.length;
+    }
+
+    // store the path
+    paths.push(path);
+}
+
 export default function Renderer(node, options, element) {
     this.element  = element || node;
     this.node     = node;
@@ -112,55 +134,34 @@ export default function Renderer(node, options, element) {
 }
 
 assign(Renderer.prototype, {
-    cue: function(data) {
+    render: function(data) {
         if (DEBUG && this.render === renderStopped) {
-            console.error('Attempt to .cue() stopped renderer', this.id, '#' + (this.template.id || this.template), (this.path ? this.path + ' ' : '') + this.constructor.name);
+            console.error('Attempt to .render() stopped renderer', this.id, '#' + (this.template.id || this.template), (this.path ? this.path + ' ' : '') + this.constructor.name);
         }
 
         // Cue .render() to be called on the next batch
         return cue(this, arguments);
     },
 
-    render: function(data) {
+    update: function render(data) {
         if (this.stopables) {
             this.stopables.forEach(stop);
             this.stopables.length = 0;
         }
-
+    
         const paths = this.paths || (this.paths = []);
         paths.length = 0;
-
+    
         const gets = data ?
-            reads(data).each((path) => {
-                // Keep paths unique
-                if (paths.includes(path)) { return; }
+            reads(data).each((path) => toPaths(paths, path)) :
+            nothing ;
 
-                var prev;
-
-                // Make some attempt to remove intermediate paths traversed
-                // while getting the value at the end of the path. Warning: not 100% 
-                // robust. If we want to be robust about this we need to collect gets
-                // async inside the observer, I think.
-                while(
-                    (prev = paths[paths.length - 1])
-                    && prev.length < path.length
-                    && path.startsWith(prev)
-                ) {
-                    --paths.length;
-                }
-
-                // store the path
-                paths.push(path);
-            }) :
-            nothing;
-
+        // Update render count before rendering in case .count is used inside 
+        // the template
         ++this.count;
 
-        const p = this.literally(data, getTarget(data), this.element);
-        const q = this.resolve(p);
-        
-        // TextRenderer no longer has .update() - should the others follow suit?
-        this.update && this.update(q);
+        // Evaluate the template
+        const values = this.literally(data, getTarget(data), this.element);
 
         // We may only collect synchronous gets – other templates may use 
         // this data object while we are promising and we don't want to
@@ -168,10 +169,11 @@ assign(Renderer.prototype, {
         // change this, making a data proxy per template instance would be the 
         // way to go.
         gets.stop();
+
+        // Return count of DOM mutations
+        return this.resolve(values);
     },
 
-    resolve: renderString,
-    
     stop: function() {
         if (this.stopables) {
             this.stopables.forEach(stop);
@@ -193,7 +195,6 @@ assign(Renderer.prototype, {
         stopables.push(stopable);
         return this;
     },
-
 
     inserted: function(fn) {
         // Where renderer is inserted already run immediately

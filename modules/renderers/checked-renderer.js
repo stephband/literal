@@ -56,10 +56,10 @@ function setChecked(node, value, hasValue) {
 
 export default function CheckedRenderer(node, options) {
     Renderer.apply(this, arguments);
-    this.name    = 'checked';
+
+    this.name      = 'checked';
     this.literally = options.literally || compile(library, 'data, state, element', options.source, null, options, this.element);
-    const hasValue = isDefined(node.getAttribute('value'));
-    this.update  = (value) => setChecked(node, value, hasValue);
+    this.hasValue  = isDefined(node.getAttribute('value'));
 
     // Negate the effects of having template content in the checked attribute -
     // resetting the form sets it back to attribute state
@@ -77,6 +77,7 @@ assign(CheckedRenderer.prototype, Renderer.prototype, {
             throw new Error('A checked attribute may contain only one ${ tag }, optionally surrounded by white space');
         }
     
-        return values[1];
+        const value = values[1];
+        return setChecked(this.node, value, this.hasValue)
     }
 });
