@@ -30,5 +30,3 @@ export const parseQuoted = capture(/^(?:"([^"\\]*(?:\\.[^"\\]*)*)"|'([^'\\]*(?:\
     // 'string'
     2: (nothing, captures) => captures[2]
 }, null);
-
-

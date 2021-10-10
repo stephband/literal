@@ -126,7 +126,13 @@ const library = {
     merge(source1, source2, ...)
     Merges multiple sources into a single stream.
     **/
-    merge: merge,
+    merge,
+    
+    /** 
+    zip(source1, source2, ...)
+    Zips multiple sources into a single stream of array.
+    **/
+    zip,
 
     /** noop()
     Return undefined.

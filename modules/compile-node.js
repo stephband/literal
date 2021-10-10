@@ -1,7 +1,7 @@
 
-import noop       from '../../fn/modules/noop.js';
-import overload   from '../../fn/modules/overload.js';
-import { toType } from '../../dom/modules/node.js';
+import noop     from '../../fn/modules/noop.js';
+import overload from '../../fn/modules/overload.js';
+import toType   from '../../dom/modules/to-type.js';
 
 import AttributeRenderer from './renderers/attribute-renderer.js';
 import BooleanRenderer   from './renderers/boolean-renderer.js';
@@ -47,20 +47,20 @@ function compileValueString(renderers, options, node, attribute) {
     addAttributeRenderer(renderers, StringValueRenderer, node, attribute.value, 'value', options);
 }
 
-function compileChecked(renderers, options, node, attribute) {
-    addAttributeRenderer(renderers, CheckedRenderer, node, attribute.value, 'checked', options);
-}
 
 const compileAttribute = overload((renderers, options, node, attribute) => attribute.localName, {
-    'checked':  compileChecked,
-    'class':    compileTokens,
+    'checked':  function compileChecked(renderers, options, node, attribute) {
+        addAttributeRenderer(renderers, CheckedRenderer, node, attribute.value, 'checked', options);
+    },
+
+    'class': compileTokens,
 
     'datetime': function compileDatetime(renderers, options, node, attribute) {
         if (window.DEBUG) { console.log('Todo: compile datetime attribute'); }
     },
 
     'disabled': compileBoolean,
-    'hidden':   compileBoolean,
+    'hidden': compileBoolean,
 
     // Special workaround attribute used in cases where ${} cannot be added
     // directly to the HTML content, such as in <tbody> or <tr>
@@ -88,7 +88,7 @@ const compileAttribute = overload((renderers, options, node, attribute) => attri
         'undefined':  compileAttr
     }),
 
-    'default':  compileAttr
+    'default': compileAttr
 });
 
 function compileAttributes(renderers, options, node) {

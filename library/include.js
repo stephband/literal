@@ -7,7 +7,7 @@ import curry   from '../../fn/modules/curry.js';
 import request from './request.js';
 import create  from '../../dom/modules/create.js';
 import { requestGet }   from '../../dom/modules/request.js';
-import { fragmentFromHTML } from '../../dom/modules/fragments.js';
+import fragmentFromHTML from '../../dom/modules/fragment-from-html.js';
 import TemplateRenderer from '../modules/renderers/template-renderer.js';
 import { getTarget }    from '../../fn/observer/observer.js';
 import print from './print.js';
