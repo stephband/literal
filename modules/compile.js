@@ -24,7 +24,7 @@ export default function compile(scope, params, source, id, info, element) {
 
     const code = '\n'
         + (id ? indent + '// Template #' + id + '\n' : '')
-        + indent + 'return render`' + source + '`;\n';
+        + indent + 'return this.resolve`' + source + '`;\n';
 
     if (window.DEBUG) {
         try {

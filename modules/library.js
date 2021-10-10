@@ -220,12 +220,7 @@ const library = {
     em,
     rem,
     vw,
-    vh,
-
-    // The principal render function
-    render: function() {
-        return arguments;
-    }
+    vh
 };
 
 export default library;

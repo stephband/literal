@@ -129,8 +129,7 @@ assign(TextRenderer.prototype, Renderer.prototype, {
         return Renderer.prototype.render.apply(this, arguments);
     },
 
-    resolve: function(values) {
-        const strings  = values[0];
+    resolve: function(strings) {
         const contents = this.contents;
         contents.forEach(stop);
         contents.length = 0;
@@ -141,7 +140,7 @@ assign(TextRenderer.prototype, Renderer.prototype, {
         while (strings[++n] !== undefined) {
             // Append to string until it has to be pushed to contents because
             // a node or renderer has to be pushed in behind it
-            string = renderValue(string + strings[n], contents, values[n + 1]);
+            string = renderValue(string + strings[n], contents, arguments[n]);
         }
 
         string && contents.push(string);

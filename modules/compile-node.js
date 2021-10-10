@@ -56,7 +56,7 @@ const compileAttribute = overload((renderers, options, node, attribute) => attri
     'class':    compileTokens,
 
     'datetime': function compileDatetime(renderers, options, node, attribute) {
-        console.log('Todo: compile datetime');
+        if (window.DEBUG) { console.log('Todo: compile datetime attribute'); }
     },
 
     'disabled': compileBoolean,
