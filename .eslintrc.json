@@ -17,7 +17,7 @@
         ],
         "array-callback-return": "off",
         "arrow-body-style": "error",
-        "arrow-parens": "error",
+        "arrow-parens": "off",
         "arrow-spacing": "error",
         "block-scoped-var": "off",
         "block-spacing": ["error", "always"],

@@ -145,6 +145,8 @@ assign(Renderer.prototype, {
     },
 
     update: function render(data) {
+        //console.log(this.constructor.name + '#' + this.id + '.update()');
+
         if (this.stopables) {
             this.stopables.forEach(stop);
             this.stopables.length = 0;

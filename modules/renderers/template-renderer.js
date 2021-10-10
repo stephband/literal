@@ -195,6 +195,8 @@ assign(TemplateRenderer.prototype, {
     },
 
     update: function(object) {
+        //console.log(this.constructor.name + '#' + this.id + '.update()');
+
         if (!object) {
             // Remove all but the first node to the renderer's content fragment
             const nodes = [];
@@ -209,13 +211,7 @@ assign(TemplateRenderer.prototype, {
             return;
         }
     
-        const data = getTarget(object);
-
-        // Stop any previous observables where they have not already 
-        // been stoppped (if we remove render() such that this can only be cued
-        // remove this line, they are already stopped)
-        this.observables.forEach(stop);
-
+        const data      = getTarget(object);
         const observer  = Observer(data);
         const renderers = this.renderers;
 
@@ -274,11 +270,18 @@ assign(TemplateRenderer.prototype, {
     .remove()
     Removes rendered content from the DOM.
     **/
-
     remove: function() {
         return removeNodes(this.first, this.last);
     },
-    
+
+    /** 
+    .replaceWith()
+    Removes rendered content from the DOM and inserts arguments in its place.
+    **/
+    replaceWith: function() {
+        this.first.before.apply(this.first, arguments);
+        return this.remove();
+    },
 
     /** 
     TODO

@@ -22,6 +22,7 @@ import overload        from '../../fn/modules/overload.js';
 import { px, em, rem, vw, vh } from '../../dom/modules/parse-length.js';
 import { Observer }    from '../../fn/observer/observer.js';
 import { observe }     from '../../fn/observer/observe.js';
+import Stream          from '../../fn/stream/stream.js';
 import combine         from '../../fn/stream/combine.js';
 import merge           from '../../fn/stream/merge.js';
 import zip             from '../../fn/stream/zip.js';
@@ -209,6 +210,11 @@ const library = {
     Returns the slug of `string`.
     **/
     slugify,
+    
+    /** Stream(fn)
+    Returns a stream of values.
+    **/
+    Stream,
 
     /** 
     translate()

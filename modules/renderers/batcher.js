@@ -1,14 +1,32 @@
 
-import { log, group, groupCollapsed, groupEnd } from '../log.js';
+import { log, group, groupEnd } from '../log.js';
 
 const renderers = [];
 const promise   = Promise.resolve(renderers);
 let cued;
 
+function constructorCount(renderers) {
+    // Count constructors
+    return renderers
+    .map((renderer) => renderer.constructor.name.replace('Renderer', ''))
+    .reduce((names, name) => {
+        const i = names.indexOf(name);
+        if (i === -1) { names.push(1, name); }
+        else          { ++names[i - 1]; }
+        return names;
+    }, [])
+    .reduce((string, value) => string + (
+        typeof value === 'number' ?
+            string ? ', ' + value :
+            value :
+        ' ' + value
+    ), '');
+}
+
 function render(renderers) {
     if (window.DEBUG) {
         var t0 = window.performance.now() / 1000;
-        group('batch', t0.toFixed(3) + ', ' + renderers.length + ' renderer' + (renderers.length > 1 ? 's cued' : ' cued'), 'green');
+        group('batch', t0.toFixed(3) + ', ' + constructorCount(renderers) + ' renderer' + (renderers.length === 1 ? '' : 's') + ' cued', 'green');
         var ids = {};
     }
 
@@ -18,7 +36,6 @@ function render(renderers) {
         renderer.update.apply(renderer, renderer.cuedArguments);
         renderer.cuedArguments = undefined;
         renderer.cued = false;
-
         if (window.DEBUG) {
             ids && (ids[renderer.id] = ids[renderer.id] === undefined ? 1 : ids[renderer.id] + 1);
         }
@@ -30,7 +47,7 @@ function render(renderers) {
         const keys = Object.keys(ids);
         log('render', keys.length + (keys.length > 1 ? ' renderers – ' : ' renderer – ') + keys.slice(0, 12).join(', ') + (keys.length > 12 ? ', ...' : ''), 'yellow');
 
-        var t1 = window.performance.now() / 1000;
+        const t1 = window.performance.now() / 1000;
         if (t1 - t0 > 0.016) {
             log('render took longer than a frame (0.016s) ' + (t1 - t0).toFixed(3) + 's', '', 'orange');
         }
@@ -61,7 +78,7 @@ export function cue(renderer, args) {
     if (!cued) {
         cued = promise.then(render);
     }
-    
+
     renderers.push(renderer);
     renderer.cued = true;
     return promise;

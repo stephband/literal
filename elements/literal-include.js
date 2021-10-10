@@ -86,6 +86,7 @@ element('<literal-include>', {
             console.error('<literal-include> a src attribute is required', this);
         }
 
+
         // Resolve data
 
         const keys   = Object.keys(this.dataset);
@@ -103,7 +104,9 @@ element('<literal-include>', {
                 this.rejectData  = reject;
             }) ;
 
-        // Resolve src template
+
+        // Resolve src
+
         new Promise((resolve, reject) => {
             this.resolveSrc = resolve;
             this.rejectSrc = reject;
@@ -129,9 +132,7 @@ element('<literal-include>', {
     connect: function() {
         // Where no data or data-* attribute has been defined resolve with an 
         // empty object...
-        //
-        // ... pfffffft, naaaaah ...
-        //this.resolveData && this.resolveData({});
+        this.resolveData && this.resolveData({});
     }
 }, {
     /** 

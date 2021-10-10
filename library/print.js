@@ -51,19 +51,24 @@ function toHTML(object) {
     }
 }
 
-export default function print() {
+export default function print(object) {
     // Print renderer
     const pre = document.createElement('pre');
+    let html = '';
 
-    pre.setAttribute('class',
-        (arguments.length === 1 && arguments[0] && arguments[0].message ? 'literal-error-message ' : '') +
-        'literal-message'
-    );
-
-    let html = '', n = -1;
-    while (arguments[++n] !== undefined) {
-        html += toHTML(getTarget(arguments[n]));
+    if (object instanceof Error) {
+        pre.setAttribute('class', 'literal-error-print literal-print');
+        html += '<strong>' + object.constructor.name + '</strong>';
+        html += '<code>' + object.message + '</code>';
     }
+    else {
+        let n = -1;
+        pre.setAttribute('class', 'literal-message');    
+        while (arguments[++n] !== undefined) {
+            html += toHTML(getTarget(arguments[n]));
+        }
+    }
+
     pre.innerHTML = html;
     return pre;
 }
