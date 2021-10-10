@@ -162,7 +162,7 @@ assign(Renderer.prototype, {
         ++this.count;
 
         // Evaluate the template
-        const values = this.literally(data, getTarget(data), this.element);
+        const meta = this.literally(data, getTarget(data), this.element);
 
         // We may only collect synchronous gets – other templates may use 
         // this data object while we are promising and we don't want to
@@ -172,7 +172,7 @@ assign(Renderer.prototype, {
         gets.stop();
 
         // Return count of DOM mutations
-        return this.resolve(values);
+        return meta;
     },
 
     stop: function() {
