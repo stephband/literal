@@ -34,8 +34,6 @@ import observe     from '../../../fn/observer/observe.js';
 import analytics, { meta } from './analytics.js';
 import Renderer, { removeNodes } from './renderer.js';
 
-const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
-
 const assign = Object.assign;
 const cache  = {};
 
@@ -125,7 +123,7 @@ export default function TemplateRenderer(template) {
         document.getElementById(template) :
         template ;
 
-    if (DEBUG) {
+    if (window.DEBUG) {
         if (!template) {
             throw new Error('Template id="' + id + '" not found in document');
         }

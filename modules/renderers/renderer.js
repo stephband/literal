@@ -1,5 +1,6 @@
 
 import nothing        from '../../../fn/modules/nothing.js';
+import noop           from '../../../fn/modules/noop.js';
 import reads          from '../../../fn/observer/reads.js';
 import { getTarget }  from '../../../fn/observer/observer.js';
 import { cue, uncue } from './batcher.js';
@@ -135,7 +136,7 @@ export default function Renderer(node, options, element) {
 
 assign(Renderer.prototype, {
     render: function(data) {
-        if (DEBUG && this.render === renderStopped) {
+        if (window.DEBUG && this.render === renderStopped) {
             console.error('Attempt to .render() stopped renderer', this.id, '#' + (this.template.id || this.template), (this.path ? this.path + ' ' : '') + this.constructor.name);
         }
 
@@ -181,11 +182,7 @@ assign(Renderer.prototype, {
         }
 
         uncue(this);
-
-        if (DEBUG) {
-//console.log('stopped ', this.id, '#' + (this.template.id || this.template), (this.path ? this.path + ' ' : '') + this.constructor.name);
-            this.render = renderStopped;
-        }
+        this.render = window.DEBUG ? renderStopped : noop ;
 
         return this;
     },

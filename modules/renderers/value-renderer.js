@@ -118,8 +118,8 @@ export default function ValueRenderer(node, options) {
 }
 
 assign(ValueRenderer.prototype, Renderer.prototype, {
-    resolve: function(args) {
-        const value = renderValue(args);
+    resolve: function() {
+        const value = renderValue(arguments);
         return setValue(this.node, value)
     }
 });
@@ -142,8 +142,8 @@ export function StringValueRenderer(node, options) {
 }
 
 assign(StringValueRenderer.prototype, Renderer.prototype, {
-    resolve: function(args) {
-        const value = renderString(args);
+    resolve: function() {
+        const value = renderString(arguments);
         return setValue(this.node, value)
     }
 });
