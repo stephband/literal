@@ -19,7 +19,7 @@ const data     = {};
 
 // Cue data for render then add it to the DOM
 renderer
-.cue(data)
+.render(data)
 .then(() => document.body.append(renderer.content));
 ```
 **/
@@ -90,8 +90,8 @@ function prepareContent(content) {
 }
 
 function newRenderer(renderer) {
-    // `this` is the content fragment of the new renderer
-    const node    = getDescendant(renderer.path, this);
+    // `this` is the parent renderer of the new renderer
+    const node    = getDescendant(renderer.path, this.content);
     const element = isTextNode(node) ? node.parentNode : node ;
     return new renderer.constructor(node, renderer, element);
 }
@@ -113,7 +113,7 @@ export default function TemplateRenderer(template) {
         this.content   = template.content.cloneNode(true);
         this.first     = this.content.childNodes[0];
         this.last      = this.content.childNodes[this.content.childNodes.length - 1];
-        this.renderers = cache[id].renderers.map(newRenderer, this.content);
+        this.renderers = cache[id].renderers.map(newRenderer, this);
         ++analytics['#' + id].template;
         ++analytics.Totals.template;
         return;
@@ -138,7 +138,7 @@ export default function TemplateRenderer(template) {
 
     A fragment that initially contains the renderer's DOM nodes. On creation of
     a renderer they are in an unrendered state. They are guaranteed to be in a 
-    rendered state on resolution of the first `.cue()` promise. 
+    rendered state on resolution of the first `.render()` promise. 
     
     The fragment may be inserted into the DOM at any time, at which point it 
     will no longer contain the renderer's DOM nodes, however the renderer 
@@ -160,10 +160,7 @@ export default function TemplateRenderer(template) {
     // mutated as it is passed to each renderer (specifically path, name, 
     // source properties). We can do this because renderer construction is 
     // synchronous within a template.
-    this.renderers = compileNode([], {
-        template: id,
-        path: ''
-    }, this.content, template.content);
+    this.renderers = compileNode([], { template: id, path: '' }, this.content, template.content);
 
     cache[id] = this;
 }
@@ -174,15 +171,15 @@ function stop(object) {
 
 assign(TemplateRenderer.prototype, {
     /**
-    .cue(data)
+    .render(data)
     Cues `data` to be rendered in the next render batch. Returns a promise that
     resolves when the batch is finished rendering.
-    
+
     The `data` object is observed for mutations, and the renderer updates it 
     content until either a new data object is cued or the renderer is stopped.
     **/
 
-    cue: function(object) {
+    render: function(object) {
         this.observables.forEach(stop);
         this.observables = nothing;
 
@@ -194,10 +191,10 @@ assign(TemplateRenderer.prototype, {
         }
 
         this.data = data;
-        return Renderer.prototype.cue.apply(this, arguments);
+        return Renderer.prototype.render.apply(this, arguments);
     },
 
-    render: function(object) {
+    update: function(object) {
         if (!object) {
             // Remove all but the first node to the renderer's content fragment
             const nodes = [];
@@ -223,7 +220,7 @@ assign(TemplateRenderer.prototype, {
         const renderers = this.renderers;
 
         // This has to happen synchronously in order to collect gets...
-        renderers.forEach((renderer) => renderer.render(observer, data));
+        renderers.forEach((renderer) => renderer.update(observer, data));
 
         // If this.first is not in the content fragment, it must be in the 
         // parent DOM being used as a marker. It's time for its freshly rendered 
@@ -239,7 +236,7 @@ assign(TemplateRenderer.prototype, {
                     // the machine think too hard
                     observe(path, data, getPath(path, data)).each((value) =>
                         // Next renders are cued which batches them
-                        renderer.cue(observer)
+                        renderer.render(observer)
                     )
                 )
             ) :
@@ -272,6 +269,7 @@ assign(TemplateRenderer.prototype, {
         return Renderer.prototype.stop.apply(this, arguments);
     },
 
+
     /** 
     .remove()
     Removes rendered content from the DOM.
@@ -279,5 +277,39 @@ assign(TemplateRenderer.prototype, {
 
     remove: function() {
         return removeNodes(this.first, this.last);
+    },
+    
+
+    /** 
+    TODO
+    **/
+
+    inserted: function(fn) {
+        // Where renderer is inserted already run immediately
+        if (this.insertedIntoDOMState) {
+            fn();
+            return this;
+        }
+
+        const insertables = this.insertables || (this.insertables = []);
+        insertables.push(fn);
+        return this;
+    },
+
+    insertedIntoDOM: function() {
+        // These handlers may only be run once
+        if (this.insertedIntoDOMState) {
+            return;
+        }
+
+        this.insertables && this.insertables.forEach((fn) => fn());
+
+        // Hmmm stopables is now a proxy for children. TODO: give renderers a
+        // proper .children property
+        this.renderers && this.renderers.forEach((child) => {
+            child.insertedIntoDOM && child.insertedIntoDOM();
+        });
+
+        this.insertedIntoDOMState = true;
     }
 });

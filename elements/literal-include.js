@@ -113,9 +113,12 @@ element('<literal-include>', {
 
             // But once it has data we know we can render it, but we 
             // want to do that in the next batch
-            renderer.cue(data).then(() => {
+            renderer.render(data).then(() => {
                 this.before(renderer.content);
                 this.remove();
+
+                // Signal to tree of renderers that we are now in the DOM
+                renderer.insertedIntoDOM();
             });
 
             this.renderer = renderer;
@@ -170,13 +173,13 @@ element('<literal-include>', {
         set: function(value) {
             if (this.renderer) {
                 if (!value) {
-                    this.renderer.cue(null);
+                    this.renderer.render(null);
                 }
                 else if (typeof value === 'string') {
-                    request(value).then((data) => this.renderer.cue(data));
+                    request(value).then((data) => this.renderer.render(data));
                 }
                 else {
-                    this.renderer.cue(value);
+                    this.renderer.render(value);
                 }
 
                 return;

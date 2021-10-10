@@ -14,8 +14,8 @@ function render(renderers) {
 
     var renderer;
     while (renderer = renderers.shift()) {
-        // Call .render() with latest arguments
-        renderer.render.apply(renderer, renderer.cuedArguments);
+        // Call .update() with latest arguments
+        renderer.update.apply(renderer, renderer.cuedArguments);
         renderer.cuedArguments = undefined;
         renderer.cued = false;
 

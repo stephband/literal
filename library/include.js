@@ -30,7 +30,7 @@ export function include(url, data) {
     // Accept a url, fetch or import it before rendering
     if (typeof data === 'string') {
         request(data)
-        .then((data) => renderer.cue(data))
+        .then((data) => renderer.render(data))
         .then(() => marker.after(renderer.content))
         .catch(print);
 
@@ -44,7 +44,7 @@ export function include(url, data) {
     // Accept a promise of data
     if (data && data.then) {
         data
-        .then((data) => renderer.cue(data))
+        .then((data) => renderer.render(data))
         .then(() => marker.after(renderer.content))
         .catch(print);
 
@@ -53,7 +53,8 @@ export function include(url, data) {
 
     // Cue the renderer so that we do not end up collecting read paths read by
     // the child renderer in the parent.
-    renderer.cue(data || {})
+    renderer
+    .render(data || {})
     .then(() => marker.after(renderer.content))
     .catch(print);
 

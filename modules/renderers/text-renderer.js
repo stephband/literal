@@ -108,6 +108,7 @@ function setContent(first, last, contents) {
 
 export default function TextRenderer(node, options, element) {
     Renderer.apply(this, arguments);
+
     this.first     = node;
     this.last      = document.createTextNode('');
     this.first.after(this.last);
@@ -121,11 +122,11 @@ export default function TextRenderer(node, options, element) {
 }
 
 assign(TextRenderer.prototype, Renderer.prototype, {
-    cue: function() {
+    render: function() {
         // Stop all nodes, they are about to be recreated
         this.contents.forEach(stop);
         this.contents.length = 0;
-        return Renderer.prototype.cue.apply(this, arguments);
+        return Renderer.prototype.render.apply(this, arguments);
     },
 
     resolve: function(values) {
