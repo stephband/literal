@@ -6,7 +6,7 @@ import toType   from '../../dom/modules/to-type.js';
 import AttributeRenderer from './renderers/attribute-renderer.js';
 import BooleanRenderer   from './renderers/boolean-renderer.js';
 import CheckedRenderer   from './renderers/checked-renderer.js';
-import TextRenderer      from './renderers/text-renderer.js';
+import ContentRenderer   from './renderers/content-renderer.js';
 import TokensRenderer    from './renderers/tokens-renderer.js';
 import ValueRenderer, { StringValueRenderer } from './renderers/value-renderer.js';
 
@@ -70,7 +70,7 @@ const compileAttribute = overload((renderers, options, node, attribute) => attri
         node.removeAttribute(attribute.localName);
         options.source = decode(string);
         options.name   = 'innerHTML';
-        renderers.push(new TextRenderer(node, options));
+        renderers.push(new ContentRenderer(node, options));
     },
 
     'required': compileBoolean,
@@ -174,7 +174,7 @@ const compileNode = overload((renderers, options, node) => toType(node), {
         if (string && rliteral.test(string)) {
             options.source = decode(string);
             options.name   = null;
-            renderers.push(new TextRenderer(node, options, element));
+            renderers.push(new ContentRenderer(node, options, element));
         }
 
         return renderers;

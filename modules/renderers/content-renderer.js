@@ -187,7 +187,7 @@ function renderValue(contents, string, value) {
 
 
 /**
-TextRenderer()
+ContentRenderer()
 Constructs an object responsible for rendering to a text node. If the result of
 processing the literal content is more DOM content this renderer will insert 
 that DOM after the text node.
@@ -245,7 +245,7 @@ function setContent(first, last, contents) {
     return count;
 }
 
-export default function TextRenderer(node, options, element) {
+export default function ContentRenderer(node, options, element) {
     Renderer.apply(this, arguments);
 
     this.first     = node;
@@ -260,7 +260,7 @@ export default function TextRenderer(node, options, element) {
     ++analytics.Totals.text;
 }
 
-assign(TextRenderer.prototype, Renderer.prototype, {
+assign(ContentRenderer.prototype, Renderer.prototype, {
     render: function() {
         // Preemptively stop all nodes, they are about to be updated
         this.contents.forEach(stop);
