@@ -82,7 +82,7 @@ function zipObject(keys, values) {
 
 element('<literal-include>', {
     construct: function() {
-        if (!this.hasAttribute('src')) {
+        if (window.DEBUG && !this.hasAttribute('src')) {
             console.error('<literal-include> a src attribute is required', this);
         }
 
@@ -120,7 +120,7 @@ element('<literal-include>', {
 
             this.renderer = renderer;
         }))
-        .catch((message) => console.error(message, this));
+        .catch((message) => (window.DEBUG && console.error(message, this)));
     },
 
     connect: function() {

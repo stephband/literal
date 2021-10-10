@@ -45,8 +45,6 @@ import overload from '../../fn/modules/overload.js';
 import cache from '../../fn/modules/cache.js';
 import { requestGet } from '../../dom/modules/request.js';
 
-//const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
-
 const rextension = /\.([\w-]+)(?:#|\?|$)/;
 const rfragment  = /#(\w+)(?:\(([^\)]*)\))?$/;
 const defaultexp = ['', 'default', ''];

@@ -6,7 +6,7 @@ const promise   = Promise.resolve(renderers);
 let cued;
 
 function render(renderers) {
-    if (DEBUG) {
+    if (window.DEBUG) {
         var t0 = window.performance.now() / 1000;
         group('batch', t0.toFixed(3) + ', ' + renderers.length + ' renderer' + (renderers.length > 1 ? 's cued' : ' cued'), 'green');
         var ids = {};
@@ -19,14 +19,14 @@ function render(renderers) {
         renderer.cuedArguments = undefined;
         renderer.cued = false;
 
-        if (DEBUG) {
+        if (window.DEBUG) {
             ids && (ids[renderer.id] = ids[renderer.id] === undefined ? 1 : ids[renderer.id] + 1);
         }
     }
 
     cued = undefined;
 
-    if (DEBUG) {
+    if (window.DEBUG) {
         const keys = Object.keys(ids);
         log('render', keys.length + (keys.length > 1 ? ' renderers – ' : ' renderer – ') + keys.slice(0, 12).join(', ') + (keys.length > 12 ? ', ...' : ''), 'yellow');
 

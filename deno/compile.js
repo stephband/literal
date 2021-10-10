@@ -9,8 +9,6 @@ import compileAsyncFn from '../../fn/modules/compile-async.js';
 import { dimgreendim, dim, red, yellow } from './log.js';
 
 
-const DEBUG = true;
-
 const hints = {
     'Unexpected':
         '• Non-template backticks must be escaped: \\`\n' +
@@ -55,7 +53,7 @@ export default function compile(scope, params, source, id) {
         + (id ? indent + '// Template #' + id + '\n' : '')
         + indent + 'return render`' + source + '`;\n';
 
-    if (DEBUG) {
+    if (window.DEBUG) {
         console.log(dimgreendim, 'Literal', 'compile', id + ' { ' + params + ' }');
 
         // scope, paramString, code [, context]        

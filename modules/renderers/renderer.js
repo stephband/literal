@@ -113,7 +113,7 @@ export default function Renderer(node, options, element) {
 
 assign(Renderer.prototype, {
     cue: function(data) {
-        if (DEBUG && this.render === renderStopped) {
+        if (window.DEBUG && this.render === renderStopped) {
             console.error('Attempt to .cue() stopped renderer', this.id, '#' + (this.template.id || this.template), (this.path ? this.path + ' ' : '') + this.constructor.name);
         }
 
@@ -180,7 +180,7 @@ assign(Renderer.prototype, {
 
         uncue(this);
 
-        if (DEBUG) {
+        if (window.DEBUG) {
 //console.log('stopped ', this.id, '#' + (this.template.id || this.template), (this.path ? this.path + ' ' : '') + this.constructor.name);
             this.render = renderStopped;
         }

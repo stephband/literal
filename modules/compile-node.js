@@ -12,10 +12,7 @@ import ValueRenderer, { StringValueRenderer } from './renderers/value-renderer.j
 
 import decode   from './decode.js';
 
-//const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
-
 const A = Array.prototype;
-
 const rliteral = /\$\{/;
 
 

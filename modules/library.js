@@ -27,7 +27,6 @@ import merge           from '../../fn/stream/merge.js';
 import zip             from '../../fn/stream/zip.js';
 import print           from '../library/print.js';
 
-const DEBUG   = window.DEBUG;
 const assign  = Object.assign;
 const entries = Object.entries;
 
@@ -173,7 +172,7 @@ const library = {
     /* overload(fn, object) */
     overload,
     
-    print: DEBUG ? print : noop,
+    print: window.DEBUG ? print : noop,
 
     /** round(n)
     Alias of `Math.round()`;

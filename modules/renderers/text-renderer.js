@@ -7,8 +7,6 @@ import toText         from '../to-text.js';
 import Renderer, { removeNodes } from './renderer.js';
 import analytics      from './analytics.js';
 
-const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
-
 const assign = Object.assign;
 /*
 const contentLibrary = assign({}, library, {

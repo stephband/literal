@@ -19,7 +19,6 @@ import slugify from '../../fn/modules/slugify.js';
 import { parseString } from './parse-string.js';
 import { parseParams } from './parse-params.js';
 
-const DEBUG = false;//true;
 
 const markedOptions = {
     // GitHub Flavored Markdown

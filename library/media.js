@@ -49,8 +49,6 @@ import create  from '../../dom/modules/create.js';
 import media   from '../../dom/modules/media.js';
 import { log } from '../modules/log.js';
 
-const DEBUG = window.DEBUG && (window.DEBUG === true || window.DEBUG.includes('routes'));
-
 const assign = Object.assign;
 
 export default function(selector, inside, outside) {

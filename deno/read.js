@@ -6,8 +6,6 @@ read(pathname)
 import cache    from '../../fn/modules/cache.js';
 import { dimbluedim } from './log.js';
 
-const DEBUG = false;
-
 // TextDecoder decodes the Uint8Array to unicode text
 const decoder = new TextDecoder('utf-8');
 
@@ -21,7 +19,7 @@ export const readText = cache(function request(source) {
                 return reject(err);
             }
 
-            if (DEBUG) {
+            if (window.DEBUG) {
                 const filesize = Math.round(Buffer.byteLength(text, 'utf8') / 1000);
                 console.log(dimbluedim, 'Literal', 'read', path + ' (' + filesize + 'kB)');
             }

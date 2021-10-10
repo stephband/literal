@@ -1,8 +1,6 @@
 
 import compileFn from '../../fn/modules/compile.js';
 
-const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
-
 /**
 compile(scope, params, source, id, info, element)
 Compiles a literal template to a function.
@@ -28,7 +26,7 @@ export default function compile(scope, params, source, id, info, element) {
         + (id ? indent + '// Template #' + id + '\n' : '')
         + indent + 'return render`' + source + '`;\n';
 
-    if (DEBUG) {
+    if (window.DEBUG) {
         try {
             return cache[key] = compileFn(scope, params, 
                 'try {' + code + '} catch(e) {' +
