@@ -58,11 +58,6 @@ processing the literal content is more DOM content this renderer will insert
 that DOM after the text node.
 **/
 
-function after(target, node) {
-    target.after(node);
-    return 1;
-}
-
 function setNodeValue(node, value) {
     if (node.nodeValue !== value) {
         node.nodeValue = value;
@@ -134,6 +129,7 @@ assign(TextRenderer.prototype, Renderer.prototype, {
     resolve: function(values) {
         const strings  = values[0];
         const contents = this.contents;
+
         contents.forEach(stop);
         contents.length = 0;
 
