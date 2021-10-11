@@ -52,6 +52,7 @@ Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a
 
 **/
 
+import noop    from '../../fn/modules/noop.js';
 import element from '../../dom/modules/element.js';
 import request from '../library/request.js';
 import TemplateRenderer from '../modules/renderers/template-renderer.js';
@@ -125,10 +126,9 @@ element('<literal-include>', {
                 renderer.connect();
                 //trigger(renderer, 'connect', 'dom');
             })
-            .catch((e) => console.log('SHIIT', e))
             .catch(window.DEBUG ?
                 (e) => this.replaceWith(print(e)) :
-                () => { /*this.content.remove()*/ }
+                noop
             );
 
             this.renderer = renderer;
