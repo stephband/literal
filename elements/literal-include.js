@@ -119,21 +119,27 @@ element('<literal-include>', {
             // But once it has data we know we can render it, but we 
             // want to do that in the next batch
             renderer.render(data).then(() => {
-                this.before(renderer.content);
-                this.remove();
+                this.replaceWith(renderer.content);
 
                 // Signal to tree of renderers that we are now in the DOM
                 renderer.connect();
                 //trigger(renderer, 'connect', 'dom');
-            })
-            .catch(window.DEBUG ?
-                (e) => this.replaceWith(print(e)) :
+            }).catch(window.DEBUG ?
+                (e) => {
+                    this.replaceWith(print(e));
+                    console.error(e.message);
+                } :
                 noop
             );
 
             this.renderer = renderer;
-        }))
-        .catch((message) => (window.DEBUG && console.error(message, this)));
+        })).catch(window.DEBUG ?
+            (e) => {
+                this.replaceWith(print(e));
+                console.error(e.message);
+            } :
+            noop
+        );
     },
 
     connect: function() {
