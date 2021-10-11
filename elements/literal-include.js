@@ -58,7 +58,7 @@ import request from '../library/request.js';
 import TemplateRenderer from '../modules/renderers/template-renderer.js';
 import print   from '../library/print.js';
 
-const rpath = /^\.|^https?:\/\//;
+const rpath = /^\/|\.|^https?:\/\//;
 
 function parseValue(string) {
     try {
@@ -93,7 +93,6 @@ element('<literal-include>', {
 
         const keys   = Object.keys(this.dataset);
         const values = Object.values(this.dataset); 
-
         const dataPromise = keys.length ?
             // where there are values in dataset compose data from dataset
             Promise
