@@ -26,7 +26,7 @@ function constructorCount(renderers) {
 function render(renderers) {
     if (window.DEBUG) {
         var t0 = window.performance.now() / 1000;
-        group('batch', t0.toFixed(3) + ', ' + constructorCount(renderers) + ' renderer' + (renderers.length === 1 ? '' : 's') + ' cued', 'green');
+        group('batch', t0.toFixed(3) + ' – cued ' + constructorCount(renderers), 'green');
         var ids = {};
     }
 
@@ -81,7 +81,7 @@ export function cue(renderer, args) {
 
     renderers.push(renderer);
     renderer.cued = true;
-    return promise;
+    return cued;
 }
 
 /** 

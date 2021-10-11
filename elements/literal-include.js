@@ -55,6 +55,7 @@ Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a
 import element from '../../dom/modules/element.js';
 import request from '../library/request.js';
 import TemplateRenderer from '../modules/renderers/template-renderer.js';
+import print   from '../library/print.js';
 
 const rpath = /^\.|^https?:\/\//;
 
@@ -121,8 +122,14 @@ element('<literal-include>', {
                 this.remove();
 
                 // Signal to tree of renderers that we are now in the DOM
-                renderer.insertedIntoDOM();
-            });
+                renderer.connect();
+                //trigger(renderer, 'connect', 'dom');
+            })
+            .catch((e) => console.log('SHIIT', e))
+            .catch(window.DEBUG ?
+                (e) => this.replaceWith(print(e)) :
+                () => { /*this.content.remove()*/ }
+            );
 
             this.renderer = renderer;
         }))

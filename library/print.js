@@ -63,7 +63,7 @@ export default function print(object) {
     }
     else {
         let n = -1;
-        pre.setAttribute('class', 'literal-message');    
+        pre.setAttribute('class', 'literal-print');    
         while (arguments[++n] !== undefined) {
             html += toHTML(getTarget(arguments[n]));
         }

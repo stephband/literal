@@ -3,9 +3,9 @@ import create         from '../../../dom/modules/create.js';
 import library        from '../library.js';
 import compile        from '../compile.js';
 import toText         from '../to-text.js';
+import analytics, { meta } from './analytics.js';
 import Renderer, { removeNodes } from './renderer.js';
 import TemplateRenderer from './template-renderer.js';
-import analytics      from './analytics.js';
 import print          from '../../library/print.js';
 
 const assign = Object.assign;
@@ -34,6 +34,7 @@ function replaceObjectContent(renderer, value) {
     if (value instanceof TemplateRenderer) {
         renderer.content.replaceWith(value.content);
         renderer.content = value;
+        renderer.status === 'dom' && value.connect();
         return true;
     }
 
@@ -42,6 +43,7 @@ function replaceObjectContent(renderer, value) {
         const child = new StreamRenderer(value);
         renderer.content.replaceWith(child.content);
         renderer.content = child;
+        renderer.status === 'dom' && child.connect();
         return true;
     }
     
@@ -50,6 +52,7 @@ function replaceObjectContent(renderer, value) {
         const child = new PromiseRenderer(value);
         renderer.content.replaceWith(child.content);
         renderer.content = child;
+        renderer.status === 'dom' && child.connect();
         return true;
     }
 }
@@ -60,10 +63,11 @@ function PromiseRenderer(promise) {
     // Marker content
     this.content = create('text', '');
     this.status  = 'pending';
+    this.id      = ++meta.count;
 
     promise
     .then(value => this.status !== 'done' && this.push(value))
-    .catch(e => this.status !== 'done' && this.print(e));
+    .catch(e => this.print(e));
 }
 
 assign(PromiseRenderer.prototype, {
@@ -78,17 +82,27 @@ assign(PromiseRenderer.prototype, {
     },
 
     print: window.DEBUG ?
-        function(e) { this.marker.before(print(e)) } :
-        function() { this.marker.remove() },
+        function(e) { this.content.replaceWith(print(e)) } :
+        function() { this.content.remove() },
 
-    stop: function() {
-        this.status = 'done';
-        console.log('TODO: stop the promise');
+    remove: function() {
+        this.content.remove();
     },
 
     replaceWith: function(node) {
         this.content.replaceWith(node);
-        //this.marker = node;
+    },
+
+    stop: function() {
+        if (this.status === 'done') { return; }
+        this.status = 'done';
+        this.content.stop && this.content.stop();
+    },
+
+    connect: function() {
+        if (this.status === 'dom') { return; }
+        this.status = 'dom';
+        this.content.connect && this.content.connect();
     }
 });
 
@@ -100,11 +114,13 @@ function StreamRenderer(stream) {
     const marker = create('text', '');
     this.marker  = marker;
     this.content = marker;
+    this.id      = ++meta.count;
+    this.producer = stream;
     
     stream.pipe(this).start();
 }
 
-assign(StreamRenderer.prototype, {
+assign(StreamRenderer.prototype, PromiseRenderer.prototype, {
     // TODO: make push delegate to cue() ??
     push: function(value) {
         stop(this.content);
@@ -116,7 +132,6 @@ assign(StreamRenderer.prototype, {
         // Value is converted to a string
         this.marker.textContent = toText(value);
         if (this.content !== this.marker) {
-            console.log('CC', value);
             this.content.replaceWith(this.marker);
             this.content = this.marker;
         }
@@ -125,16 +140,15 @@ assign(StreamRenderer.prototype, {
     },
 
     stop: function() {
-        console.log('TODO: stop the stream');
-    },
-
-    replaceWith: function(node) {
-        this.content.replaceWith(node);
+        if (this.status === 'done') { return; }
+        this.status = 'done';
+        this.producer.stop && this.producer.stop();
+        this.content.stop && this.content.stop();
     }
 });
 
 
-/*  */
+/* ContentRenderer */
 
 function renderValues(contents, string, array) {
     const l = array.length;
@@ -145,11 +159,13 @@ function renderValues(contents, string, array) {
     return string;
 }
 
-function renderValue(contents, string, value) {
+function renderValue(renderer, string, value) {
+    const contents = renderer.contents;
+
     if (value && typeof value === 'object') {
         // Array-like values are flattened recursively
         if (!value.nodeType && typeof value.length === 'number') {
-            return renderValues(contents, string, value);
+            return renderValues(renderer, string, value);
         }
 
         // Nodes are pushed into contents directly
@@ -212,8 +228,10 @@ function toContent(object) {
         object ;
 }
 
-function setContent(first, last, contents) {
+function setContents(first, last, contents, state) {
     let count = 0;
+    
+    // TODO: get rid of need to slice
     contents = contents.slice().map(toContent);
 
     // Remove existing nodes, leaving first and last alone
@@ -239,6 +257,10 @@ function setContent(first, last, contents) {
 
     if (contents.length) {
         first.after.apply(first, contents);
+        state === 'dom' && contents.forEach((renderer) => {
+            console.log('DOES THIS EVER HAPPEN? renderer.connect()', renderer);
+            renderer.connect && renderer.connect();
+        });
         count += contents.length;
     }
 
@@ -253,7 +275,7 @@ export default function ContentRenderer(node, options, element) {
     this.first.after(this.last);
     this.contents  = [];
     this.literally = options.literally || compile(library, 'data, state, element', options.source, null, options, element);
-    
+
     // Analytics
     const id = '#' + options.template;
     ++analytics[id].text || (analytics[id].text = 1);
@@ -278,10 +300,9 @@ assign(ContentRenderer.prototype, Renderer.prototype, {
     },
 
     resolve: function(strings) {
-        const contents = this.contents;
-
-        contents.forEach(stop);
-        contents.length = 0;
+        // Surely not here, tho?
+        //this.contents.forEach(stop);
+        //this.contents.length = 0;
 
         let n = -1;
         let string = '';
@@ -289,16 +310,10 @@ assign(ContentRenderer.prototype, Renderer.prototype, {
         while (strings[++n] !== undefined) {
             // Append to string until it has to be pushed to contents because
             // a node or renderer has to be pushed in behind it
-            string = renderValue(contents, string + strings[n], arguments[n + 1]);
+            string = renderValue(this, string + strings[n], arguments[n + 1]);
         }
 
-        string && contents.push(string);
-        return setContent(this.first, this.last, contents);
-    },
-
-    stop: function() {
-        this.contents.forEach(stop);
-        this.contents.length = 0;
-        return Renderer.prototype.stop.apply(this, arguments);
+        string && this.contents.push(string);
+        return setContents(this.first, this.last, this.contents, this.status);
     }
 });

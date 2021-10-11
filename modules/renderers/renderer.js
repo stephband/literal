@@ -83,7 +83,7 @@ export function removeNodes(first, last) {
 
     // Treat the marker node specially as it may have been extended with marker.remove()...
     // see include(). TODO: this could do with a bit of a rethink, maybe go back to
-    // allowing return of renderers rather than just nodes.
+    // allowing return of contents rather than just nodes.
     first.constructor.prototype.remove.apply(first);
     ++count;
 
@@ -93,7 +93,7 @@ export function removeNodes(first, last) {
 
 /** 
 Renderer()
-Base class/mixin for providing renderers with the properties 
+Base class/mixin for providing contents with the properties 
 `{ node, path }` and a generic `.render()` method.
 **/
 
@@ -101,6 +101,52 @@ function stop(stopable) {
     return stopable.stop ?
         stopable.stop() :
         stopable() ;
+}
+
+
+/* State propogation */
+
+const postfix = '-fns';
+
+function createDistributor(status) {
+    const list = status + postfix;
+
+    return function listen(fn) {
+        // If we are already in state `name` call `fn` immediately. This assumes 
+        // we cannot reenter a state and therefore all handlers are called once 
+        // only.
+        if (this.status === name) {
+            fn();
+            // Distributor is designed to be used in templates, return undefined
+            // to avoid rendering anything.
+            return;
+        }
+
+        const fns = this[list] || (this[list] = []);
+        fns.push(fn);
+    };
+}
+
+function call(fn) {
+    fn();
+}
+
+function triggerReducer(args, renderer) {
+    const [parent, method, status, payload] = args;
+    renderer[method] && renderer[method](payload);
+    return args;
+}
+
+function trigger(object, method, status, payload) {
+    if (object.status === status) { return; }
+
+    const contents = object.contents;
+    if (contents) { contents.reduce(triggerReducer, arguments); }
+
+    const listeners = object[status + postfix];
+    if (listeners) { listeners.forEach(call); }
+
+    return object;
 }
 
 function toPaths(paths, path) {
@@ -147,9 +193,10 @@ assign(Renderer.prototype, {
     update: function render(data) {
         //console.log(this.constructor.name + '#' + this.id + '.update()');
 
-        if (this.stopables) {
-            this.stopables.forEach(stop);
-            this.stopables.length = 0;
+        const stops = this['stop' + postfix];
+        if (stops) {
+            stops.forEach(stop);
+            stops.length = 0;
         }
     
         const paths = this.paths || (this.paths = []);
@@ -177,50 +224,25 @@ assign(Renderer.prototype, {
         return meta;
     },
 
-    stop: function() {
-        if (this.stopables) {
-            this.stopables.forEach(stop);
-            this.stopables.length = 0;
-        }
 
+    /* States */
+
+    connected: createDistributor('dom'),
+
+    connect: function() {
+        // object, method, status, payload
+        trigger(this, 'connect', 'dom');
+    },
+
+    done: createDistributor('done'),
+
+    stop: function() {
         uncue(this);
         this.render = window.DEBUG ? renderStopped : noop ;
-
+        // object, method, status, payload
+        trigger(this, 'stop', 'done');
         return this;
-    },
-
-    done: function(stopable) {
-        const stopables = this.stopables || (this.stopables = []);
-        stopables.push(stopable);
-        return this;
-    },
-
-    inserted: function(fn) {
-        // Where renderer is inserted already run immediately
-        if (this.insertedIntoDOMState) {
-            fn();
-            return this;
-        }
-
-        const insertables = this.insertables || (this.insertables = []);
-        insertables.push(fn);
-        return this;
-    },
-
-    insertedIntoDOM: function() {
-        // These handlers may only be run once
-        if (this.insertedIntoDOMState) {
-            return;
-        }
-
-        this.insertables && this.insertables.forEach((fn) => fn());
-
-        // Hmmm stopables is now a proxy for children. TODO: give renderers a
-        // proper .children property
-        this.stopables && this.stopables.forEach((child) => {
-            child.insertedIntoDOM && child.insertedIntoDOM();
-        });
-
-        this.insertedIntoDOMState = true;
     }
 });
+
+
