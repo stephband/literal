@@ -1,4 +1,8 @@
 .literal-print {
+    display: block;
+    width: 100%;
+    justify-self: stretch;
+    align-self: start;
     font-size: 0.8125rem !important;
     font-family: 'Fira Mono', 'Andale Mono', courier, monospace;
     font-weight: normal;

@@ -52,12 +52,13 @@ Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a
 
 **/
 
+import noop    from '../../fn/modules/noop.js';
 import element from '../../dom/modules/element.js';
 import request from '../library/request.js';
 import TemplateRenderer from '../modules/renderers/template-renderer.js';
 import print   from '../library/print.js';
 
-const rpath = /^\.|^https?:\/\//;
+const rpath = /^\/|\.|^https?:\/\//;
 
 function parseValue(string) {
     try {
@@ -92,7 +93,6 @@ element('<literal-include>', {
 
         const keys   = Object.keys(this.dataset);
         const values = Object.values(this.dataset); 
-
         const dataPromise = keys.length ?
             // where there are values in dataset compose data from dataset
             Promise
@@ -118,22 +118,27 @@ element('<literal-include>', {
             // But once it has data we know we can render it, but we 
             // want to do that in the next batch
             renderer.render(data).then(() => {
-                this.before(renderer.content);
-                this.remove();
+                this.replaceWith(renderer.content);
 
                 // Signal to tree of renderers that we are now in the DOM
                 renderer.connect();
                 //trigger(renderer, 'connect', 'dom');
-            })
-            .catch((e) => console.log('SHIIT', e))
-            .catch(window.DEBUG ?
-                (e) => this.replaceWith(print(e)) :
-                () => { /*this.content.remove()*/ }
+            }).catch(window.DEBUG ?
+                (e) => {
+                    this.replaceWith(print(e));
+                    console.error(e.message);
+                } :
+                noop
             );
 
             this.renderer = renderer;
-        }))
-        .catch((message) => (window.DEBUG && console.error(message, this)));
+        })).catch(window.DEBUG ?
+            (e) => {
+                this.replaceWith(print(e));
+                console.error(e.message);
+            } :
+            noop
+        );
     },
 
     connect: function() {
