@@ -1,5 +1,5 @@
 
-import * as path from "https://deno.land/std@0.106.0/path/mod.ts";
+import * as path from "https://deno.land/std@0.110.0/path/mod.ts";
 
 function countUpLevels(path) {
     let n = -1;
@@ -62,7 +62,7 @@ export function rewriteURL(source, target, url) {
 
 //            $1                                                                                                                                     $2
 //            (url(' or      @import " or   src=", html=", cite=" etc.                                                   )   protocol://,/,#,$,',"   (url)
-const rURL = /(url\(\s*['"]?|@import\s*['"]|(?:src|href|cite|action|formaction|codebase|longdesdc|usemap|poster)=['"]?\s*)(?:[a-z]+\:\/\/|[\/\#\$'"]|([\:\.\/\w-\d\%]*))/g;
+/*const rURL = /(url\(\s*['"]?|@import\s*['"]|(?:src|href|cite|action|formaction|codebase|longdesdc|usemap|poster)=['"]?\s*)(?:[a-z]+\:\/\/|[\/\#\$'"]|([\:\.\/\w-\d\%]*))/g;
 
 export function rewriteURLs(source, target, text) {
     // Check for $2 - if a protocol was found $2 is undefined and we don't 
@@ -70,5 +70,12 @@ export function rewriteURLs(source, target, text) {
     return text.replace(rURL, ($0, $1, $2) => (
         $2 ? $1 + rewriteURL(source, target, $2) : $0
     ));
-}
+}*/
 
+const rURL = /(url\(\s*['"]?|@import\s*['"]|(?:src|href|cite|action|formaction|codebase|longdesdc|usemap|poster)=['"]?|['"])(\.{1,2}\/[\.\/\w-\d\%]+)/g;
+
+export function rewriteURLs(source, target, text) {
+    return text.replace(rURL, ($0, $1, $2) =>
+        $1 + rewriteURL(source, target, $2)
+    );
+}

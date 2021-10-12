@@ -1,11 +1,11 @@
 
-import * as path     from "https://deno.land/std@0.106.0/path/mod.ts";
-import { ensureDir } from "https://deno.land/std@0.106.0/fs/mod.ts";
+import * as path     from "https://deno.land/std@0.110.0/path/mod.ts";
+import { ensureDir } from "https://deno.land/std@0.110.0/fs/mod.ts";
 
 import read    from './read.js';
 import compile from './compile.js';
 import library, { prependComment } from './library.js';
-import { rewriteURL, rewriteURLs } from './url.js';
+import { rewriteURLs } from './url.js';
 import { dimyellow } from './log.js';
 
 /**
@@ -37,24 +37,14 @@ export default function build(source, target, debug) {
         e.message += ' in template ' + source.replace(Deno.cwd() + '/', '');
         throw e;
     })
-    .then((text) => new Promise(function(resolve, reject) {
+    .then((text) => {
         const root = path.parse(target);
         const dir  = root.dir;
 
         // If dir not '' create a directory tree where one does not exist
-        if (dir) {
-            ensureDir(dir);
-        }
+        if (dir) { ensureDir(dir); }
 
         // Write to target file
-        Deno
-        .writeTextFile(target, text)
-        .then(resolve)
-        .catch(reject);
-    }))
-    /*.then((text) => {
-        const filesize = Math.round(Buffer.byteLength(text, 'utf8') / 1000);
-        console.log(dimyellow, 'Literal', 'write', target + ' (' + filesize + 'kB)');
-        return text;
-    });*/
+        return Deno.writeTextFile(target, text);
+    })
 }
