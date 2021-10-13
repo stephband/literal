@@ -45,18 +45,19 @@ function render(renderers) {
 
     if (window.DEBUG) {
         const keys = Object.keys(ids);
-        log('render', keys.length + (keys.length > 1 ? ' renderers – ' : ' renderer – ') + keys.slice(0, 12).join(', ') + (keys.length > 12 ? ', ...' : ''), 'yellow');
-
         const t1 = window.performance.now() / 1000;
-        if (t1 - t0 > 0.016) {
-            log('render took longer than a frame (0.016s) ' + (t1 - t0).toFixed(3) + 's', '', 'orange');
-        }
+
+        log('render', (t1 - t0).toFixed(3) + ' – ' + keys.length + (keys.length > 1 ? ' renderers – ' : ' renderer – ') + keys.slice(0, 12).join(', ') + (keys.length > 12 ? ', ...' : ''), 'yellow');
         
         if (Object.values(ids).find((n) => n > 1)) {
             console.warn('Literal', 'same renderer rendered multiple times in batch', ids);
         }
 
         groupEnd();
+        
+        if (t1 - t0 > 0.016) {
+            log('render took longer than a frame (0.016s) ' + (t1 - t0).toFixed(3) + 's', '', 'orange');
+        }
     }
 }
 

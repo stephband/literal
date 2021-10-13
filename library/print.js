@@ -39,7 +39,7 @@ import { getTarget }     from '../../fn/observer/observer.js';
 function toHTML(object) {
     // Print different kinds of objects differently
     if (typeof object === 'object' && object.template) {
-        return '<strong>' + object.id + '.' + object.count + '</strong> #' + object.template + ' <small>' + object.path + '</small>';
+        return '<strong>' + object.id + '</strong> #' + object.template + ' <small>&gt; ' + object.path + '</small> <strong class="literal-count">' + object.count + '</strong>';
     }
 
     if (typeof object === 'object' && object.message) {

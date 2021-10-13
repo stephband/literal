@@ -1,5 +1,6 @@
 
 import compileFn from '../../fn/modules/compile.js';
+import { time, timeEnd } from './log.js';
 
 /**
 compile(scope, params, source, id, info, element)
@@ -28,13 +29,20 @@ export default function compile(scope, params, source, id, info, element) {
 
     if (window.DEBUG) {
         try {
+            // const text = source.trim();
+            // const name = 'compile( `' + (text.length > 32 ? text.slice(0, 28).replace(/\s+/g, ' ') + ' …' : text.replace(/\s+/g, ' ') + (Array.from({ length: 30 - text.length }).fill(' ').join(''))) + '` )';
+            // time(name);
+
             return cache[key] = compileFn(scope, params, 
                 'try {' + code + '} catch(e) {' +
                 // Append useful info to error message
-                indent + 'e.message += " in template #" + this.template + (this.element && this.element.tagName ? ", <" + this.element.tagName.toLowerCase() + (this.name ? " " + this.name + "=\\"...\\">" : ">") : "");' +
+                indent + 'e.message += " in template #" + this.template + (this.element && this.element.tagName ? ", <" + this.element.tagName.toLowerCase() + (this.name ? " " + this.name + "=\\"…\\">" : ">") : "");' +
                 indent + 'throw e;' +
                 '}'
             );
+
+            // timeEnd(name);
+            // return cache[key];
         }
         catch(e) {
             // Append useful info to error message

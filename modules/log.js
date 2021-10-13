@@ -50,3 +50,15 @@ export const groupEnd = window.DEBUG ?
         grouped = false;
     } :
     noop ;
+
+export const time = window.DEBUG ?
+    function log($1) {
+        console.time((grouped ? '      ' : 'Literal ') + $1);
+    } :
+    noop ;
+
+export const timeEnd = window.DEBUG ?
+    function log($1) {
+        console.timeEnd((grouped ? '      ' : 'Literal ') + $1);
+    } :
+    noop ;
