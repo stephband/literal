@@ -116,8 +116,8 @@ function StreamRenderer(stream) {
     this.content = marker;
     this.id      = ++meta.count;
     this.producer = stream;
-    
-    stream.pipe(this).start();
+
+    stream.pipe(this);
 }
 
 assign(StreamRenderer.prototype, PromiseRenderer.prototype, {

@@ -1,8 +1,16 @@
 
 import { log, group, groupEnd } from '../log.js';
+import analytics from './analytics.js';
+import { cache as compileCache } from '../compile.js';
 
 const renderers = [];
 const promise   = Promise.resolve(renderers);
+
+const logs = window.DEBUG && {
+    totalCompileTime: 0,
+    totalCompileCount: 0
+};
+
 let cued;
 
 function constructorCount(renderers) {
@@ -26,7 +34,7 @@ function constructorCount(renderers) {
 function render(renderers) {
     if (window.DEBUG) {
         var t0 = window.performance.now() / 1000;
-        group('batch', t0.toFixed(3) + ' – cued ' + constructorCount(renderers), 'green');
+        group('batch', t0.toFixed(3) + ' – cued ' + constructorCount(renderers), '#B6BD00');
         var ids = {};
     }
 
@@ -47,16 +55,26 @@ function render(renderers) {
         const keys = Object.keys(ids);
         const t1 = window.performance.now() / 1000;
 
-        log('render', (t1 - t0).toFixed(3) + ' – ' + keys.length + (keys.length > 1 ? ' renderers – ' : ' renderer – ') + keys.slice(0, 12).join(', ') + (keys.length > 12 ? ', ...' : ''), 'yellow');
-        
+        if (logs.totalCompileTime !== analytics.totalCompileTime) {
+            logs.batchCompileTime = analytics.totalCompileTime - logs.totalCompileTime;
+            logs.totalCompileTime = analytics.totalCompileTime;
+            const totalCompileCount = Object.keys(compileCache).length;
+            logs.batchCompileCount = totalCompileCount - logs.totalCompileCount;
+            logs.totalCompileCount = totalCompileCount;
+            log('compile', logs.batchCompileCount + ' literal' + (logs.batchCompileCount === 1 ? '' : 's') + ', ' + logs.batchCompileTime.toPrecision(3) + 'ms', ' total', totalCompileCount + ' literals, ' + (logs.totalCompileTime).toPrecision(3) + 'ms', '#DDB523');
+            logs.totalCom
+        }
+
+        log('render', (t1 - t0).toFixed(3) + ' – ' + keys.length + ' renderer' + (keys.length === 1 ? '' : 's') + ' (' + keys.slice(0, 12).join(', ') + (keys.length > 12 ? ', ...)' : ')'), '', '', '#f5a623');
+
         if (Object.values(ids).find((n) => n > 1)) {
             console.warn('Literal', 'same renderer rendered multiple times in batch', ids);
         }
 
         groupEnd();
-        
+
         if (t1 - t0 > 0.016) {
-            log('render took longer than a frame (0.016s) ' + (t1 - t0).toFixed(3) + 's', '', 'orange');
+            log('render took longer than a frame (0.016s) ' + (t1 - t0).toFixed(3) + 's', '', '', '', '#ba4029');
         }
     }
 }
