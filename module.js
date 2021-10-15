@@ -95,7 +95,6 @@ Contents
 */
 
 import include from './library/include.js';
-import media   from './library/media.js';
 import request from './library/request.js';
 
 /* Importing literal-include registers – and instantiates – <literal-include> */
@@ -108,7 +107,6 @@ import analytics from './modules/analytics.js';
 export { analytics };
 
 register('include', include);
-register('media',   media);
 register('request', request);
 
 export { register };

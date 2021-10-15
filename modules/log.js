@@ -12,7 +12,7 @@ const colors = {
 
 let grouped = false;
 
-export const log = DEBUG ?
+export const log = window.DEBUG ?
     function log($1, $2, color = '#d8cd17') {
         console.log((grouped ? '%c      %c' : '%cLiteral %c') + $1 + ' %c' + $2,
             'color: ' + (colors.grey) + '; font-weight: 300;', 
@@ -22,7 +22,7 @@ export const log = DEBUG ?
     } :
     noop ;
 
-export const group = DEBUG ?
+export const group = window.DEBUG ?
     function log($1, $2, color = '#d8cd17') {
         console.group((grouped ? '%c      %c' : '%cLiteral %c') + $1 + ' %c' + $2,
             'color: ' + (colors.grey) + '; font-weight: 600;', 
@@ -33,7 +33,7 @@ export const group = DEBUG ?
     } :
     noop ;
 
-export const groupCollapsed = DEBUG ?
+export const groupCollapsed = window.DEBUG ?
     function log($1, $2, color = '#d8cd17') {
         console.groupCollapsed((grouped ? '%c      %c' : '%cLiteral %c') + $1 + ' %c' + $2,
             'color: ' + (colors.grey) + '; font-weight: 600;', 
@@ -44,9 +44,21 @@ export const groupCollapsed = DEBUG ?
     } :
     noop ;
 
-export const groupEnd = DEBUG ?
+export const groupEnd = window.DEBUG ?
     function() {
         console.groupEnd();
         grouped = false;
+    } :
+    noop ;
+
+export const time = window.DEBUG ?
+    function log($1) {
+        console.time((grouped ? '      ' : 'Literal ') + $1);
+    } :
+    noop ;
+
+export const timeEnd = window.DEBUG ?
+    function log($1) {
+        console.timeEnd((grouped ? '      ' : 'Literal ') + $1);
     } :
     noop ;

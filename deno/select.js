@@ -15,15 +15,13 @@ function readClosest(path, name) {
     return readJSON(path + name).catch(() => {
         return path === workingdir ?
             defaultConfig :
-            readClosest(path.replace(/\w*\/$/, ''), name) ;
+            readClosest(path.replace(/[\w-\.\s]+\/$/, ''), name) ;
     });
 }
 
 export default async function select(path) {
     const files  = [];
     const config = await readClosest(path, 'literal.json');
-
-    console.log(dimyellowdim, 'Literal', 'seeking', path);
 
     for await (const entry of Deno.readDir(path)) {
         // Ignore hidden files and directories
@@ -34,7 +32,7 @@ export default async function select(path) {
         const pathname = path + entry.name;
 
         // Is entry a file with an extension of the form .xxx.literal ?
-        if (entry.isFile && (/\.\w+\.literal$/.test(pathname))) {
+        if (entry.isFile && (/\.[\w-]+\.literal$/.test(pathname))) {
             entry.path = path;
             files.push(entry);
         }

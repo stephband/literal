@@ -19,7 +19,7 @@ const data     = {};
 
 // Cue data for render then add it to the DOM
 renderer
-.cue(data)
+.render(data)
 .then(() => document.body.append(renderer.content));
 ```
 **/
@@ -33,8 +33,6 @@ import { Observer, getTarget } from '../../../fn/observer/observer.js';
 import observe     from '../../../fn/observer/observe.js';
 import analytics, { meta } from './analytics.js';
 import Renderer, { removeNodes } from './renderer.js';
-
-const DEBUG  = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
 
 const assign = Object.assign;
 const cache  = {};
@@ -92,8 +90,8 @@ function prepareContent(content) {
 }
 
 function newRenderer(renderer) {
-    // `this` is the content fragment of the new renderer
-    const node    = getDescendant(renderer.path, this);
+    // `this` is the parent renderer of the new renderer
+    const node    = getDescendant(renderer.path, this.content);
     const element = isTextNode(node) ? node.parentNode : node ;
     return new renderer.constructor(node, renderer, element);
 }
@@ -107,7 +105,7 @@ export default function TemplateRenderer(template) {
     this.id          = ++meta.count;
     this.observables = nothing;
 
-    // If the template is already compiled, clone the compiled renderers to 
+    // If the template is already compiled, clone the compiled contents to 
     // this renderer and bind them to a new fragment
     if (cache[id]) {
         const template = cache[id].template;
@@ -115,7 +113,7 @@ export default function TemplateRenderer(template) {
         this.content   = template.content.cloneNode(true);
         this.first     = this.content.childNodes[0];
         this.last      = this.content.childNodes[this.content.childNodes.length - 1];
-        this.renderers = cache[id].renderers.map(newRenderer, this.content);
+        this.contents = cache[id].contents.map(newRenderer, this);
         ++analytics['#' + id].template;
         ++analytics.Totals.template;
         return;
@@ -125,7 +123,7 @@ export default function TemplateRenderer(template) {
         document.getElementById(template) :
         template ;
 
-    if (DEBUG) {
+    if (window.DEBUG) {
         if (!template) {
             throw new Error('Template id="' + id + '" not found in document');
         }
@@ -140,7 +138,7 @@ export default function TemplateRenderer(template) {
 
     A fragment that initially contains the renderer's DOM nodes. On creation of
     a renderer they are in an unrendered state. They are guaranteed to be in a 
-    rendered state on resolution of the first `.cue()` promise. 
+    rendered state on resolution of the first `.render()` promise. 
     
     The fragment may be inserted into the DOM at any time, at which point it 
     will no longer contain the renderer's DOM nodes, however the renderer 
@@ -153,19 +151,16 @@ export default function TemplateRenderer(template) {
     this.first     = this.content.childNodes[0];
     this.last      = this.content.childNodes[this.content.childNodes.length - 1];
 
-    // Analytics (must be declared before renderers)
+    // Analytics (must be declared before contents)
     analytics['#' + id] = { template: 1 };
     ++analytics.Totals.template;
 
-    // compileNode(renderers, options, content, template)
+    // compileNode(contents, options, content, template)
     // The options object contains information for renderer objects. It is 
     // mutated as it is passed to each renderer (specifically path, name, 
     // source properties). We can do this because renderer construction is 
     // synchronous within a template.
-    this.renderers = compileNode([], {
-        template: id,
-        path: ''
-    }, this.content, template.content);
+    this.contents = compileNode([], { template: id, path: '' }, this.content, template.content);
 
     cache[id] = this;
 }
@@ -176,15 +171,15 @@ function stop(object) {
 
 assign(TemplateRenderer.prototype, {
     /**
-    .cue(data)
+    .render(data)
     Cues `data` to be rendered in the next render batch. Returns a promise that
     resolves when the batch is finished rendering.
-    
+
     The `data` object is observed for mutations, and the renderer updates it 
     content until either a new data object is cued or the renderer is stopped.
     **/
 
-    cue: function(object) {
+    render: function(object) {
         this.observables.forEach(stop);
         this.observables = nothing;
 
@@ -196,10 +191,12 @@ assign(TemplateRenderer.prototype, {
         }
 
         this.data = data;
-        return Renderer.prototype.cue.apply(this, arguments);
+        return Renderer.prototype.render.apply(this, arguments);
     },
 
-    render: function(object) {
+    update: function(object) {
+        //console.log(this.constructor.name + '#' + this.id + '.update()');
+
         if (!object) {
             // Remove all but the first node to the renderer's content fragment
             const nodes = [];
@@ -214,18 +211,12 @@ assign(TemplateRenderer.prototype, {
             return;
         }
     
-        const data = getTarget(object);
-
-        // Stop any previous observables where they have not already 
-        // been stoppped (if we remove render() such that this can only be cued
-        // remove this line, they are already stopped)
-        this.observables.forEach(stop);
-
+        const data      = getTarget(object);
         const observer  = Observer(data);
-        const renderers = this.renderers;
+        const contents = this.contents;
 
         // This has to happen synchronously in order to collect gets...
-        renderers.forEach((renderer) => renderer.render(observer, data));
+        contents.forEach((renderer) => renderer.update(observer, data));
 
         // If this.first is not in the content fragment, it must be in the 
         // parent DOM being used as a marker. It's time for its freshly rendered 
@@ -235,13 +226,13 @@ assign(TemplateRenderer.prototype, {
         }
 
         this.observables = observer ?
-            renderers.flatMap((renderer) => 
+            contents.flatMap((renderer) => 
                 renderer.paths.map((path) => 
                     // Don't getPath() of the observer here, that really makes 
                     // the machine think too hard
                     observe(path, data, getPath(path, data)).each((value) =>
                         // Next renders are cued which batches them
-                        renderer.cue(observer)
+                        renderer.render(observer)
                     )
                 )
             ) :
@@ -250,36 +241,40 @@ assign(TemplateRenderer.prototype, {
         return this.content;
     },
 
-    /* 
-    .done(fn)
-    Registers a `fn` to be called when either a) the current render cycle comes
-    to an end because new data has been cued to render, or b) the renderer is 
-    stopped with the `.stop()` method.
-    */
+    connect: Renderer.prototype.connect,
 
     /** 
     .stop()
-    Stops the renderer and all descendent renderers. All observers are stopped,
+    Stops the renderer and all descendent contents. All observers are stopped,
     handlers registered with `.done()` are called, and no more data can be cued 
     for rendering. Rendered content is left in the DOM, but it is now static.
     **/
 
     stop: function() {
-        // We must not empty .renderers, they are compiled and cached and may 
+        // We must not empty .contents, they are compiled and cached and may 
         // be cloned. We can stop listening to sets and make .render() a
         // noop though.
-        this.renderers.forEach(stop);
+        //this.contents.forEach(stop);
         this.observables.forEach(stop);
         this.observables = nothing;
         return Renderer.prototype.stop.apply(this, arguments);
     },
 
+
     /** 
     .remove()
     Removes rendered content from the DOM.
     **/
-
     remove: function() {
         return removeNodes(this.first, this.last);
+    },
+
+    /** 
+    .replaceWith()
+    Removes rendered content from the DOM and inserts arguments in its place.
+    **/
+    replaceWith: function() {
+        this.first.before.apply(this.first, arguments);
+        return this.remove();
     }
 });

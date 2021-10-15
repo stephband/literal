@@ -52,11 +52,13 @@ Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a
 
 **/
 
+import noop    from '../../fn/modules/noop.js';
 import element from '../../dom/modules/element.js';
 import request from '../library/request.js';
 import TemplateRenderer from '../modules/renderers/template-renderer.js';
+import print   from '../library/print.js';
 
-const rpath = /^\.|^https?:\/\//;
+const rpath = /^\/|\.|^https?:\/\//;
 
 function parseValue(string) {
     try {
@@ -82,15 +84,15 @@ function zipObject(keys, values) {
 
 element('<literal-include>', {
     construct: function() {
-        if (!this.hasAttribute('src')) {
+        if (window.DEBUG && !this.hasAttribute('src')) {
             console.error('<literal-include> a src attribute is required', this);
         }
+
 
         // Resolve data
 
         const keys   = Object.keys(this.dataset);
         const values = Object.values(this.dataset); 
-
         const dataPromise = keys.length ?
             // where there are values in dataset compose data from dataset
             Promise
@@ -103,7 +105,9 @@ element('<literal-include>', {
                 this.rejectData  = reject;
             }) ;
 
-        // Resolve src template
+
+        // Resolve src
+
         new Promise((resolve, reject) => {
             this.resolveSrc = resolve;
             this.rejectSrc = reject;
@@ -113,22 +117,34 @@ element('<literal-include>', {
 
             // But once it has data we know we can render it, but we 
             // want to do that in the next batch
-            renderer.cue(data).then(() => {
-                this.before(renderer.content);
-                this.remove();
-            });
+            renderer.render(data).then(() => {
+                this.replaceWith(renderer.content);
+
+                // Signal to tree of renderers that we are now in the DOM
+                renderer.connect();
+                //trigger(renderer, 'connect', 'dom');
+            }).catch(window.DEBUG ?
+                (e) => {
+                    this.replaceWith(print(e));
+                    console.error(e.message);
+                } :
+                noop
+            );
 
             this.renderer = renderer;
-        }))
-        .catch((message) => console.error(message, this));
+        })).catch(window.DEBUG ?
+            (e) => {
+                this.replaceWith(print(e));
+                console.error(e.message);
+            } :
+            noop
+        );
     },
 
     connect: function() {
         // Where no data or data-* attribute has been defined resolve with an 
         // empty object...
-        //
-        // ... pfffffft, naaaaah ...
-        //this.resolveData && this.resolveData({});
+        this.resolveData && this.resolveData({});
     }
 }, {
     /** 
@@ -170,13 +186,13 @@ element('<literal-include>', {
         set: function(value) {
             if (this.renderer) {
                 if (!value) {
-                    this.renderer.cue(null);
+                    this.renderer.render(null);
                 }
                 else if (typeof value === 'string') {
-                    request(value).then((data) => this.renderer.cue(data));
+                    request(value).then((data) => this.renderer.render(data));
                 }
                 else {
-                    this.renderer.cue(value);
+                    this.renderer.render(value);
                 }
 
                 return;

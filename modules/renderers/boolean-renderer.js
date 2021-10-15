@@ -1,6 +1,6 @@
 
 import library   from '../library.js';
-import Renderer  from './renderer.js';
+import Renderer, { renderString } from './renderer.js';
 import compile   from '../compile.js';
 import analytics from './analytics.js';
 
@@ -31,9 +31,9 @@ export function setBooleanProperty(node, name, value) {
 
 export default function BooleanRenderer(node, options) {
     Renderer.apply(this, arguments);
-    this.literally = options.literally || compile(library, 'data, state, element', options.source, null, options, this.element);
+    
     this.name      = options.name;
-    this.update    = (value) => setBooleanProperty(node, this.name, value);
+    this.literally = options.literally || compile(library, 'data, state, element', options.source, null, options, this.element);
 
     // Remove the boolean until it is processed
     node.removeAttribute(this.name);
@@ -44,4 +44,9 @@ export default function BooleanRenderer(node, options) {
     ++analytics.Totals.boolean;
 }
 
-assign(BooleanRenderer.prototype, Renderer.prototype);
+assign(BooleanRenderer.prototype, Renderer.prototype, {
+    resolve: function() {
+        const value = renderString(arguments);
+        return setBooleanProperty(this.node, this.name, value)
+    }
+});

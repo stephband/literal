@@ -1,21 +1,18 @@
 
-import noop       from '../../fn/modules/noop.js';
-import overload   from '../../fn/modules/overload.js';
-import { toType } from '../../dom/modules/node.js';
+import noop     from '../../fn/modules/noop.js';
+import overload from '../../fn/modules/overload.js';
+import toType   from '../../dom/modules/to-type.js';
 
 import AttributeRenderer from './renderers/attribute-renderer.js';
 import BooleanRenderer   from './renderers/boolean-renderer.js';
 import CheckedRenderer   from './renderers/checked-renderer.js';
-import TextRenderer      from './renderers/text-renderer.js';
+import ContentRenderer   from './renderers/content-renderer.js';
 import TokensRenderer    from './renderers/tokens-renderer.js';
 import ValueRenderer, { StringValueRenderer } from './renderers/value-renderer.js';
 
 import decode   from './decode.js';
 
-//const DEBUG = window.DEBUG === true || window.DEBUG && window.DEBUG.includes('literal');
-
 const A = Array.prototype;
-
 const rliteral = /\$\{/;
 
 
@@ -50,20 +47,20 @@ function compileValueString(renderers, options, node, attribute) {
     addAttributeRenderer(renderers, StringValueRenderer, node, attribute.value, 'value', options);
 }
 
-function compileChecked(renderers, options, node, attribute) {
-    addAttributeRenderer(renderers, CheckedRenderer, node, attribute.value, 'checked', options);
-}
 
 const compileAttribute = overload((renderers, options, node, attribute) => attribute.localName, {
-    'checked':  compileChecked,
-    'class':    compileTokens,
+    'checked':  function compileChecked(renderers, options, node, attribute) {
+        addAttributeRenderer(renderers, CheckedRenderer, node, attribute.value, 'checked', options);
+    },
+
+    'class': compileTokens,
 
     'datetime': function compileDatetime(renderers, options, node, attribute) {
-        console.log('Todo: compile datetime');
+        if (window.DEBUG) { console.log('Todo: compile datetime attribute'); }
     },
 
     'disabled': compileBoolean,
-    'hidden':   compileBoolean,
+    'hidden': compileBoolean,
 
     // Special workaround attribute used in cases where ${} cannot be added
     // directly to the HTML content, such as in <tbody> or <tr>
@@ -73,7 +70,7 @@ const compileAttribute = overload((renderers, options, node, attribute) => attri
         node.removeAttribute(attribute.localName);
         options.source = decode(string);
         options.name   = 'innerHTML';
-        renderers.push(new TextRenderer(node, options));
+        renderers.push(new ContentRenderer(node, options));
     },
 
     'required': compileBoolean,
@@ -91,7 +88,7 @@ const compileAttribute = overload((renderers, options, node, attribute) => attri
         'undefined':  compileAttr
     }),
 
-    'default':  compileAttr
+    'default': compileAttr
 });
 
 function compileAttributes(renderers, options, node) {
@@ -177,7 +174,7 @@ const compileNode = overload((renderers, options, node) => toType(node), {
         if (string && rliteral.test(string)) {
             options.source = decode(string);
             options.name   = null;
-            renderers.push(new TextRenderer(node, options, element));
+            renderers.push(new ContentRenderer(node, options, element));
         }
 
         return renderers;

@@ -3,7 +3,7 @@ import trigger   from '../../../dom/modules/trigger.js';
 import config    from '../config.js';
 import library   from '../library.js';
 import compile   from '../compile.js';
-import Renderer  from './renderer.js';
+import Renderer, { renderString } from './renderer.js';
 import analytics from './analytics.js';
 
 const assign = Object.assign;
@@ -107,9 +107,9 @@ function setValue(node, value) {
 
 export default function ValueRenderer(node, options) {
     Renderer.apply(this, arguments);
+
     this.name      = 'value';
     this.literally = options.literally || compile(library, 'data, state, element', options.source, null, options, node);
-    this.update    = (value) => setValue(node, value);
     
     // Analytics
     const id = '#' + options.template;
@@ -118,9 +118,11 @@ export default function ValueRenderer(node, options) {
 }
 
 assign(ValueRenderer.prototype, Renderer.prototype, {
-    resolve: renderValue
+    resolve: function() {
+        const value = renderValue(arguments);
+        return setValue(this.node, value)
+    }
 });
-
 
 
 /** 
@@ -130,13 +132,18 @@ Constructs an object responsible for rendering to a value property as a string.
 
 export function StringValueRenderer(node, options) {
     Renderer.apply(this, arguments);
+
     this.name      = 'value';
     this.literally = options.literally || compile(library, 'data, state, element', options.source, null, options, node);
-    this.update    = (value) => setValue(node, value);
     
     // Analytics
     const id = '#' + options.template;
     ++analytics[id].value || (analytics[id].value = 1);
 }
 
-assign(StringValueRenderer.prototype, Renderer.prototype);
+assign(StringValueRenderer.prototype, Renderer.prototype, {
+    resolve: function() {
+        const value = renderString(arguments);
+        return setValue(this.node, value)
+    }
+});

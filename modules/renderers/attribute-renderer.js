@@ -1,7 +1,7 @@
 
 import library   from '../library.js';
 import compile   from '../compile.js';
-import Renderer  from './renderer.js';
+import Renderer, { renderString } from './renderer.js';
 import analytics from './analytics.js';
 
 const assign = Object.assign;
@@ -21,9 +21,9 @@ function setAttribute(node, name, value) {
 
 export default function AttributeRenderer(node, options) {
     Renderer.apply(this, arguments);
-    this.literally = options.literally || compile(library, 'data, state, element', options.source, null, options, this.element);
+    
     this.name      = options.name;
-    this.update    = (value) => setAttribute(node, this.name, value);
+    this.literally = options.literally || compile(library, 'data, state, element', options.source, null, options, this.element);
     
     // Analytics
     const id = '#' + options.template;
@@ -31,4 +31,9 @@ export default function AttributeRenderer(node, options) {
     ++analytics.Totals.attribute;
 }
 
-assign(AttributeRenderer.prototype, Renderer.prototype);
+assign(AttributeRenderer.prototype, Renderer.prototype, {
+    resolve: function() {
+        const value = renderString(arguments);
+        return setAttribute(this.node, this.name, value);
+    }
+});

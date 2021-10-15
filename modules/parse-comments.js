@@ -19,7 +19,6 @@ import slugify from '../../fn/modules/slugify.js';
 import { parseString } from './parse-string.js';
 import { parseParams } from './parse-params.js';
 
-const DEBUG = false;//true;
 
 const markedOptions = {
     // GitHub Flavored Markdown
@@ -205,9 +204,9 @@ const parseName = capture(/^(?:([\w-:]+)\s*=\s*|([\w-]+)\s*:\s*|(?:([A-Z])|(\w))
     }
 });
 
-//                             1                        2    3    4             5   6   7
-//                             indent                   .    --   ::part(       "   <   word
-const parseComment = capture(/([^\S\r\n]*)\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(")|(<)|(\b))/, {
+//                             1                        2    3    4             5   6   7   8
+//                             indent                   .    --   ::part(       "   '   <   word
+const parseComment = capture(/([^\S\r\n]*)\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(")|(')|(<)|(\b))/, {
     // New data object
     0: function(nothing, captures) {
         return {
@@ -226,7 +225,7 @@ const parseComment = capture(/([^\S\r\n]*)\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(
         // --variable
         1: (data, captures) => {
             data.type   = 'var';
-            data.name   = '--' + captures[1];
+            data.name   = captures[1];
             return data;
         },
     
@@ -245,7 +244,7 @@ const parseComment = capture(/([^\S\r\n]*)\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(
     4: capture(/^([\w-]+)\s*\)\s*/, {
         1: (data, captures) => {
             data.type = 'part';
-            data.name = '::part(' + captures[1] + ')';
+            data.name = captures[1];
             return data;
         },
     
@@ -253,9 +252,22 @@ const parseComment = capture(/([^\S\r\n]*)\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(
             throw new SyntaxError('Invalid ::part()');        
         }
     }),
-    
-    // String "text"
+
+    // String 'text'
     5: capture(/^([^"]*)"/, {
+        1: (data, captures) => {
+            data.type = 'string';
+            data.name = captures[1];
+            return data;
+        },
+    
+        catch: function(data) {
+            throw new SyntaxError("Unclosed 'string");        
+        }
+    }),
+
+    // String "text"
+    6: capture(/^([^']*)'/, {
         1: (data, captures) => {
             data.type = 'string';
             data.name = captures[1];
@@ -266,9 +278,9 @@ const parseComment = capture(/([^\S\r\n]*)\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(
             throw new SyntaxError('Unclosed "string');        
         }
     }),
-    
+
     // Element <tag>
-    6: capture(/^(\w[^>]*)>/, {
+    7: capture(/^(\w[^>]*)>/, {
         // Element name
         1: (data, captures) => {
             data.type = 'element';
@@ -282,7 +294,7 @@ const parseComment = capture(/([^\S\r\n]*)\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(
     }),
 
     // attribute="", key:, Constructor(, function(, Title or selector
-    7: parseName,
+    8: parseName,
 
     //                 1 all until **/
     done: capture(/^\s*([\s\S]*?)\*+\//, {
