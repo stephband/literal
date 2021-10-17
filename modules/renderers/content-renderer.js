@@ -7,9 +7,18 @@ import analytics, { meta } from './analytics.js';
 import Renderer, { removeNodes } from './renderer.js';
 import TemplateRenderer from './template-renderer.js';
 import print          from '../../library/print.js';
+import { cue }        from './batcher.js';
 
 const assign = Object.assign;
 
+function replace(array, current, replacement) {
+    const i = array.indexOf(current);
+    if (i === -1) {
+        throw new Error('Renderer not in contents array')
+    }
+    array.splice(i, 1, replacement);
+    return array;
+}
 
 function replaceObjectContent(renderer, value) {
     // Value is not an object
@@ -59,10 +68,11 @@ function replaceObjectContent(renderer, value) {
 
 /* PromiseRenderer */
 
-function PromiseRenderer(promise) {
+function PromiseRenderer(contents, promise) {
+    // Parent collection
+    this.collection = contents;
     // Marker content
     this.content = create('text', '');
-    this.status  = 'pending';
     this.id      = ++meta.count;
 
     promise
@@ -71,19 +81,31 @@ function PromiseRenderer(promise) {
 }
 
 assign(PromiseRenderer.prototype, {
-    // TODO: make push delegate to cue() ??
-    push: function(value) {
-        if (replaceObjectContent(this, value)) {
-            return this;
+    /*push: function(value) {
+        if (this.status !== 'done') {
+            cue(this, arguments);
         }
 
-        this.content.textContent = toText(value);
         return this;
+    },*/
+
+    push: function(value) {
+        // Replace this promise renderer in the contents collection, 
+        // effectively retiring it from active service
+        if (replaceObjectContent(this, value)) {
+            replace(this.collection, this, value);
+        }
+        else {
+            this.content.textContent = toText(value);
+            replace(this.collection, this, this.content);
+        }
+
+        return 1;
     },
 
     print: window.DEBUG ?
         function(e) { this.content.replaceWith(print(e)) } :
-        function() { this.content.remove() },
+        function() { this.content.remove(); },
 
     remove: function() {
         this.content.remove();
@@ -115,18 +137,17 @@ function StreamRenderer(stream) {
     this.marker  = marker;
     this.content = marker;
     this.id      = ++meta.count;
-    this.producer = stream;
+    this.stream  = stream;
     
     stream.pipe(this).start();
 }
 
 assign(StreamRenderer.prototype, PromiseRenderer.prototype, {
-    // TODO: make push delegate to cue() ??
     push: function(value) {
         stop(this.content);
 
         if (replaceObjectContent(this, value)) {
-            return this;
+            return 1;
         }
 
         // Value is converted to a string
@@ -136,13 +157,13 @@ assign(StreamRenderer.prototype, PromiseRenderer.prototype, {
             this.content = this.marker;
         }
 
-        return this;
+        return 1;
     },
 
     stop: function() {
         if (this.status === 'done') { return; }
         this.status = 'done';
-        this.producer.stop && this.producer.stop();
+        this.stream.stop && this.stream.stop();
         this.content.stop && this.content.stop();
     }
 });
@@ -192,7 +213,7 @@ function renderValue(renderer, string, value) {
         // Value is a Promise
         if (value instanceof Promise) {
             string && contents.push(string);
-            contents.push(new PromiseRenderer(value))
+            contents.push(new PromiseRenderer(contents, value))
             return '';
         }
     }

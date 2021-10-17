@@ -21,7 +21,7 @@ import { parseParams } from './parse-params.js';
 
 
 const markedOptions = {
-    // GitHub Flavored Markdown
+    // GitHub Flavoured Markdown
     gfm: true,
 
     // Highlight code blocks
