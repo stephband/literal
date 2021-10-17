@@ -134,11 +134,11 @@ function StreamRenderer(stream) {
     this.id      = ++meta.count;
     this.stream  = stream;
     
-    stream.pipe(this).start();
+    stream.pipe(this);
 }
 
 assign(StreamRenderer.prototype, PromiseRenderer.prototype, {
-    push: function(value) {
+    update: function(value) {
         stop(this.content);
 
         if (replaceObjectContent(this, value)) {

@@ -226,14 +226,14 @@ element('<literal-include>', {
     src: {
         attribute: function(value) {
             if (!value) {
-                return this.rejectSrc('<literal-include> source src="' + value + '" is empty');
+                return this.rejectSrc(new Error('<literal-include> source src="' + value + '" is empty'));
             }
 
             const id = value.replace(/^#/, '');
             const template = document.getElementById(id);
 
             if (!template) {
-                return this.rejectSrc('<literal-include> src template not found');
+                return this.rejectSrc(new Error('<literal-include> src template not found'));
             }
 
             this.resolveSrc(template);
