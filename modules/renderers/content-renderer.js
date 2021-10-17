@@ -81,25 +81,20 @@ function PromiseRenderer(contents, promise) {
 }
 
 assign(PromiseRenderer.prototype, {
-    /*push: function(value) {
-        if (this.status !== 'done') {
-            cue(this, arguments);
-        }
-
-        return this;
-    },*/
-
     push: function(value) {
+        this.status !== 'done' && cue(this, arguments);
+        return this;
+    },
+
+    update: function(value) {
         // Replace this promise renderer in the contents collection, 
         // effectively retiring it from active service
-        if (replaceObjectContent(this, value)) {
-            replace(this.collection, this, value);
-        }
-        else {
+        if (!replaceObjectContent(this, value)) {
             this.content.textContent = toText(value);
-            replace(this.collection, this, this.content);
         }
 
+        //replace(this.collection, this, this.content);
+        this.status = 'done';
         return 1;
     },
 
