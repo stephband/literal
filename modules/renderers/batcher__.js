@@ -65,7 +65,18 @@ function render(time) {
             logs.totalCom
         }
 
-        log('render', (t1 - t0).toFixed(3) + ' – ' + keys.length + ' renderer' + (keys.length === 1 ? '' : 's') + ' (' + keys.slice(0, 12).join(', ') + (keys.length > 12 ? ', ...)' : ')'), 'count', count, '#f5a623');
+        log('render',
+            // renderers
+            keys.length + ' renderer' + (keys.length === 1 ? ', ' : 's, ')
+            // mutations
+            + count + ' mutation' + (count === 1 ? ', ' : 's, ') 
+            // duration
+            + ((t1 - t0) * 1000 - logs.batchCompileTime).toPrecision(3) + 'ms' 
+            // ids
+            + ' (' + keys.slice(0, 12).join(', ') + (keys.length > 12 ? ', ...)' : ')'), 
+            // 
+            '', '', '#f5a623'
+        );
 
         if (Object.values(ids).find((n) => n > 1)) {
             console.warn('Literal', 'same renderer rendered multiple times in batch', ids);
