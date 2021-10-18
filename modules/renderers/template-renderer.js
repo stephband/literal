@@ -208,21 +208,23 @@ assign(TemplateRenderer.prototype, {
             }
 
             this.content.append.apply(this.content, nodes);
-            return;
+            return nodes.length;
         }
     
         const data      = getTarget(object);
         const observer  = Observer(data);
         const contents = this.contents;
+        var count = 0;
 
         // This has to happen synchronously in order to collect gets...
-        contents.forEach((renderer) => renderer.update(observer, data));
+        contents.forEach((renderer) => count += renderer.update(observer, data));
 
         // If this.first is not in the content fragment, it must be in the 
         // parent DOM being used as a marker. It's time for its freshly rendered 
         // brethren to join it.
         if (this.content.firstChild && this.first !== this.content.firstChild) {
             this.first.after(this.content);
+            ++count;
         }
 
         this.observables = observer ?
@@ -238,7 +240,7 @@ assign(TemplateRenderer.prototype, {
             ) :
             nothing ;
 
-        return this.content;
+        return count;
     },
 
     connect: Renderer.prototype.connect,

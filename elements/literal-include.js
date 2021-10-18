@@ -123,13 +123,13 @@ element('<literal-include>', {
                 // Signal to tree of renderers that we are now in the DOM
                 renderer.connect();
                 //trigger(renderer, 'connect', 'dom');
-            }).catch(window.DEBUG ?
+            })/*.catch(window.DEBUG ?
                 (e) => {
                     this.replaceWith(print(e));
                     throw e;
                 } :
                 noop
-            );
+            );*/
 
             this.renderer = renderer;
         })).catch(window.DEBUG ?

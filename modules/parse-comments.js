@@ -321,6 +321,7 @@ const parseComment = capture(/([^\S\r\n]*)\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(
     
         done: (data, captures) => {
             // TODO params?
+            console.log('AAARGH');
             data.id = createId(data.type + '-' + slugify(data.name) + (data.params ? '' : ''));
             return data;
         }

@@ -4,7 +4,7 @@ import analytics from './analytics.js';
 import { cache as compileCache } from '../compile.js';
 
 const renderers = [];
-const promise   = Promise.resolve(renderers);
+//const promise   = Promise.resolve(renderers);
 
 const logs = window.DEBUG && {
     totalCompileTime: 0,
@@ -31,10 +31,10 @@ function constructorCount(renderers) {
     ), '');
 }
 
-function render(renderers) {
+function render(time) {
     if (window.DEBUG) {
         var t0 = window.performance.now() / 1000;
-        group('batch', t0.toFixed(3) + ' – cued ' + constructorCount(renderers), '#B6BD00');
+        group('frame', t0.toFixed(3) + ' – cued ' + constructorCount(renderers), '#B6BD00');
         var ids = {};
     }
 
@@ -62,23 +62,10 @@ function render(renderers) {
             logs.batchCompileCount = totalCompileCount - logs.totalCompileCount;
             logs.totalCompileCount = totalCompileCount;
             log('compile', logs.batchCompileCount + ' literal' + (logs.batchCompileCount === 1 ? '' : 's') + ', ' + logs.batchCompileTime.toPrecision(3) + 'ms', ' total', totalCompileCount + ' literals, ' + (logs.totalCompileTime).toPrecision(3) + 'ms', '#DDB523');
-        }
-        else {
-            logs.batchCompileTime = 0;
+            logs.totalCom
         }
 
-        log('render',
-            // renderers
-            keys.length + ' renderer' + (keys.length === 1 ? ', ' : 's, ')
-            // mutations
-            + count + ' mutation' + (count === 1 ? ', ' : 's, ') 
-            // duration
-            + ((t1 - t0) * 1000 - logs.batchCompileTime).toPrecision(3) + 'ms' 
-            // ids
-            + ' (' + keys.slice(0, 12).join(', ') + (keys.length > 12 ? ', ...)' : ')'), 
-            // 
-            '', '', '#f5a623'
-        );
+        log('render', (t1 - t0).toFixed(3) + ' – ' + keys.length + ' renderer' + (keys.length === 1 ? '' : 's') + ' (' + keys.slice(0, 12).join(', ') + (keys.length > 12 ? ', ...)' : ')'), 'count', count, '#f5a623');
 
         if (Object.values(ids).find((n) => n > 1)) {
             console.warn('Literal', 'same renderer rendered multiple times in batch', ids);
@@ -98,6 +85,25 @@ Cues a renderer to be rendered in the next batch with latest args. If the
 renderer is already cued, args are replaced with latest args.
 **/
 
+const fns = [];
+
+let request;
+
+const promise = {
+    then: function(fn) {
+        fns.push(fn);
+        if (!request) {
+            request = requestAnimationFrame(flush)
+        }
+    }
+};
+
+function flush(time) {
+    request = undefined;
+    fns.forEach((fn) => fn());
+    fns.length = 0;
+}
+
 export function cue(renderer, args) {
     renderer.cuedArguments = args;
 
@@ -108,12 +114,13 @@ export function cue(renderer, args) {
 
     // Create a new batch end promise where required
     if (!cued) {
-        cued = promise.then(render);
+        cued = requestAnimationFrame(render);
+        //promise.then(render);
     }
 
     renderers.push(renderer);
     renderer.cued = true;
-    return cued;
+    return promise;
 }
 
 /** 

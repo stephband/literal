@@ -133,7 +133,7 @@ function StreamRenderer(stream) {
     this.content = marker;
     this.id      = ++meta.count;
     this.stream  = stream;
-    
+
     stream.pipe(this);
 }
 

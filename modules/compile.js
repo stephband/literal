@@ -1,5 +1,10 @@
 
 import compileFn from '../../fn/modules/compile.js';
+import analytics from './renderers/analytics.js';
+
+if (window.DEBUG) {
+    analytics.totalCompileTime = 0;
+}
 
 /**
 compile(scope, params, source, id, info, element)
@@ -28,13 +33,25 @@ export default function compile(scope, params, source, id, info, element) {
 
     if (window.DEBUG) {
         try {
-            return cache[key] = compileFn(scope, params, 
+            const text = source.trim();
+            const name = text.length > 32 ?
+                text.slice(0, 30).replace(/\s+/g, ' ').replace('"', '\\"') + ' …' :
+                text.replace(/\s+/g, ' ').replace('"', '\\"') ;
+
+            const t0 = window.performance.now();
+            cache[key] = compileFn(scope, params, 
                 'try {' + code + '} catch(e) {' +
                 // Append useful info to error message
-                indent + 'e.message += " in template #" + this.template + (this.element && this.element.tagName ? ", <" + this.element.tagName.toLowerCase() + (this.name ? " " + this.name + "=\\"...\\">" : ">") : "");' +
+                indent + 'e.message += " in template #" + this.template + (this.element && this.element.tagName ? ", <" + this.element.tagName.toLowerCase() + (this.name ? " " + this.name + "=\\"' + name + '\\">" : "> ' + name + '") : "");' +
                 indent + 'throw e;' +
                 '}'
             );
+
+            const t1 = window.performance.now();
+            analytics.totalCompileTime += (t1 - t0);
+
+            // timeEnd(name);
+            return cache[key];
         }
         catch(e) {
             // Append useful info to error message
