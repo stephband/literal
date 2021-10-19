@@ -10,6 +10,7 @@ import { dimbluedim } from './log.js';
 const decoder = new TextDecoder('utf-8');
 
 export const readText = cache(function request(source) {
+    //console.log(source);
     return Deno.readFile(source)
     .then((array) => decoder.decode(array));
     /*

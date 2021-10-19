@@ -134,7 +134,7 @@ export function prependComment(source, target, string) {
 }
 
 const renderInclude = overload((source, target, file) => toExtension(file), {
-    '.html.literal': (source, target, debug, file, scope) => Promise
+    '.html.literal': (source, target, file, scope) => Promise
         .all([
             resolveScope(scope, source, target),
             read(file).then(extractBody)
@@ -205,7 +205,11 @@ function include(source, target, url, scope) {
     );
     */
 
-    return renderInclude(source, target, file, scope);
+    return renderInclude(source, target, file, scope)
+    .catch((e) => {
+        console.log(red + ' ' + yellow, e.constructor.name + ' in', source);
+        console.log(red, e.message);
+    });
 }
 
 
