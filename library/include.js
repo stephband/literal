@@ -11,12 +11,14 @@ import TemplateRenderer from '../modules/renderers/template-renderer.js';
 import { getTarget }    from '../../fn/observer/observer.js';
 
 export function include(url, object) {
-    if (!/^#/.test(url)) {
+    // This is for inserting static HTML for living archives, but the API
+    // should be different for static HTML
+    if (typeof url === 'string' && !/^#/.test(url)) {
         return requestGet(url)
         .then(fragmentFromHTML);
     }
 
-    const renderer = new TemplateRenderer(url.slice(1));
+    const renderer = new TemplateRenderer(typeof url === 'string' ? url.slice(1) : url);
 
     // Accept a url, fetch or import it before rendering
     if (typeof object === 'string') {
