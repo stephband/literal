@@ -110,7 +110,14 @@ register('include', include);
 register('request', request);
 
 export { register };
-export { default as Template } from './modules/renderers/template-renderer.js';
+import TemplateRenderer from './modules/renderers/template-renderer.js';
+export const Template = TemplateRenderer;
 
 export { Observer }  from '../fn/observer/observer.js';
 export { default as observe } from '../fn/observer/observe.js';
+
+export default function Literal(id) {
+    return new TemplateRenderer(id);
+}
+
+Literal.stats = analytics;
