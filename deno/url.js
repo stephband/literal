@@ -57,7 +57,10 @@ export function rewriteURL(source, target, url) {
     */
     
     // Resource path relative to module
-    return path.relative(targetdir, resource);
+    const relative = path.relative(targetdir, resource);
+
+    // Resource may be in a js import, in which case it must start with `./`
+    return relative[0] === '.' ? relative : './' + relative ;
 }
 
 //            $1                                                                                                                                     $2
@@ -72,7 +75,7 @@ export function rewriteURLs(source, target, text) {
     ));
 }*/
 
-const rURL = /(url\(\s*['"]?|@import\s*['"]|(?:src|href|cite|action|formaction|codebase|longdesdc|usemap|poster)=['"]?|['"])(\.{1,2}\/[\.\/\w-\d\%]+)/g;
+const rURL = /(url\(\s*['"]?|@import\s*['"]|(?:src|href|cite|action|formaction|codebase|longdesdc|usemap|poster)=['"]?|['"])(\.{1,2}\/[./\w-\d%]+)/g;
 
 export function rewriteURLs(source, target, text) {
     return text.replace(rURL, ($0, $1, $2) =>

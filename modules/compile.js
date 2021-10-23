@@ -35,8 +35,8 @@ export default function compile(scope, params, source, id, info, element) {
         try {
             const text = source.trim();
             const name = text.length > 32 ?
-                text.slice(0, 30).replace(/\s+/g, ' ').replace('"', '\\"') + ' …' :
-                text.replace(/\s+/g, ' ').replace('"', '\\"') ;
+                text.slice(0, 30).replace(/\s+/g, ' ').replace(/"/g, '\\"') + ' …' :
+                text.replace(/\s+/g, ' ').replace(/"/g, '\\"') ;
 
             const t0 = window.performance.now();
             cache[key] = compileFn(scope, params, 
@@ -55,7 +55,9 @@ export default function compile(scope, params, source, id, info, element) {
         }
         catch(e) {
             // Append useful info to error message
-            e.message += ' in template #' + info.template + (element && element.tagName ? ', <' + element.tagName.toLowerCase() + (info.name ? ' ' + info.name + '="' + source + '">' : '>') : '') ;
+            if (info) {
+                e.message += ' in template #' + info.template + (element && element.tagName ? ', <' + element.tagName.toLowerCase() + (info.name ? ' ' + info.name + '="' + source + '">' : '>') : '') ;
+            }
             throw e;
         }
     }

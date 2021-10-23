@@ -10,8 +10,8 @@ import select  from './select.js';
 import { yellow, dimyellow, red, dim, green } from './log.js';
 import build from './build.js';
 
-if (Deno.args.length < 2) {
-    throw new Error("node index.js requires arguments 'source.html.literal' 'target.html'");
+if (Deno.args.length < 1) {
+    throw new Error("node index.js requires argument 'source.html.literal'");
 }
 
 const base  = Deno.args[0] === 'debug' ? '.' : (Deno.args[0] || '');
