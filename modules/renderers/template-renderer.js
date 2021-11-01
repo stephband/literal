@@ -31,7 +31,7 @@ import isTextNode  from '../../../dom/modules/is-text-node.js';
 import compileNode from '../compile-node.js';
 import { Observer, getTarget } from '../../../fn/observer/observer.js';
 import observe     from '../../../fn/observer/observe.js';
-import analytics, { meta } from './analytics.js';
+import stats, { meta } from './analytics.js';
 import Renderer, { removeNodes } from './renderer.js';
 
 const assign = Object.assign;
@@ -52,8 +52,11 @@ function child(parent, index) {
 }
 
 function getDescendant(path, root) {
-    const p = path.split(/\./);
-    return p.reduce(child, root);
+    // If path is empty return root
+    const p = path && path.split(/\./);
+    return path ?
+        p.reduce(child, root) :
+        root ;
 }
 
 function isMarkerNode(node) {
@@ -110,27 +113,28 @@ export default function TemplateRenderer(template) {
     if (cache[id]) {
         const template = cache[id].template;
         this.template  = template;
-        this.content   = template.content.cloneNode(true);
+        this.content   = template.content ? template.content.cloneNode(true) : template.cloneNode(true) ;
         this.first     = this.content.childNodes[0];
         this.last      = this.content.childNodes[this.content.childNodes.length - 1];
         this.contents = cache[id].contents.map(newRenderer, this);
-        ++analytics['#' + id].template;
-        ++analytics.Totals.template;
+        ++stats['#' + id].template;
+        ++stats.Totals.template;
         return;
     }
 
     template = typeof template === 'string' ?
-        document.getElementById(template) :
+        document.getElementById(template[0] === '#' ? template.slice(1) : template) :
         template ;
 
     if (window.DEBUG) {
         if (!template) {
             throw new Error('Template id="' + id + '" not found in document');
         }
-        
+        /*
         if (!template.content) {
             throw new Error('Element id="' + id + '" is not a <template> (no content fragment)');
         }
+        */
     }
 
     /** 
@@ -144,23 +148,23 @@ export default function TemplateRenderer(template) {
     will no longer contain the renderer's DOM nodes, however the renderer 
     continues to manage these nodes wherever they end up.
     **/
-    prepareContent(template.content);
+    template.content && prepareContent(template.content);
 
     this.template  = template;
-    this.content   = template.content.cloneNode(true);
+    this.content   = template.content ? template.content.cloneNode(true) : template.cloneNode(true) ;
     this.first     = this.content.childNodes[0];
     this.last      = this.content.childNodes[this.content.childNodes.length - 1];
 
     // Analytics (must be declared before contents)
-    analytics['#' + id] = { template: 1 };
-    ++analytics.Totals.template;
+    stats['#' + id] = { template: 1 };
+    ++stats.Totals.template;
 
     // compileNode(contents, options, content, template)
     // The options object contains information for renderer objects. It is 
     // mutated as it is passed to each renderer (specifically path, name, 
     // source properties). We can do this because renderer construction is 
     // synchronous within a template.
-    this.contents = compileNode([], { template: id, path: '' }, this.content, template.content);
+    this.contents = compileNode([], { template: id, path: '' }, this.content, template.content || template);
 
     cache[id] = this;
 }
@@ -169,12 +173,21 @@ function stop(object) {
     object.stop();
 }
 
+/**
+.render(data)
+Cues `data` to be rendered in the next render batch. Returns a promise that
+resolves when the batch is finished rendering.
+
+The `data` object is observed for mutations, and the renderer updates it 
+content until either a new data object is cued or the renderer is stopped.
+**/
+
 assign(TemplateRenderer.prototype, {
     /**
     .render(data)
     Cues `data` to be rendered in the next render batch. Returns a promise that
     resolves when the batch is finished rendering.
-
+    
     The `data` object is observed for mutations, and the renderer updates it 
     content until either a new data object is cued or the renderer is stopped.
     **/
