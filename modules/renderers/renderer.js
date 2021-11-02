@@ -201,7 +201,9 @@ assign(Renderer.prototype, {
     
         const paths = this.paths || (this.paths = []);
         paths.length = 0;
-    
+
+        // TODO: are we really forced to make a gets stream on every render?
+        // it makes attribute animations heavy. Can we optimise?
         const gets = data ?
             reads(data).each((path) => toPaths(paths, path)) :
             nothing ;
