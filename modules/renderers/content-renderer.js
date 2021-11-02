@@ -11,10 +11,10 @@ import { cue }        from './batcher.js';
 
 const assign = Object.assign;
 
-function replace(array, current, replacement) {
-    const i = array.indexOf(current);
+function replace(array, value, replacement) {
+    const i = array.indexOf(value);
     if (i === -1) {
-        throw new Error('Renderer not in contents array')
+        throw new Error('Cannot replace() - value ' + JSON.stringify(value) + ' not in array');
     }
     array.splice(i, 1, replacement);
     return array;
@@ -49,7 +49,7 @@ function replaceObjectContent(renderer, value) {
 
     // Value is a Stream
     if (value.each) {
-        const child = new StreamRenderer(value);
+        const child = new StreamRenderer(renderer.collection, value);
         renderer.content.replaceWith(child.content);
         renderer.content = child;
         renderer.status === 'dom' && child.connect();
@@ -58,7 +58,7 @@ function replaceObjectContent(renderer, value) {
     
     // Value is a Promise
     if (value.then) {
-        const child = new PromiseRenderer(value);
+        const child = new PromiseRenderer(renderer.collection, value);
         renderer.content.replaceWith(child.content);
         renderer.content = child;
         renderer.status === 'dom' && child.connect();
@@ -126,11 +126,12 @@ assign(PromiseRenderer.prototype, {
 
 /* SteeamRenderer */
 
-function StreamRenderer(stream) {
+function StreamRenderer(collection, stream) {
     // Marker node
     const marker = create('text', '');
     this.marker  = marker;
     this.content = marker;
+    this.collection = collection;
     this.id      = ++meta.count;
     this.stream  = stream;
 
@@ -166,11 +167,11 @@ assign(StreamRenderer.prototype, PromiseRenderer.prototype, {
 
 /* ContentRenderer */
 
-function renderValues(contents, string, array) {
+function renderValues(renderer, string, array) {
     const l = array.length;
     let n = -1;
     while (++n < l) {
-        string = renderValue(contents, string, array[n]);
+        string = renderValue(renderer, string, array[n]);
     }
     return string;
 }
@@ -201,7 +202,7 @@ function renderValue(renderer, string, value) {
         // Value is a Stream
         if (value.each) {
             string && contents.push(string);
-            contents.push(new StreamRenderer(value));
+            contents.push(new StreamRenderer(contents, value));
             return '';
         }
 
