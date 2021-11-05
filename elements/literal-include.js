@@ -135,7 +135,8 @@ element('<literal-include>', {
         })).catch(window.DEBUG ?
             (e) => {
                 this.replaceWith(print(e));
-                console.error(e.message);
+                //console.error(e.message);
+                throw e;
             } :
             noop
         );
