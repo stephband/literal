@@ -24,6 +24,7 @@ renderer
 ```
 **/
 
+import get         from '../../../fn/modules/get.js';
 import getPath     from '../../../fn/modules/get-path.js';
 import nothing     from '../../../fn/modules/nothing.js';
 import identify    from '../../../dom/modules/identify.js';
@@ -193,6 +194,10 @@ assign(TemplateRenderer.prototype, {
     **/
 
     render: function(object) {
+        if (this.observables.length) {
+            console.log('#' + this.template.id + ' stopping observing data\n.' + this.observables.map(get('path')).join('\n.'));
+        }
+
         this.observables.forEach(stop);
         this.observables = nothing;
 
@@ -245,13 +250,15 @@ assign(TemplateRenderer.prototype, {
                 renderer.paths.map((path) => 
                     // Don't getPath() of the observer here, that really makes 
                     // the machine think too hard
-                    observe(path, data, getPath(path, data)).each((value) =>
+                    assign(observe(path, data, getPath(path, data)).each((value) =>
                         // Next renders are cued which batches them
                         renderer.render(observer)
-                    )
+                    ), { path })
                 )
             ) :
             nothing ;
+
+        console.log('#' + this.template.id + ' observing data\n.' + this.observables.map(get('path')).join('\n.'));
 
         return count;
     },
