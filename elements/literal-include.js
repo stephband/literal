@@ -52,8 +52,8 @@ Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a
 
 **/
 
-import element from '../../dom/modules/element.js';
-import { requestGet }   from '../../dom/modules/request.js';
+import element        from '../../dom/modules/element.js';
+import { requestGet } from '../../dom/modules/request.js';
 import fragmentFromHTML from '../../dom/modules/fragment-from-html.js';
 import request from '../library/request.js';
 import TemplateRenderer from '../modules/renderers/template-renderer.js';
@@ -148,8 +148,8 @@ element('<literal-include>', {
     },
 
     connect: function() {
-        // If we are loading at connect time, add the loading attribute, waiting 
-        // a couple of frames to allow any transition to start
+        // If we are loading at connect time, add the loading attribute after a 
+        // couple of frames to allow any transition to start
         if (this.loading) {
             this.frame = requestAnimationFrame(() =>
                 this.frame = requestAnimationFrame(() =>
@@ -235,8 +235,14 @@ element('<literal-include>', {
     loading: {
         /**
         loading=""
-        Read-only boolean attribute indicating status of `src` and `data` 
-        requests.
+        Read-only (pseudo-read-only) boolean attribute indicating status of 
+        `src` and `data` requests. 
+        **/
+
+        /**
+        .loading
+        Read-only (pseudo-read-only) boolean indicating status of `src` and 
+        `data` requests.
         **/
         value: false,
         writable: true
@@ -244,7 +250,6 @@ element('<literal-include>', {
 
     /**
     src=""
-
     Define a source template whose rendered content replaces this
     `literal-include`. This is a required attribute and must be in the form of
     a fragment identifier pointing to a `template` element in the DOM.  

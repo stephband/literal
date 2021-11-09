@@ -194,9 +194,9 @@ assign(TemplateRenderer.prototype, {
     **/
 
     render: function(object) {
-        if (this.observables.length) {
-            console.log('#' + this.template.id + ' stopping observing data\n.' + this.observables.map(get('path')).join('\n.'));
-        }
+        //if (this.observables.length) {
+        //    console.log('#' + this.template.id + ' stopping observing data\n.' + this.observables.map(get('path')).join('\n.'));
+        //}
 
         this.observables.forEach(stop);
         this.observables = nothing;
@@ -258,7 +258,7 @@ assign(TemplateRenderer.prototype, {
             ) :
             nothing ;
 
-        console.log('#' + this.template.id + ' observing data\n.' + this.observables.map(get('path')).join('\n.'));
+        //console.log('#' + this.template.id + ' observing data\n.' + this.observables.map(get('path')).join('\n.'));
 
         return count;
     },
