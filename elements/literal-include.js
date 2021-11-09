@@ -52,7 +52,6 @@ Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a
 
 **/
 
-import noop    from '../../fn/modules/noop.js';
 import element from '../../dom/modules/element.js';
 import { requestGet }   from '../../dom/modules/request.js';
 import fragmentFromHTML from '../../dom/modules/fragment-from-html.js';
@@ -120,31 +119,45 @@ element('<literal-include>', {
             // But once it has data we know we can render it, but we 
             // want to do that in the next batch
             renderer.render(data).then(() => {
+                this.loading = false;
                 this.replaceWith(renderer.content);
 
                 // Signal to tree of renderers that we are now in the DOM
                 renderer.connect();
-                //trigger(renderer, 'connect', 'dom');
-            })/*.catch(window.DEBUG ?
-                (e) => {
-                    this.replaceWith(print(e));
-                    throw e;
-                } :
-                noop
-            );*/
+            })
 
             this.renderer = renderer;
         })).catch(window.DEBUG ?
             (e) => {
+                this.loading = false;
                 this.replaceWith(print(e));
-                //console.error(e.message);
                 throw e;
             } :
-            noop
+            (e) => {
+                this.loading = false;
+                if (this.frame) {
+                    cancelAnimationFrame(this.frame);
+                }
+                else {
+                    this.removeAttribute('loading');
+                }
+
+                throw e;
+            }
         );
     },
 
     connect: function() {
+        // If we are loading at connect time, add the loading attribute, waiting 
+        // a couple of frames to allow any transition to start
+        if (this.loading) {
+            this.frame = requestAnimationFrame(() =>
+                this.frame = requestAnimationFrame(() =>
+                    this.frame = this.setAttribute('loading', '')
+                )
+            );
+        }
+
         // Where no data or data-* attribute has been defined resolve with an 
         // empty object...
         this.resolveData && this.resolveData({});
@@ -210,12 +223,23 @@ element('<literal-include>', {
                 return;
             }
             else if (typeof value === 'string') {
+                this.loading = true;
                 this.resolveData(request(value));
             }
             else {
                 this.resolveData(value);
             }
         }
+    },
+
+    loading: {
+        /**
+        loading=""
+        Read-only boolean attribute indicating status of `src` and `data` 
+        requests.
+        **/
+        value: false,
+        writable: true
     },
 
     /**
@@ -235,6 +259,12 @@ element('<literal-include>', {
             // This is for inserting static HTML for living archives, but the API
             // should be different for static HTML
             if (!/^#/.test(value)) {
+                // Flag loading until we connect, at which point we add the
+                // loading attribute that may be used to indicate loading. Why 
+                // wait? Because we are not in the DOM yet, and if we want a 
+                // loading icon to transition in the transition must begin after
+                // we are already in the DOM.
+                this.loading = true;
                 return requestGet(value).then((html) => this.resolveSrc(fragmentFromHTML(html)));
             }
 
