@@ -54,6 +54,8 @@ Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a
 
 import noop    from '../../fn/modules/noop.js';
 import element from '../../dom/modules/element.js';
+import { requestGet }   from '../../dom/modules/request.js';
+import fragmentFromHTML from '../../dom/modules/fragment-from-html.js';
 import request from '../library/request.js';
 import TemplateRenderer from '../modules/renderers/template-renderer.js';
 import print   from '../library/print.js';
@@ -228,6 +230,12 @@ element('<literal-include>', {
         attribute: function(value) {
             if (!value) {
                 return this.rejectSrc(new Error('<literal-include> source src="' + value + '" is empty'));
+            }
+
+            // This is for inserting static HTML for living archives, but the API
+            // should be different for static HTML
+            if (!/^#/.test(value)) {
+                return requestGet(value).then((html) => this.resolveSrc(fragmentFromHTML(html)));
             }
 
             const id = value.replace(/^#/, '');
