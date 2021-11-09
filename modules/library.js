@@ -12,7 +12,6 @@ import id              from '../../fn/modules/id.js';
 import by              from '../../fn/modules/by.js';
 import capture         from '../../fn/modules/capture.js';
 import equals          from '../../fn/modules/equals.js';
-import events          from '../../dom/modules/events.js';
 import matches         from '../../fn/modules/matches.js';
 import nothing         from '../../fn/modules/nothing.js';
 import get             from '../../fn/modules/get-path.js';
@@ -79,11 +78,6 @@ const library = {
     Compares `a` and `b` for deep equality and returns `true` or `false`.
     **/
     equals,
-    
-    /** events(type, element)
-    Compares `a` and `b` for deep equality and returns `true` or `false`.
-    **/
-    events,
 
     /** floor(n)
     Alias of `Math.floor()`.
