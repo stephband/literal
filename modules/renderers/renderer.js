@@ -139,12 +139,15 @@ function triggerReducer(args, renderer) {
 
 function trigger(object, method, status, payload) {
     if (object.status === status) { return; }
+    object.status = status;
 
     const contents = object.contents;
     if (contents) { contents.reduce(triggerReducer, arguments); }
 
     const listeners = object[status + postfix];
     if (listeners) { listeners.forEach(call); }
+
+    console.log('CONNECT', object.constructor.name, object.id);
 
     return object;
 }

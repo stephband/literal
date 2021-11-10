@@ -11,15 +11,6 @@ import { cue }        from './batcher.js';
 
 const assign = Object.assign;
 
-function replace(array, value, replacement) {
-    const i = array.indexOf(value);
-    if (i === -1) {
-        throw new Error('Cannot replace() - value ' + JSON.stringify(value) + ' not in array');
-    }
-    array.splice(i, 1, replacement);
-    return array;
-}
-
 function replaceObjectContent(renderer, value) {
     // Value is not an object
     if (!value || typeof value !== 'object') {
@@ -41,6 +32,9 @@ function replaceObjectContent(renderer, value) {
 
     // Value is a TemplateRenderer
     if (value instanceof TemplateRenderer) {
+
+console.log('REPLACE', renderer.constructor.name, value.constructor.name, renderer.status);
+
         renderer.content.replaceWith(value.content);
         renderer.content = value;
         renderer.status === 'dom' && value.connect();
@@ -116,7 +110,9 @@ assign(PromiseRenderer.prototype, {
         this.content.stop && this.content.stop();
     },
 
+    // Todo: A promise renderer should never be able to be connected I don't think
     connect: function() {
+console.log('UNNECESARY: content should be in contents array before this renderer has .connect() called. I think.');
         if (this.status === 'dom') { return; }
         this.status = 'dom';
         this.content.connect && this.content.connect();
@@ -274,10 +270,9 @@ function setContents(first, last, contents, state) {
 
     if (contents.length) {
         first.after.apply(first, contents);
-        state === 'dom' && contents.forEach((renderer) => {
-            console.log('DOES THIS EVER HAPPEN? renderer.connect()', renderer);
-            renderer.connect && renderer.connect();
-        });
+        state === 'dom' && contents.forEach((renderer) =>
+            (typeof renderer === 'object' && renderer.connect && renderer.connect())
+        );
         count += contents.length;
     }
 
