@@ -6,6 +6,7 @@ import { getTarget }  from '../../../fn/observer/observer.js';
 import { cue, uncue } from './batcher.js';
 import toText         from '../to-text.js';
 import { meta }       from './analytics.js';
+import { log }        from '../log.js';
 
 const assign = Object.assign;
 
@@ -147,7 +148,7 @@ function trigger(object, method, status, payload) {
     const listeners = object[status + postfix];
     if (listeners) { listeners.forEach(call); }
 
-    console.log(object.constructor.name, object.id, method);
+    //log(method, object.constructor.name +  ' #' + object.id, undefined, undefined, 'lightgrey');
 
     return object;
 }

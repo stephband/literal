@@ -16,7 +16,7 @@ let cued;
 function constructorCount(renderers) {
     // Count constructors
     return renderers
-    .map((renderer) => renderer.constructor.name.replace('Renderer', ''))
+    .map((renderer) => renderer.constructor.name)
     .reduce((names, name) => {
         const i = names.indexOf(name);
         if (i === -1) { names.push(1, name); }
@@ -34,7 +34,7 @@ function constructorCount(renderers) {
 function render(renderers) {
     if (window.DEBUG) {
         var t0 = window.performance.now() / 1000;
-        group('batch', t0.toFixed(3) + ' – cued ' + constructorCount(renderers), '#B6BD00');
+        group('batch', t0.toFixed(3) + 's – cued ' + constructorCount(renderers), '#B6BD00');
         var ids = {};
     }
 
@@ -67,7 +67,7 @@ function render(renderers) {
             logs.batchCompileTime = 0;
         }
 
-        log('render',
+        log('render ',
             // renderers
             keys.length + ' renderer' + (keys.length === 1 ? ', ' : 's, ')
             // mutations
@@ -75,9 +75,9 @@ function render(renderers) {
             // duration
             + ((t1 - t0) * 1000 - logs.batchCompileTime).toPrecision(3) + 'ms' 
             // ids
-            + ' (' + keys.slice(0, 12).join(', ') + (keys.length > 12 ? ', ...)' : ')'), 
+            + ' (#' + keys.slice(0, 12).join(', #') + (keys.length > 12 ? ', ...)' : ')'), 
             // 
-            '', '', '#f5a623'
+            '', '', 'orange'
         );
 
         if (Object.values(ids).find((n) => n > 1)) {

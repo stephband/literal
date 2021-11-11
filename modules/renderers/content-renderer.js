@@ -8,6 +8,7 @@ import Renderer, { removeNodes } from './renderer.js';
 import TemplateRenderer from './template-renderer.js';
 import print          from '../../library/print.js';
 import { cue }        from './batcher.js';
+import { log }        from '../log.js';
 
 const assign = Object.assign;
 
@@ -25,6 +26,7 @@ function replaceObjectContent(renderer, value) {
 
     // Nodes are pushed into contents directly
     if (value instanceof Node) {
+        log('replace', renderer.constructor.name + ' ➔ Node ' + value, renderer.status === 'dom' ? 'DOM' : undefined, undefined, 'aqua');
         renderer.content.replaceWith(value);
         renderer.content = value;
         return true;
@@ -32,9 +34,7 @@ function replaceObjectContent(renderer, value) {
 
     // Value is a TemplateRenderer
     if (value instanceof TemplateRenderer) {
-
-console.log('REPLACE', renderer.constructor.name, value.constructor.name, renderer.status);
-
+        log('replace', renderer.constructor.name + ' #' +  renderer.id + ' ➔ ' + value.constructor.name + ' #' +  value.id + ' #' + value.template.id, renderer.status === 'dom' ? 'DOM' : undefined, undefined, 'aqua');
         renderer.content.replaceWith(value.content);
         renderer.content = value;
         renderer.status === 'dom' && value.connect();
@@ -44,6 +44,7 @@ console.log('REPLACE', renderer.constructor.name, value.constructor.name, render
     // Value is a Stream
     if (value.each) {
         const child = new StreamRenderer(renderer.collection, value);
+        log('replace', renderer.constructor.name + ' #' +  renderer.id + ' ➔ ' + child.constructor.name + ' #' +  child.id, renderer.status === 'dom' ? 'DOM' : undefined, undefined, 'aqua');
         renderer.content.replaceWith(child.content);
         renderer.content = child;
         renderer.status === 'dom' && child.connect();
@@ -53,6 +54,7 @@ console.log('REPLACE', renderer.constructor.name, value.constructor.name, render
     // Value is a Promise
     if (value.then) {
         const child = new PromiseRenderer(renderer.collection, value);
+        log('replace', renderer.constructor.name + ' #' +  renderer.id + ' ➔ ' + child.constructor.name + ' #' +  child.id, renderer.status === 'dom' ? 'DOM' : undefined, undefined, 'aqua');
         renderer.content.replaceWith(child.content);
         renderer.content = child;
         renderer.status === 'dom' && child.connect();
@@ -110,9 +112,7 @@ assign(PromiseRenderer.prototype, {
         this.content.stop && this.content.stop();
     },
 
-    // Todo: A promise renderer should never be able to be connected I don't think
     connect: function() {
-console.log('UNNECESARY: content should be in contents array before this renderer has .connect() called. I think.');
         if (this.status === 'dom') { return; }
         this.status = 'dom';
         this.content.connect && this.content.connect();
@@ -268,11 +268,10 @@ function setContents(first, last, contents, state) {
         count += setNodeValue(last, '');
     }
 
-    console.log('CONTENTS', contents);
     if (nodes.length) {
         first.after.apply(first, nodes);
         state === 'dom' && contents.forEach((renderer) =>
-            (typeof renderer === 'object' && (console.log('connect()', renderer, renderer.status, !!renderer.connect), true) && renderer.connect && renderer.connect())
+            (typeof renderer === 'object' && renderer.connect && renderer.connect())
         );
         count += contents.length;
     }
