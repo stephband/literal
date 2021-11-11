@@ -247,6 +247,9 @@ assign(TemplateRenderer.prototype, {
 
         this.observables = observer ?
             contents.flatMap((renderer) => 
+                // Todo: renderer.paths may change and we dont know what to do 
+                // about it here... can observable be moved to individual 
+                // renderers?
                 renderer.paths.map((path) => 
                     // Don't getPath() of the observer here, that really makes 
                     // the machine think too hard

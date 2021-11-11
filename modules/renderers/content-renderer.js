@@ -245,7 +245,7 @@ function setContents(first, last, contents, state) {
     let count = 0;
     
     // TODO: get rid of need to slice
-    contents = contents.slice().map(toContent);
+    const nodes = contents.map(toContent);
 
     // Remove existing nodes, leaving first and last alone
     if (last.previousSibling !== first) {
@@ -254,24 +254,25 @@ function setContents(first, last, contents, state) {
 
     // Set first text node
     if (typeof contents[0] === 'string') {
-        count += setNodeValue(first, contents.shift());
+        count += setNodeValue(first, nodes.shift());
     }
     else {
         count += setNodeValue(first, '');
     }
 
     // Set last text node
-    if (typeof contents[contents.length - 1] === 'string') {
-        count += setNodeValue(last, contents.pop());
+    if (typeof nodes[nodes.length - 1] === 'string') {
+        count += setNodeValue(last, nodes.pop());
     }
     else {
         count += setNodeValue(last, '');
     }
 
-    if (contents.length) {
-        first.after.apply(first, contents);
+    console.log('CONTENTS', contents);
+    if (nodes.length) {
+        first.after.apply(first, nodes);
         state === 'dom' && contents.forEach((renderer) =>
-            (typeof renderer === 'object' && renderer.connect && renderer.connect())
+            (typeof renderer === 'object' && (console.log('connect()', renderer, renderer.status, !!renderer.connect), true) && renderer.connect && renderer.connect())
         );
         count += contents.length;
     }

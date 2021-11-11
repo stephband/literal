@@ -96,7 +96,7 @@
 </head>
 
 <body class="2x-grid grid">
-    <header>
+    <!--header>
         <h1 class="doctext-01">Literal <span class="doctext-06">0.2.0</span></h1>
         
         <template id="window-time">
@@ -410,6 +410,39 @@
         </template>
     
         <literal-include src="#objects-template" data="./test-objects.json"></literal-include>
+    
+        <hr/>
+    </section-->
+    
+    <section>
+        <h3 class="text-03">Connected state <span class="test-count"></span></h3>
+    
+        <template id="connect-template">
+            <div>
+                ${ print(this) }
+                id = ${ this.id }, count = ${ this.count }, status = ${ this.status }
+            </div>
+
+            <span>
+                ${ this.connected(() => console.log('Connected id =', this.id, 'count =', this.count, 'status =', this.status)) }
+            </span>
+        </template>
+        
+        <template id="connect-master-template">
+            <div>
+            ${ setTimeout(() => {
+                console.log('key = true');
+                data.key = true;
+            }, 400), print(this, data) }
+            </div>
+
+            <div>
+            ${ print(this) }
+            ${ data.key ? include('#connect-template', request('./test.json').then((o) => o)) : 'NOPE' }
+            </div>
+        </template>
+    
+        <literal-include src="#connect-master-template" data="./test.json"></literal-include>
     
         <hr/>
     </section>

@@ -147,7 +147,7 @@ function trigger(object, method, status, payload) {
     const listeners = object[status + postfix];
     if (listeners) { listeners.forEach(call); }
 
-    console.log('CONNECT', object.constructor.name, object.id);
+    console.log(object.constructor.name, object.id, method);
 
     return object;
 }
