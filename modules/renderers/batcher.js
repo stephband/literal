@@ -67,7 +67,7 @@ function render(renderers) {
             logs.batchCompileTime = 0;
         }
 
-        log('render ',
+        log('render',
             // renderers
             keys.length + ' renderer' + (keys.length === 1 ? ', ' : 's, ')
             // mutations
