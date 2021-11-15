@@ -32,10 +32,11 @@ function constructorCount(renderers) {
 }
 
 function render(renderers) {
+    var t0, ids;
     if (window.DEBUG) {
-        var t0 = window.performance.now() / 1000;
+        t0 = window.performance.now() / 1000;
         group('batch', t0.toFixed(3) + 's – cued ' + constructorCount(renderers), '#B6BD00');
-        var ids = {};
+        ids = {};
     }
 
     var renderer, count = 0;
