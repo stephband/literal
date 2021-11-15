@@ -286,7 +286,7 @@ export default function ContentRenderer(node, options, element) {
     this.last      = document.createTextNode('');
     this.first.after(this.last);
     this.contents  = [];
-    this.literally = options.literally || compile(library, 'data, state, element', options.source, null, options, element);
+    this.literally = options.literally || compile(library, 'data, element', options.source, null, options, element);
 
     // Analytics
     const id = '#' + options.template;

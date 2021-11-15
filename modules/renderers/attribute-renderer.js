@@ -2,6 +2,7 @@
 import library   from '../library.js';
 import compile   from '../compile.js';
 import Renderer, { renderString } from './renderer.js';
+import names     from './property-names.js';
 import analytics from './analytics.js';
 
 const assign = Object.assign;
@@ -12,10 +13,22 @@ Constructs an object responsible for rendering to a plain text attribute.
 **/
 
 function setAttribute(node, name, value) {
-    if (value === node.getAttribute(name)) { return 0; }
-    // Mutate DOM
+    const prop = names[name] || name;
+
+    // Seek and set a matching property
+    if (prop in node) {
+        if (node[prop] !== value) {
+            node[prop] = value;
+            return 1;
+        }
+    }
+
+    // If that doesn't work set the attribute
+    if (value === node.getAttribute(name)) {
+        return 0;
+    }
+
     node.setAttribute(name, value);
-    // Return number of mutations
     return 1;
 }
 
@@ -23,7 +36,7 @@ export default function AttributeRenderer(node, options) {
     Renderer.apply(this, arguments);
     
     this.name      = options.name;
-    this.literally = options.literally || compile(library, 'data, state, element', options.source, null, options, this.element);
+    this.literally = options.literally || compile(library, 'data, element', options.source, null, options, this.element);
     
     // Analytics
     const id = '#' + options.template;

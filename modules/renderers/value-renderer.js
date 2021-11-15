@@ -48,25 +48,20 @@ function renderValue(values) {
 setProperty(node, name, value)/
 **/
 
-export function setProperty(node, name, value) {
+function setProperty(node, value) {
     // Bit of an edge case, but where we have a custom element that has not
     // been upgraded yet, but it gets a property defined on its prototype when
     // it does upgrade, setting the property on the instance now will mask the
     // ultimate get/set definition on the prototype when it does arrive.
     //
     // So don't, if property is not in node. Set the attribute, it will be
-    // picked up on upgrade.
-if (value === null) {
-    throw new Error('VALUE');
-}
-//console.log('VALUE', value);
-    
-    if (name in node) {
-        node[name] = value;
+    // picked up on upgrade. MEH.
+    if (value === null) {
+        throw new Error('VALUE');
     }
-    else {
-        node.setAttribute(name, value);
-    }
+
+    //console.log('VALUE', value);
+    node.value = value;
 
     // Return DOM mutation count
     return 1;
@@ -94,7 +89,7 @@ function setValue(node, value) {
     // Here's how we did it for number
     //if (value === (node.value === '' ? null : +node.value)) { return 0; }
 
-    const count = setProperty(node, 'value', value);
+    const count = setProperty(node, value);
 
     // Optional event hook
     if (config.changeEvent) { 
@@ -109,7 +104,7 @@ export default function ValueRenderer(node, options) {
     Renderer.apply(this, arguments);
 
     this.name      = 'value';
-    this.literally = options.literally || compile(library, 'data, state, element', options.source, null, options, node);
+    this.literally = options.literally || compile(library, 'data, element', options.source, null, options, node);
     
     // Analytics
     const id = '#' + options.template;
@@ -134,7 +129,7 @@ export function StringValueRenderer(node, options) {
     Renderer.apply(this, arguments);
 
     this.name      = 'value';
-    this.literally = options.literally || compile(library, 'data, state, element', options.source, null, options, node);
+    this.literally = options.literally || compile(library, 'data, element', options.source, null, options, node);
     
     // Analytics
     const id = '#' + options.template;

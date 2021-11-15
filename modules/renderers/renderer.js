@@ -207,9 +207,8 @@ function toObservables(renderer, path) {
         // the machine think too hard. Make sure it's not the observer proxy
         const value = getPath(path, data);
 
-        observables[path] =
-            observe(path, data, value)
-            .each((value) => renderer.push(data));
+        observables[path] = observe(path, data, value)
+        .each((value) => renderer.push(data));
     }
 
     return renderer;
@@ -269,14 +268,14 @@ assign(Renderer.prototype, {
             gets(data).each((path) => toPaths(paths, path)) :
             nothing ;
 
-        // Update this before rendering
+        // Update `this` before rendering
         this.data = data;
         ++this.count;
 
         // Evaluate the template. Note that we are potentially leaving 
         // observers live here, if any data is set during render we may trigger
         // a further render... not what we want. Do we need to pause observers?
-        const stats = this.literally(observer, data, this.element);
+        const stats = this.literally(observer, this.element);
 
         // We may only collect synchronous gets – other templates may use 
         // this data object and we don't want to include their gets by stopping 
@@ -292,7 +291,9 @@ assign(Renderer.prototype, {
         .reduce(stopProperty, this.observables);
 
         // Start observing any new paths
-        paths.reduce(toObservables, this);
+        paths
+        // 
+        .reduce(toObservables, this);
 
         // Return information about the render
         return stats;

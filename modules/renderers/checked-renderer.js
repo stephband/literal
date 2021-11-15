@@ -58,7 +58,7 @@ export default function CheckedRenderer(node, options) {
     Renderer.apply(this, arguments);
 
     this.name      = 'checked';
-    this.literally = options.literally || compile(library, 'data, state, element', options.source, null, options, this.element);
+    this.literally = options.literally || compile(library, 'data, element', options.source, null, options, this.element);
     this.hasValue  = isDefined(node.getAttribute('value'));
 
     // Negate the effects of having template content in the checked attribute -

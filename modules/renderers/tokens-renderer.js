@@ -76,7 +76,7 @@ export default function TokensRenderer(node, options) {
     this.name      = options.name;
     this.tokens    = getTokenList(node, options.name);
     this.cached    = nothing;
-    this.literally = options.literally || compile(library, 'data, state, element', options.source, null, options, node);
+    this.literally = options.literally || compile(library, 'data, element', options.source, null, options, node);
 
     // Empty the tokens until it is rendered to avoid words in literal tags
     // being interpreted as classes
