@@ -23,7 +23,7 @@ export function include(url, object) {
     // Accept a url, fetch or import it before rendering
     if (typeof object === 'string') {
         return request(object)
-        .then((data) => renderer.render(data))
+        .then((data) => renderer.push(data))
         .then(() => renderer);
     }
 
@@ -34,14 +34,14 @@ export function include(url, object) {
     // Accept a promise of data
     if (data && data.then) {
         return data
-        .then((data) => renderer.render(data))
+        .then((data) => renderer.push(data))
         .then(() => renderer);
     }
 
     // Cue the renderer so that we do not end up collecting read paths read by
     // the child renderer in the parent.
     return renderer
-    .render(data || {})
+    .push(data || {})
     .then(() => renderer);
 }
 

@@ -19,19 +19,15 @@ const data     = {};
 
 // Cue data for render then add it to the DOM
 renderer
-.render(data)
+.push(data)
 .then(() => document.body.append(renderer.content));
 ```
 **/
 
-import get         from '../../../fn/modules/get.js';
-import getPath     from '../../../fn/modules/get-path.js';
-import nothing     from '../../../fn/modules/nothing.js';
 import identify    from '../../../dom/modules/identify.js';
 import isTextNode  from '../../../dom/modules/is-text-node.js';
 import compileNode from '../compile-node.js';
 import { Observer, getTarget } from '../../../fn/observer/observer.js';
-import observe     from '../../../fn/observer/observe.js';
 import stats, { meta } from './analytics.js';
 import Renderer, { removeNodes } from './renderer.js';
 
@@ -107,7 +103,7 @@ export default function TemplateRenderer(template) {
         identify(template) ;
 
     this.id          = ++meta.count;
-    this.observables = nothing;
+    //this.observables = nothing;
 
     // If the template is already compiled, clone the compiled contents to 
     // this renderer and bind them to a new fragment
@@ -143,7 +139,7 @@ export default function TemplateRenderer(template) {
 
     A fragment that initially contains the renderer's DOM nodes. On creation of
     a renderer they are in an unrendered state. They are guaranteed to be in a 
-    rendered state on resolution of the first `.render()` promise. 
+    rendered state on resolution of the first `.push()` promise. 
     
     The fragment may be inserted into the DOM at any time, at which point it 
     will no longer contain the renderer's DOM nodes, however the renderer 
@@ -170,37 +166,18 @@ export default function TemplateRenderer(template) {
     cache[id] = this;
 }
 
-function stop(object) {
-    object.stop();
-}
-
-/**
-.render(data)
-Cues `data` to be rendered in the next render batch. Returns a promise that
-resolves when the batch is finished rendering.
-
-The `data` object is observed for mutations, and the renderer updates it 
-content until either a new data object is cued or the renderer is stopped.
-**/
-
-assign(TemplateRenderer.prototype, {
+assign(TemplateRenderer.prototype, Renderer.prototype, {
     /**
-    .render(data)
+    .push(data)
     Cues `data` to be rendered in the next render batch. Returns a promise that
-    resolves when the batch is finished rendering.
-    
+    resolves when the batch is finished rendering. [Todo: this is a bit bizarre,
+    perhaps implement .each().]
+
     The `data` object is observed for mutations, and the renderer updates it 
     content until either a new data object is cued or the renderer is stopped.
     **/
 
-    render: function(object) {
-        //if (this.observables.length) {
-        //    console.log('#' + this.template.id + ' stopping observing data\n.' + this.observables.map(get('path')).join('\n.'));
-        //}
-
-        this.observables.forEach(stop);
-        this.observables = nothing;
-
+    push: function(object) {
         const data = object ? getTarget(object) : null ;
 
         // Deduplicate. Not sure this is entirely necessary.
@@ -209,11 +186,11 @@ assign(TemplateRenderer.prototype, {
         }
 
         this.data = data;
-        return Renderer.prototype.render.apply(this, arguments);
+        return Renderer.prototype.push.apply(this, arguments);
     },
 
-    update: function(object) {
-        //console.log(this.constructor.name + '#' + this.id + '.update()');
+    render: function(object) {
+        //console.log(this.constructor.name + '#' + this.id + '.render()');
 
         if (!object) {
             // Remove all but the first node to the renderer's content fragment
@@ -234,8 +211,8 @@ assign(TemplateRenderer.prototype, {
         const contents = this.contents;
         var count = 0;
 
-        // This has to happen synchronously in order to collect gets...
-        contents.forEach((renderer) => count += renderer.update(observer, data));
+        // Render the contents (synchronously)
+        contents.forEach((renderer) => count += renderer.render(observer, data));
 
         // If this.first is not in the content fragment, it must be in the 
         // parent DOM being used as a marker. It's time for its freshly rendered 
@@ -245,46 +222,8 @@ assign(TemplateRenderer.prototype, {
             ++count;
         }
 
-        this.observables = observer ?
-            contents.flatMap((renderer) => 
-                // Todo: renderer.paths may change and we dont know what to do 
-                // about it here... can observable be moved to individual 
-                // renderers?
-                renderer.paths.map((path) => 
-                    // Don't getPath() of the observer here, that really makes 
-                    // the machine think too hard
-                    assign(observe(path, data, getPath(path, data)).each((value) =>
-                        // Next renders are cued which batches them
-                        renderer.render(observer)
-                    ), { path })
-                )
-            ) :
-            nothing ;
-
-        //console.log('#' + this.template.id + ' observing data\n.' + this.observables.map(get('path')).join('\n.'));
-
         return count;
     },
-
-    connect: Renderer.prototype.connect,
-
-    /** 
-    .stop()
-    Stops the renderer and all descendent contents. All observers are stopped,
-    handlers registered with `.done()` are called, and no more data can be cued 
-    for rendering. Rendered content is left in the DOM, but it is now static.
-    **/
-
-    stop: function() {
-        // We must not empty .contents, they are compiled and cached and may 
-        // be cloned. We can stop listening to sets and make .render() a
-        // noop though.
-        //this.contents.forEach(stop);
-        this.observables.forEach(stop);
-        this.observables = nothing;
-        return Renderer.prototype.stop.apply(this, arguments);
-    },
-
 
     /** 
     .remove()

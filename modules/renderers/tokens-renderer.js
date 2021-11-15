@@ -89,7 +89,7 @@ export default function TokensRenderer(node, options) {
 }
 
 assign(TokensRenderer.prototype, Renderer.prototype, {
-    resolve: function() {
+    compose: function() {
         const string  = renderValues(arguments);
         const classes = string.trim().split(/\s+/);
         const count   = setTokens(this.tokens, this.cached, classes, 0);

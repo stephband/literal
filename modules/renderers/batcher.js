@@ -40,8 +40,8 @@ function render(renderers) {
 
     var renderer, count = 0;
     while (renderer = renderers.shift()) {
-        // Call .update() with latest arguments
-        count += renderer.update.apply(renderer, renderer.cuedArguments);
+        // Call .render() with latest arguments
+        count += renderer.render.apply(renderer, renderer.cuedArguments);
         renderer.cuedArguments = undefined;
         renderer.cued = false;
         if (window.DEBUG) {

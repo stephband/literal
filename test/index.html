@@ -104,7 +104,7 @@
                 // Set local variables on `this`, the renderer
                 this.n = window.performance.now() / 1000,
                 // Schedule next render in a second
-                setTimeout(() => { this.render() }, (Math.ceil(this.n) - this.n) * 1000),
+                setTimeout(() => { this.push() }, (Math.ceil(this.n) - this.n) * 1000),
                 // Output current time in seconds
                 Math.round(this.n) + 's'
             }</time>
@@ -420,7 +420,7 @@
         <template id="connect-template">
             <div>
                 ${ print(this) }
-                id = ${ this.id }, count = ${ this.count }, status = ${ this.status }
+                id = ${ this.id }, count = ${ this.count }, status = ${ this.status } (should be undefined, logs <code>status = "dom"</code> on setTimout)
             </div>
 
             <span>
@@ -430,15 +430,12 @@
         
         <template id="connect-master-template">
             <div>
-            ${ setTimeout(() => {
-                console.log('key = true');
-                data.key = true;
-            }, 400), print(this, data) }
+            ${ setTimeout(() => data.key = true, 400), print(this, data) }
             </div>
 
             <div>
             ${ print(this) }
-            ${ data.key ? include('#connect-template', request('./test.json').then((o) => o)) : 'NOPE' }
+            ${ data.key ? include('#connect-template', request('./test.json').then((o) => o)) : data.string }
             </div>
         </template>
     

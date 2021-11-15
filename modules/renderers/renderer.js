@@ -1,16 +1,23 @@
 
+import getPath        from '../../../fn/modules/get-path.js';
 import nothing        from '../../../fn/modules/nothing.js';
-import noop           from '../../../fn/modules/noop.js';
-import reads          from '../../../fn/observer/reads.js';
-import { getTarget }  from '../../../fn/observer/observer.js';
-import { cue, uncue } from './batcher.js';
+import { Observer, getTarget } from '../../../fn/observer/observer.js';
+import observe        from '../../../fn/observer/observe.js';
 import toText         from '../to-text.js';
-import { meta }       from './analytics.js';
+import gets           from '../gets.js';
 import { log }        from '../log.js';
 
-const assign = Object.assign;
+import { cue, uncue } from './batcher.js';
+import { meta }       from './analytics.js';
 
-const isPromise = (object) => (object && typeof object === 'object' && object.then);
+
+
+const assign = Object.assign;
+const keys   = Object.keys;
+
+const isPromise = (object) => (object
+    && typeof object === 'object' 
+    && object.then);
 
 const reduce = (values) => values.reduce((output, value) => (
     // Ignore undefined and empty strings
@@ -18,10 +25,6 @@ const reduce = (values) => values.reduce((output, value) => (
         output :
         output + value
 ));
-
-export function renderStopped() {
-    console.trace('Attempted .render() of stopped renderer', this.id, '#' + this.template, this.path, this.name);
-}
 
 function stringify(value, string, render) {
     return value && typeof value === 'object' ? (
@@ -92,20 +95,10 @@ export function removeNodes(first, last) {
 }
 
 
-/** 
-Renderer()
-Base class/mixin for providing contents with the properties 
-`{ node, path }` and a generic `.render()` method.
-**/
+// States
 
-function stop(stopable) {
-    return stopable.stop ?
-        stopable.stop() :
-        stopable() ;
-}
-
-
-/* State propogation */
+// Collection of paths is synchronous, use a singleton array
+const paths   = [];
 
 const postfix = '-fns';
 
@@ -153,6 +146,19 @@ function trigger(object, method, status, payload) {
     return object;
 }
 
+export function pushStopped() {
+    console.trace('Attempted .push() to stopped renderer', this.id, '#' + this.template, this.path, this.name);
+}
+
+function stop(stopable) {
+    return stopable.stop ?
+        stopable.stop() :
+        stopable() ;
+}
+
+
+// Observers
+
 function toPaths(paths, path) {
     // Keep paths unique
     if (paths.includes(path)) { return; }
@@ -175,6 +181,47 @@ function toPaths(paths, path) {
     paths.push(path);
 }
 
+function remove(paths, path) {
+    const i = paths.indexOf(path);
+
+    // Where path is in paths, remove it
+    if (i > -1) {
+        paths.splice(i, 1);
+    }
+    
+    return paths;
+}
+
+function stopProperty(object, key) {
+    object[key].stop();
+    object[key] = undefined;
+    return object;
+}
+
+function toObservables(renderer, path) {
+    const data        = renderer.data;
+    const observables = renderer.observables;
+
+    if (!observables[path]) {
+        // Don't getPath() of the observer here, that really makes 
+        // the machine think too hard. Make sure it's not the observer proxy
+        const value = getPath(path, data);
+
+        observables[path] =
+            observe(path, data, value)
+            .each((value) => renderer.push(data));
+    }
+
+    return renderer;
+}
+
+
+/** 
+Renderer()
+Base class/mixin for providing contents with the properties 
+`{ node, path }` and a generic `.push()` method.
+**/
+
 export default function Renderer(node, options, element) {
     this.element  = element || node;
     this.node     = node;
@@ -182,56 +229,63 @@ export default function Renderer(node, options, element) {
     this.id       = ++meta.count;
     this.count    = 0;
     this.template = options.template;
+    this.observables = {};
 }
 
 assign(Renderer.prototype, {
-    render: function(data) {
-        if (window.DEBUG && this.render === renderStopped) {
-            console.error('Attempt to .render() stopped renderer', this.id, '#' + (this.template.id || this.template), (this.path ? this.path + ' ' : '') + this.constructor.name);
+    push: function(data) {
+        if (window.DEBUG && this.render === pushStopped) {
+            console.error('Attempted .push() to stopped renderer', this.id, '#' + (this.template.id || this.template), (this.path ? this.path + ' ' : '') + this.constructor.name);
         }
 
         // Cue .render() to be called on the next batch
         return cue(this, arguments);
     },
 
-    update: function render(data) {
-        //console.log(this.constructor.name + '#' + this.id + '.update()');
-
+    render: function render(object) {
+        //console.log(this.constructor.name + '#' + this.id + '.render()');
         const stops = this['stop' + postfix];
         if (stops) {
             stops.forEach(stop);
             stops.length = 0;
         }
-    
-        const paths = this.paths || (this.paths = []);
+
         paths.length = 0;
 
-        // TODO: are we really forced to make a gets stream on every render?
-        // it makes attribute animations heavy. Can we optimise?
-        const gets = data ?
-            reads(data).each((path) => toPaths(paths, path)) :
+        const data      = getTarget(object);
+        const observer  = Observer(data);
+        const reads     = data ?
+            gets(data).each((path) => toPaths(paths, path)) :
             nothing ;
 
-        // Update render count before rendering in case .count is used inside 
-        // the template
+        // Update this before rendering
+        this.data = data;
         ++this.count;
 
         // Evaluate the template
-        const meta = this.literally(data, getTarget(data), this.element);
+        const stats = this.literally(observer, data, this.element);
 
         // We may only collect synchronous gets – other templates may use 
-        // this data object while we are promising and we don't want to
-        // include their gets by stopping on .then(). Stop now. If we want to
-        // change this, making a data proxy per template instance would be the 
-        // way to go.
-        gets.stop();
+        // this data object and we don't want to include their gets by stopping 
+        // any later. Stop now. If we want to change this, making a data proxy 
+        // per template instance would be the way to go. We're not going there.
+        reads.stop();
 
-        // Return count of DOM mutations
-        return meta;
+        // Stop unused paths
+        paths
+        // Remove paths from observables keys
+        .reduce(remove, keys(this.observables))
+        // Stop the remaining keys
+        .reduce(stopProperty, this.observables);
+
+        // Start observing any new paths
+        paths.reduce(toObservables, this);
+
+        // Return information about the render
+        return stats;
     },
 
-
-    /* States */
+    // States
 
     connected: createDistributor('dom'),
 
@@ -244,7 +298,12 @@ assign(Renderer.prototype, {
 
     stop: function() {
         uncue(this);
-        this.render = window.DEBUG ? renderStopped : noop ;
+        keys(this.observables).reduce(stopProperty, this.observables);
+
+        if (window.DEBUG) {
+            this.push = pushStopped;
+        }
+
         // object, method, status, payload
         trigger(this, 'stop', 'done');
         return this;

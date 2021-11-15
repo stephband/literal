@@ -45,7 +45,7 @@ export default function BooleanRenderer(node, options) {
 }
 
 assign(BooleanRenderer.prototype, Renderer.prototype, {
-    resolve: function() {
+    compose: function() {
         const value = renderString(arguments);
         return setBooleanProperty(this.node, this.name, value)
     }

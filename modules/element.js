@@ -129,7 +129,7 @@ export default function element(name, template, life, prop) {
                 life.construct.apply(this, arguments) :
                 {} ;
 
-            data.rendered = literal.render(data);
+            data.rendered = literal.push(data);
         },
 
         load: function() {

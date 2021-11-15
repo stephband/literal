@@ -32,7 +32,7 @@ export default function AttributeRenderer(node, options) {
 }
 
 assign(AttributeRenderer.prototype, Renderer.prototype, {
-    resolve: function() {
+    compose: function() {
         const value = renderString(arguments);
         return setAttribute(this.node, this.name, value);
     }

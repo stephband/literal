@@ -118,7 +118,7 @@ element('<literal-include>', {
 
             // But once it has data we know we can render it, but we 
             // want to do that in the next batch
-            renderer.render(data).then(() => {
+            renderer.push(data).then(() => {
                 this.loading = false;
                 this.replaceWith(renderer.content);
 
@@ -202,13 +202,13 @@ element('<literal-include>', {
         set: function(value) {
             if (this.renderer) {
                 if (!value) {
-                    this.renderer.render(null);
+                    this.renderer.push(null);
                 }
                 else if (typeof value === 'string') {
-                    request(value).then((data) => this.renderer.render(data));
+                    request(value).then((data) => this.renderer.push(data));
                 }
                 else {
-                    this.renderer.render(value);
+                    this.renderer.push(value);
                 }
 
                 return;

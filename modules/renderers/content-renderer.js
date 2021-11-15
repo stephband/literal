@@ -82,7 +82,7 @@ assign(PromiseRenderer.prototype, {
         return this;
     },
 
-    update: function(value) {
+    render: function(value) {
         // Replace this promise renderer in the contents collection, 
         // effectively retiring it from active service
         if (!replaceObjectContent(this, value)) {
@@ -135,7 +135,7 @@ function StreamRenderer(collection, stream) {
 }
 
 assign(StreamRenderer.prototype, PromiseRenderer.prototype, {
-    update: function(value) {
+    render: function(value) {
         stop(this.content);
 
         if (replaceObjectContent(this, value)) {
@@ -295,27 +295,23 @@ export default function ContentRenderer(node, options, element) {
 }
 
 assign(ContentRenderer.prototype, Renderer.prototype, {
-    render: function() {
+    push: function() {
         // Preemptively stop all nodes, they are about to be updated
+        this.contents.forEach(stop);
+        this.contents.length = 0;
+        return Renderer.prototype.push.apply(this, arguments);
+    },
+
+    render: function() {
+        // Stop all nodes, they are about to be recreated. This needs to be done
+        // here as well as render, as update may be called by TemplateRenderer
+        // without going through .push() cueing first.
         this.contents.forEach(stop);
         this.contents.length = 0;
         return Renderer.prototype.render.apply(this, arguments);
     },
 
-    update: function() {
-        // Stop all nodes, they are about to be recreated. This needs to be done
-        // here as well as render, as update may be called by TemplateRenderer
-        // without going through .render() cueing first.
-        this.contents.forEach(stop);
-        this.contents.length = 0;
-        return Renderer.prototype.update.apply(this, arguments);
-    },
-
-    resolve: function(strings) {
-        // Surely not here, tho?
-        //this.contents.forEach(stop);
-        //this.contents.length = 0;
-
+    compose: function(strings) {
         let n = -1;
         let string = '';
     

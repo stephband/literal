@@ -72,7 +72,7 @@ export default function CheckedRenderer(node, options) {
 }
 
 assign(CheckedRenderer.prototype, Renderer.prototype, {
-    resolve: function renderBoolean(strings, value) {
+    compose: function renderBoolean(strings, value) {
         if (arguments.length !== 2 || strings.find(isNotEmpty)) {
             throw new Error('A checked attribute may contain only one ${ tag }, optionally surrounded by white space');
         }
