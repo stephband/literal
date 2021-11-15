@@ -11,6 +11,7 @@ export default {
     colspan:         'colSpan',
     datetime:        'dateTime',
     'for':           'htmlFor',    // <label>
+    form:            'READONLY',
     formaction:      'formAction', // <input>
     formenctype:     'formEnctype',
     formmethod:      'formMethod',
@@ -19,6 +20,8 @@ export default {
     frameborder:     'frameBorder',
     httpequiv:       'httpEquiv',
     longdesc:        'longDesc',
+    maxlength:       'maxLength',
+    minlength:       'minLength',
     nohref:          'noHref',
     noresize:        'noResize',
     noshade:         'noShade',    // <hr>
