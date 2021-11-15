@@ -39,7 +39,7 @@ import { getTarget }     from '../../fn/observer/observer.js';
 function toHTML(object) {
     // Print different kinds of objects differently
     if (typeof object === 'object' && object.template) {
-        return '<strong>' + object.id + '</strong> #' + object.template + ' <small>&gt; ' + object.path + '</small> <strong class="literal-count">' + object.count + '</strong>';
+        return '<strong>' + object.id + '</strong> #' + object.template + ' <small>&gt; ' + object.path.replace('.', ' &gt; ') + '</small> <strong class="literal-count">' + object.count + '</strong>';
     }
 
     if (typeof object === 'object' && object.message) {
@@ -57,7 +57,7 @@ export default function print(object) {
     let html = '';
 
     if (object instanceof Error) {
-        pre.setAttribute('class', 'literal-error-print literal-print');
+        pre.setAttribute('class', 'literal-print-error literal-print');
         html += '<strong>' + object.constructor.name + '</strong>';
         html += '<code>' + object.message + '</code>';
     }

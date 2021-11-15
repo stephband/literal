@@ -54,7 +54,7 @@
     right: 0.375rem;
 }
 
-.literal-error-print {
+.literal-print-error {
     color: white;
     background-color: #f02f2f;
     border-color: #ba4029;
@@ -63,7 +63,7 @@
         inset 0 -4px 8px -1px #d82020;
 }
 
-.literal-error-print > code {
+.literal-print-error > code {
     color: #141B1E;
     background-color: #ffdddd;
 }
