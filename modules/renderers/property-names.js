@@ -2,6 +2,10 @@
 setProperty(node, name, value)/
 **/
 
+// Readonly properties cannot be set, obviously. Marking them as this name
+// means AttributeRenderer does not try to set hem as properties. Crude.
+const READONLY = 'READONLY';
+
 export default {
     'accept-charset': 'acceptCharset',
     accesskey:       'accessKey',
@@ -11,7 +15,7 @@ export default {
     colspan:         'colSpan',
     datetime:        'dateTime',
     'for':           'htmlFor',    // <label>
-    form:            'READONLY',
+    form:            READONLY,
     formaction:      'formAction', // <input>
     formenctype:     'formEnctype',
     formmethod:      'formMethod',
