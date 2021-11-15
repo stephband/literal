@@ -6,10 +6,8 @@ import observe        from '../../../fn/observer/observe.js';
 import toText         from '../to-text.js';
 import gets           from '../gets.js';
 import { log }        from '../log.js';
-
 import { cue, uncue } from './batcher.js';
 import { meta }       from './analytics.js';
-
 
 
 const assign = Object.assign;
@@ -25,6 +23,7 @@ const reduce = (values) => values.reduce((output, value) => (
         output :
         output + value
 ));
+
 
 function stringify(value, string, render) {
     return value && typeof value === 'object' ? (
@@ -126,7 +125,8 @@ function call(fn) {
 }
 
 function triggerReducer(args, renderer) {
-    const [parent, method, status, payload] = args;
+    const method  = args[1];
+    const payload = args[3];
     renderer[method] && renderer[method](payload);
     return args;
 }
@@ -194,7 +194,7 @@ function remove(paths, path) {
 
 function stopProperty(object, key) {
     object[key].stop();
-    object[key] = undefined;
+    delete object[key];
     return object;
 }
 
@@ -233,6 +233,11 @@ export default function Renderer(node, options, element) {
 }
 
 assign(Renderer.prototype, {
+    /** 
+    .push(data)
+    Push data into the renderer. The renderer is now cued to render this data in 
+    the next render batch.
+    **/
     push: function(data) {
         if (window.DEBUG && this.render === pushStopped) {
             console.error('Attempted .push() to stopped renderer', this.id, '#' + (this.template.id || this.template), (this.path ? this.path + ' ' : '') + this.constructor.name);
@@ -242,6 +247,12 @@ assign(Renderer.prototype, {
         return cue(this, arguments);
     },
 
+    /** 
+    .render(data)
+    Renders data to the DOM. Normally you should use `.push(data)`, which cues 
+    up `render(data)` in the next render batch. This method is used internally 
+    when immediate rendering is desired.
+    **/
     render: function render(object) {
         //console.log(this.constructor.name + '#' + this.id + '.render()');
         const stops = this['stop' + postfix];
@@ -252,9 +263,9 @@ assign(Renderer.prototype, {
 
         paths.length = 0;
 
-        const data      = getTarget(object);
-        const observer  = Observer(data);
-        const reads     = data ?
+        const data     = getTarget(object);
+        const observer = Observer(data);
+        const reads    = data ?
             gets(data).each((path) => toPaths(paths, path)) :
             nothing ;
 
@@ -262,7 +273,9 @@ assign(Renderer.prototype, {
         this.data = data;
         ++this.count;
 
-        // Evaluate the template
+        // Evaluate the template. Note that we are potentially leaving 
+        // observers live here, if any data is set during render we may trigger
+        // a further render... not what we want. Do we need to pause observers?
         const stats = this.literally(observer, data, this.element);
 
         // We may only collect synchronous gets – other templates may use 
@@ -285,17 +298,31 @@ assign(Renderer.prototype, {
         return stats;
     },
 
-    // States
-
+    /** 
+    .connected(fn)
+    Calls `fn` when renderer nodes enter the DOM.
+    **/
     connected: createDistributor('dom'),
 
+    /**
+    .connect()
+    Signals to renderer and all child renderers that they have entered the DOM.
+    **/
     connect: function() {
         // object, method, status, payload
         trigger(this, 'connect', 'dom');
     },
 
+    /** 
+    .done(fn)
+    Calls `fn` when renderer is stopped.
+    **/
     done: createDistributor('done'),
 
+    /** 
+    .stop()
+    Stops renderer.
+    **/
     stop: function() {
         uncue(this);
         keys(this.observables).reduce(stopProperty, this.observables);

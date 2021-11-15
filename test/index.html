@@ -96,7 +96,7 @@
 </head>
 
 <body class="2x-grid grid">
-    <!--header>
+    <header>
         <h1 class="doctext-01">Literal <span class="doctext-06">0.2.0</span></h1>
         
         <template id="window-time">
@@ -284,13 +284,13 @@
         <hr/>
 
         <template id="p-template">
-            <p>✓ Paragraph template included. ${ console.log(2, document.body.contains(element)) } ${ this.connected(() => console.log(3, document.body.contains(element))) }</p>
+            <p>✓ Paragraph template included. ${ console.log('Connected', document.body.contains(element)) } ${ this.connected(() => console.log('Connected', document.body.contains(element))) }</p>
         </template>
 
         <template id="lifecycle-template">
             <div>
                 Before include.
-                ${ this.connected(() => console.log(1, document.body.contains(element))) }
+                ${ this.connected(() => console.log('Connected', document.body.contains(element))) }
                 ${ include('#p-template', new Promise((resolve) => setTimeout(() => resolve({}), 4000))) }
                 ${ new Promise((resolve) => setTimeout(resolve, 2000, 'Promise(string)')) }
                 ${ this.n = 0, Stream((control) => setInterval(() => control.push(++this.n), 1000)) }
@@ -412,7 +412,7 @@
         <literal-include src="#objects-template" data="./test-objects.json"></literal-include>
     
         <hr/>
-    </section-->
+    </section>
     
     <section>
         <h3 class="text-03">Connected state <span class="test-count"></span></h3>

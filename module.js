@@ -123,3 +123,7 @@ export default function Literal(id) {
 }
 
 Literal.stats = analytics;
+
+if (window.DEBUG) {
+    window.Literal = Literal;
+}

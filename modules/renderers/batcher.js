@@ -41,6 +41,7 @@ function render(renderers) {
     var renderer, count = 0;
     while (renderer = renderers.shift()) {
         // Call .render() with latest arguments
+        if (!renderer.render) {console.log('no render()', renderer)}
         count += renderer.render.apply(renderer, renderer.cuedArguments);
         renderer.cuedArguments = undefined;
         renderer.cued = false;
