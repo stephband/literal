@@ -97,6 +97,7 @@ Contents
 import include from './library/include.js';
 import request from './library/request.js';
 import events  from '../dom/modules/events.js';
+import select  from '../dom/modules/select.js';
 
 /* Importing literal-include registers – and instantiates – <literal-include> */
 import './elements/literal-include.js';
@@ -110,6 +111,7 @@ export { analytics };
 register('include', include);
 register('request', request);
 register('events',  events);
+register('select',  select);
 
 export { register };
 import TemplateRenderer from './modules/renderers/template-renderer.js';
