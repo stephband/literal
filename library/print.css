@@ -26,6 +26,10 @@
     margin-top: 0.5rem;
 }
 
+.literal-print > small {
+    letter-spacing: -0.08em;
+}
+
 .literal-print > code {
     display: block;
     font-family: inherit;

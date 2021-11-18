@@ -1,5 +1,5 @@
 
-import { log, group, groupEnd } from '../log.js';
+import { log, group, groupCollapsed, groupEnd } from '../log.js';
 import analytics from './analytics.js';
 import { cache as compileCache } from '../compile.js';
 
@@ -35,7 +35,7 @@ function render(renderers) {
     var t0, ids;
     if (window.DEBUG) {
         t0 = window.performance.now() / 1000;
-        group('batch', t0.toFixed(3) + 's – cued ' + constructorCount(renderers), '#B6BD00');
+        groupCollapsed('batch', t0.toFixed(3) + 's – cued ' + constructorCount(renderers), '#B6BD00');
         ids = {};
     }
 
@@ -88,7 +88,7 @@ function render(renderers) {
         groupEnd();
 
         if (t1 - t0 > 0.016) {
-            log('render took longer than a frame (0.016s) ' + (t1 - t0).toFixed(3) + 's', '', '', '', '#ba4029');
+            log('render took longer than a frame (16.7ms) ' + ((t1 - t0) * 1000).toPrecision(3) + 'ms', '', '', '', '#ba4029');
         }
     }
 }
