@@ -1,53 +1,53 @@
 
 /** 
-<literal-include>
+<include-literal>
 
-A `literal-include` may be placed pretty much anywhere in your HTML, enabling 
+A `include-literal` may be placed pretty much anywhere in your HTML, enabling 
 the insertion of chunks of dynamic, JS-rendered DOM wherever you like in a 
 document.
 
-A `literal-include` finds a source template identified by its `src` attribute,
+A `include-literal` finds a source template identified by its `src` attribute,
 fetches JSON or imports a module referred to by its `data` attribute, renders
 attributes and text found to contain literal tags, then replaces itself with 
 the rendered result.
 
-A `literal-include` may contain fallback content, in case any of that fails.
+A `include-literal` may contain fallback content, in case any of that fails.
 
 ```html
 <template id="greetings">
     Hello ${ data.name }.
 </template>
 
-<literal-include src="#greetings" data="/users/1.json">
+<include-literal src="#greetings" data="/users/1.json">
     Fallback content.
-</literal-include>
+</include-literal>
 ```
 
 Multiple `data-` attributes may be declared, their values become properties of 
 the `data` object inside the template:
 
 ```
-<literal-include src="#add-to-collections-thumb" data-pk="34" ... ></literal-include>
+<include-literal src="#add-to-collections-thumb" data-pk="34" ... ></include-literal>
 ```
 
 Or a single `data` attribute can be used to pass JSON to use as the `data` 
 object inside the template:
 
 ```
-<literal-include src="#add-to-collections-thumb" data='{"pk":34, ... }'></literal-include>
+<include-literal src="#add-to-collections-thumb" data='{"pk":34, ... }'></include-literal>
 ```
 
 Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a 
 .json file...
 
 ```
-<literal-include src="#greetings" data="/users/1.json"></literal-include>
+<include-literal src="#greetings" data="/users/1.json"></include-literal>
 ```
 
 ...or import the default export of a .js module:
 
 ```
-<literal-include src="#greetings" data="/user-module.js"></literal-include>
+<include-literal src="#greetings" data="/user-module.js"></include-literal>
 ```
 
 **/
@@ -83,15 +83,13 @@ function zipObject(keys, values) {
     return object;
 }
 
-element('<literal-include>', {
+element('<include-literal>', {
     construct: function() {
         if (window.DEBUG && !this.hasAttribute('src')) {
-            console.error('<literal-include> a src attribute is required', this);
+            console.error('<include-literal> a src attribute is required', this);
         }
 
-
         // Resolve data
-
         const keys   = Object.keys(this.dataset);
         const values = Object.values(this.dataset); 
         const dataPromise = keys.length ?
@@ -108,23 +106,24 @@ element('<literal-include>', {
 
 
         // Resolve src
-
+        const parent = this.parentNode;
         new Promise((resolve, reject) => {
             this.resolveSrc = resolve;
             this.rejectSrc = reject;
         })
         .then((template) => dataPromise.then((data) => {
-            const renderer = new TemplateRenderer(template);
+            if (!parent) { throw new Error('ARSE'); }
+            const renderer = new TemplateRenderer(template, parent);
 
             // But once it has data we know we can render it, but we 
             // want to do that in the next batch
             renderer.push(data).then(() => {
                 this.loading = false;
                 this.replaceWith(renderer.content);
-
+                
                 // Signal to tree of renderers that we are now in the DOM
                 renderer.connect();
-            })
+            });
 
             this.renderer = renderer;
         })).catch(window.DEBUG ?
@@ -172,19 +171,19 @@ element('<literal-include>', {
     To get data from a JSON file specify a path to JSON:
 
     ```html
-    <literal-include src="#greetings" data="./package.json"></literal-include>
+    <include-literal src="#greetings" data="./package.json"></include-literal>
     ```
 
     Or import the default export of a JS module:
 
     ```html
-    <literal-include src="#greetings" data="./modules/literal.js"></literal-include>
+    <include-literal src="#greetings" data="./modules/literal.js"></include-literal>
     ```
 
     Or import a named export of JS module:
 
     ```html
-    <literal-include src="#greetings" data="./modules/literal.js#name"></literal-include>
+    <include-literal src="#greetings" data="./modules/literal.js#name"></include-literal>
     ```
     **/
 
@@ -216,7 +215,7 @@ element('<literal-include>', {
 
             if (!this.resolveData) {
                 //console.log('BOO dont know why this is triggered multiple times', value)
-                throw new Error('<literal-include> may possess either data-* attributes or a single data attribute, not both');
+                throw new Error('<include-literal> may possess either data-* attributes or a single data attribute, not both');
             }
 
             if (!value) {
@@ -251,14 +250,14 @@ element('<literal-include>', {
     /**
     src=""
     Define a source template whose rendered content replaces this
-    `literal-include`. This is a required attribute and must be in the form of
+    `include-literal`. This is a required attribute and must be in the form of
     a fragment identifier pointing to a `template` element in the DOM.  
     **/
 
     src: {
         attribute: function(value) {
             if (!value) {
-                return this.rejectSrc(new Error('<literal-include> source src="' + value + '" is empty'));
+                return this.rejectSrc(new Error('<include-literal> source src="' + value + '" is empty'));
             }
 
             // This is for inserting static HTML for living archives, but the API
@@ -270,14 +269,17 @@ element('<literal-include>', {
                 // loading icon to transition in the transition must begin after
                 // we are already in the DOM.
                 this.loading = true;
-                return requestGet(value).then((html) => this.resolveSrc(fragmentFromHTML(html)));
+                requestGet(value).then((html) => this.resolveSrc(fragmentFromHTML(html)));
+                return;
+                
             }
 
             const id = value.replace(/^#/, '');
             const template = document.getElementById(id);
 
             if (!template) {
-                return this.rejectSrc(new Error('<literal-include> src template not found'));
+                this.rejectSrc(new Error('<include-literal> src template "' + value + '" not found'));
+                return;
             }
 
             this.resolveSrc(template);

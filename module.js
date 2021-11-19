@@ -21,7 +21,7 @@ And grab the associated CSS:
 <p class="right-bubble bubble">Clearly you should not rely on this resource in 
 production. Use a bundler to package it into your own CSS.</p>
 
-This registers the custom element `<literal-include>`. Here is how to use it:
+This registers the custom element `<include-literal>`. Here is how to use it:
 
 ```html
 <template id="item">
@@ -33,12 +33,12 @@ This registers the custom element `<literal-include>`. Here is how to use it:
     <ul>${ data.tasks.map(include('#item')) }</ul>
 </template>
 
-<literal-include src="#todo-list" data="./data/todo.json">
+<include-literal src="#todo-list" data="./data/todo.json">
     <p>Fallback content.</p>
-</literal-include>
+</include-literal>
 ```
 
-A `<literal-include>` is replaced with the content of its `src` template when 
+A `<include-literal>` is replaced with the content of its `src` template when 
 its `data` is fetched and rendered. Inside the template, data to render 
 is accessed through the variable `${ data }`. The result of this example is:
 
@@ -51,9 +51,9 @@ is accessed through the variable `${ data }`. The result of this example is:
     <ul>${ data.tasks.map(include('#item')) }</ul>
 </template>
 
-<literal-include src="#author" data="./data/todo.json">
+<include-literal src="#author" data="./data/todo.json">
     <p>Fallback content.</p>
-</literal-include>
+</include-literal>
 
 The template renderer observes `data` objects and updates the DOM if changes are 
 detected. In the following example a mutating `data` object is imported from a 
@@ -68,9 +68,9 @@ JS module and used to rotate an SVG:
     <p>You loaded this <b>${ round(data.time) + 's' }</b> ago.</p>
 </template>
 
-<literal-include src="#clock" data="./data/dom-clock.js">
+<include-literal src="#clock" data="./data/dom-clock.js">
     <p>You loaded this.</p>
-</literal-include>
+</include-literal>
 ```
 
 And the result is:
@@ -83,14 +83,14 @@ And the result is:
     <p>You loaded this <b>${ round(data.time) + 's' }</b> ago.</p>
 </template>
 
-<literal-include src="#clock" data="./data/dom-clock.js">
+<include-literal src="#clock" data="./data/dom-clock.js">
     <p>You loaded this.</p>
-</literal-include>
+</include-literal>
 **/
 
 /*
 Contents
-- <a href="#literal-include">`<literal-include>`</a>
+- <a href="#include-literal">`<include-literal>`</a>
 - <a href="#template-functions">Literal template functions</a>
 */
 
@@ -99,8 +99,8 @@ import request from './library/request.js';
 import events  from '../dom/modules/events.js';
 import select  from '../dom/modules/select.js';
 
-/* Importing literal-include registers – and instantiates – <literal-include> */
-import './elements/literal-include.js';
+/* Importing include-literal registers – and instantiates – <include-literal> */
+import './elements/include-literal.js';
 
 export { cache as compiled } from './modules/compile.js';
 import { register } from './modules/library.js';

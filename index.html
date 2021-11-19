@@ -121,7 +121,7 @@ to package it into your own module.</p>
 <p class="right-bubble bubble">Clearly you should not rely on this resource in 
 production. Use a bundler to package it into your own CSS.</p>
 
-<p>This registers the custom element <code>&lt;literal-include&gt;</code>. Here is how to use it:</p>
+<p>This registers the custom element <code>&lt;include-literal&gt;</code>. Here is how to use it:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>item<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>${ data.text }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
@@ -131,10 +131,10 @@ production. Use a bundler to package it into your own CSS.</p>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span>${ data.tasks.map(include('#item')) }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#todo-list<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./data/todo.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>include-literal</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#todo-list<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./data/todo.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Fallback content.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
-<p>A <code>&lt;literal-include&gt;</code> is replaced with the content of its <code>src</code> template when 
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>include-literal</span><span class="token punctuation">></span></span></code></pre>
+<p>A <code>&lt;include-literal&gt;</code> is replaced with the content of its <code>src</code> template when 
 its <code>data</code> is fetched and rendered. Inside the template, data to render 
 is accessed through the variable <code>${ data }</code>. The result of this example is:</p>
 <template id="item">
@@ -146,9 +146,9 @@ is accessed through the variable <code>${ data }</code>. The result of this exam
     <ul>${ data.tasks.map(include('#item')) }</ul>
 </template>
 
-<literal-include src="#author" data="./data/todo.json">
+<include-literal src="#author" data="./data/todo.json">
     <p>Fallback content.</p>
-</literal-include>
+</include-literal>
 
 <p>The template renderer observes <code>data</code> objects and updates the DOM if changes are 
 detected. In the following example a mutating <code>data</code> object is imported from a 
@@ -161,9 +161,9 @@ JS module and used to rotate an SVG:</p>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>You loaded this <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>b</span><span class="token punctuation">></span></span>${ round(data.time) + 's' }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>b</span><span class="token punctuation">></span></span> ago.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#clock<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./data/dom-clock.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>include-literal</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#clock<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./data/dom-clock.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>You loaded this.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>include-literal</span><span class="token punctuation">></span></span></code></pre>
 <p>And the result is:</p>
 <template id="clock">
     <svg style="transform: rotate(${ round(data.time) * 6 + 'deg'});" viewBox="0 0 24 24" width="32" height="32">
@@ -173,9 +173,9 @@ JS module and used to rotate an SVG:</p>
     <p>You loaded this <b>${ round(data.time) + 's' }</b> ago.</p>
 </template>
 
-<literal-include src="#clock" data="./data/dom-clock.js">
+<include-literal src="#clock" data="./data/dom-clock.js">
     <p>You loaded this.</p>
-</literal-include>
+</include-literal>
 
 
  
@@ -184,22 +184,22 @@ JS module and used to rotate an SVG:</p>
     
 <header class="@0-x1 @0-3x @1-x3 @1-4x @2-x3 @0-x-stretch">
     
-    <h2 class="doctext-02" id="literal-include"><code>&lt;literal-include&gt;</code></h2>
-    <p>A <code>literal-include</code> may be placed pretty much anywhere in your HTML, enabling 
+    <h2 class="doctext-02" id="include-literal"><code>&lt;include-literal&gt;</code></h2>
+    <p>A <code>include-literal</code> may be placed pretty much anywhere in your HTML, enabling 
 the insertion of chunks of dynamic, JS-rendered DOM wherever you like in a 
 document.</p>
-<p>A <code>literal-include</code> finds a source template identified by its <code>src</code> attribute,
+<p>A <code>include-literal</code> finds a source template identified by its <code>src</code> attribute,
 fetches JSON or imports a module referred to by its <code>data</code> attribute, renders
 attributes and text found to contain literal tags, then replaces itself with 
 the rendered result.</p>
-<p>A <code>literal-include</code> may contain fallback content, in case any of that fails.</p>
+<p>A <code>include-literal</code> may contain fallback content, in case any of that fails.</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>greetings<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     Rendered content with ${ tags }.
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>path/to/data.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>include-literal</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>path/to/data.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     Fallback content.
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>include-literal</span><span class="token punctuation">></span></span></code></pre>
 
     
 </header>
@@ -209,9 +209,9 @@ the rendered result.</p>
     Rendered content with ${ tags }.
 </template>
 
-<literal-include src="#greetings" data="path/to/data.js">
+<include-literal src="#greetings" data="path/to/data.js">
     Fallback content.
-</literal-include>
+</include-literal>
     <input hidden class="button" type="submit" />
 </form-->
 
@@ -229,11 +229,11 @@ the rendered result.</p>
 <p>Defines a JSON file or JS module containing data to be rendered. If a data 
 attribute is not defined and empty object is used.</p>
 <p>To get data from a JSON file specify a path to JSON:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>include-literal</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>include-literal</span><span class="token punctuation">></span></span></code></pre>
 <p>Or import the default export of a JS module:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./modules/literal.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>include-literal</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./modules/literal.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>include-literal</span><span class="token punctuation">></span></span></code></pre>
 <p>Or import a named export of JS module:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./modules/literal.js#name<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>include-literal</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./modules/literal.js#name<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>include-literal</span><span class="token punctuation">></span></span></code></pre>
 
 </div>
 
@@ -246,7 +246,7 @@ attribute is not defined and empty object is used.</p>
 </h3>
 
 <p>Define a source template whose rendered content replaces this
-<code>literal-include</code>. This is a required attribute and must be in the form of
+<code>include-literal</code>. This is a required attribute and must be in the form of
 a fragment identifier pointing to a <code>template</code> element in the DOM.  </p>
 
 </div>
@@ -302,7 +302,7 @@ before being rendered.</p>
             <th><code>${ undefined }</code></th>
             <td>
                 <template id="value-undefined">${ undefined }</template>
-                <literal-include src="#value-undefined"></literal-include>
+                <include-literal src="#value-undefined"></include-literal>
             </td>
         </tr>
         <tr>
@@ -310,7 +310,7 @@ before being rendered.</p>
             <th><code>${ null }</code></th>
             <td>
                 <template id="value-null">${ null }</template>
-                <literal-include src="#value-null"></literal-include>
+                <include-literal src="#value-null"></include-literal>
             </td>
         </tr>
         <tr>
@@ -318,7 +318,7 @@ before being rendered.</p>
             <th><code>${ NaN }</code></th>
             <td>
                 <template id="value-nan">${ NaN }</template>
-                <literal-include src="#value-nan"></literal-include>
+                <include-literal src="#value-nan"></include-literal>
             </td>
         </tr>
         <tr>
@@ -326,7 +326,7 @@ before being rendered.</p>
             <th><code>${ 'Hello' }</code></th>
             <td>
                 <template id="value-string">${ 'Hello' }</template>
-                <literal-include src="#value-string"></literal-include>
+                <include-literal src="#value-string"></include-literal>
             </td>
         </tr>
         <tr>
@@ -334,7 +334,7 @@ before being rendered.</p>
             <th><code>${ 100.3 }</code></th>
             <td>
                 <template id="value-number">${ 100.3 }</template>
-                <literal-include src="#value-number"></literal-include>
+                <include-literal src="#value-number"></include-literal>
             </td>
         </tr>
         <tr>
@@ -342,7 +342,7 @@ before being rendered.</p>
             <th><code>${ Infinity }, ${ -Infinity }</code></th>
             <td>
                 <template id="value-infinity">${ Infinity }, ${ -Infinity }</template>
-                <literal-include src="#value-infinity"></literal-include>
+                <include-literal src="#value-infinity"></include-literal>
             </td>
         </tr>
         <tr>
@@ -350,7 +350,7 @@ before being rendered.</p>
             <th><code>${ function name(param) {} }</code></th>
             <td>
                 <template id="value-function">${ function name(param) {} }</template>
-                <literal-include src="#value-function"></literal-include>
+                <include-literal src="#value-function"></include-literal>
             </td>
         </tr>
         <tr>
@@ -358,7 +358,7 @@ before being rendered.</p>
             <th><code>${ (param) => {} }</code></th>
             <td>
                 <template id="value-arrow">${ (param) => {} }</template>
-                <literal-include src="#value-arrow"></literal-include>
+                <include-literal src="#value-arrow"></include-literal>
             </td>
         </tr>
         <tr>
@@ -366,7 +366,7 @@ before being rendered.</p>
             <th><code>${ /^regexp/ }</code></th>
             <td>
                 <template id="value-regexp">${ /^regexp/ }</template>
-                <literal-include src="#value-regexp"></literal-include>
+                <include-literal src="#value-regexp"></include-literal>
             </td>
         </tr>
         <tr>
@@ -374,7 +374,7 @@ before being rendered.</p>
             <th><code>${ Symbol('name') }</code></th>
             <td>
                 <template id="value-symbol">${ Symbol('name') }</template>
-                <literal-include src="#value-symbol"></literal-include>
+                <include-literal src="#value-symbol"></include-literal>
             </td>
         </tr>
         <tr>
@@ -382,7 +382,7 @@ before being rendered.</p>
             <th><code>${ [0, 1, 2, 3] }</code></th>
             <td>
                 <template id="value-array">${ [0, 1, 2, 3] }</template>
-                <literal-include src="#value-array"></literal-include>
+                <include-literal src="#value-array"></include-literal>
             </td>
         </tr>
         <tr>
@@ -390,7 +390,7 @@ before being rendered.</p>
             <th><code>${ { property: 'value' } }</code></th>
             <td>
                 <template id="value-object">${ { property: 'value' } }</template>
-                <literal-include src="#value-object"></literal-include>
+                <include-literal src="#value-object"></include-literal>
             </td>
         </tr>
         <tr>
@@ -398,7 +398,7 @@ before being rendered.</p>
             <th><code>${ document.createTextNode('Text') }</code></th>
             <td>
                 <template id="value-node">${ document.createTextNode('Text') }</template>
-                <literal-include src="#value-node"></literal-include>
+                <include-literal src="#value-node"></include-literal>
             </td>
         </tr>
     </tbody>
@@ -763,13 +763,13 @@ message.</p>
     ${ print(this, data) }
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#debug<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>include-literal</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#debug<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>include-literal</span><span class="token punctuation">></span></span></code></pre>
 <p>Renders as:</p>
 <template id="debug">
     ${ print(this, data) }
 </template>
 
-<p><literal-include src="#debug" data="./package.json"></literal-include></p>
+<p><include-literal src="#debug" data="./package.json"></include-literal></p>
 <!--
 Messages should be styled with the print stylesheet:
 

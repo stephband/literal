@@ -91,19 +91,31 @@ function prepareContent(content) {
 
 function newRenderer(renderer) {
     // `this` is the parent renderer of the new renderer
-    const node    = getDescendant(renderer.path, this.content);
-    const element = isTextNode(node) ? node.parentNode : node ;
+    const node = getDescendant(renderer.path, this.content);
+
+    // Where node is a text node we must find its context element
+    const element = isTextNode(node) ?
+        // If it's a direct child of template, use the template renderer's 
+        // element as context element
+        !/\./.test(renderer.path) ? this.element :
+
+        // Otherwise it is already inside its context element
+        node.parentNode :
+
+    // node itself is the context element for attributes 
+    node ;
+
     return new renderer.constructor(node, renderer, element);
 }
 
-export default function TemplateRenderer(template) {
+export default function TemplateRenderer(template, parent) {
     // TemplateRenderer may be called with a string id or a template element
     const id = typeof template === 'string' ?
         template :
         identify(template) ;
 
-    this.id          = ++meta.count;
-    //this.observables = nothing;
+    this.id      = ++meta.count;
+    this.element = parent;
 
     // If the template is already compiled, clone the compiled contents to 
     // this renderer and bind them to a new fragment
@@ -139,29 +151,26 @@ export default function TemplateRenderer(template) {
 
     A fragment that initially contains the renderer's DOM nodes. On creation of
     a renderer they are in an unrendered state. They are guaranteed to be in a 
-    rendered state on resolution of the first `.push()` promise. 
-    
-    The fragment may be inserted into the DOM at any time, at which point it 
-    will no longer contain the renderer's DOM nodes, however the renderer 
-    continues to manage these nodes wherever they end up.
+    rendered state on resolution of the first render(). The fragment may be 
+    inserted into the DOM at any time, at which point it will no longer contain 
+    the renderer's DOM nodes.
     **/
     template.content && prepareContent(template.content);
 
-    this.template  = template;
-    this.content   = template.content ? template.content.cloneNode(true) : template.cloneNode(true) ;
-    this.first     = this.content.childNodes[0];
-    this.last      = this.content.childNodes[this.content.childNodes.length - 1];
+    this.template = template;
+    this.content  = template.content ? template.content.cloneNode(true) : template.cloneNode(true) ;
+    this.first    = this.content.childNodes[0];
+    this.last     = this.content.childNodes[this.content.childNodes.length - 1];
 
     // Analytics (must be declared before contents)
     stats['#' + id] = { template: 1 };
     ++stats.Totals.template;
 
-    // compileNode(contents, options, content, template)
     // The options object contains information for renderer objects. It is 
     // mutated as it is passed to each renderer (specifically path, name, 
     // source properties). We can do this because renderer construction is 
     // synchronous within a template.
-    this.contents = compileNode([], { template: id, path: '' }, this.content, template.content || template);
+    this.contents = compileNode([], { template: id, path: '' }, this.content, parent);
 
     cache[id] = this;
 }
@@ -212,7 +221,7 @@ assign(TemplateRenderer.prototype, Renderer.prototype, {
         var count = 0;
 
         // Render the contents (synchronously)
-        contents.forEach((renderer) => count += renderer.render(observer, data));
+        contents.forEach((renderer) => count += renderer.render(observer));
 
         // If this.first is not in the content fragment, it must be in the 
         // parent DOM being used as a marker. It's time for its freshly rendered 

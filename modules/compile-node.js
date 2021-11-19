@@ -70,7 +70,7 @@ const compileAttribute = overload((renderers, options, node, attribute) => attri
         node.removeAttribute(attribute.localName);
         options.source = decode(string);
         options.name   = 'innerHTML';
-        renderers.push(new ContentRenderer(node, options));
+        renderers.push(new ContentRenderer(node, options, parent));
     },
 
     'required': compileBoolean,
@@ -106,7 +106,7 @@ function compileAttributes(renderers, options, node) {
 compileElement()
 **/
 
-function compileChildren(renderers, options, node) {
+function compileChildren(renderers, options, node, parent) {
     const children = node.childNodes;
 
     if (children) {
@@ -115,7 +115,7 @@ function compileChildren(renderers, options, node) {
 
         while(children[++n]) {
             options.path = path ? path + '.' + n : '' + n;
-            compileNode(renderers, options, children[n], node);
+            compileNode(renderers, options, children[n], parent);
         }
 
         // Put path back to what it was or subsequent renderers will get an
@@ -168,13 +168,13 @@ const compileNode = overload((renderers, options, node) => toType(node), {
 
     'fragment': compileChildren,
 
-    'text': (renderers, options, node, element) => {
+    'text': (renderers, options, node, parent) => {
         const string = node.nodeValue;
 
         if (string && rliteral.test(string)) {
             options.source = decode(string);
             options.name   = null;
-            renderers.push(new ContentRenderer(node, options, element));
+            renderers.push(new ContentRenderer(node, options, parent));
         }
 
         return renderers;
