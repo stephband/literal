@@ -1,167 +1,22 @@
 
-import create         from '../../../dom/modules/create.js';
+/**
+ContentRenderer()
+Constructs an object responsible for rendering to a text node. If the result of
+processing the literal content is more DOM content this renderer will insert 
+that DOM after the text node.
+**/
+
 import library        from '../library.js';
 import compile        from '../compile.js';
 import toText         from '../to-text.js';
-import analytics, { meta } from './analytics.js';
 import Renderer, { removeNodes } from './renderer.js';
 import TemplateRenderer from './template-renderer.js';
-import print          from '../../library/print.js';
-import { cue }        from './batcher.js';
-import { log }        from '../log.js';
+import { StreamRenderer, ArrayRenderer, PromiseRenderer } from './content-renderers.js';
+import analytics      from './analytics.js';
+
 
 const assign = Object.assign;
 
-function replaceObjectContent(renderer, value) {
-    // Value is not an object
-    if (!value || typeof value !== 'object') {
-        return false;
-    }
-
-    // Array-like values are flattened recursively
-    if (!value.nodeType && typeof value.length === 'number') {
-        console.log('TODO: promised or streamed value is an array - deal wid\' it');
-        return true;
-    }
-
-    // Nodes are pushed into contents directly
-    if (value instanceof Node) {
-        log('replace', renderer.constructor.name + ' ➔ Node ' + value, renderer.status === 'dom' ? 'DOM' : undefined, undefined, 'aqua');
-        renderer.content.replaceWith(value);
-        renderer.content = value;
-        return true;
-    }
-
-    // Value is a TemplateRenderer
-    if (value instanceof TemplateRenderer) {
-        log('replace', renderer.constructor.name + ' #' +  renderer.id + ' ➔ ' + value.constructor.name + ' #' +  value.id + ' #' + value.template.id, renderer.status === 'dom' ? 'DOM' : undefined, undefined, 'aqua');
-        renderer.content.replaceWith(value.content);
-        renderer.content = value;
-        renderer.status === 'dom' && value.connect();
-        return true;
-    }
-
-    // Value is a Stream
-    if (value.each) {
-        const child = new StreamRenderer(renderer.collection, value);
-        log('replace', renderer.constructor.name + ' #' +  renderer.id + ' ➔ ' + child.constructor.name + ' #' +  child.id, renderer.status === 'dom' ? 'DOM' : undefined, undefined, 'aqua');
-        renderer.content.replaceWith(child.content);
-        renderer.content = child;
-        renderer.status === 'dom' && child.connect();
-        return true;
-    }
-    
-    // Value is a Promise
-    if (value.then) {
-        const child = new PromiseRenderer(renderer.collection, value);
-        log('replace', renderer.constructor.name + ' #' +  renderer.id + ' ➔ ' + child.constructor.name + ' #' +  child.id, renderer.status === 'dom' ? 'DOM' : undefined, undefined, 'aqua');
-        renderer.content.replaceWith(child.content);
-        renderer.content = child;
-        renderer.status === 'dom' && child.connect();
-        return true;
-    }
-}
-
-/* PromiseRenderer */
-
-function PromiseRenderer(contents, promise) {
-    // Parent collection
-    this.collection = contents;
-    // Marker content
-    this.content = create('text', '');
-    this.id      = ++meta.count;
-
-    promise
-    .then(value => this.status !== 'done' && this.push(value))
-    .catch(e => this.print(e));
-}
-
-assign(PromiseRenderer.prototype, {
-    push: function(value) {
-        this.status !== 'done' && cue(this, arguments);
-        return this;
-    },
-
-    render: function(value) {
-        // Replace this promise renderer in the contents collection, 
-        // effectively retiring it from active service
-        if (!replaceObjectContent(this, value)) {
-            this.content.textContent = toText(value);
-        }
-
-        //replace(this.collection, this, this.content);
-        this.status = 'done';
-        return 1;
-    },
-
-    print: window.DEBUG ?
-        function(e) { this.content.replaceWith(print(e)) } :
-        function() { this.content.remove(); },
-
-    remove: function() {
-        this.content.remove();
-    },
-
-    replaceWith: function(node) {
-        this.content.replaceWith(node);
-    },
-
-    stop: function() {
-        if (this.status === 'done') { return; }
-        this.status = 'done';
-        this.content.stop && this.content.stop();
-    },
-
-    connect: function() {
-        if (this.status === 'dom') { return; }
-        this.status = 'dom';
-        this.content.connect && this.content.connect();
-    }
-});
-
-
-/* SteeamRenderer */
-
-function StreamRenderer(collection, stream) {
-    // Marker node
-    const marker = create('text', '');
-    this.marker  = marker;
-    this.content = marker;
-    this.collection = collection;
-    this.id      = ++meta.count;
-    this.stream  = stream;
-
-    stream.pipe(this);
-}
-
-assign(StreamRenderer.prototype, PromiseRenderer.prototype, {
-    render: function(value) {
-        stop(this.content);
-
-        if (replaceObjectContent(this, value)) {
-            return 1;
-        }
-
-        // Value is converted to a string
-        this.marker.textContent = toText(value);
-        if (this.content !== this.marker) {
-            this.content.replaceWith(this.marker);
-            this.content = this.marker;
-        }
-
-        return 1;
-    },
-
-    stop: function() {
-        if (this.status === 'done') { return; }
-        this.status = 'done';
-        this.stream.stop && this.stream.stop();
-        this.content.stop && this.content.stop();
-    }
-});
-
-
-/* ContentRenderer */
 
 function renderValues(renderer, string, array) {
     const l = array.length;
@@ -177,7 +32,7 @@ function renderValue(renderer, string, value) {
 
     if (value && typeof value === 'object') {
         // Array-like values are flattened recursively
-        if (!value.nodeType && typeof value.length === 'number') {
+        if (!value.nodeType && typeof value !== 'function' && typeof value.length === 'number') {
             return renderValues(renderer, string, value);
         }
 
@@ -198,14 +53,14 @@ function renderValue(renderer, string, value) {
         // Value is a Stream
         if (value.each) {
             string && contents.push(string);
-            contents.push(new StreamRenderer(contents, value));
+            contents.push(new StreamRenderer(renderer, value));
             return '';
         }
 
         // Value is a Promise
         if (value instanceof Promise) {
             string && contents.push(string);
-            contents.push(new PromiseRenderer(contents, value))
+            contents.push(new PromiseRenderer(renderer, value))
             return '';
         }
     }
@@ -213,14 +68,6 @@ function renderValue(renderer, string, value) {
     // If none of the above conditions were met value must coerce to a string
     return string + toText(value);
 }
-
-
-/**
-ContentRenderer()
-Constructs an object responsible for rendering to a text node. If the result of
-processing the literal content is more DOM content this renderer will insert 
-that DOM after the text node.
-**/
 
 function setNodeValue(node, value) {
     if (node.nodeValue !== value) {

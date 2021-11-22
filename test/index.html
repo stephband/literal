@@ -96,7 +96,7 @@
 </head>
 
 <body class="2x-grid grid">
-    <header>
+    <!--header>
         <h1 class="doctext-01">Literal <span class="doctext-06">0.5.2</span></h1>
 
         <template id="window-time">
@@ -262,9 +262,53 @@
         <literal-include src="#values-template"></literal-include>
     
         <hr/>
-    </section>
+    </section-->
 
     <section>
+        <h3 class="text-03">Array, Stream, Promise <span class="test-count">(several tests)</span></h3>
+
+        <template id="compound-values-template">
+            <p>Promise of Number</p>
+            <p>${ Promise.resolve(1) }</p>
+            
+            <p>Promise of Array of Numbers</p>
+            <p>${ Promise.resolve([0,1,2,3]) }</p>
+
+            <p>Promise of Stream of Numbers</p>
+            <p>${ Promise.resolve(Stream((source) => {
+                let n = 0;
+                const timer = setInterval(() => source.push(++n), 1000);
+                setTimeout(() => (clearInterval(timer), source.stop()), 5000);
+            })) }</p>
+            
+            <p>Stream of Numbers</p>
+            <p>${ Stream((source) => {
+                let n = 0;
+                const timer = setInterval(() => source.push(++n), 1100);
+                setTimeout(() => (clearInterval(timer), source.stop()), 5000);
+            }) }</p>
+
+            <p>Stream of Arrays of Numbers</p>
+            <p>${ Stream((source) => {
+                let n = 0;
+                const timer = setInterval(() => source.push([n, ++n, ++n, ++n]), 1200);
+                setTimeout(() => (clearInterval(timer), source.stop()), 5000);
+            }) }</p>
+
+            <p>Stream of Promises of Numbers</p>
+            <p>${ Stream((source) => {
+                let n = 0;
+                const timer = setInterval(() => source.push(Promise.resolve(++n)), 1300);
+                setTimeout(() => (clearInterval(timer), source.stop()), 5000);
+            }) }</p>
+        </template>
+
+        <literal-include src="#compound-values-template"></literal-include>
+
+        <hr/>
+    </section>
+
+    <!--section>
         <h3 class="text-03"><code>include(template, data)</code> <span class="test-count">(3 tests)</span></h3>
 
         <template id="paragraph-template">
@@ -442,7 +486,7 @@
         <literal-include src="#connect-master-template" data="./test.json"></literal-include>
     
         <hr/>
-    </section>
+    </section-->
 
     <script type="module">
         import "../module.js";
