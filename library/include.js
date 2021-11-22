@@ -18,7 +18,10 @@ export function include(url, object) {
         .then(fragmentFromHTML);
     }
 
-    const renderer = new TemplateRenderer(typeof url === 'string' ? url.slice(1) : url);
+    // arguments[2] is a workaround for lack of reference to context element.
+    // The Todo for this is here:
+    // https://github.com/stephband/literal/issues/2
+    const renderer = new TemplateRenderer(typeof url === 'string' ? url.slice(1) : url, arguments[2]);
 
     // Accept a url, fetch or import it before rendering
     if (typeof object === 'string') {

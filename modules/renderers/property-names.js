@@ -22,6 +22,7 @@ export default {
     formnovalidate:  'formNoValidate',
     formtarget:      'formTarget',
     frameborder:     'frameBorder',
+    href:            READONLY,     // <use href> is readonly
     httpequiv:       'httpEquiv',
     longdesc:        'longDesc',
     maxlength:       'maxLength',

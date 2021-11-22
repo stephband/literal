@@ -98,7 +98,6 @@ export function removeNodes(first, last) {
 
 // Collection of paths is synchronous, use a singleton array
 const paths   = [];
-
 const postfix = '-fns';
 
 function createDistributor(status) {

@@ -13,18 +13,18 @@
 
 /* Literal include */
 
-literal-include {
+include-literal {
     display: contents;
     position: relative;
 }
 
-literal-include::after {
+include-literal::after {
     content: '';
     opacity: 0;
     transition: opacity 0.6s linear 0.3s;
 }
 
-literal-include[loading]::after {
+include-literal[loading]::after {
     content: '';
     position: absolute;
     left: 50%;

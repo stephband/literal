@@ -68,7 +68,7 @@
     </header>
 
     ${ include("./templates/section.literal", await comments("./module.js")) }
-    ${ include("./templates/element.literal", await comments("./elements/literal-include.js")) }
+    ${ include("./templates/element.literal", await comments("./elements/include-literal.js")) }
     ${ include("./templates/section.literal", await comments("./modules/to-text.js")) }
     ${ include("./templates/section.literal", await comments(
         "./modules/library.js",
