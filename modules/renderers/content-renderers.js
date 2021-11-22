@@ -22,7 +22,7 @@ function remove(object) {
     object.remove();
 }
 
-function connect(object) {
+function stop(object) {
     object && object.stop && object.stop();
 }
 
