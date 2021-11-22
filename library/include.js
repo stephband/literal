@@ -4,13 +4,13 @@ Includes another template. Not available inside attributes.
 **/
 
 import curry            from '../../fn/modules/curry.js';
-import request          from './request.js';
 import { requestGet }   from '../../dom/modules/request.js';
 import fragmentFromHTML from '../../dom/modules/fragment-from-html.js';
-import TemplateRenderer from '../modules/renderers/template-renderer.js';
 import { getTarget }    from '../../fn/observer/observer.js';
+import TemplateRenderer from '../modules/renderers/template-renderer.js';
+import request          from './request.js';
 
-export function include(url, object) {
+export function include(url, object, element) {
     // This is for inserting static HTML for living archives, but the API
     // should be different for static HTML
     if (typeof url === 'string' && !/^#/.test(url)) {
@@ -21,7 +21,7 @@ export function include(url, object) {
     // arguments[2] is a workaround for lack of reference to context element.
     // The Todo for this is here:
     // https://github.com/stephband/literal/issues/2
-    const renderer = new TemplateRenderer(typeof url === 'string' ? url.slice(1) : url, arguments[2]);
+    const renderer = new TemplateRenderer(typeof url === 'string' ? url.slice(1) : url, element);
 
     // Accept a url, fetch or import it before rendering
     if (typeof object === 'string') {

@@ -126,18 +126,18 @@ function compileChildren(renderers, options, node, parent) {
     return renderers;
 }
 
-const compileElement = overload((renderers, options, node) => node.tagName.toLowerCase(), {
+const compileElement = overload((renderers, options, element) => element.tagName.toLowerCase(), {
     // Ignore SVG <defs>, which for our purposes we consider as inert like 
     // HTML's <template>
     'defs': noop,
 
-    'default': (renderers, options, node) => {
-        // Children first
-        compileChildren(renderers, options, node);
+    'default': (renderers, options, element) => {
+        // Children first means inner DOM to outer DOM
+        compileChildren(renderers, options, element, element);
 
         // We must wait until custom elements are upgraded before we may 
         // interact with their non-standard properties and attributes
-        // Todo:
+        // Todo: Test this
         // Hang on... is this still true given that the renderer.set negociates
         // the way an attribute is rendered??
         /*const tag = node.getAttribute('is') || node.tagName.toLowerCase();
@@ -148,7 +148,7 @@ const compileElement = overload((renderers, options, node) => node.tagName.toLow
             });
         }
         else {*/
-            compileAttributes(renderers, options, node);
+            compileAttributes(renderers, options, element);
             //compileType(renderers, options, node);
         /*}*/
         
@@ -182,8 +182,8 @@ const compileNode = overload((renderers, options, node) => toType(node), {
 
     'doctype': noop,
 
-    'document': (renderers, options, node) => {
-        compileChildren(renderers, options, node);
+    'document': (renderers, options, document) => {
+        compileElement(renderers, options, document.documentElement);
         return renderers;
     },
 

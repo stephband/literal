@@ -94,7 +94,6 @@ Contents
 - <a href="#template-functions">Literal template functions</a>
 */
 
-import include from './library/include.js';
 import request from './library/request.js';
 import events  from '../dom/modules/events.js';
 import select  from '../dom/modules/select.js';
@@ -108,7 +107,6 @@ import { register } from './modules/library.js';
 import analytics from './modules/analytics.js';
 export { analytics };
 
-register('include', include);
 register('request', request);
 register('events',  events);
 register('select',  select);

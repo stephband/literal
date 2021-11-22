@@ -9,6 +9,7 @@ that DOM after the text node.
 import library        from '../library.js';
 import compile        from '../compile.js';
 import toText         from '../to-text.js';
+import include        from '../../library/include.js';
 import Renderer, { removeNodes } from './renderer.js';
 import TemplateRenderer from './template-renderer.js';
 import { StreamRenderer, ArrayRenderer, PromiseRenderer } from './content-renderers.js';
@@ -133,7 +134,8 @@ export default function ContentRenderer(node, options, element) {
     this.last      = document.createTextNode('');
     this.first.after(this.last);
     this.contents  = [];
-    this.literally = options.literally || compile(library, 'data, element', options.source, null, options, element);
+    this.literally = options.literally || compile(library, 'data, element, include', options.source, null, options, element);
+    this.include   = (template, data) => include(template, data, element);
 
     // Analytics
     const id = '#' + options.template;
@@ -149,13 +151,13 @@ assign(ContentRenderer.prototype, Renderer.prototype, {
         return Renderer.prototype.push.apply(this, arguments);
     },
 
-    render: function() {
+    render: function(data) {
         // Stop all nodes, they are about to be recreated. This needs to be done
         // here as well as render, as update may be called by TemplateRenderer
         // without going through .push() cueing first.
         this.contents.forEach(stop);
         this.contents.length = 0;
-        return Renderer.prototype.render.apply(this, arguments);
+        return Renderer.prototype.render.call(this, data, this.element, this.include);
     },
 
     compose: function(strings) {

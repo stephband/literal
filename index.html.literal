@@ -73,7 +73,7 @@
     ${ include("./templates/section.literal", await comments(
         "./modules/library.js",
         "./library/media.js",
-        "./library/include.js",
+        "./modules/include.js",
         "../dom/modules/parse-length.js"
     )) }
     ${ include("./templates/section.literal", await comments("./library/print.js")) }

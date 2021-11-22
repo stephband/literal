@@ -92,6 +92,14 @@
         select + hr {
             margin-top: 0.75rem;
         }
+
+        [data-before]:before {
+            content: attr(data-before);
+        }
+        
+        [data-after]:after {
+            content: attr(data-after);
+        }
     </style>
 </head>
 
@@ -303,7 +311,7 @@
             }) }</p>
         </template>
 
-        <literal-include src="#compound-values-template"></literal-include>
+        <include-literal src="#compound-values-template"></include-literal>
 
         <hr/>
     </section>
@@ -487,6 +495,30 @@
     
         <hr/>
     </section-->
+
+    <section id="element-root">
+        <h3 class="text-03">Scope variables <span class="test-count"></span></h3>
+
+        <template id="scope-variable-template-1">
+            ${ element.id === this.data.expected ? '✓ `element` is #' + this.data.expected  : '✗ `element` is ' + (element.id || '') + ' nodeType ' + element.nodeType }
+        </template>
+
+        <template id="scope-variable-template-2">
+            <p id="element-2">${ element.id === 'element-2' ? '✓ `element` is #element-2' : '✗ `element` is ' + (element.id || '') + ' nodeType ' + element.nodeType }</p>
+        </template>
+
+        <template id="scope-variable-template">
+            ${ element.id === 'element-root' ? '✓ `element` is #element-root' : '✗ `element` is ' + (element.id || '') + ' nodeType ' + element.nodeType }<br/>
+            ${ include('#scope-variable-template-1', { expected: 'element-root' }) }
+            <p id="element-1">${ include('#scope-variable-template-1', { expected: 'element-1' }) }</p>
+            ${ include('#scope-variable-template-2', {}) }
+            <p id="element-3" data-before="${ element.id === 'element-3' ? '✓ `element` is #element-3' : '✗ `element` is ' + (element.id || '') + ' nodeType ' + element.nodeType }"> inside attribute</p>
+        </template>
+
+        <include-literal src="#scope-variable-template"></include-literal>
+
+        <hr/>
+    </section>
 
     <script type="module">
         import "../module.js";
