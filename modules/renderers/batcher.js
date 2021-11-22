@@ -62,7 +62,7 @@ function render(renderers) {
             const totalCompileCount = Object.keys(compileCache).length;
             logs.batchCompileCount = totalCompileCount - logs.totalCompileCount;
             logs.totalCompileCount = totalCompileCount;
-            log('compile', logs.batchCompileCount + ' literal' + (logs.batchCompileCount === 1 ? '' : 's') + ', ' + logs.batchCompileTime.toPrecision(3) + 'ms', ' total', totalCompileCount + ' literals, ' + (logs.totalCompileTime).toPrecision(3) + 'ms', '#DDB523');
+            log('compile', logs.batchCompileCount + ' literal' + (logs.batchCompileCount === 1 ? '' : 's') + ', ' + logs.batchCompileTime.toPrecision(3) + 'ms', undefined, undefined, '#DDB523');
         }
         else {
             logs.batchCompileTime = 0;
