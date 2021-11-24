@@ -32,7 +32,7 @@ function toRenderer(parent, value) {
         value instanceof Node ?
             value :
         value instanceof TemplateRenderer ?
-            value.content :
+            value :
         (typeof value.length === 'number') ?
             new ArrayRenderer(parent, value) :
         value instanceof Promise ?
@@ -147,8 +147,6 @@ assign(PromiseRenderer.prototype, {
             //this.parent.content = renderer;
         }
 
-console.trace('Replace promise', this.status, renderer, '<-- WHY IS THAT A FRAGMENT??');
-debugger
         // If we're in the DOM, signal connected state
         if (this.status === 'dom') {
             renderer.connect && renderer.connect();

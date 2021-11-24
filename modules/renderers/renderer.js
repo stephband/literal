@@ -62,7 +62,6 @@ function stringify(value, string, render) {
 export function renderString(values) {
     const strings = values[0];
     return reduce(strings.map((string, i) => (
-        //console.log(typeof string, string),
         i <= values.length ?
             // Strings 0 to n - 1
             stringify(values[i + 1], string, toText) :
@@ -108,13 +107,12 @@ function createDistributor(status) {
         // we cannot reenter a state and therefore all handlers are called once 
         // only.
         if (this.status === status) {
-console.log('listen', status, this.status, 'call immediately');
             fn();
             // Distributor is designed to be used in templates, return undefined
             // to avoid rendering anything.
             return;
         }
-console.log('listen', status, this.status);
+
         const fns = this[list] || (this[list] = []);
         fns.push(fn);
     };
@@ -134,8 +132,6 @@ function triggerReducer(args, renderer) {
 function trigger(object, method, status, payload) {
     if (object.status === status) { return; }
     object.status = status;
-
-console.log('trigger', method, status + postfix, object.contents && object.contents.length, object.contents, status + postfix, object[status + postfix]);
 
     const contents = object.contents;
     if (contents) { contents.reduce(triggerReducer, arguments); }
@@ -255,7 +251,6 @@ assign(Renderer.prototype, {
     when immediate rendering is desired.
     **/
     render: function render(object) {
-        //console.log(this.constructor.name + '#' + this.id + '.render()');
         const stops = this['stop' + postfix];
         if (stops) {
             stops.forEach(stop);
