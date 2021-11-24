@@ -118,8 +118,12 @@ function createDistributor(status) {
     };
 }
 
-function call(fn) {
-    fn();
+function callReducer(method, triggerable) {
+    triggerable[method] ?
+        triggerable[method]() :
+        triggerable() ;
+    
+    return method;
 }
 
 function triggerReducer(args, renderer) {
@@ -129,7 +133,7 @@ function triggerReducer(args, renderer) {
     return args;
 }
 
-function trigger(object, method, status, payload) {
+export function trigger(object, method, status, payload) {
     if (object.status === status) { return; }
     object.status = status;
 
@@ -137,18 +141,17 @@ function trigger(object, method, status, payload) {
     if (contents) { contents.reduce(triggerReducer, arguments); }
 
     const listeners = object[status + postfix];
-    if (listeners) { listeners.forEach(call); }
+    if (listeners) { listeners.reduce(callReducer, method); }
 
     //log(method, object.constructor.name +  ' #' + object.id, undefined, undefined, 'lightgrey');
-
     return object;
 }
 
-export function pushStopped() {
-    console.trace('Attempted .push() to stopped renderer', this.id, '#' + this.template, this.path, this.name);
+export function renderStopped() {
+    console.error('Attempted .push() to stopped renderer', this.id, '#' + this.template, this.path, this.name);
 }
 
-function stop(stopable) {
+export function stop(stopable) {
     return stopable.stop ?
         stopable.stop() :
         stopable() ;
@@ -236,8 +239,9 @@ assign(Renderer.prototype, {
     the next render batch.
     **/
     push: function(data) {
-        if (window.DEBUG && this.render === pushStopped) {
+        if (window.DEBUG && this.render === renderStopped) {
             console.error('Attempted .push() to stopped renderer', this.id, '#' + (this.template.id || this.template), (this.path ? this.path + ' ' : '') + this.constructor.name);
+            return;
         }
 
         // Cue .render() to be called on the next batch
@@ -326,7 +330,7 @@ assign(Renderer.prototype, {
         keys(this.observables).reduce(stopProperty, this.observables);
 
         if (window.DEBUG) {
-            this.push = pushStopped;
+            this.render = renderStopped;
         }
 
         // object, method, status, payload

@@ -29,7 +29,8 @@ import isTextNode  from '../../../dom/modules/is-text-node.js';
 import compileNode from '../compile-node.js';
 import { Observer, getTarget } from '../../../fn/observer/observer.js';
 import stats, { meta } from './analytics.js';
-import Renderer, { removeNodes } from './renderer.js';
+import { uncue }   from './batcher.js';
+import Renderer, { removeNodes, renderStopped, trigger } from './renderer.js';
 
 const assign = Object.assign;
 const cache  = {};
@@ -185,7 +186,6 @@ assign(TemplateRenderer.prototype, Renderer.prototype, {
     The `data` object is observed for mutations, and the renderer updates it 
     content until either a new data object is cued or the renderer is stopped.
     **/
-
     push: function(object) {
         const data = object ? getTarget(object) : null ;
 
@@ -249,5 +249,21 @@ assign(TemplateRenderer.prototype, Renderer.prototype, {
     replaceWith: function() {
         this.first.before.apply(this.first, arguments);
         return this.remove();
+    },
+    
+    /** 
+    .stop()
+    Stops renderer.
+    **/
+    stop: function() {
+        uncue(this);
+
+        if (window.DEBUG) {
+            this.render = renderStopped;
+        }
+
+        // object, method, status, payload
+        trigger(this, 'stop', 'done');
+        return this;
     }
 });
