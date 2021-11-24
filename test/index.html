@@ -100,6 +100,11 @@
         [data-after]:after {
             content: attr(data-after);
         }
+        
+        .text-07 {
+            font-size: 0.625rem;
+            font-family: FiraMono, courier, monospace;
+        }
     </style>
 </head>
 
@@ -145,25 +150,25 @@
         </template>
     
         <include-literal src="#standard-template">
-            <p>✗ Default content of an <code>&lt;include-literal src="#standard-template"&gt;</code> element.</p>
+            <p>❌ Default content of an <code>&lt;include-literal src="#standard-template"&gt;</code> element.</p>
         </include-literal>
         
         <hr/>
         
         <include-literal src="#standard-template" data="./nonexistant.json">
-            <p>✗ Default content of an <code>&lt;include-literal src="#standard-template" data="nonexistant"&gt;</code> element.</p>
+            <p>❌ Default content of an <code>&lt;include-literal src="#standard-template" data="nonexistant"&gt;</code> element.</p>
         </include-literal>
     
         <hr/>
     
         <include-literal src="#standard-template" data="./test-bad.json">        
-            <p>✗ Default content of an <code>&lt;include-literal src="#standard-template" data="./test-bad.json"&gt;</code> element pointing to mal-formed JSON data. Error logged in the console.</p>
+            <p>❌ Default content of an <code>&lt;include-literal src="#standard-template" data="./test-bad.json"&gt;</code> element pointing to mal-formed JSON data. Error logged in the console.</p>
         </include-literal>
     
         <hr/>
     
         <include-literal src="#standard-template" data="./test.json">        
-            <p>✗ Default content of an <code>&lt;include-literal src="#standard-template" data="./test.json"&gt;</code> element.</p>
+            <p>❌ Default content of an <code>&lt;include-literal src="#standard-template" data="./test.json"&gt;</code> element.</p>
         </include-literal>
     
         <hr/>
@@ -196,31 +201,31 @@
         <hr/>
     
         <include-literal src="#literal-template">
-            <p>✗ Default content of an <code>&lt;include-literal src="#literal-template"&gt;</code> element.</p>
+            <p>❌ Default content of an <code>&lt;include-literal src="#literal-template"&gt;</code> element.</p>
         </include-literal>
     
         <hr/>
     
         <include-literal src="#literal-template" data="./test.json">        
-            <p>✗ Default content of an <code>&lt;include-literal src="#literal-template" data="./test.json"&gt;</code> element.</p>
+            <p>❌ Default content of an <code>&lt;include-literal src="#literal-template" data="./test.json"&gt;</code> element.</p>
         </include-literal>
     
         <hr/>
     
         <include-literal src="#literal-template" data="./test.js">        
-            <p>✗ Default content of an <code>&lt;include-literal src="#literal-template" data="./test.js"&gt;</code> element.</p>
+            <p>❌ Default content of an <code>&lt;include-literal src="#literal-template" data="./test.js"&gt;</code> element.</p>
         </include-literal>
     
         <hr/>
     
         <include-literal src="#literal-template" data="./test.js#named">        
-            <p>✗ Default content of an <code>&lt;include-literal src="#literal-template" data="./test.js#named"&gt;</code> element.</p>
+            <p>❌ Default content of an <code>&lt;include-literal src="#literal-template" data="./test.js#named"&gt;</code> element.</p>
         </include-literal>
     
         <hr/>
     
         <include-literal src="#literal-template" data="./test.js#fn('string',1,null)">        
-            <p>✗ Default content of an <code>&lt;include-literal src="#literal-template" data="./test.js#fn('string', 1, null)"&gt;</code> element.</p>
+            <p>❌ Default content of an <code>&lt;include-literal src="#literal-template" data="./test.js#fn('string', 1, null)"&gt;</code> element.</p>
         </include-literal>
     
         <hr/>
@@ -247,7 +252,7 @@
             </dl>
     
             <p>Boolean attributes:</p>
-            <p hidden="${ true }">✗ This paragraph has <code>hidden</code></p>
+            <p hidden="${ true }">❌ This paragraph has <code>hidden</code></p>
             <p hidden="${ false }">✓ This paragraph does not have <code>hidden</code></p>
     
             <p>Class attributes (TokenLists):</p>
@@ -272,7 +277,7 @@
         <hr/>
     </section-->
 
-    <section>
+    <!--section>
         <h3 class="text-03">Array, Stream, Promise <span class="test-count">(several tests)</span></h3>
 
         <template id="compound-values-template">
@@ -314,7 +319,7 @@
         <include-literal src="#compound-values-template"></include-literal>
 
         <hr/>
-    </section>
+    </section-->
 
     <!--section>
         <h3 class="text-03"><code>include(template, data)</code> <span class="test-count">(3 tests)</span></h3>
@@ -377,7 +382,7 @@
     </section>
 
 
-    <section>
+    <!--section>
         <h3 class="text-03">Live binding <span class="test-count">(4 tests)</span></h3>
 
         <template id="clock-template">
@@ -496,26 +501,91 @@
         <hr/>
     </section-->
 
-    <section id="element-root">
+    <!--section id="element-root">
         <h3 class="text-03">Scope variables <span class="test-count"></span></h3>
 
         <template id="scope-variable-template-1">
-            ${ element.id === this.data.expected ? '✓ `element` is #' + this.data.expected  : '✗ `element` is ' + (element.id || '') + ' nodeType ' + element.nodeType }
+            ${ element.id === this.data.expected ? '✓ `element` is #' + this.data.expected  : '❌ `element` is ' + (element.id || '') + ' nodeType ' + element.nodeType }
         </template>
 
         <template id="scope-variable-template-2">
-            <p id="element-2">${ element.id === 'element-2' ? '✓ `element` is #element-2' : '✗ `element` is ' + (element.id || '') + ' nodeType ' + element.nodeType }</p>
+            <p id="element-2">${ element.id === 'element-2' ? '✓ `element` is #element-2' : '❌ `element` is ' + (element.id || '') + ' nodeType ' + element.nodeType }</p>
         </template>
 
         <template id="scope-variable-template">
-            ${ element.id === 'element-root' ? '✓ `element` is #element-root' : '✗ `element` is ' + (element.id || '') + ' nodeType ' + element.nodeType }<br/>
+            ${ element.id === 'element-root' ? '✓ `element` is #element-root' : '❌ `element` is ' + (element.id || '') + ' nodeType ' + element.nodeType }<br/>
             ${ include('#scope-variable-template-1', { expected: 'element-root' }) }
             <p id="element-1">${ include('#scope-variable-template-1', { expected: 'element-1' }) }</p>
             ${ include('#scope-variable-template-2', {}) }
-            <p id="element-3" data-before="${ element.id === 'element-3' ? '✓ `element` is #element-3' : '✗ `element` is ' + (element.id || '') + ' nodeType ' + element.nodeType }"> inside attribute</p>
+            <p id="element-3" data-before="${ element.id === 'element-3' ? '✓ `element` is #element-3' : '❌ `element` is ' + (element.id || '') + ' nodeType ' + element.nodeType }"> inside attribute</p>
         </template>
 
         <include-literal src="#scope-variable-template"></include-literal>
+
+        <hr/>
+    </section-->
+
+    <section id="connect-root">
+        <h3 class="text-03">Scope variables <span class="test-count"></span></h3>
+    
+        <template id="connect-template-1">${
+            this.connected(() => (this.node.textContent = document.body.contains(element) ? '✓ ' + element.id + ' connected' : '❌ this.connected() run but ' + element.id + ' not in DOM')),
+            '❌ ' + element.id + ' not connected'
+        }</template>
+
+        <template id="connect-template-2">
+            <div id="connect-3">${
+                this.connected(() => (this.node.textContent = document.body.contains(element) ? '✓ ' + element.id + ' connected' : '❌ this.connected() run but ' + element.id + ' not in DOM')),
+                '❌ ' + element.id + ' not connected'
+            }</div>
+        </template>
+        
+        <template id="connect-template-3">
+            <div id="connect-4" data-before="${
+                this.connected(() => (element.setAttribute('data-before', document.body.contains(element) ? '✓ ' + element.id + ' connected' : '❌ this.connected() run but ' + element.id + ' not in DOM'))),
+                '❌ ' + element.id + ' not connected'
+            }"> [data-before]</div>
+        </template>
+
+        <template id="connect-template">
+            <!--div class="text-07">include-literal ➡ template</div>
+            ${
+                this.connected(() => (this.node.textContent = document.body.contains(element) ? '✓ ' + element.id + ' connected' : '❌ this.connected() run but ' + element.id + ' not in DOM')),
+                '❌ ' + element.id + ' not connected'
+            }
+
+            <div class="text-07">include-literal ➡ template div</div>
+            <div id="connect-1">${
+                this.connected(() => (this.node.textContent = document.body.contains(element) ? '✓ ' + element.id + ' connected' : '❌ this.connected() run but ' + element.id + ' not in DOM')),
+                '❌ ' + element.id + ' not connected'
+            }</div>
+
+            <div class="text-07">include-literal ➡ template div[data-before]</div>
+            <div id="connect-2" data-before="${
+                this.connected(() => (element.setAttribute('data-before', document.body.contains(element) ? '✓ ' + element.id + ' connected' : '❌ this.connected() run but ' + element.id + ' not in DOM'))),
+                '❌ ' + element.id + ' not connected'
+            }"> [data-before]</div-->
+
+            <div class="text-07">include-literal ➡ template ➡ include() ➡ template</div>
+            ${ include('#connect-template-1', {}) }
+
+            <!--div class="text-07">include-literal ➡ template ➡ include() ➡ template div</div>
+            ${ include('#connect-template-2', {}) }
+            
+            <div class="text-07">include-literal ➡ template ➡ include() ➡ template div[data-before]</div>
+            ${ include('#connect-template-3', {}) }
+
+            <div class="text-07">include-literal ➡ template div ➡ include() ➡ template</div>
+            <div id="connect-5">${ include('#connect-template-1', {}) }</div>
+
+            <div class="text-07">include-literal ➡ template div ➡ include() ➡ template div</div>
+            <div id="connect-6">${ include('#connect-template-2', {}) }</div>
+            
+            <div class="text-07">include-literal ➡ template div ➡ include() ➡ template div[data-before]</div>
+            <div id="connect-7">${ include('#connect-template-3', {}) }</div-->
+        </template>
+
+        <include-literal src="#connect-template"></include-literal>
 
         <hr/>
     </section>

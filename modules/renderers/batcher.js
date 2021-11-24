@@ -35,7 +35,7 @@ function render(renderers) {
     var t0, ids;
     if (window.DEBUG) {
         t0 = window.performance.now() / 1000;
-        groupCollapsed('batch', t0.toFixed(3) + 's – cued ' + constructorCount(renderers), '#B6BD00');
+        group('batch', t0.toFixed(3) + 's – cued ' + constructorCount(renderers), '#B6BD00');
         ids = {};
     }
 

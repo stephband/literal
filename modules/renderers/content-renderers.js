@@ -147,6 +147,8 @@ assign(PromiseRenderer.prototype, {
             //this.parent.content = renderer;
         }
 
+console.trace('Replace promise', this.status, renderer, '<-- WHY IS THAT A FRAGMENT??');
+debugger
         // If we're in the DOM, signal connected state
         if (this.status === 'dom') {
             renderer.connect && renderer.connect();

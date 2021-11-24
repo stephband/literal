@@ -107,13 +107,14 @@ function createDistributor(status) {
         // If we are already in state `name` call `fn` immediately. This assumes 
         // we cannot reenter a state and therefore all handlers are called once 
         // only.
-        if (this.status === name) {
+        if (this.status === status) {
+console.log('listen', status, this.status, 'call immediately');
             fn();
             // Distributor is designed to be used in templates, return undefined
             // to avoid rendering anything.
             return;
         }
-
+console.log('listen', status, this.status);
         const fns = this[list] || (this[list] = []);
         fns.push(fn);
     };
@@ -133,6 +134,8 @@ function triggerReducer(args, renderer) {
 function trigger(object, method, status, payload) {
     if (object.status === status) { return; }
     object.status = status;
+
+console.log('trigger', method, status + postfix, object.contents && object.contents.length, object.contents, status + postfix, object[status + postfix]);
 
     const contents = object.contents;
     if (contents) { contents.reduce(triggerReducer, arguments); }
@@ -336,5 +339,3 @@ assign(Renderer.prototype, {
         return this;
     }
 });
-
-
