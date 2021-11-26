@@ -112,7 +112,11 @@ element('<include-literal>', {
             this.rejectSrc = reject;
         })
         .then((template) => dataPromise.then((data) => {
-            if (!parent) { throw new Error('ARSE'); }
+            if (!parent) { 
+                console.log(this);
+                throw new Error('ARSE'); 
+            }
+
             const renderer = new TemplateRenderer(template, parent);
 
             // But once it has data we know we can render it, but we 
