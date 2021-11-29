@@ -1,6 +1,6 @@
 
 
-import create           from '../../../dom/modules/create.js';
+import create           from '../../dom/modules/create.js';
 import print            from '../library/print.js';
 import toText           from '../modules/to-text.js';
 import TemplateRenderer from './template-renderer.js';

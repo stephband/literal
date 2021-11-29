@@ -1,5 +1,5 @@
 
-import trigger   from '../../../dom/modules/trigger.js';
+import trigger   from '../../dom/modules/trigger.js';
 import config    from '../modules/config.js';
 import library   from '../modules/library.js';
 import compile   from '../modules/compile.js';

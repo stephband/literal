@@ -1,5 +1,5 @@
 
-import overload  from '../../../fn/modules/overload.js';
+import overload  from '../../fn/modules/overload.js';
 import library   from '../modules/library.js';
 import compile   from '../modules/compile.js';
 import toText    from '../modules/to-text.js';

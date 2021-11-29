@@ -1,14 +1,14 @@
 
-/** 
+/**
 <include-literal>
 
-A `include-literal` may be placed pretty much anywhere in your HTML, enabling 
-the insertion of chunks of dynamic, JS-rendered DOM wherever you like in a 
+A `include-literal` may be placed pretty much anywhere in your HTML, enabling
+the insertion of chunks of dynamic, JS-rendered DOM wherever you like in a
 document.
 
 A `include-literal` finds a source template identified by its `src` attribute,
 fetches JSON or imports a module referred to by its `data` attribute, renders
-attributes and text found to contain literal tags, then replaces itself with 
+attributes and text found to contain literal tags, then replaces itself with
 the rendered result.
 
 A `include-literal` may contain fallback content, in case any of that fails.
@@ -23,21 +23,21 @@ A `include-literal` may contain fallback content, in case any of that fails.
 </include-literal>
 ```
 
-Multiple `data-` attributes may be declared, their values become properties of 
+Multiple `data-` attributes may be declared, their values become properties of
 the `data` object inside the template:
 
 ```
 <include-literal src="#add-to-collections-thumb" data-pk="34" ... ></include-literal>
 ```
 
-Or a single `data` attribute can be used to pass JSON to use as the `data` 
+Or a single `data` attribute can be used to pass JSON to use as the `data`
 object inside the template:
 
 ```
 <include-literal src="#add-to-collections-thumb" data='{"pk":34, ... }'></include-literal>
 ```
 
-Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a 
+Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a
 .json file...
 
 ```
@@ -91,7 +91,7 @@ element('<include-literal>', {
 
         // Resolve data
         const keys   = Object.keys(this.dataset);
-        const values = Object.values(this.dataset); 
+        const values = Object.values(this.dataset);
         const dataPromise = keys.length ?
             // where there are values in dataset compose data from dataset
             Promise
@@ -104,29 +104,26 @@ element('<include-literal>', {
                 this.rejectData  = reject;
             }) ;
 
-
-        // Resolve src
-        const parent = this.parentNode;
         new Promise((resolve, reject) => {
             this.resolveSrc = resolve;
             this.rejectSrc = reject;
         })
         .then((template) => dataPromise.then((data) => {
-            if (!parent) { 
-                console.log(this);
-                throw new Error('ARSE'); 
-            }
-
             const renderer = new TemplateRenderer(template, parent);
 
-            // But once it has data we know we can render it, but we 
+            // But once it has data we know we can render it, but we
             // want to do that in the next batch
             renderer.push(data).then(() => {
                 this.loading = false;
-                this.replaceWith(renderer.content);
-                
+                this.renderer = renderer;
+
                 // Signal to tree of renderers that we are now in the DOM
-                renderer.connect();
+                if (this.connected) {
+                    renderer.element = this.parentElement;
+if (!renderer.element) { console.error('No renderer.element on connect()', this); }
+                    this.replaceWith(renderer.content);
+                    renderer.connect();
+                }
             });
 
             this.renderer = renderer;
@@ -151,7 +148,16 @@ element('<include-literal>', {
     },
 
     connect: function() {
-        // If we are loading at connect time, add the loading attribute after a 
+        this.connected = true;
+
+        if (this.renderer) {
+            renderer.element = this.parentElement;
+if (!renderer.element) { console.error('No renderer.element on connect()', this); }
+            this.replaceWith(renderer.content);
+            this.renderer.connect();
+        }
+
+        // If we are loading at connect time, add the loading attribute after a
         // couple of frames to allow any transition to start
         if (this.loading) {
             this.frame = requestAnimationFrame(() =>
@@ -161,15 +167,15 @@ element('<include-literal>', {
             );
         }
 
-        // Where no data or data-* attribute has been defined resolve with an 
+        // Where no data or data-* attribute has been defined resolve with an
         // empty object...
         this.resolveData && this.resolveData({});
     }
 }, {
-    /** 
+    /**
     data=""
 
-    Defines a JSON file or JS module containing data to be rendered. If a data 
+    Defines a JSON file or JS module containing data to be rendered. If a data
     attribute is not defined and empty object is used.
 
     To get data from a JSON file specify a path to JSON:
@@ -238,13 +244,13 @@ element('<include-literal>', {
     loading: {
         /**
         loading=""
-        Read-only (pseudo-read-only) boolean attribute indicating status of 
-        `src` and `data` requests. 
+        Read-only (pseudo-read-only) boolean attribute indicating status of
+        `src` and `data` requests.
         **/
 
         /**
         .loading
-        Read-only (pseudo-read-only) boolean indicating status of `src` and 
+        Read-only (pseudo-read-only) boolean indicating status of `src` and
         `data` requests.
         **/
         value: false,
@@ -255,7 +261,7 @@ element('<include-literal>', {
     src=""
     Define a source template whose rendered content replaces this
     `include-literal`. This is a required attribute and must be in the form of
-    a fragment identifier pointing to a `template` element in the DOM.  
+    a fragment identifier pointing to a `template` element in the DOM.
     **/
 
     src: {
@@ -268,14 +274,14 @@ element('<include-literal>', {
             // should be different for static HTML
             if (!/^#/.test(value)) {
                 // Flag loading until we connect, at which point we add the
-                // loading attribute that may be used to indicate loading. Why 
-                // wait? Because we are not in the DOM yet, and if we want a 
+                // loading attribute that may be used to indicate loading. Why
+                // wait? Because we are not in the DOM yet, and if we want a
                 // loading icon to transition in the transition must begin after
                 // we are already in the DOM.
                 this.loading = true;
                 requestGet(value).then((html) => this.resolveSrc(fragmentFromHTML(html)));
                 return;
-                
+
             }
 
             const id = value.replace(/^#/, '');

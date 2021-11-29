@@ -1,8 +1,8 @@
 
-import getPath        from '../../../fn/modules/get-path.js';
-import nothing        from '../../../fn/modules/nothing.js';
-import { Observer, getTarget } from '../../../fn/observer/observer.js';
-import observe        from '../../../fn/observer/observe.js';
+import getPath        from '../../fn/modules/get-path.js';
+import nothing        from '../../fn/modules/nothing.js';
+import { Observer, getTarget } from '../../fn/observer/observer.js';
+import observe        from '../../fn/observer/observe.js';
 import toText         from '../modules/to-text.js';
 import gets           from '../modules/gets.js';
 import { log }        from '../modules/log.js';

@@ -24,12 +24,12 @@ renderer
 ```
 **/
 
-import identify    from '../../../dom/modules/identify.js';
-import isTextNode  from '../../../dom/modules/is-text-node.js';
-import compileNode from '../modules/compile-node.js';
-import { Observer, getTarget } from '../../../fn/observer/observer.js';
+import identify        from '../../dom/modules/identify.js';
+import isTextNode      from '../../dom/modules/is-text-node.js';
+import compileNode     from '../modules/compile-node.js';
+import { Observer, getTarget } from '../../fn/observer/observer.js';
 import stats, { meta } from './analytics.js';
-import { uncue }   from './batcher.js';
+import { uncue }       from './batcher.js';
 import Renderer, { removeNodes, renderStopped, trigger } from './renderer.js';
 
 const assign = Object.assign;
