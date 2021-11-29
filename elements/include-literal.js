@@ -120,7 +120,7 @@ element('<include-literal>', {
                 // Signal to tree of renderers that we are now in the DOM
                 if (this.connected) {
                     renderer.element = this.parentElement;
-if (!renderer.element) { console.error('No renderer.element on connect()', this); }
+if (!renderer.element) { console.error('No renderer.element on connect(). Didnt know this was possible.', this); }
                     this.replaceWith(renderer.content);
                     renderer.connect();
                 }
@@ -152,7 +152,7 @@ if (!renderer.element) { console.error('No renderer.element on connect()', this)
 
         if (this.renderer) {
             renderer.element = this.parentElement;
-if (!renderer.element) { console.error('No renderer.element on connect()', this); }
+if (!renderer.element) { console.error('No renderer.element on connect(). Didnt know this was possible.', this); }
             this.replaceWith(renderer.content);
             this.renderer.connect();
         }
@@ -174,7 +174,6 @@ if (!renderer.element) { console.error('No renderer.element on connect()', this)
 }, {
     /**
     data=""
-
     Defines a JSON file or JS module containing data to be rendered. If a data
     attribute is not defined and empty object is used.
 
