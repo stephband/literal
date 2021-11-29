@@ -1,12 +1,12 @@
 
-import library   from '../library.js';
+import library   from '../modules/library.js';
 import Renderer, { renderString } from './renderer.js';
-import compile   from '../compile.js';
+import compile   from '../modules/compile.js';
 import analytics from './analytics.js';
 import names     from './property-names.js';
 
 const assign = Object.assign;
-/** 
+/**
 BooleanRenderer()
 Constructs an object responsible for rendering to a boolean attribute.
 **/
@@ -34,7 +34,7 @@ export function setBooleanProperty(node, name, value) {
 
 export default function BooleanRenderer(node, options) {
     Renderer.apply(this, arguments);
-    
+
     this.name      = options.name;
     this.literally = options.literally || compile(library, 'data, element', options.source, null, options, this.element);
 

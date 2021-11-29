@@ -1,8 +1,8 @@
 
 import overload  from '../../../fn/modules/overload.js';
-import library   from '../library.js';
-import compile   from '../compile.js';
-import toText    from '../to-text.js';
+import library   from '../modules/library.js';
+import compile   from '../modules/compile.js';
+import toText    from '../modules/to-text.js';
 import Renderer  from './renderer.js';
 import analytics from './analytics.js';
 
@@ -10,7 +10,7 @@ const assign = Object.assign;
 
 const nothing = [];
 
-/** 
+/**
 TokensRenderer()
 Constructs an object responsible for rendering to a token list attribute such
 as a class attribute.
@@ -64,7 +64,7 @@ function setTokens(tokens, cached, values, count) {
         ++count;
     }
 
-    // Then add the new tokens. The TokenList object ignores tokens it 
+    // Then add the new tokens. The TokenList object ignores tokens it
     // already contains so doubles are not set.
     tokens.add.apply(tokens, values);
     return ++count;

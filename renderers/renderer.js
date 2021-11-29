@@ -3,9 +3,9 @@ import getPath        from '../../../fn/modules/get-path.js';
 import nothing        from '../../../fn/modules/nothing.js';
 import { Observer, getTarget } from '../../../fn/observer/observer.js';
 import observe        from '../../../fn/observer/observe.js';
-import toText         from '../to-text.js';
-import gets           from '../gets.js';
-import { log }        from '../log.js';
+import toText         from '../modules/to-text.js';
+import gets           from '../modules/gets.js';
+import { log }        from '../modules/log.js';
 import { cue, uncue } from './batcher.js';
 import { meta }       from './analytics.js';
 
@@ -14,7 +14,7 @@ const assign = Object.assign;
 const keys   = Object.keys;
 
 const isPromise = (object) => (object
-    && typeof object === 'object' 
+    && typeof object === 'object'
     && object.then);
 
 const reduce = (values) => values.reduce((output, value) => (
@@ -46,7 +46,7 @@ function stringify(value, string, render) {
                         string + reduce(strings.map(render))
                 )) :
             // Otherwise join to string immediately
-            string === '' ? 
+            string === '' ?
                 reduce(value.map(render)) :
                 string + reduce(value.map(render)) :
         // pass any other value to render
@@ -103,8 +103,8 @@ function createDistributor(status) {
     const list = status + postfix;
 
     return function listen(fn) {
-        // If we are already in state `name` call `fn` immediately. This assumes 
-        // we cannot reenter a state and therefore all handlers are called once 
+        // If we are already in state `name` call `fn` immediately. This assumes
+        // we cannot reenter a state and therefore all handlers are called once
         // only.
         if (this.status === status) {
             fn();
@@ -122,7 +122,7 @@ function callReducer(method, triggerable) {
     triggerable[method] ?
         triggerable[method]() :
         triggerable() ;
-    
+
     return method;
 }
 
@@ -167,7 +167,7 @@ function toPaths(paths, path) {
     var prev;
 
     // Make some attempt to remove intermediate paths traversed
-    // while getting the value at the end of the path. Warning: not 100% 
+    // while getting the value at the end of the path. Warning: not 100%
     // robust. If we want to be robust about this we need to collect gets
     // async inside the observer, I think.
     while(
@@ -189,7 +189,7 @@ function remove(paths, path) {
     if (i > -1) {
         paths.splice(i, 1);
     }
-    
+
     return paths;
 }
 
@@ -204,7 +204,7 @@ function toObservables(renderer, path) {
     const observables = renderer.observables;
 
     if (!observables[path]) {
-        // Don't getPath() of the observer here, that really makes 
+        // Don't getPath() of the observer here, that really makes
         // the machine think too hard. Make sure it's not the observer proxy
         const value = getPath(path, data);
 
@@ -216,9 +216,9 @@ function toObservables(renderer, path) {
 }
 
 
-/** 
+/**
 Renderer()
-Base class/mixin for providing contents with the properties 
+Base class/mixin for providing contents with the properties
 `{ node, path }` and a generic `.push()` method.
 **/
 
@@ -233,9 +233,9 @@ export default function Renderer(node, options, element) {
 }
 
 assign(Renderer.prototype, {
-    /** 
+    /**
     .push(data)
-    Push data into the renderer. The renderer is now cued to render this data in 
+    Push data into the renderer. The renderer is now cued to render this data in
     the next render batch.
     **/
     push: function(data) {
@@ -248,10 +248,10 @@ assign(Renderer.prototype, {
         return cue(this, arguments);
     },
 
-    /** 
+    /**
     .render(data)
-    Renders data to the DOM. Normally you should use `.push(data)`, which cues 
-    up `render(data)` in the next render batch. This method is used internally 
+    Renders data to the DOM. Normally you should use `.push(data)`, which cues
+    up `render(data)` in the next render batch. This method is used internally
     when immediate rendering is desired.
     **/
     render: function render(object) {
@@ -273,14 +273,14 @@ assign(Renderer.prototype, {
         this.data = data;
         ++this.count;
 
-        // Evaluate the template. Note that we are potentially leaving 
+        // Evaluate the template. Note that we are potentially leaving
         // observers live here, if any data is set during render we may trigger
         // a further render... not what we want. Do we need to pause observers?
         const stats = this.literally(observer, this.element, this.include);
 
-        // We may only collect synchronous gets – other templates may use 
-        // this data object and we don't want to include their gets by stopping 
-        // any later. Stop now. If we want to change this, making a data proxy 
+        // We may only collect synchronous gets – other templates may use
+        // this data object and we don't want to include their gets by stopping
+        // any later. Stop now. If we want to change this, making a data proxy
         // per template instance would be the way to go. We're not going there.
         reads.stop();
 
@@ -293,14 +293,14 @@ assign(Renderer.prototype, {
 
         // Start observing any new paths
         paths
-        // 
+        //
         .reduce(toObservables, this);
 
         // Return information about the render
         return stats;
     },
 
-    /** 
+    /**
     .connected(fn)
     Calls `fn` when renderer nodes enter the DOM.
     **/
@@ -315,13 +315,13 @@ assign(Renderer.prototype, {
         trigger(this, 'connect', 'dom');
     },
 
-    /** 
+    /**
     .done(fn)
     Calls `fn` when renderer is stopped.
     **/
     done: createDistributor('done'),
 
-    /** 
+    /**
     .stop()
     Stops renderer.
     **/

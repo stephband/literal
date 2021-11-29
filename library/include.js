@@ -7,10 +7,10 @@ import curry            from '../../fn/modules/curry.js';
 import { requestGet }   from '../../dom/modules/request.js';
 import fragmentFromHTML from '../../dom/modules/fragment-from-html.js';
 import { getTarget }    from '../../fn/observer/observer.js';
-import TemplateRenderer from '../modules/renderers/template-renderer.js';
+import TemplateRenderer from '../renderers/template-renderer.js';
 import request          from './request.js';
 
-export function include(url, object, element) {
+export default function include(url, object, element) {
     // This is for inserting static HTML for living archives, but the API
     // should be different for static HTML - TODO: make an <include-html> element
     if (typeof url === 'string' && !/^#/.test(url)) {
@@ -28,10 +28,10 @@ export function include(url, object, element) {
         .then(() => renderer);
     }
 
-    // Operate on target to be sure we are not registering gets for data.then 
-    // in parent renderer 
+    // Operate on target to be sure we are not registering gets for data.then
+    // in parent renderer
     const data = getTarget(object);
-    
+
     // Accept a promise of data
     if (data && data.then) {
         return data
@@ -45,5 +45,3 @@ export function include(url, object, element) {
     .push(data || {})
     .then(() => renderer);
 }
-
-export default curry(include);

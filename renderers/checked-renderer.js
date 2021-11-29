@@ -1,9 +1,9 @@
 
 import isDefined from '../../../fn/modules/is-defined.js';
 import trigger   from '../../../dom/modules/trigger.js';
-import config    from '../config.js';
-import library   from '../library.js';
-import compile   from '../compile.js';
+import config    from '../modules/config.js';
+import library   from '../modules/library.js';
+import compile   from '../modules/compile.js';
 import Renderer  from './renderer.js';
 import analytics from './analytics.js';
 
@@ -15,7 +15,7 @@ function isNotEmpty(string) {
 }
 
 
-/** 
+/**
 CheckedRenderer()
 Constructs an object responsible for rendering to a plain text attribute.
 **/
@@ -29,8 +29,8 @@ function setChecked(node, value, hasValue) {
     const checked = typeof value === 'boolean' ? value :
         // If the element has a value attribute defined, we compare against it
         hasValue ?
-            // Is value an array of values? It's important to include this here, 
-            // at least for checkboxes, of which multiple may be checked. It 
+            // Is value an array of values? It's important to include this here,
+            // at least for checkboxes, of which multiple may be checked. It
             // cuts down on tag parsing in lists of inputs.
             node.type === 'checkbox' && value && value.map ?
                 value.map(toString).includes(node.value) :
@@ -46,7 +46,7 @@ function setChecked(node, value, hasValue) {
     node.checked = checked;
 
     // Optional event hook
-    if (config.changeEvent) { 
+    if (config.changeEvent) {
         trigger(config.changeEvent, node);
     }
 

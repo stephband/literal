@@ -12,13 +12,13 @@
     <meta property="og:title" content="Literal" />
     <meta property="og:description" content="" />
     <meta property="og:image" content="" />
-    
+
     <title>Literal</title>
-    
+
     <link rel="icon" type="image/png" href="./images/logo-32.png" sizes="32x32">
     <link rel="icon" type="image/png" href="./images/logo-64.png" sizes="64x64">
     <link rel="icon" type="image/png" href="./images/logo-128.png" sizes="128x128">
-    
+
     <script title="load">
     document.documentElement.className += ' js content-loading loading';
     window.addEventListener('DOMContentLoaded', () => document.documentElement.classList.remove('content-loading'));
@@ -45,13 +45,13 @@
             column-gap: 1.5rem;
             padding: 3rem 1.5rem 4.5rem;
         }
-        
+
         body > header {
             grid-column: 1 / span 2;
         }
-        
+
         body > section {
-            
+
         }
 
         code {
@@ -63,31 +63,31 @@
         .test-count {
             font-size: 0.875em;
         }
-        
+
         p {
             padding-left: 1rem;
             text-indent: -1rem;
         }
-        
+
         pre {
             padding: 0.375rem;
             background-color: #eeeeee;
             border-radius: 0.1875rem;
         }
-        
+
         dl > dd {
             margin: 0;
         }
-        
+
         .blue-fg {
             color: blue;
         }
-        
+
         .text-03 {
             margin-top: 3rem;
             margin-bottom: 1.5rem;
         }
-        
+
         input + hr,
         select + hr {
             margin-top: 0.75rem;
@@ -96,11 +96,11 @@
         [data-before]:before {
             content: attr(data-before);
         }
-        
+
         [data-after]:after {
             content: attr(data-after);
         }
-        
+
         .text-07 {
             font-size: 0.625rem;
             font-family: FiraMono, courier, monospace;
@@ -109,7 +109,7 @@
 </head>
 
 <body class="2x-grid grid">
-    <!--header>
+    <header>
         <h1 class="doctext-01">Literal <span class="doctext-06">0.5.2</span></h1>
 
         <template id="window-time">
@@ -126,112 +126,112 @@
         <include-literal src="#window-time"></include-literal>
     </header>
 
-    <section>
+    <section title="include-literal fallback content">
         <h3 class="text-03"><code>&lt;include-literal&gt;</code> <span class="test-count">(1 test)</span></h3>
-    
+
         <include-literal>
             <p>✓ Default content of an <code>&lt;include-literal&gt;</code> element. Should warn about missing <code>src</code> attribute in the console.</p>
         </include-literal>
-        
+
         <hr/>
     </section>
 
-    <section>
+    <section title="linclude-literal src">
         <h3 class="text-03"><code>&lt;include-literal src="#template"&gt;</code> <span class="test-count">(5 tests)</span></h3>
 
         <include-literal src="#nonexistant">
             <p>✓ Default content of an <code>&lt;include-literal src="#nonexistant"&gt;</code> element. Should warn about missing source template in the console.</p>
         </include-literal>
-    
+
         <hr/>
-    
+
         <template id="standard-template">
             <p>✓ Content in a standard <code>&lt;template&gt;</code> element.</p>
         </template>
-    
+
         <include-literal src="#standard-template">
             <p>❌ Default content of an <code>&lt;include-literal src="#standard-template"&gt;</code> element.</p>
         </include-literal>
-        
+
         <hr/>
-        
+
         <include-literal src="#standard-template" data="./nonexistant.json">
             <p>❌ Default content of an <code>&lt;include-literal src="#standard-template" data="nonexistant"&gt;</code> element.</p>
         </include-literal>
-    
+
         <hr/>
-    
-        <include-literal src="#standard-template" data="./test-bad.json">        
+
+        <include-literal src="#standard-template" data="./test-bad.json">
             <p>❌ Default content of an <code>&lt;include-literal src="#standard-template" data="./test-bad.json"&gt;</code> element pointing to mal-formed JSON data. Error logged in the console.</p>
         </include-literal>
-    
+
         <hr/>
-    
-        <include-literal src="#standard-template" data="./test.json">        
+
+        <include-literal src="#standard-template" data="./test.json">
             <p>❌ Default content of an <code>&lt;include-literal src="#standard-template" data="./test.json"&gt;</code> element.</p>
         </include-literal>
-    
+
         <hr/>
     </section>
 
-    <section>
+    <section title="include-literal src">
         <h3 class="text-03"><code>&lt;include-literal src="#literal-template"&gt;</code> <span class="test-count">(8 tests)</span></h3>
 
         <template id="literal-template">
             <p>✓ Content in a <code>&lt;template&gt;</code> element, with rendered data:</p>
             <pre><code>${ data }</code></pre>
         </template>
-        
+
         <include-literal src="#literal-template" data="./nonexistant.json">
             <p>✓ Default content of an <code>&lt;include-literal src="#literal-template" data="nonexistant"&gt;</code> element.</p>
         </include-literal>
-    
+
         <hr/>
-    
+
         <include-literal src="#literal-template" data="./test-bad.json">
             <p>✓ Default content of an <code>&lt;include-literal src="#literal-template" data="test-bad.json"&gt;</code> element.</p>
         </include-literal>
-    
+
         <hr/>
-        
+
         <include-literal src="#literal-template" data="./test-bad.js">
             <p>✓ Default content of an <code>&lt;include-literal src="#literal-template" data="test-bad.js"&gt;</code> element.</p>
         </include-literal>
-    
+
         <hr/>
-    
+
         <include-literal src="#literal-template">
             <p>❌ Default content of an <code>&lt;include-literal src="#literal-template"&gt;</code> element.</p>
         </include-literal>
-    
+
         <hr/>
-    
-        <include-literal src="#literal-template" data="./test.json">        
+
+        <include-literal src="#literal-template" data="./test.json">
             <p>❌ Default content of an <code>&lt;include-literal src="#literal-template" data="./test.json"&gt;</code> element.</p>
         </include-literal>
-    
+
         <hr/>
-    
-        <include-literal src="#literal-template" data="./test.js">        
+
+        <include-literal src="#literal-template" data="./test.js">
             <p>❌ Default content of an <code>&lt;include-literal src="#literal-template" data="./test.js"&gt;</code> element.</p>
         </include-literal>
-    
+
         <hr/>
-    
-        <include-literal src="#literal-template" data="./test.js#named">        
+
+        <include-literal src="#literal-template" data="./test.js#named">
             <p>❌ Default content of an <code>&lt;include-literal src="#literal-template" data="./test.js#named"&gt;</code> element.</p>
         </include-literal>
-    
+
         <hr/>
-    
-        <include-literal src="#literal-template" data="./test.js#fn('string',1,null)">        
+
+        <include-literal src="#literal-template" data="./test.js#fn('string',1,null)">
             <p>❌ Default content of an <code>&lt;include-literal src="#literal-template" data="./test.js#fn('string', 1, null)"&gt;</code> element.</p>
         </include-literal>
-    
+
         <hr/>
     </section>
 
-    <section>
+    <section title="Values">
         <h3 class="text-03">Values <span class="test-count">(1 test)</span></h3>
 
         <template id="values-template">
@@ -250,78 +250,52 @@
                 <dt>symbol</dt>    <dd>${ Symbol('symbol') }</dd>
                 <dt>undefined</dt> <dd>${ undefined }</dd>
             </dl>
-    
+
             <p>Boolean attributes:</p>
             <p hidden="${ true }">❌ This paragraph has <code>hidden</code></p>
             <p hidden="${ false }">✓ This paragraph does not have <code>hidden</code></p>
-    
+
             <p>Class attributes (TokenLists):</p>
             <p class="${ 'blue-fg' }">This paragraph has <code>class="blue-fg"</code>.</p>
-    
+
             <p>Style attributes:</p>
             <p style="color: ${ 'blue' };">This paragraph has <code>style="color: blue;"</code>.</p>
-    
+
             <p>Text attributes:</p>
             <p title="${ '✓ title attribute has literal content' }">This paragraph has a <code>title</code> attribute.</p>
-    
+
             <p>Data attributes:</p>
             <p data-thing="${ '✓ data-thing attribute has literal content' }">This paragraph has a <code>data-thing</code> attribute.</p>
-    
+
             <p>Value property:</p>
             <input type="text" value="${ 'hello' }" />
             <input type="number" value="  ${ 5 } " />
         </template>
-    
+
         <include-literal src="#values-template"></include-literal>
-    
+
         <hr/>
-    </section-->
+    </section>
 
-    <!--section>
-        <h3 class="text-03">Array, Stream, Promise <span class="test-count">(several tests)</span></h3>
+    <section title="include(src)">
+        <h3 class="text-03">Mapped include() <span class="test-count">(1 test)</span></h3>
 
-        <template id="compound-values-template">
-            <p>Promise of Number</p>
-            <p>${ Promise.resolve(1) }</p>
-            
-            <p>Promise of Array of Numbers</p>
-            <p>${ Promise.resolve([0,1,2,3]) }</p>
-
-            <p>Promise of Stream of Numbers</p>
-            <p>${ Promise.resolve(Stream((source) => {
-                let n = 0;
-                const timer = setInterval(() => source.push(++n), 1000);
-                setTimeout(() => (clearInterval(timer), source.stop()), 5000);
-            })) }</p>
-            
-            <p>Stream of Numbers</p>
-            <p>${ Stream((source) => {
-                let n = 0;
-                const timer = setInterval(() => source.push(++n), 1100);
-                setTimeout(() => (clearInterval(timer), source.stop()), 5000);
-            }) }</p>
-
-            <p>Stream of Arrays of Numbers</p>
-            <p>${ Stream((source) => {
-                let n = 0;
-                const timer = setInterval(() => source.push([n, ++n, ++n, ++n]), 1200);
-                setTimeout(() => (clearInterval(timer), source.stop()), 5000);
-            }) }</p>
-
-            <p>Stream of Promises of Numbers</p>
-            <p>${ Stream((source) => {
-                let n = 0;
-                const timer = setInterval(() => source.push(Promise.resolve(++n)), 1300);
-                setTimeout(() => (clearInterval(timer), source.stop()), 5000);
-            }) }</p>
+        <template id="title-template">
+            ${ print(this, data) }
+            <p>${ data.title }</p>
         </template>
 
-        <include-literal src="#compound-values-template"></include-literal>
+        <template id="objects-template">
+            ${ print(this, data) }
+            <div>Before ${ data.map(include('#title-template')) } After</div>
+        </template>
+
+        <include-literal src="#objects-template" data="./test-objects.json"></include-literal>
 
         <hr/>
-    </section-->
+    </section>
 
-    <!--section>
+    <section title="include(src, data)">
         <h3 class="text-03"><code>include(template, data)</code> <span class="test-count">(3 tests)</span></h3>
 
         <template id="paragraph-template">
@@ -358,12 +332,12 @@
         <include-literal src="#lifecycle-template"></include-literal>
 
         <hr/>
-    
+
         <template id="data-template">
             <p>✓ Literal template included.</p>
             <pre><code>${ data }</code></pre>
         </template>
-        
+
         <template id="include-literal-template">
             <div>
                 Before include.
@@ -371,138 +345,116 @@
                 After include.
             </div>
         </template>
-    
+
         <include-literal src="#include-literal-template"></include-literal>
-    
+
         <hr/>
-        
+
         <include-literal src="#include-literal-template" data="./test.json"></include-literal>
-        
+
         <hr/>
     </section>
 
+    <section title="Array, Stream, Promise">
+        <h3 class="text-03">Array, Stream, Promise</h3>
 
-    <!--section>
-        <h3 class="text-03">Live binding <span class="test-count">(4 tests)</span></h3>
+        <template id="compound-values-include">
+            ${ data.text }
+        </template>
 
-        <template id="clock-template">
-            <p>Time since load: ${ parseInt(data.time, 10) }</p>
+        <template id="compound-values-template">
+            <p>
+                ${ setTimeout(() => (element.prepend(element.querySelector('span').textContent === 'before, 0123, after' ? '✓' : '❌')), 1000), '' }
+                Array of Numbers (<span>before, ${ [0,1,2,3] }, after</span>)
+            </p>
+
+            <p>
+                ${ setTimeout(() => (element.prepend(element.querySelector('span').textContent.replaceAll(/\s+/g, '') === 'before,0123,after' ? '✓' : '❌')), 1000), '' }
+                Array of includes (<span>before, ${ [
+                    include('#compound-values-include', { text: 0 }),
+                    include('#compound-values-include', { text: 1 }),
+                    include('#compound-values-include', { text: 2 }),
+                    include('#compound-values-include', { text: 3 })
+                ] }, after</span>)
+            </p>
+
+            <p>
+                ${ setTimeout(() => (element.prepend(element.querySelector('span').textContent === 'before, 1, after' ? '✓' : '❌')), 1000), '' }
+                Promise of Number (<span>before, ${ Promise.resolve(1) }, after</span>)
+            </p>
+
+            <p>
+                ${ setTimeout(() => (element.prepend(element.querySelector('span').textContent === 'before, 0123, after' ? '✓' : '❌')), 1000), '' }
+                Promise of Array of Numbers (<span>before, ${ Promise.resolve([0,1,2,3]) }, after</span>)
+            </p>
+
+            <p>
+                ${ setTimeout(() => (element.prepend(element.querySelector('span').textContent === 'before, 4, after' ? '✓' : '❌')), 1000), '' }
+                Promise of Stream of Numbers (<span>before, ${ Promise.resolve(Stream((source) => {
+                    let n = 0;
+                    const timer = setInterval(() => source.push(++n), 230);
+                    setTimeout(() => (clearInterval(timer), source.stop()), 1000);
+                })) }, after</span>)
+            </p>
+
+            <p>
+                ${ setTimeout(() => (element.prepend(element.querySelector('span').textContent === 'before, 4, after' ? '✓' : '❌')), 1000), '' }
+                Stream of Numbers (<span>before, ${ Stream((source) => {
+                    let n = 0;
+                    const timer = setInterval(() => source.push(++n), 210);
+                    setTimeout(() => (clearInterval(timer), source.stop()), 1000);
+                }) }, after</span>)
+            </p>
+
+            <p>
+                ${ setTimeout(() => (element.prepend(element.querySelector('span').textContent === 'before, 13141516, after' ? '✓' : '❌')), 1000), '' }
+                Stream of Arrays of Numbers (<span>before, ${ Stream((source) => {
+                    let n = 0;
+                    const timer = setInterval(() => source.push([++n, ++n, ++n, ++n]), 220);
+                    setTimeout(() => (clearInterval(timer), source.stop()), 1000);
+                }) }, after</span>)
+            </p>
+
+            <p>
+                ${ setTimeout(() => (element.prepend(element.querySelector('span').textContent === 'before, 4, after' ? '✓' : '❌')), 1000), '' }
+                Stream of Promises of Number (<span>before, ${ Stream((source) => {
+                    let n = 0;
+                    const timer = setInterval(() => source.push(Promise.resolve(++n)), 240);
+                    setTimeout(() => (clearInterval(timer), source.stop()), 1000);
+                }) }, after</span>)
+            </p>
+
+            <p>
+                ${ setTimeout(() => (element.prepend(element.querySelector('span').textContent.replaceAll(/\s+/g, '') === 'before,3,after' ? '✓' : '❌')), 1000), '' }
+                Stream of includes (<span>before, ${ Stream((source) => {
+                    let n = 0;
+                    const timer = setInterval(() =>
+                        source.push(include('#compound-values-include', { text: ++n }))
+                    , 290);
+                    setTimeout(() => (clearInterval(timer), source.stop()), 1000);
+                }) }, after</span>)
+            </p>
+
+            <p>
+                ${ setTimeout(() => (element.prepend(element.querySelector('span').textContent === 'before, String, after' ? '✓' : '❌')), 1000), '' }
+                Stream of includes/strings (<span>before, ${ Stream((source) => {
+                    let n = 0;
+                    // Should finish on 'String'
+                    const timer = setInterval(() =>
+                        source.push(++n % 2 ? 'String' : include('#compound-values-include', { text: 'Include' }))
+                    , 290);
+                    setTimeout(() => (clearInterval(timer), source.stop()), 1000);
+                }) }, after</span>)
+            </p>
         </template>
-    
-        <include-literal src="#clock-template" data="./test-clock.js"></include-literal>
-        
-        <hr/>
-    
-        <include-literal src="#clock-template" data="./test-clock.js"></include-literal>
-    
-        <hr/>
-    
-        <template id="even-template">
-            <p>Even: ${ parseInt(data.time, 10) }</p>
-        </template>
-    
-        <template id="odd-template">
-            <p>Odd:  ${ parseInt(data.time, 10) }</p>
-        </template>
-    
-        <template id="evenodd-template">
-            ${ include(parseInt(data.time, 10) % 2 === 0 ? '#even-template' : '#odd-template', data) }
-        </template>
-    
-        <include-literal src="#evenodd-template" data="./test-clock.js"></include-literal>
-    
-        <hr/>
-    
-        <template id="numbers-template">
-            <input type="number" value="${ parseInt(data.time, 10) }" />
-            <input type="range" min="0" max="10" value="${ parseInt(data.time, 10) }" />
-    
-            <label>Checked on odd</label>
-            <input type="checkbox" checked="${ parseInt(data.time, 10) % 2 }" />
-            
-            <label>Checked on 1</label>
-            <input type="checkbox" checked="${ parseInt(data.time, 10) }" value="1" />
-    
-            <label>Checked when equal to value 1-9</label>
-            <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="1" />
-            <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="2" />
-            <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="3" />
-            <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="4" />
-            <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="5" />
-            <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="6" />
-            <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="7" />
-            <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="8" />
-            <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="9" />
-    
-            <label>Selected when equal to value 1-9</label>
-            <select value="${ parseInt(data.time, 10) }">
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-                <option value="4">Four</option>
-                <option value="5">Five</option>
-                <option value="6">Six</option>
-                <option value="7">Seven</option>
-                <option value="8">Eight</option>
-                <option value="9">Nine</option>
-            </select>
-        </template>
-        
-        <include-literal src="#numbers-template" data="./test-clock.js"></include-literal>
-    
+
+        <include-literal src="#compound-values-template"></include-literal>
+
         <hr/>
     </section>
 
-    <section>
-        <h3 class="text-03">Mapped include() <span class="test-count">(1 test)</span></h3>
-
-        <template id="title-template">
-            ${ print(this, data) }
-            <p>${ data.title }</p>
-        </template>
-    
-        <template id="objects-template">
-            ${ print(this, data) }
-            <div>Before ${ data.map(include('#title-template')) } After</div>
-        </template>
-    
-        <include-literal src="#objects-template" data="./test-objects.json"></include-literal>
-    
-        <hr/>
-    </section>
-    
-    <section>
-        <h3 class="text-03">Connected state <span class="test-count"></span></h3>
-    
-        <template id="connect-template">
-            <div>
-                ${ print(this) }
-                id = ${ this.id }, count = ${ this.count }, status = ${ this.status } (should be undefined, logs <code>status = "dom"</code> on setTimout)
-            </div>
-
-            <span>
-                ${ this.connected(() => console.log('Connected id =', this.id, 'count =', this.count, 'status =', this.status)) }
-            </span>
-        </template>
-        
-        <template id="connect-master-template">
-            <div>
-            ${ setTimeout(() => data.key = true, 400), print(this, data) }
-            </div>
-
-            <div>
-            ${ print(this) }
-            ${ data.key ? include('#connect-template', request('./test.json').then((o) => o)) : data.string }
-            </div>
-        </template>
-    
-        <include-literal src="#connect-master-template" data="./test.json"></include-literal>
-    
-        <hr/>
-    </section-->
-
-    <section id="element-root">
-        <h3 class="text-03">Scope variables <span class="test-count"></span></h3>
+    <section title="Variable element" id="element-root">
+        <h3 class="text-03">element variable <span class="test-count"></span></h3>
 
         <template id="scope-variable-template-1">
             ${ element.id === this.data.expected ? '✓ `element` is #' + this.data.expected  : '❌ `element` is ' + (element.id || '') + ' nodeType ' + element.nodeType }
@@ -525,9 +477,9 @@
         <hr/>
     </section>
 
-    <section id="connect-root">
-        <h3 class="text-03">Scope variables <span class="test-count"></span></h3>
-    
+    <section title="connected()" id="connect-0">
+        <h3 class="text-03">.connected() <span class="test-count"></span></h3>
+
         <template id="connect-template-1">${
             this.connected(() => (this.node.textContent = document.body.contains(element) ? '✓ ' + element.id + ' connected' : '❌ this.connected() run but ' + element.id + ' not in DOM')),
             '❌ ' + element.id + ' not connected'
@@ -539,7 +491,7 @@
                 '❌ ' + element.id + ' not connected'
             }</div>
         </template>
-        
+
         <template id="connect-template-3">
             <div id="connect-4" data-before="${
                 this.connected(() => (element.setAttribute('data-before', document.body.contains(element) ? '✓ ' + element.id + ' connected' : '❌ this.connected() run but ' + element.id + ' not in DOM'))),
@@ -571,7 +523,7 @@
 
             <div class="text-07">include-literal ➡ template ➡ include() ➡ template div</div>
             ${ include('#connect-template-2', {}) }
-            
+
             <div class="text-07">include-literal ➡ template ➡ include() ➡ template div[data-before]</div>
             ${ include('#connect-template-3', {}) }
 
@@ -580,12 +532,83 @@
 
             <div class="text-07">include-literal ➡ template div ➡ include() ➡ template div</div>
             <div id="connect-6">${ include('#connect-template-2', {}) }</div>
-            
+
             <div class="text-07">include-literal ➡ template div ➡ include() ➡ template div[data-before]</div>
             <div id="connect-7">${ include('#connect-template-3', {}) }</div>
         </template>
 
         <include-literal src="#connect-template"></include-literal>
+
+        <hr/>
+    </section>
+
+    <section title="Binding">
+        <h3 class="text-03">Live binding <span class="test-count">(4 tests)</span></h3>
+
+        <template id="clock-template">
+            <p>Time since load: ${ parseInt(data.time, 10) }</p>
+        </template>
+
+        <include-literal src="#clock-template" data="./test-clock.js"></include-literal>
+
+        <hr/>
+
+        <include-literal src="#clock-template" data="./test-clock.js"></include-literal>
+
+        <hr/>
+
+        <template id="even-template">
+            <p>Even: ${ parseInt(data.time, 10) }</p>
+        </template>
+
+        <template id="odd-template">
+            <p>Odd:  ${ parseInt(data.time, 10) }</p>
+        </template>
+
+        <template id="evenodd-template">
+            ${ include(parseInt(data.time, 10) % 2 === 0 ? '#even-template' : '#odd-template', data) }
+        </template>
+
+        <include-literal src="#evenodd-template" data="./test-clock.js"></include-literal>
+
+        <hr/>
+
+        <template id="numbers-template">
+            <input type="number" value="${ parseInt(data.time, 10) }" />
+            <input type="range" min="0" max="10" value="${ parseInt(data.time, 10) }" />
+
+            <label>Checked on odd</label>
+            <input type="checkbox" checked="${ parseInt(data.time, 10) % 2 }" />
+
+            <label>Checked on 1</label>
+            <input type="checkbox" checked="${ parseInt(data.time, 10) }" value="1" />
+
+            <label>Checked when equal to value 1-9</label>
+            <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="1" />
+            <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="2" />
+            <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="3" />
+            <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="4" />
+            <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="5" />
+            <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="6" />
+            <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="7" />
+            <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="8" />
+            <input type="radio" name="clock-radio" checked="${ parseInt(data.time, 10) }" value="9" />
+
+            <label>Selected when equal to value 1-9</label>
+            <select value="${ parseInt(data.time, 10) }">
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+                <option value="4">Four</option>
+                <option value="5">Five</option>
+                <option value="6">Six</option>
+                <option value="7">Seven</option>
+                <option value="8">Eight</option>
+                <option value="9">Nine</option>
+            </select>
+        </template>
+
+        <include-literal src="#numbers-template" data="./test-clock.js"></include-literal>
 
         <hr/>
     </section>

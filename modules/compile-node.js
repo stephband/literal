@@ -3,12 +3,12 @@ import noop     from '../../fn/modules/noop.js';
 import overload from '../../fn/modules/overload.js';
 import toType   from '../../dom/modules/to-type.js';
 
-import AttributeRenderer from './renderers/attribute-renderer.js';
-import BooleanRenderer   from './renderers/boolean-renderer.js';
-import CheckedRenderer   from './renderers/checked-renderer.js';
-import ContentRenderer   from './renderers/content-renderer.js';
-import TokensRenderer    from './renderers/tokens-renderer.js';
-import ValueRenderer, { StringValueRenderer } from './renderers/value-renderer.js';
+import AttributeRenderer from '../renderers/attribute-renderer.js';
+import BooleanRenderer   from '../renderers/boolean-renderer.js';
+import CheckedRenderer   from '../renderers/checked-renderer.js';
+import ContentRenderer   from '../renderers/content-renderer.js';
+import TokensRenderer    from '../renderers/tokens-renderer.js';
+import ValueRenderer, { StringValueRenderer } from '../renderers/value-renderer.js';
 
 import decode   from './decode.js';
 
@@ -16,7 +16,7 @@ const A = Array.prototype;
 const rliteral = /\$\{/;
 
 
-/** 
+/**
 compileAttributes(renderers, options, nodeames)
 **/
 
@@ -127,7 +127,7 @@ function compileChildren(renderers, options, node, parent) {
 }
 
 const compileElement = overload((renderers, options, element) => element.tagName.toLowerCase(), {
-    // Ignore SVG <defs>, which for our purposes we consider as inert like 
+    // Ignore SVG <defs>, which for our purposes we consider as inert like
     // HTML's <template>
     'defs': noop,
 
@@ -135,7 +135,7 @@ const compileElement = overload((renderers, options, element) => element.tagName
         // Children first means inner DOM to outer DOM
         compileChildren(renderers, options, element, element);
 
-        // We must wait until custom elements are upgraded before we may 
+        // We must wait until custom elements are upgraded before we may
         // interact with their non-standard properties and attributes
         // Todo: Test this
         // Hang on... is this still true given that the renderer.set negociates
@@ -151,13 +151,13 @@ const compileElement = overload((renderers, options, element) => element.tagName
             compileAttributes(renderers, options, element);
             //compileType(renderers, options, node);
         /*}*/
-        
+
         return renderers;
     }
 });
 
 
-/** 
+/**
 compileNode()
 **/
 

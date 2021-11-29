@@ -112,7 +112,7 @@ register('events',  events);
 register('select',  select);
 
 export { register };
-import TemplateRenderer from './modules/renderers/template-renderer.js';
+import TemplateRenderer from './renderers/template-renderer.js';
 export const Template = TemplateRenderer;
 
 export { Observer }  from '../fn/observer/observer.js';

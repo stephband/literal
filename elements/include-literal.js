@@ -56,7 +56,7 @@ import element        from '../../dom/modules/element.js';
 import { requestGet } from '../../dom/modules/request.js';
 import fragmentFromHTML from '../../dom/modules/fragment-from-html.js';
 import request from '../library/request.js';
-import TemplateRenderer from '../modules/renderers/template-renderer.js';
+import TemplateRenderer from '../renderers/template-renderer.js';
 import print   from '../library/print.js';
 
 const rpath = /^\/|\.|^https?:\/\//;

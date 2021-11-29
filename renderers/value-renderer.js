@@ -1,15 +1,15 @@
 
 import trigger   from '../../../dom/modules/trigger.js';
-import config    from '../config.js';
-import library   from '../library.js';
-import compile   from '../compile.js';
+import config    from '../modules/config.js';
+import library   from '../modules/library.js';
+import compile   from '../modules/compile.js';
 import Renderer, { renderString } from './renderer.js';
 import analytics from './analytics.js';
 
 const assign = Object.assign;
 
 
-/** 
+/**
 ValueRenderer()
 Constructs an object responsible for rendering to a plain text attribute.
 **/
@@ -22,7 +22,7 @@ const types = {
 };
 
 function addValue(result, value) {
-    return result === undefined ? 
+    return result === undefined ?
         value :
         result + value ;
 }
@@ -79,8 +79,8 @@ function setValue(node, value) {
         typeof value === type ? value :
         null ;
 
-    // Avoid updating with the same value. Support node values of any type to 
-    // support custom elements (like <range-control>), as well as values that 
+    // Avoid updating with the same value. Support node values of any type to
+    // support custom elements (like <range-control>), as well as values that
     // are always strings
     if (value === node.value || (value + '') === node.value) {
         return 0;
@@ -92,7 +92,7 @@ function setValue(node, value) {
     const count = setProperty(node, value);
 
     // Optional event hook
-    if (config.changeEvent) { 
+    if (config.changeEvent) {
         trigger(config.changeEvent, node);
     }
 
@@ -105,7 +105,7 @@ export default function ValueRenderer(node, options) {
 
     this.name      = 'value';
     this.literally = options.literally || compile(library, 'data, element', options.source, null, options, node);
-    
+
     // Analytics
     const id = '#' + options.template;
     ++analytics[id].value || (analytics[id].value = 1);
@@ -120,7 +120,7 @@ assign(ValueRenderer.prototype, Renderer.prototype, {
 });
 
 
-/** 
+/**
 StringValueRenderer()
 Constructs an object responsible for rendering to a value property as a string.
 **/
@@ -130,7 +130,7 @@ export function StringValueRenderer(node, options) {
 
     this.name      = 'value';
     this.literally = options.literally || compile(library, 'data, element', options.source, null, options, node);
-    
+
     // Analytics
     const id = '#' + options.template;
     ++analytics[id].value || (analytics[id].value = 1);

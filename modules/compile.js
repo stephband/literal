@@ -1,6 +1,6 @@
 
 import compileFn from '../../fn/modules/compile.js';
-import analytics from './renderers/analytics.js';
+import analytics from '../renderers/analytics.js';
 
 if (window.DEBUG) {
     analytics.totalCompileTime = 0;
@@ -39,7 +39,7 @@ export default function compile(scope, params, source, id, info, element) {
                 text.replace(/\s+/g, ' ').replace(/"/g, '\\"') ;
 
             const t0 = window.performance.now();
-            cache[key] = compileFn(scope, params, 
+            cache[key] = compileFn(scope, params,
                 'try {' + code + '} catch(e) {' +
                 // Append useful info to error message
                 indent + 'e.message += " in template #" + this.template + (this.element && this.element.tagName ? ", <" + this.element.tagName.toLowerCase() + (this.name ? " " + this.name + "=\\"' + name + '\\">" : "> ' + name + '") : "");' +

@@ -82,7 +82,7 @@
         <h2>Literal in JS</h2>
     </div>
 
-    ${ include("./templates/constructor.literal", await comments("./modules/renderers/template-renderer.js")) }
+    ${ include("./templates/constructor.literal", await comments("./renderers/template-renderer.js")) }
 
     <script type="module">
         import './module.js';

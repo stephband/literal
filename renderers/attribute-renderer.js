@@ -1,13 +1,13 @@
 
-import library   from '../library.js';
-import compile   from '../compile.js';
+import library   from '../modules/library.js';
+import compile   from '../modules/compile.js';
 import Renderer, { renderString } from './renderer.js';
 import names     from './property-names.js';
 import analytics from './analytics.js';
 
 const assign = Object.assign;
 
-/** 
+/**
 AttributeRenderer()
 Constructs an object responsible for rendering to a plain text attribute.
 **/
@@ -34,10 +34,10 @@ function setAttribute(node, name, value) {
 
 export default function AttributeRenderer(node, options) {
     Renderer.apply(this, arguments);
-    
+
     this.name      = options.name;
     this.literally = options.literally || compile(library, 'data, element', options.source, null, options, this.element);
-    
+
     // Analytics
     const id = '#' + options.template;
     ++analytics[id].attribute || (analytics[id].attribute = 1);

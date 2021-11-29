@@ -1,11 +1,11 @@
 
 
 import create           from '../../../dom/modules/create.js';
-import print            from '../../library/print.js';
-import toText           from '../to-text.js';
+import print            from '../library/print.js';
+import toText           from '../modules/to-text.js';
 import TemplateRenderer from './template-renderer.js';
 import { cue }          from './batcher.js';
-import { log }          from '../log.js';
+import { log }          from '../modules/log.js';
 import { meta }         from './analytics.js';
 
 const assign = Object.assign;
@@ -73,7 +73,7 @@ assign(ArrayRenderer.prototype, {
             if (window.DEBUG && i === -1) {
                 throw new Error('Renderer not found in parent contents array. Summat\'s up.');
             }
-    
+
             this.parent.contents[i] = node;
         }
 
@@ -121,10 +121,12 @@ assign(PromiseRenderer.prototype, {
     },
 
     render: function(value) {
-        // Replace this promise renderer in the contents contents, 
+        // Replace this promise renderer in the contents contents,
         // effectively retiring it from active service
         const renderer = toRenderer(this.parent, value);
-        this.replaceWith(renderer);
+        const content  = toContent(renderer);
+console.log('Promise.render', typeof this.content, this.content, value, typeof content, content);
+        this.replaceWith(content);
         this.stop();
         return 1;
     },
@@ -156,15 +158,15 @@ assign(PromiseRenderer.prototype, {
     print: window.DEBUG ?
         function(e) { this.content.replaceWith(print(e)) } :
         function() { this.content.remove(); },
-    
+
     remove: function() {
         this.content.remove();
     },
-    
+
     stop: function() {
         this.status = 'done';
     },
-    
+
     connect: function() {
         this.status = 'dom';
     }
@@ -187,6 +189,7 @@ assign(StreamRenderer.prototype, PromiseRenderer.prototype, {
         const content  = toContent(renderer);
 
         this.content.stop && this.content.stop();
+console.log('Stream.render', typeof this.content, this.content, value, typeof content, content);
         this.content.replaceWith(content);
         this.content = renderer;
 
@@ -199,7 +202,7 @@ assign(StreamRenderer.prototype, PromiseRenderer.prototype, {
         this.stream.stop && this.stream.stop();
         this.content.stop && this.content.stop();
     },
-    
+
     connect: function() {
         if (this.status === 'dom') { return; }
         this.status = 'dom';

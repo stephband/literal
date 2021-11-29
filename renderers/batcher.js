@@ -1,7 +1,7 @@
 
-import { log, group, groupCollapsed, groupEnd } from '../log.js';
+import { log, group, groupCollapsed, groupEnd } from '../modules/log.js';
 import analytics from './analytics.js';
-import { cache as compileCache } from '../compile.js';
+import { cache as compileCache } from '../modules/compile.js';
 
 const renderers = [];
 const promise   = Promise.resolve(renderers);
@@ -35,7 +35,7 @@ function render(renderers) {
     var t0, ids;
     if (window.DEBUG) {
         t0 = window.performance.now() / 1000;
-        groupCollapsed('batch', t0.toFixed(3) + 's – cued ' + constructorCount(renderers), '#B6BD00');
+        group('batch', t0.toFixed(3) + 's – cued ' + constructorCount(renderers), '#B6BD00');
         ids = {};
     }
 
@@ -59,9 +59,14 @@ function render(renderers) {
         if (logs.totalCompileTime !== analytics.totalCompileTime) {
             logs.batchCompileTime = analytics.totalCompileTime - logs.totalCompileTime;
             logs.totalCompileTime = analytics.totalCompileTime;
-            const totalCompileCount = Object.keys(compileCache).length;
+
+            const ids      = Object.keys(compileCache);
+            const batchIds = ids.slice(logs.totalCompileCount);
+            const totalCompileCount = ids.length;
+
             logs.batchCompileCount = totalCompileCount - logs.totalCompileCount;
             logs.totalCompileCount = totalCompileCount;
+
             log('compile', logs.batchCompileCount + ' literal' + (logs.batchCompileCount === 1 ? '' : 's') + ', ' + logs.batchCompileTime.toPrecision(3) + 'ms', undefined, undefined, '#DDB523');
         }
         else {
@@ -72,12 +77,12 @@ function render(renderers) {
             // renderers
             keys.length + ' renderer' + (keys.length === 1 ? ', ' : 's, ')
             // mutations
-            + count + ' mutation' + (count === 1 ? ', ' : 's, ') 
+            + count + ' mutation' + (count === 1 ? ', ' : 's, ')
             // duration
-            + ((t1 - t0) * 1000 - logs.batchCompileTime).toPrecision(3) + 'ms' 
+            + ((t1 - t0) * 1000 - logs.batchCompileTime).toPrecision(3) + 'ms'
             // ids
-            + ' (#' + keys.slice(0, 12).join(', #') + (keys.length > 12 ? ', ...)' : ')'), 
-            // 
+            + ' (#' + keys.slice(0, 12).join(', #') + (keys.length > 12 ? ', ...)' : ')'),
+            //
             '', '', 'orange'
         );
 
@@ -117,7 +122,7 @@ export function cue(renderer, args) {
     return cued;
 }
 
-/** 
+/**
 uncue(renderer)
 Removes renderer from the render queue.
 **/

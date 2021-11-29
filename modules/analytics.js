@@ -1,5 +1,5 @@
 
-import renderers from './renderers/analytics.js';
+import renderers from '../renderers/analytics.js';
 
 export default {
     renderers
