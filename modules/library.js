@@ -2,8 +2,8 @@
 /**
 Template functions
 
-The scope of literal templates contains a small library of functions. Some are 
-simply JS built-ins aliased for brevity. Others provide template includes, 
+The scope of literal templates contains a small library of functions. Some are
+simply JS built-ins aliased for brevity. Others provide template includes,
 routing and value transformations.
 
 **/
@@ -36,9 +36,9 @@ const library = {
     Alias of `Object.assign()`.
     **/
     assign: assign,
-    
+
     /** by(fn, a, b)
-    Compares `fn(a)` against `fn(b)` and returns `-1`, `0` or `1`. Partially 
+    Compares `fn(a)` against `fn(b)` and returns `-1`, `0` or `1`. Partially
     applicable and intended for use in `array.sort()`. For example, to sort an
     array of objects by their ids:
 
@@ -48,12 +48,12 @@ const library = {
     **/
     by,
 
-    /** 
+    /**
     capture()
     **/
     capture: capture,
 
-    /** 
+    /**
     combine(source1, source2, ...)
     Combines multiple sources into a single stream.
     **/
@@ -68,7 +68,7 @@ const library = {
     Alias of `Object.defineProperties()`.
     **/
     define: Object.defineProperties,
-    
+
     /** entries(object)
     Alias of `Object.entries()`.
     **/
@@ -85,9 +85,9 @@ const library = {
     floor: Math.floor,
 
     /** get(path, object)
-    Gets the value of `path` in `object`, where `path` is a string in JS 
+    Gets the value of `path` in `object`, where `path` is a string in JS
     dot-notation. Where a path does not lead to a value, returns `undefined`:
-    
+
     ```
     get('path.to.value', {})       // undefined
     ```
@@ -101,35 +101,35 @@ const library = {
     ```
     **/
     get,
-    
+
     /** id(object)
     Returns `object`.
     **/
     id,
-    
+
     /** keys(object)
     Alias of `Object.keys()`.
     **/
     keys: Object.keys,
-    
+
     /** last()
     Gets the last item from an array or array-like.
     **/
     last,
-    
+
     /** matches(selector, object)
-    Returns true where all the properties of `selector` are strictly equal to the 
+    Returns true where all the properties of `selector` are strictly equal to the
     same properties of `object`.
     **/
     matches,
 
-    /** 
+    /**
     merge(source1, source2, ...)
     Merges multiple sources into a single stream.
     **/
     merge,
-    
-    /** 
+
+    /**
     zip(source1, source2, ...)
     Zips multiple sources into a single stream of array.
     **/
@@ -139,13 +139,13 @@ const library = {
     Return undefined.
     **/
     noop,
-    
-    /* 
+
+    /*
     nothing
     A frozen array representing no value.
     */
     //nothing,
-    
+
     /** observe(path, object)
     Returns an observable of mutations to `path` in `object`. Consume mutations
     with an observable's `.each()` method.
@@ -160,8 +160,8 @@ const library = {
     observable.stop();
     ```
 
-    Renderers (which are exposed as `this` inside templates), have a `.done()` 
-    method that calls a subscriber's `.stop()` method when the render is 
+    Renderers (which are exposed as `this` inside templates), have a `.done()`
+    method that calls a subscriber's `.stop()` method when the render is
     stopped. This pattern observes `data.title` until the next render:
 
     ```js
@@ -171,14 +171,14 @@ const library = {
     observe,
 
     /* Observer(object)
-    Returns the Observer proxy of `object`. Use this proxy to make changes to 
+    Returns the Observer proxy of `object`. Use this proxy to make changes to
     an object that may be observed using `observe(path, object)` (above).
     */
     Observer,
 
     /* overload(fn, object) */
     overload,
-    
+
     print: window.DEBUG ? print : noop,
 
     /** round(n)
@@ -186,18 +186,19 @@ const library = {
     **/
     round: Math.round,
 
-    /** 
+    /**
     paramify(object)
-    Turns an object with enumerable properties into a search parameters object
-    (which stringifies to a search parameter string).
+    Turns an object with enumerable properties into a (native) URL search
+    parameters object, rejecting undefined properties and flattening out
+    array values.
     **/
     paramify: function(object) {
         // If this is an object with properties that may be arrays, flatten it
         // out into entries
-        const params = typeof object === 'object' && typeof object.length !== 'number' ?        
+        const params = typeof object === 'object' && typeof object.length !== 'number' ?
             entries(object).flatMap((entry) => (
                 entry[1] === undefined ? nothing :
-                entry[1] && typeof entry[1] === 'object' && entry[1].map ? entry[1].map((value) => [entry[0], value]) : 
+                entry[1] && typeof entry[1] === 'object' && entry[1].map ? entry[1].map((value) => [entry[0], value]) :
                 [entry]
             )) :
             object ;
@@ -210,13 +211,13 @@ const library = {
     Returns the slug of `string`.
     **/
     slugify,
-    
+
     /** Stream(fn)
     Returns a stream of values.
     **/
     Stream,
 
-    /** 
+    /**
     translate()
     **/
     translate: function(key) {
