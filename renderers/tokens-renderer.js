@@ -53,7 +53,7 @@ function setTokens(tokens, cached, values, count) {
     let n = cached.length;
 
     while (n--) {
-        if (tokens.indexOf(cached[n]) !== -1) {
+        if (tokens.contains(cached[n])) {
             cached.splice(n, 1);
         }
     }

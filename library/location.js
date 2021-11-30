@@ -8,6 +8,8 @@ export const defaults = {
     search: '',
     params: {},
     hash:   '',
+    identifier: '',
+    // Legacy
     id:     '',
     json:   'null',
     state:  null
@@ -49,15 +51,15 @@ function parseSchemaValue(Type, defaultValue, value) {
         if (Type === Number) {
             return Number(value);
         }
-    
+
         if (Type === String) {
             return String(value);
         }
-    
+
         if (Type === Symbol) {
             return Symbol(value);
         }
-    
+
         return new Type(value);
     }
 
@@ -87,7 +89,7 @@ function parseSchemaKey(config, params, key) {
             // Array must match length of schema array
             throw new Error('Location params schema Array multiple values not yet supported');
         }
-        
+
         // Schema array contains a single value, which we take to mean it may
         // contain any number of values (else why not accept a single value?)
         return params.getAll(key)
@@ -98,7 +100,7 @@ function parseSchemaKey(config, params, key) {
 }
 
 function fromEntries(entries) {
-    // Keep a note of what state each param is in: single, multiple or 
+    // Keep a note of what state each param is in: single, multiple or
     // undefined (unparsed)
     const state  = {};
     const object = {};
@@ -109,10 +111,10 @@ function fromEntries(entries) {
             // Values have already been got, ignore
         }
         else if (state[key] === 'single') {
-            // As soon as we encounter a second instance of key, get all values 
-            // for key. We flatMap to accomodate the case where a single value 
-            // is parsed as an array, ie ?v=a&v=b,c ... although I'm not convinced 
-            // we should be supporting nonstandard ways of representing multiple 
+            // As soon as we encounter a second instance of key, get all values
+            // for key. We flatMap to accomodate the case where a single value
+            // is parsed as an array, ie ?v=a&v=b,c ... although I'm not convinced
+            // we should be supporting nonstandard ways of representing multiple
             // values
             object[key] = entries.getAll(key).flatMap(parseParam);
             state[key] = 'multiple';
@@ -150,14 +152,16 @@ function updateDataFromLocation(location, history, data) {
         data.search = location.search;
         data.params = location.search ?
             fromEntries(new URLSearchParams(location.search)) :
-            defaults.params ;        
+            defaults.params ;
         names.push('params');
     }
 
     if (location.hash !== data.hash) {
-        data.hash = location.hash;
-        data.id   = location.hash.replace(/^#/, '') || defaults.id;
-        names.push('id');
+        data.hash       = location.hash;
+        data.identifier = location.hash.replace(/^#/, '') || defaults.id;
+        // SUpport legacy 'id'
+        data.id         = data.id;
+        names.push('identifier', 'id');
     }
 
     const json = JSON.stringify(history.state);
