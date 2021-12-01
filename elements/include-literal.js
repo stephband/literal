@@ -83,6 +83,17 @@ function zipObject(keys, values) {
     return object;
 }
 
+const onerror = window.DEBUG ? (e, element) => {
+    element.loading = false;
+    element.replaceWith(print(e));
+    throw e;
+} : (e, include) => {
+    element.loading = false;
+    if (element.frame) { cancelAnimationFrame(element.frame); }
+    else { element.removeAttribute('loading'); }
+    throw e;
+} ;
+
 element('<include-literal>', {
     construct: function() {
         if (window.DEBUG && !this.hasAttribute('src')) {
@@ -109,56 +120,31 @@ element('<include-literal>', {
             this.rejectSrc = reject;
         })
         .then((template) => dataPromise.then((data) => {
-            const renderer = new TemplateRenderer(template, parent);
+            const parent  = this.parentElement;
 
-            // But once it has data we know we can render it, but we
+            // Once it has data we know we can render it, but we
             // want to do that in the next batch
-            renderer.push(data).then(() => {
+            this.renderer = new TemplateRenderer(template, parent);
+            this.renderer.push(data).then(() => {
                 this.loading = false;
-                this.renderer = renderer;
-
-                // Signal to tree of renderers that we are now in the DOM
                 if (this.connected) {
-                    renderer.element = this.parentElement;
-if (!renderer.element) { console.error('No renderer.element on connect(). Didnt know this was possible.', this); }
-                    this.replaceWith(renderer.content);
-                    renderer.connect();
+                    this.replaceWith(this.renderer.content);
+                    this.renderer.connect();
                 }
             });
-
-            this.renderer = renderer;
-        })).catch(window.DEBUG ?
-            (e) => {
-                this.loading = false;
-                this.replaceWith(print(e));
-                throw e;
-            } :
-            (e) => {
-                this.loading = false;
-                if (this.frame) {
-                    cancelAnimationFrame(this.frame);
-                }
-                else {
-                    this.removeAttribute('loading');
-                }
-
-                throw e;
-            }
-        );
+        })).catch((e) => onerror(e, this));
     },
 
     connect: function() {
         this.connected = true;
 
-        if (this.renderer) {
-            renderer.element = this.parentElement;
-if (!renderer.element) { console.error('No renderer.element on connect(). Didnt know this was possible.', this); }
+        if (this.renderer && !this.loading) {
             this.replaceWith(renderer.content);
             this.renderer.connect();
         }
 
         // If we are loading at connect time, add the loading attribute after a
-        // couple of frames to allow any transition to start
+        // couple of frames, which allows any transition to start
         if (this.loading) {
             this.frame = requestAnimationFrame(() =>
                 this.frame = requestAnimationFrame(() =>
@@ -280,7 +266,6 @@ if (!renderer.element) { console.error('No renderer.element on connect(). Didnt 
                 this.loading = true;
                 requestGet(value).then((html) => this.resolveSrc(fragmentFromHTML(html)));
                 return;
-
             }
 
             const id = value.replace(/^#/, '');
