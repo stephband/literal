@@ -115,43 +115,35 @@ element('<include-literal>', {
                 this.rejectData  = reject;
             }) ;
 
-        new Promise((resolve, reject) => {
+        this.promise = new Promise((resolve, reject) => {
             this.resolveSrc = resolve;
             this.rejectSrc = reject;
         })
-        .then((template) => dataPromise.then((data) => {
-            const parent  = this.parentElement;
-
-            // Once it has data we know we can render it, but we
-            // want to do that in the next batch
-            this.renderer = new TemplateRenderer(template, parent);
-            this.renderer.push(data).then(() => {
-                this.loading = false;
-                if (this.connected) {
-                    this.replaceWith(this.renderer.content);
-                    this.renderer.connect();
-                }
-            });
-        })).catch((e) => onerror(e, this));
+        .then((src) => {
+            // TODO: remove parent here, should not be needed until render
+            this.renderer = new TemplateRenderer(src, this.parentElement);
+            return dataPromise;
+        })
+        .catch((e) => onerror(e, this));
     },
 
     connect: function() {
-        this.connected = true;
-
-        if (this.renderer && !this.loading) {
-            this.replaceWith(renderer.content);
-            this.renderer.connect();
-        }
-
         // If we are loading at connect time, add the loading attribute after a
-        // couple of frames, which allows any transition to start
-        if (this.loading) {
-            this.frame = requestAnimationFrame(() =>
-                this.frame = requestAnimationFrame(() =>
-                    this.frame = this.setAttribute('loading', '')
-                )
-            );
-        }
+        // couple of frames, allowing time for any styled transition to start
+        (this.loading && (this.frame = requestAnimationFrame(() =>
+            (this.loading && (this.frame = requestAnimationFrame(() =>
+                (this.loading && this.setAttribute('loading', ''))
+            )))
+        )));
+
+        // Cue up first render and replace
+        this.promise.then((data) => {
+            this.loading = false;
+            this.renderer.element = this.parentElement;
+            this.renderer.render(data);
+            this.replaceWith(this.renderer.content);
+            this.renderer.connect();
+        });
 
         // Where no data or data-* attribute has been defined resolve with an
         // empty object...
@@ -218,7 +210,8 @@ element('<include-literal>', {
             }
             else if (typeof value === 'string') {
                 this.loading = true;
-                this.resolveData(request(value));
+                this.request = request(value);
+                this.resolveData(this.request);
             }
             else {
                 this.resolveData(value);
@@ -264,7 +257,11 @@ element('<include-literal>', {
                 // loading icon to transition in the transition must begin after
                 // we are already in the DOM.
                 this.loading = true;
-                requestGet(value).then((html) => this.resolveSrc(fragmentFromHTML(html)));
+
+                requestGet(value).then((html) => {
+                    return this.resolveSrc(fragmentFromHTML(html));
+                });
+
                 return;
             }
 

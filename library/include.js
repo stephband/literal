@@ -14,8 +14,7 @@ export default function include(url, object, element) {
     // This is for inserting static HTML for living archives, but the API
     // should be different for static HTML - TODO: make an <include-html> element
     if (typeof url === 'string' && !/^#/.test(url)) {
-        return requestGet(url)
-        .then(fragmentFromHTML);
+        return requestGet(url).then(fragmentFromHTML);
     }
 
     // Currently we accept string URLs in the form '#id' only

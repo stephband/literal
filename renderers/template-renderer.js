@@ -172,7 +172,6 @@ export default function TemplateRenderer(template, parent) {
     // source properties). We can do this because renderer construction is
     // synchronous within a template.
     this.contents = compileNode([], { template: id, path: '' }, this.content, parent);
-
     cache[id] = this;
 }
 
