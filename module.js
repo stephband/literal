@@ -95,6 +95,7 @@ Contents
 */
 
 /* Importing include-literal registers – and instantiates – <include-literal> */
+import './elements/include-html.js';
 import './elements/include-literal.js';
 export { cache as compiled } from './modules/compile.js';
 

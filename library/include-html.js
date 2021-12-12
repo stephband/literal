@@ -1,7 +1,8 @@
 
 /**
 includeHTML(src)
-Includes another template. Not available inside attributes.
+Includes cloned html content from an external document at the `src` URL, or from
+the content of an element identified by the `src` fragment identifier.
 **/
 
 import create         from '../../dom/modules/create.js';
