@@ -72,9 +72,9 @@
     ${ include("./templates/section.literal", await comments("./modules/to-text.js")) }
     ${ include("./templates/section.literal", await comments(
         "./modules/library.js",
-        "./library/media.js",
-        "./modules/include-literal.js",
-        "./modules/include-html.js",
+        "./library/location.js",
+        "./library/include-literal.js",
+        "./library/include-html.js",
         "../dom/modules/parse-length.js"
     )) }
     ${ include("./templates/section.literal", await comments("./library/print.js")) }
