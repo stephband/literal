@@ -10,7 +10,7 @@ import curry          from '../../fn/modules/curry.js';
 import library        from '../modules/library.js';
 import compile        from '../modules/compile.js';
 import toText         from '../modules/to-text.js';
-import include        from '../library/include.js';
+import include        from '../library/include-literal.js';
 import Renderer, { removeNodes } from './renderer.js';
 import TemplateRenderer from './template-renderer.js';
 import { StreamRenderer, ArrayRenderer, PromiseRenderer, isStream } from './content-renderers.js';

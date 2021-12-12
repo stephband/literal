@@ -54,7 +54,7 @@ Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a
 
 import element        from '../../dom/modules/element.js';
 import { requestGet } from '../../dom/modules/request.js';
-import fragmentFromHTML from '../../dom/modules/fragment-from-html.js';
+import create         from '../../dom/modules/create.js';
 import request from '../library/request.js';
 import TemplateRenderer from '../renderers/template-renderer.js';
 import print   from '../library/print.js';
@@ -259,7 +259,7 @@ element('<include-literal>', {
                 this.loading = true;
 
                 requestGet(value).then((html) => {
-                    return this.resolveSrc(fragmentFromHTML(html));
+                    return this.resolveSrc(create('fragment', html));
                 });
 
                 return;

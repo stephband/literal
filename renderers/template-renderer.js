@@ -159,7 +159,15 @@ export default function TemplateRenderer(template, parent) {
     template.content && prepareContent(template.content);
 
     this.template = template;
+
+try {
     this.content  = template.content ? template.content.cloneNode(true) : template.cloneNode(true) ;
+}
+catch(e) {
+    console.log(template, template.content);
+    throw e;
+}
+
     this.first    = this.content.childNodes[0];
     this.last     = this.content.childNodes[this.content.childNodes.length - 1];
 

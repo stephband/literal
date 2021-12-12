@@ -5,7 +5,6 @@ Includes another template. Not available inside attributes.
 
 import curry            from '../../fn/modules/curry.js';
 import { requestGet }   from '../../dom/modules/request.js';
-import fragmentFromHTML from '../../dom/modules/fragment-from-html.js';
 import { getTarget }    from '../../fn/observer/observer.js';
 import TemplateRenderer from '../renderers/template-renderer.js';
 import request          from './request.js';
@@ -14,7 +13,7 @@ export default function include(url, object, element) {
     // This is for inserting static HTML for living archives, but the API
     // should be different for static HTML - TODO: make an <include-html> element
     if (typeof url === 'string' && !/^#/.test(url)) {
-        return requestGet(url).then(fragmentFromHTML);
+        throw new Error('include() external url not yet supported, #fragment identifiers only');
     }
 
     // Currently we accept string URLs in the form '#id' only

@@ -8,8 +8,8 @@ Import Literal from the main module in the repo:
 import 'http://stephen.band/literal/module.js';
 ```
 
-<p class="right-bubble bubble">Clearly you should not rely on this resource in 
-production. Use a bundler such as <a href="https://esbuild.github.io/">esbuild</a> 
+<p class="right-bubble bubble">Clearly you should not rely on this resource in
+production. Use a bundler such as <a href="https://esbuild.github.io/">esbuild</a>
 to package it into your own module.</p>
 
 And grab the associated CSS:
@@ -18,7 +18,7 @@ And grab the associated CSS:
 @import 'http://stephen.band/literal/module.css';
 ```
 
-<p class="right-bubble bubble">Clearly you should not rely on this resource in 
+<p class="right-bubble bubble">Clearly you should not rely on this resource in
 production. Use a bundler to package it into your own CSS.</p>
 
 This registers the custom element `<include-literal>`. Here is how to use it:
@@ -38,8 +38,8 @@ This registers the custom element `<include-literal>`. Here is how to use it:
 </include-literal>
 ```
 
-A `<include-literal>` is replaced with the content of its `src` template when 
-its `data` is fetched and rendered. Inside the template, data to render 
+A `<include-literal>` is replaced with the content of its `src` template when
+its `data` is fetched and rendered. Inside the template, data to render
 is accessed through the variable `${ data }`. The result of this example is:
 
 <template id="item">
@@ -55,8 +55,8 @@ is accessed through the variable `${ data }`. The result of this example is:
     <p>Fallback content.</p>
 </include-literal>
 
-The template renderer observes `data` objects and updates the DOM if changes are 
-detected. In the following example a mutating `data` object is imported from a 
+The template renderer observes `data` objects and updates the DOM if changes are
+detected. In the following example a mutating `data` object is imported from a
 JS module and used to rotate an SVG:
 
 ```html
@@ -94,26 +94,25 @@ Contents
 - <a href="#template-functions">Literal template functions</a>
 */
 
-import request from './library/request.js';
-import events  from '../dom/modules/events.js';
-import select  from '../dom/modules/select.js';
-
 /* Importing include-literal registers – and instantiates – <include-literal> */
 import './elements/include-literal.js';
-
 export { cache as compiled } from './modules/compile.js';
+
 import { register } from './modules/library.js';
+export { register };
 
 import analytics from './modules/analytics.js';
 export { analytics };
 
-register('request', request);
+import events      from '../dom/modules/events.js';
+import select      from '../dom/modules/select.js';
+import request     from './library/request.js';
+import includeHTML from './library/include-html.js';
+
 register('events',  events);
 register('select',  select);
-
-export { register };
-import TemplateRenderer from './renderers/template-renderer.js';
-export const Template = TemplateRenderer;
+register('request', request);
+register('includeHTML', includeHTML);
 
 export { Observer }  from '../fn/observer/observer.js';
 export { default as observe } from '../fn/observer/observe.js';
