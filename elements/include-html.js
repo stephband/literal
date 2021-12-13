@@ -24,6 +24,7 @@ A `include-html` may contain fallback content, in case any of that fails.
 import element        from '../../dom/modules/element.js';
 import { requestGet } from '../../dom/modules/request.js';
 import create         from '../../dom/modules/create.js';
+import includeHTML    from '../library/include-html.js';
 import print          from '../library/print.js';
 
 const onerror = window.DEBUG ? (e, element) => {
@@ -70,14 +71,14 @@ element('<include-html>', {
         /**
         loading=""
         Read-only (pseudo-read-only) boolean attribute indicating status of
-        `src` and `data` requests.
+        `src` request.
         **/
 
         /**
         .loading
-        Read-only (pseudo-read-only) boolean indicating status of `src` and
-        `data` requests.
+        Read-only boolean indicating status of `src` request.
         **/
+
         value: false,
         writable: true
     },
@@ -85,7 +86,7 @@ element('<include-html>', {
     /**
     src=""
     Define a source document or node whose cloned content replaces this
-    `include-html`. This is a required attribute.
+    `<include-html>` element. This is a required attribute.
     **/
 
     src: {
