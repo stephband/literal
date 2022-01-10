@@ -187,7 +187,7 @@ element('<include-literal>', {
 
         set: function(value) {
             if (this.renderer) {
-                if (!value) {
+                if (!value || value === 'null') {
                     this.renderer.push(null);
                 }
                 else if (typeof value === 'string') {
