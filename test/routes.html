@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class=" js content-loading loading"><head>    
+<html lang="en" class=" js content-loading loading"><head>
     <meta charset="utf-8">
     <meta name="author" content="stephband">
     <meta name="description" content="Documentation for router. A library of DOM functions for HTML and SVG, importable as individual ES modules.">
@@ -31,7 +31,7 @@
 
     <link rel="stylesheet" href="../../bolt/module.css">
     <!--link rel="stylesheet" href="style.css" /-->
-    
+
     <style>
     pre {
         margin-left: 0;
@@ -46,13 +46,13 @@
         --------------------
         renderer: ${ this.id }
         render:   ${ this.count }
-    
+
         pk:       ${ data.pk }
         base:     ${ data.base }
         path:     ${ data.path }
         route:    ${ data.route }
         params:   ${ data.params }
-        id:       ${ data.id }
+        id:       ${ data.identifier }
         state:    ${ data.state }
     </template>
 
@@ -67,7 +67,7 @@
         path:     ${ data.path }
         route:    ${ data.route }
         params:   ${ data.params }
-        id:       ${ data.id }
+        id:       ${ data.identifier }
         state:    ${ data.state }
     </template>
 
@@ -76,13 +76,13 @@
         ---------------------
         renderer: ${ this.id }
         render:   ${ this.count }
-    
+
         pk:       ${ data.pk }
         base:     ${ data.base }
         path:     ${ data.path }
         route:    ${ data.route }
         params:   ${ data.params }
-        id:       ${ data.id }
+        id:       ${ data.identifier }
         state:    ${ data.state }
     </template>
 
@@ -91,9 +91,9 @@
         path:   ${ data.base + data.path }
         route:  ${ data.route }
         params: ${ data.params }
-        id:     ${ data.id }
+        id:     ${ data.identifier }
         state:  ${ data.state }
-    
+
         ${ routes({
             '^([0-9]+)/':   include('#number/')
         })(data.route) }
@@ -104,7 +104,7 @@
         path:   ${ data.base + data.path }
         params: ${ data.params }
         $1:     ${ data.$1 }
-        id:     ${ data.id }
+        id:     ${ data.identifier }
         state:  ${ data.state }
     </template-->
 
@@ -117,7 +117,7 @@
         renderer: ${ this.id }
         render:   ${ this.count }
         number:   ${ typeof data.number } ${ data.number }
-    
+
         pk:       ${ location.pk }
         base:     ${ location.base }
         path:     ${ location.path }

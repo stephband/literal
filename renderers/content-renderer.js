@@ -78,7 +78,7 @@ function setContents(first, last, contents, state) {
     const nodes = contents.map(toContent);
 
     // Remove existing nodes, leaving first and last alone
-    if (last.previousSibling !== first) {
+    if (first.nextSibling && last.previousSibling !== first) {
         count += removeNodes(first.nextSibling, last.previousSibling);
     }
 

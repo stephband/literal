@@ -83,10 +83,7 @@ export function removeNodes(first, last) {
         ++count;
     }
 
-    // Treat the marker node specially as it may have been extended with marker.remove()...
-    // see include(). TODO: this could do with a bit of a rethink, maybe go back to
-    // allowing return of contents rather than just nodes.
-    first.constructor.prototype.remove.apply(first);
+    first.remove();
     ++count;
 
     return count;
