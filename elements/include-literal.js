@@ -147,7 +147,7 @@ element('<include-literal>', {
 
         // Where no data or data-* attribute has been defined resolve with an
         // empty object...
-        this.resolveData && this.resolveData({});
+        //this.resolveData && this.resolveData({});
     }
 }, {
     /**
@@ -194,6 +194,7 @@ element('<include-literal>', {
                     request(value).then((data) => this.renderer.push(data));
                 }
                 else {
+                    console.log('YEAH', value);
                     this.renderer.push(value);
                 }
 
