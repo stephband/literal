@@ -20,7 +20,7 @@ import slugify         from '../../fn/modules/slugify.js';
 import last            from '../../fn/modules/last.js';
 import overload        from '../../fn/modules/overload.js';
 import { px, em, rem, vw, vh } from '../../dom/modules/parse-length.js';
-import { Observer }    from '../../fn/observer/observer.js';
+import { Observer, notify }    from '../../fn/observer/observer.js';
 import { observe }     from '../../fn/observer/observe.js';
 import Stream          from '../../fn/stream/stream.js';
 import combine         from '../../fn/stream/combine.js';
@@ -145,6 +145,11 @@ const library = {
     A frozen array representing no value.
     */
     //nothing,
+
+    /** notify(path, object)
+    Force observer to register a mutation at `path` of `object`.
+    **/
+    notify,
 
     /** observe(path, object)
     Returns an observable of mutations to `path` in `object`. Consume mutations
