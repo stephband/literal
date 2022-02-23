@@ -6,6 +6,7 @@ import toText    from '../modules/to-text.js';
 import Renderer  from './renderer.js';
 import analytics from './analytics.js';
 
+const A      = Array.prototype;
 const assign = Object.assign;
 
 const nothing = [];
@@ -26,59 +27,41 @@ function valueify(value) {
         toText(value) ;
 }
 
-function renderValues(args) {
-    const [strings] = args;
-    var string = '';
-    var n = -1 ;
-    var value;
-
-    while (strings[++n] !== undefined) {
-        // Don't strip spaces, but do ignore empty strings
-        if (strings[n]) {
-            string += ' ' + strings[n];
-        }
-
-        // If a value is more than nothing push it in
-        value = args[n + 1];
-        if (value !== undefined && value !== '') {
-            string += ' ' + valueify(value);
-        }
-    }
-
-    return string;
-}
-
-function setTokens(tokens, cached, values, count) {
-    // Remove tokens from the cache that are found in new tokens.
+function updateTokens(list, cached, tokens, count) {
+    // Remove all tokens from cached that are found in new tokens
     let n = cached.length;
-
     while (n--) {
-        if (tokens.contains(cached[n])) {
+        if (tokens.includes(cached[n])) {
             cached.splice(n, 1);
         }
     }
 
-    // Remove the remainder from the tokens
+    // The remainder are not in values and thus must be removed
     if (cached.length) {
-        tokens.remove.apply(tokens, cached);
+        list.remove.apply(list, cached);
         ++count;
     }
 
-    // Then add the new tokens. The TokenList object ignores tokens it
-    // already contains so doubles are not set.
-    tokens.add.apply(tokens, values);
-    return ++count;
+    // Add the new tokens. The list object (a TokenList) ignores tokens it
+    // already contains, so it is safe to set doubles. Return DOM mutation count
+    // for logging
+    if (tokens.length) {
+        list.add.apply(list, tokens);
+        ++count
+    }
+
+    return count;
 }
 
 export default function TokensRenderer(node, options) {
     Renderer.apply(this, arguments);
 
     this.name      = options.name;
-    this.tokens    = getTokenList(node, options.name);
-    this.cached    = nothing;
+    this.list      = getTokenList(node, options.name);
+    this.tokens    = nothing;
     this.literally = options.literally || compile(library, 'data, element', options.source, null, options, node);
 
-    // Empty the tokens until it is rendered to avoid words in literal tags
+    // Empty the tokens until it is rendered to avoid code in literals
     // being interpreted as classes
     node.setAttribute(this.name, '');
 
@@ -89,11 +72,23 @@ export default function TokensRenderer(node, options) {
 }
 
 assign(TokensRenderer.prototype, Renderer.prototype, {
-    compose: function() {
-        const string  = renderValues(arguments);
-        const classes = string.trim().split(/\s+/);
-        const count   = setTokens(this.tokens, this.cached, classes, 0);
-        this.cached = classes;
+    compose: function(strings) {
+        let count = 0;
+
+        // Set permanent tokens on first render only
+        if (this.count === 1) {
+            const tokens = strings.join(' ').trim().split(/\s+/);
+            this.list.add.apply(this.list, tokens);
+            ++count;
+        }
+
+        // Turn evaluated values into an array of strings
+        const tokens = A.slice.call(arguments, 1)
+            .map(valueify)
+            .filter((string) => !!string);
+
+        count = updateTokens(this.list, this.tokens, tokens, count);
+        this.tokens  = tokens;
         return count;
     }
 });
