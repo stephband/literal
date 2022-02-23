@@ -39,12 +39,15 @@
     border-bottom: inherit;
     border-radius: 0;
     background-color: #fff8d5;
-    margin-bottom: 0.25rem;
     margin-left: -0.25rem;
     margin-right: -0.25rem;
     padding: 0.25rem;
     width: auto;
     color: inherit;
+}
+
+.literal-print > code + code {
+    margin-top: -1px;
 }
 
 .literal-print > code:last-child {
