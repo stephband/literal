@@ -106,12 +106,14 @@ import analytics from './modules/analytics.js';
 export { analytics };
 
 import events      from '../dom/modules/events.js';
+import rect        from '../dom/modules/rect.js';
 import select      from '../dom/modules/select.js';
 import request     from './library/request.js';
 import includeHTML from './library/include-html.js';
 
 register('events',  events);
 register('select',  select);
+register('rect',    rect);
 register('request', request);
 register('includeHTML', includeHTML);
 

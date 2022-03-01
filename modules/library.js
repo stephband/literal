@@ -186,6 +186,10 @@ const library = {
 
     print: window.DEBUG ? print : noop,
 
+    /** rect(node)
+    **/
+    //rect,
+
     /** round(n)
     Alias of `Math.round()`;
     **/
