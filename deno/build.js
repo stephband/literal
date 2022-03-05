@@ -45,6 +45,6 @@ export default function build(source, target, debug) {
         if (dir) { ensureDir(dir); }
 
         // Write to target file
-        return Deno.writeTextFile(target, text);
+        return Deno.writeTextFile(target, text.trim());
     })
 }
