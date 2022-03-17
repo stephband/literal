@@ -23,8 +23,6 @@ import { px, em, rem, vw, vh } from '../../dom/modules/parse-length.js';
 import { Observer, notify }    from '../../fn/observer/observer.js';
 import { observe }     from '../../fn/observer/observe.js';
 import Stream          from '../../fn/stream/stream.js';
-import combine         from '../../fn/stream/combine.js';
-import merge           from '../../fn/stream/merge.js';
 import zip             from '../../fn/stream/zip.js';
 import print           from '../library/print.js';
 
@@ -53,11 +51,9 @@ const library = {
     **/
     capture: capture,
 
-    /**
-    combine(source1, source2, ...)
-    Combines multiple sources into a single stream.
-    **/
-    combine: combine,
+    combine: function() {
+        throw new Error('combine() is now Stream.combine()');
+    },
 
     /** ceil(n)
     Alias of `Math.ceil()`.
@@ -123,11 +119,9 @@ const library = {
     **/
     matches,
 
-    /**
-    merge(source1, source2, ...)
-    Merges multiple sources into a single stream.
-    **/
-    merge,
+    merge : function() {
+        throw new Error('merge() is now Stream.merge()');
+    },
 
     /**
     zip(source1, source2, ...)
