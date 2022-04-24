@@ -21,7 +21,7 @@ import last            from '../../fn/modules/last.js';
 import overload        from '../../fn/modules/overload.js';
 import { px, em, rem, vw, vh } from '../../dom/modules/parse-length.js';
 import { Observer, notify }    from '../../fn/observer/observer.js';
-import { observe }     from '../../fn/observer/observe.js';
+import observe         from '../../fn/observer/observe.js';
 import Stream          from '../../fn/modules/stream.js';
 import print           from '../library/print.js';
 

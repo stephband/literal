@@ -5,7 +5,6 @@ import { Observer, getTarget } from '../../fn/observer/observer.js';
 import observe        from '../../fn/observer/observe.js';
 import toText         from '../modules/to-text.js';
 import gets           from '../modules/gets.js';
-import { log }        from '../modules/log.js';
 import { cue, uncue } from './batcher.js';
 import { meta }       from './analytics.js';
 
@@ -201,8 +200,8 @@ function toObservables(renderer, path) {
     const observables = renderer.observables;
 
     if (!observables[path]) {
-        // Don't getPath() of the observer here, that really makes
-        // the machine think too hard. Make sure it's not the observer proxy
+        // Don't getPath() of the observer proxy here, that really makes
+        // the machine think too hard.
         const value = getPath(path, data);
 
         observables[path] = observe(path, data, value)
