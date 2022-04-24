@@ -51,7 +51,7 @@ assign(GetProducer.prototype, Producer.prototype, {
     push: function(key) {
         const path = this.path ? this.path + '.' : '';
         // Pass concatenated path to parent fn
-        this.root.push(path + key);
+        this.root[0].push(path + key);
     },
 
     stop: function() {
