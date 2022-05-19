@@ -87,7 +87,7 @@ const onerror = window.DEBUG ? (e, element) => {
     element.loading = false;
     element.replaceWith(print(e));
     throw e;
-} : (e, include) => {
+} : (e, element) => {
     element.loading = false;
     if (element.frame) { cancelAnimationFrame(element.frame); }
     else { element.removeAttribute('loading'); }

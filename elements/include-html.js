@@ -22,8 +22,6 @@ A `include-html` may contain fallback content, in case any of that fails.
 **/
 
 import element        from '../../dom/modules/element.js';
-import { requestGet } from '../../dom/modules/request.js';
-import create         from '../../dom/modules/create.js';
 import includeHTML    from '../library/include-html.js';
 import print          from '../library/print.js';
 
@@ -31,7 +29,7 @@ const onerror = window.DEBUG ? (e, element) => {
     element.loading = false;
     element.replaceWith(print(e));
     throw e;
-} : (e, include) => {
+} : (e, element) => {
     element.loading = false;
     if (element.frame) { cancelAnimationFrame(element.frame); }
     else { element.removeAttribute('loading'); }
@@ -92,7 +90,7 @@ element('<include-html>', {
     src: {
         attribute: function(src) {
             if (!src) {
-                return this.rejectSrc(new Error('<include-html> source src="' + value + '" is empty'));
+                return this.rejectSrc(new Error('<include-html> source src="' + src + '" is empty'));
             }
 
             // Flag loading until we connect, at which point we add the
