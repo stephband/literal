@@ -12,13 +12,13 @@
     <meta property="og:title" content="Literal" />
     <meta property="og:description" content="" />
     <meta property="og:image" content="" />
-    
+
     <title>Observer</title>
-    
+
     <link rel="icon" type="image/png" href="./images/logo-32.png" sizes="32x32">
     <link rel="icon" type="image/png" href="./images/logo-64.png" sizes="64x64">
     <link rel="icon" type="image/png" href="./images/logo-128.png" sizes="128x128">
-    
+
     <script title="load">
     document.documentElement.className += ' js content-loading loading';
     window.addEventListener('DOMContentLoaded', () => document.documentElement.classList.remove('content-loading'));
@@ -29,11 +29,11 @@
     window.DEBUG = true;
     </script>
 
-    <link rel="stylesheet" href="../../bolt/css/html.css" />
-    <link rel="stylesheet" href="../../bolt/css/text.css" />
-    <link rel="stylesheet" href="../../bolt/css/input.css" />
-    <link rel="stylesheet" href="../../bolt/css/label.css" />
-    <link rel="stylesheet" href="../../bolt/css/block.css" />
+    <link rel="stylesheet" href="../../bolt/elements/html.css" />
+    <link rel="stylesheet" href="../../bolt/elements/input.css" />
+    <link rel="stylesheet" href="../../bolt/elements/label.css" />
+    <link rel="stylesheet" href="../../bolt/classes/block.css" />
+    <link rel="stylesheet" href="../../bolt/classes/text.css" />
     <link rel="stylesheet" href="../../bolt/debug.css" />
     <link rel="stylesheet" href="../elements/include-literal.css" />
 
@@ -71,31 +71,31 @@
         .test-count {
             font-size: 0.875em;
         }
-        
+
         p {
             padding-left: 1rem;
             text-indent: -1rem;
         }
-        
+
         pre {
             padding: 0.375rem;
             background-color: #eeeeee;
             border-radius: 0.1875rem;
         }
-        
+
         dl > dd {
             margin: 0;
         }
-        
+
         .blue-fg {
             color: blue;
         }
-        
+
         .text-03 {
             margin-top: 3rem;
             margin-bottom: 1.5rem;
         }
-        
+
         input + hr,
         select + hr {
             margin-top: 0.75rem;
@@ -118,9 +118,13 @@
     <hr/>
 
     <script type="module">
+        import './test-gets.js';
+
+        /*
         //import "../module.js";
-        import { Observer, notify, observe } from "../../fn/observer/observer.js";
-        import reads from "../../fn/observer/observer/reads.js";
+        //import { Observer, notify, observe } from "../../fn/observer/observer.js";
+        import { Observer } from '../../fn/observer/observer.js';
+        import gets     from '../modules/gets.js';
 
         function Model(value, child) {
             this.value = value;
@@ -143,7 +147,7 @@
 
         const paths = [];
 
-        const gets = reads(object)
+        const got = gets(object)
             .each((path) => {
                 console.log(++n, 'get', path);
 
@@ -168,28 +172,28 @@
                 paths.push(path);
             });
 
-        // Should log get value
+        // Should log 1 get value
         const a = data.value;
 
-        // Should log get child.value
+        // Should log 2 get child.value
         const b = data.child.value;
-        
-        // Should log get child
+
+        // Should log 3 get child
         const child = data.child;
 
-        // Should log get child.value
+        // Should log 4 get child.value
         const c = child.value;
         const j = child.value;
 
         data.child = {};
 
-        // Should log nothing
+        // Should not log
         const d = child.value;
 
-        // Should log "child.value"
+        // Should log 5 get child.value
         const e = data.child.value;
 
-        // Should log nothing
+        // Should not log
         const f = data.method;
 
         // Should log model.method()
@@ -198,13 +202,13 @@
         // Should log 0, 'child', function, Proxy
         //console.log(a, b, c, d);
 
-        gets.stop();
+        got.stop();
 
         console.log(paths);
 
         console.log('No more tests in this group');
-        
-        // Should log nothing
+
+        // Should not log
         const h = data.value;
 
         console.groupEnd();
@@ -304,5 +308,6 @@
         console.groupEnd();
 
         console.log(n, 'tests, should be', 20);
+*/
     </script>
 </body>

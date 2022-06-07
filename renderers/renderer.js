@@ -156,26 +156,21 @@ export function stop(stopable) {
 
 // Observers
 
-function toPaths(paths, path) {
-    // Keep paths unique
-    if (paths.includes(path)) { return; }
-
-    var prev;
-
-    // Make some attempt to remove intermediate paths traversed
-    // while getting the value at the end of the path. Warning: not 100%
-    // robust. If we want to be robust about this we need to collect gets
-    // async inside the observer, I think.
-    while(
-        (prev = paths[paths.length - 1])
-        && prev.length < path.length
-        && path.startsWith(prev)
-    ) {
+function toPaths(check, path) {
+    // Check for paths traversed while getting to the end of the
+    // path - is this path an extension of the last?
+    const last = paths[paths.length - 1];
+    if (check && last.length < path.length && path.startsWith(last)) {
         --paths.length;
     }
 
-    // store the path
-    paths.push(path);
+    if (!paths.includes(path)) {
+        paths.push(path);
+        // Signal to next reduce iteration that we just pushed a
+        // path and therefore the next path should be checked as
+        // an extension of this one
+        return true;
+    }
 }
 
 function remove(paths, path) {
@@ -258,26 +253,24 @@ assign(Renderer.prototype, {
         }
 
         paths.length = 0;
-
-        const data     = getTarget(object);
-        const observer = Observer(data);
-        const reads    = data ?
-            gets(data).each((path) => toPaths(paths, path)) :
-            nothing ;
+        const target = getTarget(object);
+        const reads  = target ? gets(target) : nothing ;
+        reads.reduce(toPaths);
 
         // Update `this` before rendering
-        this.data = data;
+        this.data = target;
         ++this.count;
 
         // Evaluate the template. Note that we are potentially leaving
         // observers live here, if any data is set during render we may trigger
         // a further render... not what we want. Do we need to pause observers?
-        const stats = this.literally(observer, this.element, this.include);
+        const stats = this.literally(Observer(target), this.element, this.include);
 
         // We may only collect synchronous gets – other templates may use
         // this data object and we don't want to include their gets by stopping
-        // any later. Stop now. If we want to change this, making a data proxy
-        // per template instance would be the way to go. We're not going there.
+        // any later. Stop now. If we want to change this, making an observer
+        // proxy per template instance would be the way to go. Currently
+        // observer proxies are shared by all observers. We're not going there.
         reads.stop();
 
         // Stop unused paths
@@ -287,9 +280,8 @@ assign(Renderer.prototype, {
         // Stop the remaining keys
         .reduce(stopProperty, this.observables);
 
-        // Start observing any new paths
+        // Start observing new paths
         paths
-        //
         .reduce(toObservables, this);
 
         // Return information about the render

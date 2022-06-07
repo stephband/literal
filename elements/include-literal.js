@@ -52,12 +52,12 @@ Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a
 
 **/
 
-import element        from '../../dom/modules/element.js';
-import { requestGet } from '../../dom/modules/request.js';
-import create         from '../../dom/modules/create.js';
-import request from '../library/request.js';
+import element          from '../../dom/modules/element.js';
+import { requestGet }   from '../../dom/modules/request.js';
+import create           from '../../dom/modules/create.js';
+import request          from '../library/request.js';
 import TemplateRenderer from '../renderers/template-renderer.js';
-import print   from '../library/print.js';
+import print            from '../library/print.js';
 
 const rpath = /^\/|\.|^https?:\/\//;
 

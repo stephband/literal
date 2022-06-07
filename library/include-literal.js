@@ -3,7 +3,6 @@
 Includes another template. Not available inside attributes.
 **/
 
-import { requestGet }   from '../../dom/modules/request.js';
 import { getTarget }    from '../../fn/observer/observer.js';
 import TemplateRenderer from '../renderers/template-renderer.js';
 import request          from './request.js';

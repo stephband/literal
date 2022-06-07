@@ -13,10 +13,12 @@ Constructs an object responsible for rendering to a plain text attribute.
 **/
 
 function setAttribute(node, name, value) {
-    const prop = names[name] || name;
+    const prop = name in names ?
+        names[name] :
+        name;
 
     // Seek and set a matching property
-    if (prop in node) {
+    if (prop && prop in node) {
         if (node[prop] !== value) {
             node[prop] = value;
             return 1;
