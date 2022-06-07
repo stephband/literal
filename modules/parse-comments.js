@@ -38,23 +38,23 @@ const markedOptions = {
 
 const parseParensClose = capture(/^\)\s*/, {}, null);
 
-/** 
+/**
 parseComment(string)
 Where a documentation comment is found, returns a token object of the form:
 
 ```
 {
     id:       unique id for this token object
-    type:     type of comment, one of 'attribute', 'constructor', 'element', 
-              'function', 'method', 'part', 'property', 'selector', 'string', 
+    type:     type of comment, one of 'attribute', 'constructor', 'element',
+              'function', 'method', 'part', 'property', 'selector', 'string',
               'text', 'var'
     name:     name of attribute, property, function, element or class
-    title:    
+    title:
     postfix:  syntax characters that follow declaration
     defaultValue: default value
     params:   where `type` is method or function, list of parameters
     body:     body of comment, code highlighted
-    examples: array of html code examples found in comment body, unhighlighted 
+    examples: array of html code examples found in comment body, unhighlighted
 }
 ```
 **/
@@ -68,7 +68,7 @@ function createId(string) {
     }
     else {
         ++ids[string];
-        return string + '-' + ids[string];   
+        return string + '-' + ids[string];
     }
 }
 
@@ -82,7 +82,7 @@ const parseSelector = capture(/^([\w\d:.[][\w\d:\-[\]="' …>+().]+)(?:,\s*(\n)\
     // Comma spaces, preserving whitespace
     3: (selector, captures) => parseSelector(selector + ',' + captures[3], captures),
     // Doesn't parse
-    catch: (selector, captures) => console.log('Parse selector undefined: ', captures.input.slice(0, 18)) 
+    catch: (selector, captures) => console.log('Parse selector undefined: ', captures.input.slice(0, 18))
 });
 
 //                                        1           2      3            4
@@ -101,7 +101,7 @@ const parsePropertyToSelector = capture(/^(,\s*\n\s*)|(,\s*)|(\s*[>+]\s*)|(-)/, 
     catch: parseSelector
 });
 
-//                            1             2       3         4          5        
+//                            1             2       3         4          5
 //                            word          (       =         line       anything else
 const parseDotted = capture(/^(\w[\w\d]*)(?:(\(\s*)|(\s*=\s*)|(\s*\n\s*)|(\s*))/, {
     // If it is .xxx it could be a property or selector
@@ -125,13 +125,13 @@ const parseDotted = capture(/^(\w[\w\d]*)(?:(\(\s*)|(\s*=\s*)|(\s*\n\s*)|(\s*))/
         return data;
     },
 
-    // Fudge. Could be a property without a default value, could be a class 
-    // selector. This is dependent on context, and we retype this particular 
+    // Fudge. Could be a property without a default value, could be a class
+    // selector. This is dependent on context, and we retype this particular
     // type later depending on file extension.
     4: (data, captures) => {
         //data.name = '.' + data.name;
         data.type = 'property|selector';
-        return data;        
+        return data;
     },
 
     5: (data, captures) => {
@@ -148,9 +148,9 @@ const parseDotted = capture(/^(\w[\w\d]*)(?:(\(\s*)|(\s*=\s*)|(\s*\n\s*)|(\s*))/
     }
 });
 
-//                             1                2                  3       4    5                 6                           
-//                             attribute =      key:               N       n    ame function      Title
-const parseName = capture(/^(?:([\w-:]+)\s*=\s*|([\w-]+)\s*:\s*|(?:([A-Z])|(\w))([\w\d]*)\s*\(\s*|([A-Z](?:[^\n]|,\s*)*))\s*/, {
+//                             1                2          3    4                 5
+//                             attribute =      N          n    ame function      Title
+const parseName = capture(/^(?:([\w-:]+)\s*=\s*|(?:([A-Z])|(\w))([\w\d]*)\s*\(\s*|([A-Z](?:[^\n]|,\s*)*))\s*/, {
     // name="value" name='value' name=value
     1: (data, captures) => {
         data.type    = 'attribute';
@@ -159,38 +159,30 @@ const parseName = capture(/^(?:([\w-:]+)\s*=\s*|([\w-]+)\s*:\s*|(?:([A-Z])|(\w))
         return data;
     },
 
-    // name: param, param, ...
-    2: (data, captures) => {
-        data.type   = 'fn';
-        data.name   = captures[2];
-        data.params = parseParams(captures);
-        return data;
-    },
-
     // Constructor
-    3: (data, captures) => {
+    2: (data, captures) => {
         data.type   = 'constructor';
-        data.name   = captures[3] + captures[5];
+        data.name   = captures[2] + captures[4];
         data.params = parseParams(captures);
         return data;
     },
 
     // function
-    4: (data, captures) => {
+    3: (data, captures) => {
         data.type   = 'function' ;
-        data.name   = captures[4] + captures[5];
+        data.name   = captures[3] + captures[4];
         data.params = parseParams(captures);
         return data;
     },
 
-    // Title (begins with a capital and continues until newline that is not 
+    // Title (begins with a capital and continues until newline that is not
     // preceded by a comma)
-    6: (data, captures) => {
+    5: (data, captures) => {
         data.type = 'text';
-        data.name = captures[6];
+        data.name = captures[5];
         return data;
     },
-    
+
     catch: (data, captures) => {
         const selector = parseSelector('', captures);
 
@@ -228,18 +220,18 @@ const parseComment = capture(/([^\S\r\n]*)\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(
             data.name   = captures[1];
             return data;
         },
-    
+
         // --variable: default
         2: (data, captures) => {
             data.defaultValue = captures[2];
             return data;
         },
-    
+
         catch: function(data) {
-            throw new SyntaxError('Invalid --variable');        
+            throw new SyntaxError('Invalid --variable');
         }
     }),
-    
+
     // Part ::part( (name) )
     4: capture(/^([\w-]+)\s*\)\s*/, {
         1: (data, captures) => {
@@ -247,9 +239,9 @@ const parseComment = capture(/([^\S\r\n]*)\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(
             data.name = captures[1];
             return data;
         },
-    
+
         catch: (data, captures) => {
-            throw new SyntaxError('Invalid ::part()');        
+            throw new SyntaxError('Invalid ::part()');
         }
     }),
 
@@ -260,9 +252,9 @@ const parseComment = capture(/([^\S\r\n]*)\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(
             data.name = captures[1];
             return data;
         },
-    
+
         catch: function(data) {
-            throw new SyntaxError("Unclosed 'string");        
+            throw new SyntaxError("Unclosed 'string");
         }
     }),
 
@@ -273,9 +265,9 @@ const parseComment = capture(/([^\S\r\n]*)\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(
             data.name = captures[1];
             return data;
         },
-    
+
         catch: function(data) {
-            throw new SyntaxError('Unclosed "string');        
+            throw new SyntaxError('Unclosed "string');
         }
     }),
 
@@ -287,9 +279,9 @@ const parseComment = capture(/([^\S\r\n]*)\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(
             data.name = captures[1];
             return data;
         },
-    
+
         catch: function(data) {
-            throw new SyntaxError('Invalid <tag>');        
+            throw new SyntaxError('Invalid <tag>');
         }
     }),
 
@@ -300,7 +292,7 @@ const parseComment = capture(/([^\S\r\n]*)\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(
     done: capture(/^\s*([\s\S]*?)\*+\//, {
         1: (data, captures) => {
             data.examples = [];
-    
+
             // Strip indentation from body before processing as Markdown
             const body = data.indent ?
                 captures[1].replaceAll('\n' + data.indent, '\n') :
@@ -311,14 +303,14 @@ const parseComment = capture(/([^\S\r\n]*)\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(
                 highlight: function (code, lang, callback) {
                     // Grab HTML code blocks and add to examples
                     if (lang === 'html') { data.examples.push(code); }
-                    // Highlight code inside documentation HTML 
+                    // Highlight code inside documentation HTML
                     return Prism.highlight(code, Prism.languages[lang || 'js'], lang || 'js');
                 }
             }));
 
             return data;
         },
-    
+
         done: (data, captures) => {
             // TODO params?
             data.id = createId(data.type + '-' + slugify(data.name) + (data.params ? '' : ''));
