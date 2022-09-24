@@ -49,23 +49,12 @@
 
 
 
-    import track from './data-observer.js';
+    import Renderer from './data-observer.js';
     import { Observer } from '../fn/observer/observer.js';
 
     let n = 0;
 
-    window.s = track(function render(data) {
-        // Returns a render stats object
-        return {
-            values: ++n % 2 === 0 ? {
-                'a': data.a
-            } : {
-                'a': data.a,
-                'b': data.b
-            }
-        };
-    });
-
+    window.r = new Renderer();
     window.O = Observer;
 
     </script>
