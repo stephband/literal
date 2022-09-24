@@ -25,14 +25,11 @@ import observe         from '../../fn/observer/observe.js';
 import Stream          from '../../fn/modules/stream.js';
 import print           from '../library/print.js';
 
-const assign  = Object.assign;
-const entries = Object.entries;
-
 const library = {
     /** assign(a, b, ...)
     Alias of `Object.assign()`.
     **/
-    assign: assign,
+    assign: Object.assign,
 
     /** by(fn, a, b)
     Compares `fn(a)` against `fn(b)` and returns `-1`, `0` or `1`. Partially
@@ -48,7 +45,7 @@ const library = {
     /**
     capture()
     **/
-    capture: capture,
+    capture,
 
     /** ceil(n)
     Alias of `Math.ceil()`.
@@ -63,7 +60,7 @@ const library = {
     /** entries(object)
     Alias of `Object.entries()`.
     **/
-    entries: entries,
+    entries: Object.entries,
 
     /** equals(a, b)
     Compares `a` and `b` for deep equality and returns `true` or `false`.
@@ -184,7 +181,7 @@ const library = {
         // If this is an object with properties that may be arrays, flatten it
         // out into entries
         const params = typeof object === 'object' && typeof object.length !== 'number' ?
-            entries(object).flatMap((entry) => (
+            Object.entries(object).flatMap((entry) => (
                 entry[1] === undefined ? nothing :
                 entry[1] && typeof entry[1] === 'object' && entry[1].map ? entry[1].map((value) => [entry[0], value]) :
                 [entry]
@@ -221,20 +218,7 @@ const library = {
     em,
     rem,
     vw,
-    vh,
-
-    /* Deprecate errors */
-    combine: function() {
-        throw new Error('combine() is now Stream.combine()');
-    },
-
-    merge : function() {
-        throw new Error('merge() is now Stream.merge()');
-    },
-
-    zip: function() {
-        throw new Error('zip() is now Stream.zip()');
-    }
+    vh
 };
 
 export default library;

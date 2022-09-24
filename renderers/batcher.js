@@ -101,7 +101,7 @@ function render(renderers) {
 /**
 cue(renderer, args)
 Cues a renderer to be rendered in the next batch with latest args. If the
-renderer is already cued, args are replaced with latest args.
+renderer is already cued, args are simply replaced with latest args.
 **/
 
 export function cue(renderer, args) {

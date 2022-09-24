@@ -1,0 +1,72 @@
+<head>
+    <link rel="stylesheet" href="./elements/include-literal.css" />
+
+    <template id="item">
+        ${ this.done(() => console.log('STOPPED')), '' }
+        <pre>${ this.id + ': ' + this.constructor.name } - ${ data.label }</pre>
+    </template>
+
+    <template id="item-list">
+        <h3>Test</h3>
+        <pre>${ this.id + ': ' + this.constructor.name }</pre>
+        ${ data.items.map(include('#item')) }
+        <pre>${ this.id + ': ' + this.constructor.name }</pre>
+    </template>
+</head>
+
+<body>
+    <include-literal src="#item-list" id="element">
+        Default content
+    </include-literal>
+
+    <script type="module">
+    import './elements/include-literal.js';
+
+    const data1 = {
+        items: [{
+            label: 'One'
+        }, {
+            label: 'Ting'
+        }]
+    };
+
+    const data2 = {
+        items: [{
+            label: 'Two'
+        }, {
+            label: 'Tang'
+        }]
+    };
+
+    const element = document.getElementById('element');
+    const data = element.data = Object.assign({}, data1);
+
+    setTimeout(() => {
+        Object.assign(element.data, data2)
+    }, 500);
+
+
+
+
+
+    import track from './data-observer.js';
+    import { Observer } from '../fn/observer/observer.js';
+
+    let n = 0;
+
+    window.s = track(function render(data) {
+        // Returns a render stats object
+        return {
+            values: ++n % 2 === 0 ? {
+                'a': data.a
+            } : {
+                'a': data.a,
+                'b': data.b
+            }
+        };
+    });
+
+    window.O = Observer;
+
+    </script>
+</body>

@@ -1,4 +1,5 @@
 
+import overload  from '../../fn/modules/overload.js';
 import trigger   from '../../dom/modules/trigger.js';
 import config    from '../modules/config.js';
 import library   from '../modules/library.js';
@@ -100,6 +101,18 @@ function setValue(node, value) {
     return count;
 }
 
+const render = overload((value, type) => type, {
+    //'checkbox':  compileValueChecked,
+    //'date':      compileValueDate,
+    //'number':    compileValueNumber,
+    //'range':     compileValueNumber,
+    //'select-multiple': compileValueArray,
+    'text':       renderString,
+    'search':     renderString,
+    'select-one': renderString,
+    'default':    renderValue
+});
+
 export default function ValueRenderer(node, options) {
     Renderer.apply(this, arguments);
 
@@ -114,31 +127,7 @@ export default function ValueRenderer(node, options) {
 
 assign(ValueRenderer.prototype, Renderer.prototype, {
     compose: function() {
-        const value = renderValue(arguments);
-        return setValue(this.node, value)
-    }
-});
-
-
-/**
-StringValueRenderer()
-Constructs an object responsible for rendering to a value property as a string.
-**/
-
-export function StringValueRenderer(node, options) {
-    Renderer.apply(this, arguments);
-
-    this.name      = 'value';
-    this.literally = options.literally || compile(library, 'data, element', options.source, null, options, node);
-
-    // Analytics
-    const id = '#' + options.template;
-    ++analytics[id].value || (analytics[id].value = 1);
-}
-
-assign(StringValueRenderer.prototype, Renderer.prototype, {
-    compose: function() {
-        const value = renderString(arguments);
+        const value = render(arguments, this.node.type);
         return setValue(this.node, value)
     }
 });

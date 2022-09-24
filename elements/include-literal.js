@@ -52,14 +52,30 @@ Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a
 
 **/
 
+
+import { Observer }     from '../../fn/observer/observer.js';
 import element          from '../../dom/modules/element.js';
 import { requestGet }   from '../../dom/modules/request.js';
 import create           from '../../dom/modules/create.js';
 import request          from '../library/request.js';
 import TemplateRenderer from '../renderers/template-renderer.js';
 import print            from '../library/print.js';
+import { register }     from '../modules/library.js';
+
+import events      from '../../dom/modules/events.js';
+import trigger     from '../../dom/modules/trigger.js';
+import select      from '../../dom/modules/select.js';
+import includeHTML from '../library/include-html.js';
 
 const rpath = /^\/|\.|^https?:\/\//;
+
+
+register('events',  events);
+register('trigger', trigger);
+register('select',  select);
+register('request', request);
+register('includeHTML', includeHTML);
+
 
 function parseValue(string) {
     try {
@@ -181,7 +197,7 @@ element('<include-literal>', {
 
         get: function() {
             if (this.renderer) {
-                return this.renderer.data;
+                return Observer(this.renderer.data);
             }
         },
 

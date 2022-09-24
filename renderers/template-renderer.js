@@ -126,7 +126,7 @@ export default function TemplateRenderer(template, parent) {
         this.content   = template.content ? template.content.cloneNode(true) : template.cloneNode(true) ;
         this.first     = this.content.childNodes[0];
         this.last      = this.content.childNodes[this.content.childNodes.length - 1];
-        this.contents = cache[id].contents.map(newRenderer, this);
+        this.contents  = cache[id].contents.map(newRenderer, this);
         ++stats['#' + id].template;
         ++stats.Totals.template;
         return;
@@ -226,6 +226,8 @@ assign(TemplateRenderer.prototype, Renderer.prototype, {
         const observer  = Observer(data);
         const contents = this.contents;
         var count = 0;
+
+        this.data = data;
 
         // Render the contents (synchronously)
         contents.forEach((renderer) => count += renderer.render(observer));

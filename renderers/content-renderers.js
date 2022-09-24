@@ -5,7 +5,6 @@ import print            from '../library/print.js';
 import toText           from '../modules/to-text.js';
 import TemplateRenderer from './template-renderer.js';
 import { cue }          from './batcher.js';
-import { log }          from '../modules/log.js';
 import { meta }         from './analytics.js';
 
 const assign = Object.assign;

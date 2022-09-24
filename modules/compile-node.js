@@ -8,7 +8,7 @@ import BooleanRenderer   from '../renderers/boolean-renderer.js';
 import CheckedRenderer   from '../renderers/checked-renderer.js';
 import ContentRenderer   from '../renderers/content-renderer.js';
 import TokensRenderer    from '../renderers/tokens-renderer.js';
-import ValueRenderer, { StringValueRenderer } from '../renderers/value-renderer.js';
+import ValueRenderer     from '../renderers/value-renderer.js';
 
 import decode   from './decode.js';
 
@@ -43,11 +43,6 @@ function compileValue(renderers, options, node, attribute) {
     addAttributeRenderer(renderers, ValueRenderer, node, attribute.value, 'value', options);
 }
 
-function compileValueString(renderers, options, node, attribute) {
-    addAttributeRenderer(renderers, StringValueRenderer, node, attribute.value, 'value', options);
-}
-
-
 const compileAttribute = overload((renderers, options, node, attribute) => attribute.localName, {
     'checked':  function compileChecked(renderers, options, node, attribute) {
         addAttributeRenderer(renderers, CheckedRenderer, node, attribute.value, 'checked', options);
@@ -75,18 +70,7 @@ const compileAttribute = overload((renderers, options, node, attribute) => attri
 
     'required': compileBoolean,
 
-    'value': overload((renderers, options, node, attribute) => ('' + node.type), {
-        //'checkbox':  compileValueChecked,
-        //'date':      compileValueDate,
-        //'number':    compileValueNumber,
-        //'range':     compileValueNumber,
-        //'select-multiple': compileValueArray,
-        'text':       compileValueString,
-        'search':     compileValueString,
-        'select-one': compileValueString,
-        'default':    compileValue,
-        'undefined':  compileAttr
-    }),
+    'value': compileValue,
 
     'default': compileAttr
 });
