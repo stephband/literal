@@ -1,6 +1,10 @@
 <head>
     <link rel="stylesheet" href="./elements/include-literal.css" />
 
+    <script>
+        window.DEBUG = true;
+    </script>
+
     <template id="item">
         ${ this.done(() => console.log('STOPPED')), '' }
         <pre>${ this.id + ': ' + this.constructor.name } - ${ data.label }</pre>

@@ -4,6 +4,7 @@ import observe from '../fn/observer/observe.js';
 import { Observer, getTarget } from '../fn/observer/observer.js';
 import Stream, { pipe, push, stop } from '../../fn/modules/stream/stream.js';
 import Records from './modules/records.js';
+import { cue, uncue } from './modules/cue.js';
 
 const assign = Object.assign;
 
@@ -17,41 +18,6 @@ function stopObservers(observers) {
         console.log('STOP', path);
     }
 }
-
-function cue(observers, data, render) {
-    observeAndRender(observers, data, render(data), render);
-}
-
-function observeAndRender(observers, data, stats, render) {
-    const { values } = stats;
-    let path;
-
-    for (path in observers) {
-        if (path in values) {
-            // Remove paths that are already being observed
-            delete values[path];
-        }
-        else {
-            // Stop observers that have no value
-            observers[path].stop();
-            delete observers[path];
-            console.log('STOP', path);
-        }
-    }
-
-    // Create observers for remaining paths
-    for (path in values) {
-        console.log('OBSERVE', path, values[path]);
-        observers[path] = observe(path, data, values[path]).each((value) => {
-            console.log('RENDER', value);
-            // We dont want to render here, we want to cue!!
-            cue(observers, data, render);
-        });
-    }
-
-    return observers;
-}
-
 
 
 
@@ -74,8 +40,10 @@ function toValues(last, record) {
         return record.path;
     }
 }
+
+
 var n = 0;
-function render(data) {
+function render(element, data, include) {
     const object  = getTarget(data);
     const records = object ? Records(object) : nothing ;
 
@@ -114,16 +82,19 @@ console.log(stats.values);
 
 
 export default function Renderer() {
-    const stream = new Stream(this);
-    const observers = {};
+    const stream    = new Stream(this);
+
+    this.observers = {};
 
     stream
     .each((data) => {
-        stopObservers(observers);
-        cue(observers, data, render);
+        stopObservers(this.observers);
+        this.data = data;
+        cue(this);
     })
     .done(() => {
-        stopObservers(observers);
+        uncue(this);
+        stopObservers(this.observers);
     });
 }
 
@@ -134,6 +105,41 @@ assign(Renderer.prototype, {
 
     push: function(data) {
         push(this[0], data);
+    },
+
+    render: function() {
+        const data      = this.data;
+        const observers = this.observers;
+
+        const stats     = render(this.element, data, this.include);
+        const values    = stats.values;
+
+        let path;
+
+        for (path in observers) {
+            if (path in values) {
+                // Remove from values paths that are already being observed
+                delete values[path];
+            }
+            else {
+                // Stop observers that have no value
+                observers[path].stop();
+                delete observers[path];
+                console.log('STOP', path);
+            }
+        }
+
+        // Create observers for remaining paths
+        for (path in values) {
+            console.log('OBSERVE', path, values[path]);
+            observers[path] = observe(path, data, values[path]).each((value) => {
+                console.log('RENDER', value);
+                // We dont want to render here, we want to cue!!
+                cue(this);
+            });
+        }
+
+        return stats;
     },
 
     stop: function() {
