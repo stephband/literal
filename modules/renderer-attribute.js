@@ -1,8 +1,9 @@
 
-import library   from '../modules/library.js';
-import compile   from '../modules/compile.js';
-import Renderer, { renderString } from './renderer.js';
-import names     from './property-names.js';
+import library       from './library.js';
+import compile       from './compile.js';
+import Renderer      from './renderer.js';
+import composeString from './compose-string.js';
+import names         from './property-names.js';
 
 const assign = Object.assign;
 
@@ -33,18 +34,21 @@ function setAttribute(node, name, value) {
     return 1;
 }
 
-export default function AttributeRenderer(source, render, node, name, element, options) {
-    this.element = element || node;
+export default function AttributeRenderer(source, node, name) {
+    this.element = node;
     this.node    = node;
     this.name    = name;
-    this.render  = render || compile(library, 'data, element', source, null, options, this.element);
 
-    Renderer.call(this, source, this.render);
+    const render = typeof source === 'string' ?
+        compile(library, 'data, element', source, null, {}, node) :
+        source ;
+
+    Renderer.call(this, render);
 }
 
 assign(AttributeRenderer.prototype, Renderer.prototype, {
     compose: function() {
-        const value = renderString(arguments);
+        const value = composeString(arguments);
         this.mutations = setAttribute(this.node, this.name, value);
         return this;
     }

@@ -1,10 +1,6 @@
 
 import compileFn from '../../fn/modules/compile.js';
-import analytics from '../renderers/analytics.js';
 
-if (window.DEBUG) {
-    analytics.totalCompileTime = 0;
-}
 
 /**
 compile(data, params, source, id, info, element)
@@ -48,7 +44,7 @@ export default function compile(data, params, source, id, info, element) {
             );
 
             const t1 = window.performance.now();
-            analytics.totalCompileTime += (t1 - t0);
+            //analytics.totalCompileTime += (t1 - t0);
 
             // timeEnd(name);
             return cache[key];

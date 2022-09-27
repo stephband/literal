@@ -1,11 +1,12 @@
 
-import overload  from '../../fn/modules/overload.js';
-import trigger   from '../../dom/modules/trigger.js';
-import config    from '../modules/config.js';
-import library   from '../modules/library.js';
-import compile   from '../modules/compile.js';
-import Renderer, { renderString } from './renderer.js';
-import analytics from './analytics.js';
+import overload      from '../../fn/modules/overload.js';
+import trigger       from '../../dom/modules/trigger.js';
+import config        from './config.js';
+import library       from './library.js';
+import compile       from './compile.js';
+import Renderer      from './renderer.js';
+import composeString from './compose-string.js';
+import composeValue  from './compose-value.js';
 
 const assign = Object.assign;
 
@@ -15,34 +16,10 @@ ValueRenderer()
 Constructs an object responsible for rendering to a plain text attribute.
 **/
 
-const rempty = /^\s*$/;
-
 const types = {
     'number': 'number',
     'range':  'number'
 };
-
-function addValue(result, value) {
-    return result === undefined ?
-        value :
-        result + value ;
-}
-
-function renderValue(values) {
-    const strings = values[0];
-    let value = rempty.test(strings[0]) ? undefined : strings[0];
-    let n = 0;
-
-    while (strings[++n] !== undefined) {
-        value = addValue(value, values[n]);
-
-        if (!rempty.test(strings[n])) {
-            value = addValue(value, strings[n]);
-        }
-    }
-
-    return value;
-}
 
 
 /**
@@ -101,33 +78,34 @@ function setValue(node, value) {
     return count;
 }
 
-const render = overload((value, type) => type, {
+const compose = overload((value, type) => type, {
     //'checkbox':  compileValueChecked,
     //'date':      compileValueDate,
     //'number':    compileValueNumber,
     //'range':     compileValueNumber,
     //'select-multiple': compileValueArray,
-    'text':       renderString,
-    'search':     renderString,
-    'select-one': renderString,
-    'default':    renderValue
+    'text':       composeString,
+    'search':     composeString,
+    'select-one': composeString,
+    'default':    composeValue
 });
 
-export default function ValueRenderer(node, options) {
-    Renderer.apply(this, arguments);
+export default function ValueRenderer(source, node, name) {
+    this.element = node;
+    this.node    = node;
+    this.name    = 'value';
 
-    this.name      = 'value';
-    this.literally = options.literally || compile(library, 'data, element', options.source, null, options, node);
+    const render = typeof source === 'string' ?
+        compile(library, 'data, element', source, null, {}, node) :
+        source ;
 
-    // Analytics
-    const id = '#' + options.template;
-    ++analytics[id].value || (analytics[id].value = 1);
-    ++analytics.Totals.value;
+    Renderer.call(this, render);
 }
 
 assign(ValueRenderer.prototype, Renderer.prototype, {
     compose: function() {
-        const value = render(arguments, this.node.type);
-        return setValue(this.node, value)
+        const value = compose(arguments, this.node.type);
+        this.mutations = setValue(this.node, value);
+        return this;
     }
 });

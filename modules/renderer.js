@@ -92,16 +92,18 @@ function reobserve(observers, values, data, cue) {
     }
 }
 
+
 /**
 Renderer(source, render)
 Takes a `source` string or optionally a compiled `render` function and creates
 a consumer stream.
 **/
 
-export default function Renderer(source, render, options = nothing, fn) {
-    this.source    = source;
-    this.options   = options;
-    this.render    = render || compile(library, 'data', source, null, options);
+export default function Renderer(source, fn) {
+    this.render    = typeof source === 'string' ?
+        compile(library, 'data', source) :
+        source ;
+
     this.observers = {};
     this.status    = 'idle';
 
@@ -112,21 +114,23 @@ export default function Renderer(source, render, options = nothing, fn) {
 
 assign(Renderer.prototype, {
     push: function(data) {
-        if (window.DEBUG && this.status === 'stopped') {
+        if (this.status === 'stopped') {
             throw new Error('Renderer is stopped, cannot .push() data');
         }
 
+        data = Observer(data);
+        if (this.data === data) { return; }
+
         stopObservers(this.observers);
-        this.data = Observer(data);
+        this.data = data;
         this.cue();
     },
 
     update: function() {
-        const context   = this;
         const data      = this.data;
         const observers = this.observers;
 
-        const stats = render(this, context, data, this.element, this.include);
+        const stats = render(this, this, data, this.element, this.include);
         reobserve(observers, stats.values, data, this.cue);
 
         return this;

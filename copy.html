@@ -1,9 +1,32 @@
 <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Stephen" />
+    <meta name="description" content="Documentation for Literal. Literal puts JS into your HTML. Literal defines a custom include element that parses and renders templates written as JS Literals, in a small library under 15kB minified and gzipped." />
+    <meta name="viewport" content="width=device-width" />
+
     <link rel="stylesheet" href="./elements/include-literal.css" />
 
     <script>
         window.DEBUG = true;
     </script>
+
+    <style>
+        [data-before]::before {
+            content: attr(data-before);
+        }
+
+        .class-before::before {
+            content: attr(class);
+        }
+    </style>
+
+    <template id="attributes">
+        <pre data-before="${ data.attribute }"></pre>
+        <pre class="class-before ${ data.class }"></pre>
+        <pre hidden="${ data.boolean }">✔ Boolean is false</pre>
+        <input type="text" value="${ data.value }" />
+        <input type="checkbox" checked="${ data.checked }" />
+    </template>
 
     <template id="item">
         ${ this.done(() => console.log('STOPPED')), '' }
@@ -19,10 +42,6 @@
 </head>
 
 <body>
-    <include-literal src="#item-list" id="element">
-        Default content
-    </include-literal>
-
     <script type="module">
     /*import './elements/include-literal.js';
 
@@ -57,7 +76,7 @@
     import { Observer } from '../fn/observer/observer.js';
 
     const keys = Object.keys;
-
+/*
     tests('Renderer', function(test, log) {
         test("Renderer()", function(equals, done) {
             const expected = [
@@ -68,7 +87,7 @@
                 'Hail Ceasar'
             ];
 
-            const renderer = new Renderer('Hail ${ data.x ? data.a : data.b }', null, null, (string) =>
+            const renderer = new Renderer('Hail ${ data.x ? data.a : data.b }', (string) =>
                 equals(expected.shift(), string)
             );
 
@@ -139,7 +158,7 @@
                 'Hail Mary'
             ];
 
-            const renderer = new Renderer('Hail ${ data.x ? data.a : (this.push({ x: true, a: "Mary" })) }', null, null, (string) =>
+            const renderer = new Renderer('Hail ${ data.x ? data.a : (this.push({ x: true, a: "Mary" })) }', (string) =>
                 equals(expected.shift(), string)
             );
 
@@ -167,7 +186,7 @@
                 'Hail Mary'
             ];
 
-            const renderer = new Renderer('Hail ${ data.x ? data.a : (data.x = true) }', null, null, (string) =>
+            const renderer = new Renderer('Hail ${ data.x ? data.a : (data.x = true) }', (string) =>
                 equals(expected.shift(), string)
             );
 
@@ -188,6 +207,21 @@
             })
             .finally(done);
         }, 4);
+    });
+*/
+
+    import TemplateRenderer from './modules/renderer-template.js';
+
+    tests('TemplateRenderer', function(test, log) {
+        test("TemplateRenderer()", function(equals, done) {
+            const renderer = new TemplateRenderer('#attributes', document.body);
+            const data = { attribute: '✔ Attribute is rendered', class: '✔ Class is rendered', boolean: false, value: '✔ Value is rendered', checked: false };
+            renderer.push(data);
+            document.body.append(renderer.first);
+
+            window.r = renderer;
+            window.data = Observer(data);
+        }, 0);
     });
     </script>
 </body>

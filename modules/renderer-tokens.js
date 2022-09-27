@@ -1,10 +1,9 @@
 
 import overload  from '../../fn/modules/overload.js';
-import library   from '../modules/library.js';
-import compile   from '../modules/compile.js';
-import toText    from '../modules/to-text.js';
+import library   from './library.js';
+import compile   from './compile.js';
+import toText    from './to-text.js';
 import Renderer  from './renderer.js';
-import analytics from './analytics.js';
 
 const A      = Array.prototype;
 const assign = Object.assign;
@@ -53,42 +52,50 @@ function updateTokens(list, cached, tokens, count) {
     return count;
 }
 
-export default function TokensRenderer(node, options) {
-    Renderer.apply(this, arguments);
+export default function TokensRenderer(source, node, name) {
+    this.element = node;
+    this.node    = node;
+    this.name    = name;
+    this.list    = getTokenList(node, name);
+    this.tokens  = nothing;
+    this.renders = 0;
 
-    this.name      = options.name;
-    this.list      = getTokenList(node, options.name);
-    this.tokens    = nothing;
-    this.literally = options.literally || compile(library, 'data, element', options.source, null, options, node);
+    const render = typeof source === 'string' ?
+        compile(library, 'data, element', source, null, {}, node) :
+        source ;
+
+    Renderer.call(this, render);
 
     // Empty the tokens until it is rendered to avoid code in literals
-    // being interpreted as classes
+    // being interpreted as tokens
     node.setAttribute(this.name, '');
-
-    // Analytics
-    const id = '#' + options.template;
-    ++analytics[id].class || (analytics[id].class = 1);
-    ++analytics.Totals.class;
 }
 
 assign(TokensRenderer.prototype, Renderer.prototype, {
     compose: function(strings) {
-        let count = 0;
+        let mutations = 0;
 
         // Set permanent tokens on first render only
-        if (this.count === 1) {
-            const tokens = strings.join(' ').trim().split(/\s+/);
+        if (++this.renders === 1) {
+            const tokens = strings
+                .join(' ')
+                .trim()
+                .split(/\s+/);
+
             this.list.add.apply(this.list, tokens);
-            ++count;
+            ++mutations;
         }
 
         // Turn evaluated values into an array of strings
         const tokens = A.slice.call(arguments, 1)
             .map(valueify)
-            .filter((string) => !!string);
+            .filter((string) => !!string)
+            .join(' ')
+            .trim()
+            .split(/\s+/);
 
-        count = updateTokens(this.list, this.tokens, tokens, count);
-        this.tokens  = tokens;
-        return count;
+        this.mutations = updateTokens(this.list, this.tokens, tokens, mutations);
+        this.tokens    = tokens;
+        return this;
     }
 });

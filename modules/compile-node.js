@@ -3,14 +3,13 @@ import noop     from '../../fn/modules/noop.js';
 import overload from '../../fn/modules/overload.js';
 import toType   from '../../dom/modules/to-type.js';
 
-import AttributeRenderer from '../renderers/attribute-renderer.js';
-import BooleanRenderer   from '../renderers/boolean-renderer.js';
-import CheckedRenderer   from '../renderers/checked-renderer.js';
-import ContentRenderer   from '../renderers/content-renderer.js';
-import TokensRenderer    from '../renderers/tokens-renderer.js';
-import ValueRenderer     from '../renderers/value-renderer.js';
-
-import decode   from './decode.js';
+import AttributeRenderer from './renderer-attribute.js';
+import BooleanRenderer   from './renderer-boolean.js';
+import CheckedRenderer   from './renderer-checked.js';
+//import ContentRenderer   from './renderer-content.js';
+import TokensRenderer    from './renderer-tokens.js';
+import ValueRenderer     from './renderer-value.js';
+import decode            from './decode.js';
 
 const A = Array.prototype;
 const rliteral = /\$\{/;
@@ -20,32 +19,23 @@ const rliteral = /\$\{/;
 compileAttributes(renderers, options, nodeames)
 **/
 
-function addAttributeRenderer(renderers, Renderer, node, source, name, options) {
-    if (!source || !rliteral.test(source)) { return; }
-    options.source = source;
-    options.name   = name;
-    renderers.push(new Renderer(node, options));
-}
-
-function compileAttr(renderers, options, node, attribute) {
-    addAttributeRenderer(renderers, AttributeRenderer, node, attribute.value, attribute.localName, options);
-}
-
 function compileBoolean(renderers, options, node, attribute) {
-    addAttributeRenderer(renderers, BooleanRenderer, node, attribute.value, attribute.localName, options);
+    const source = attribute.value;
+    if (!source || !rliteral.test(source)) { return; }
+    renderers.push(new BooleanRenderer(source, node, attribute.localName));
 }
 
 function compileTokens(renderers, options, node, attribute) {
-    addAttributeRenderer(renderers, TokensRenderer, node, attribute.value, attribute.localName, options);
-}
-
-function compileValue(renderers, options, node, attribute) {
-    addAttributeRenderer(renderers, ValueRenderer, node, attribute.value, 'value', options);
+    const source = attribute.value;
+    if (!source || !rliteral.test(source)) { return; }
+    renderers.push(new TokensRenderer(source, node, attribute.localName));
 }
 
 const compileAttribute = overload((renderers, options, node, attribute) => attribute.localName, {
-    'checked':  function compileChecked(renderers, options, node, attribute) {
-        addAttributeRenderer(renderers, CheckedRenderer, node, attribute.value, 'checked', options);
+    'checked': (renderers, options, node, attribute) => {
+        const source = attribute.value;
+        if (!source || !rliteral.test(source)) { return; }
+        renderers.push(new CheckedRenderer(source, node, 'checked'));
     },
 
     'class': compileTokens,
@@ -60,19 +50,27 @@ const compileAttribute = overload((renderers, options, node, attribute) => attri
     // Special workaround attribute used in cases where ${} cannot be added
     // directly to the HTML content, such as in <tbody> or <tr>
     'inner-content': function(renderers, options, node, attribute) {
-        const string = attribute.value;
-        if (!string || !rliteral.test(string)) { return; }
-        node.removeAttribute(attribute.localName);
-        options.source = decode(string);
-        options.name   = 'innerHTML';
-        renderers.push(new ContentRenderer(node, options, parent));
+        const source = attribute.value;
+        if (!source || !rliteral.test(source)) { return; }
+//        node.removeAttribute(attribute.localName);
+//        options.source = decode(source);
+//        options.name   = 'innerHTML';
+//        renderers.push(new ContentRenderer(node, options, parent));
     },
 
     'required': compileBoolean,
 
-    'value': compileValue,
+    'value': (renderers, options, node, attribute) => {
+        const source = attribute.value;
+        if (!source || !rliteral.test(source)) { return; }
+        renderers.push(new ValueRenderer(source, node, 'value'));
+    },
 
-    'default': compileAttr
+    'default': (renderers, options, node, attribute) => {
+        const source = attribute.value;
+        if (!source || !rliteral.test(source)) { return; }
+        renderers.push(new AttributeRenderer(source, node, attribute.localName));
+    }
 });
 
 function compileAttributes(renderers, options, node) {
@@ -112,30 +110,13 @@ function compileChildren(renderers, options, node, parent) {
 
 const compileElement = overload((renderers, options, element) => element.tagName.toLowerCase(), {
     // Ignore SVG <defs>, which for our purposes we consider as inert like
-    // HTML's <template>
+    // an HTML <template>
     'defs': noop,
 
     'default': (renderers, options, element) => {
         // Children first means inner DOM to outer DOM
         compileChildren(renderers, options, element, element);
-
-        // We must wait until custom elements are upgraded before we may
-        // interact with their non-standard properties and attributes
-        // Todo: Test this
-        // Hang on... is this still true given that the renderer.set negociates
-        // the way an attribute is rendered??
-        /*const tag = node.getAttribute('is') || node.tagName.toLowerCase();
-        if (/-/.test(tag)) {
-            window.customElements.whenDefined(node.tagName).then(() => {
-                compileAttributes(renderers, options, node);
-                compileType(renderers, options, node);
-            });
-        }
-        else {*/
-            compileAttributes(renderers, options, element);
-            //compileType(renderers, options, node);
-        /*}*/
-
+        compileAttributes(renderers, options, element);
         return renderers;
     }
 });
@@ -153,6 +134,7 @@ const compileNode = overload((renderers, options, node) => toType(node), {
     'fragment': compileChildren,
 
     'text': (renderers, options, node, parent) => {
+return;
         const string = node.nodeValue;
 
         if (string && rliteral.test(string)) {

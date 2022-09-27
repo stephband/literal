@@ -1,6 +1,6 @@
 
 import { log, group, groupCollapsed, groupEnd } from '../modules/log.js';
-import analytics from './analytics.js';
+//import analytics from './analytics.js';
 import { cache as compileCache } from '../modules/compile.js';
 
 const renderers = [];
@@ -60,22 +60,22 @@ function render(renderers) {
         const keys = Object.keys(ids);
         const t1 = window.performance.now() / 1000;
 
-        if (logs.totalCompileTime !== analytics.totalCompileTime) {
-            logs.batchCompileTime = analytics.totalCompileTime - logs.totalCompileTime;
-            logs.totalCompileTime = analytics.totalCompileTime;
+        //if (logs.totalCompileTime !== analytics.totalCompileTime) {
+            //logs.batchCompileTime = analytics.totalCompileTime - logs.totalCompileTime;
+            //logs.totalCompileTime = analytics.totalCompileTime;
 
-            const ids      = Object.keys(compileCache);
+            //const ids      = Object.keys(compileCache);
             //const batchIds = ids.slice(logs.totalCompileCount);
-            const totalCompileCount = ids.length;
+            //const totalCompileCount = ids.length;
 
-            logs.batchCompileCount = totalCompileCount - logs.totalCompileCount;
-            logs.totalCompileCount = totalCompileCount;
+            //logs.batchCompileCount = totalCompileCount - logs.totalCompileCount;
+            //logs.totalCompileCount = totalCompileCount;
 
-            log('compile', logs.batchCompileCount + ' literal' + (logs.batchCompileCount === 1 ? '' : 's') + ', ' + logs.batchCompileTime.toPrecision(3) + 'ms', undefined, undefined, '#DDB523');
-        }
-        else {
+        //    log('compile', logs.batchCompileCount + ' literal' + (logs.batchCompileCount === 1 ? '' : 's') + ', ' + logs.batchCompileTime.toPrecision(3) + 'ms', undefined, undefined, '#DDB523');
+        //}
+        //else {
             logs.batchCompileTime = 0;
-        }
+        //}
 
         log('render',
             t0.toFixed(3) + 's - '

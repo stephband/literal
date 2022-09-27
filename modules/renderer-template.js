@@ -24,13 +24,13 @@ renderer
 ```
 **/
 
-import identify        from '../../dom/modules/identify.js';
-import isTextNode      from '../../dom/modules/is-text-node.js';
-import compileNode     from '../modules/compile-node.js';
-import { Observer, getTarget } from '../../fn/observer/observer.js';
-import stats, { meta } from './analytics.js';
-import { uncue }       from './batcher.js';
-import Renderer, { removeNodes, renderStopped, trigger } from './renderer.js';
+import Stream       from '../../fn/modules/stream/stream.js';
+import { Observer } from '../../fn/observer/observer.js';
+import identify     from '../../dom/modules/identify.js';
+import isTextNode   from '../../dom/modules/is-text-node.js';
+import compileNode  from './compile-node.js';
+import removeNodes  from './remove-nodes.js';
+import { cue, uncue } from './cue.js';
 
 const assign = Object.assign;
 const cache  = {};
@@ -90,7 +90,7 @@ function prepareContent(content) {
     }
 }
 
-function newRenderer(renderer) {
+function cloneRenderer(renderer) {
     // `this` is the parent renderer of the new renderer
     const node = getDescendant(renderer.path, this.content);
 
@@ -98,53 +98,56 @@ function newRenderer(renderer) {
     const element = isTextNode(node) ?
         // If it's a direct child of template, use the template renderer's
         // element as context element
-        !/\./.test(renderer.path) ? this.element :
+        !/\./.test(renderer.path) ?
+            this.element :
 
-        // Otherwise it is already inside its context element
-        node.parentNode :
+            // Otherwise it is already inside its context element
+            node.parentNode :
 
-    // node itself is the context element for attributes
-    node ;
+        // node itself is the context element for attributes
+        node ;
 
-    return new renderer.constructor(node, renderer, element);
+    const clone = new renderer.constructor(renderer.render, node, name, element);
+
+    // Stop clone when template renderer stops
+    this.done(clone);
+
+    return clone;
 }
 
-export default function TemplateRenderer(template, parent) {
+export default function TemplateRenderer(template, element) {
     // TemplateRenderer may be called with a string id or a template element
     const id = typeof template === 'string' ?
         template :
         identify(template) ;
 
-    this.id      = ++meta.count;
-    this.element = parent;
+    //this.id      = ++meta.count;
+    this.element = element;
 
-    // If the template is already compiled, clone the compiled contents to
-    // this renderer and bind them to a new fragment
-    if (cache[id]) {
-        const template = cache[id].template;
-        this.template  = template;
-        this.content   = template.content ? template.content.cloneNode(true) : template.cloneNode(true) ;
+    // If the template is already compiled and cached, clone it
+    const renderer = cache[id];
+
+    if (renderer) {
+        this.template  = renderer.template;
+        this.content   = renderer.template.content ?
+            renderer.template.content.cloneNode(true) :
+            renderer.template.cloneNode(true) ;
         this.first     = this.content.childNodes[0];
         this.last      = this.content.childNodes[this.content.childNodes.length - 1];
-        this.contents  = cache[id].contents.map(newRenderer, this);
-        ++stats['#' + id].template;
-        ++stats.Totals.template;
+        this.contents  = renderer.contents.map(cloneRenderer, this);
         return;
     }
 
-    template = typeof template === 'string' ?
+    cache[id] = this;
+
+
+
+    this.template = typeof template === 'string' ?
         document.getElementById(template[0] === '#' ? template.slice(1) : template) :
         template ;
 
-    if (window.DEBUG) {
-        if (!template) {
-            throw new Error('Template id="' + id + '" not found in document');
-        }
-        /*
-        if (!template.content) {
-            throw new Error('Element id="' + id + '" is not a <template> (no content fragment)');
-        }
-        */
+    if (window.DEBUG && !template) {
+        throw new Error('Template id="' + id + '" not found in document');
     }
 
     /**
@@ -156,59 +159,59 @@ export default function TemplateRenderer(template, parent) {
     inserted into the DOM at any time, at which point it will no longer contain
     the renderer's DOM nodes.
     **/
-    template.content && prepareContent(template.content);
 
-    this.template = template;
-
-try {
-    this.content  = template.content ? template.content.cloneNode(true) : template.cloneNode(true) ;
-}
-catch(e) {
-    console.log(template, template.content);
-    throw e;
-}
+    if (this.template.content) {
+        prepareContent(this.template.content);
+        this.content = this.template.content.cloneNode(true);
+    }
+    else {
+        this.content = this.template.cloneNode(true) ;
+    }
 
     this.first    = this.content.childNodes[0];
     this.last     = this.content.childNodes[this.content.childNodes.length - 1];
 
     // Analytics (must be declared before contents)
-    stats['#' + id] = { template: 1 };
-    ++stats.Totals.template;
+    //stats['#' + id] = { template: 1 };
+    //++stats.Totals.template;
 
     // The options object contains information for renderer objects. It is
     // mutated as it is passed to each renderer (specifically path, name,
     // source properties). We can do this because renderer construction is
     // synchronous within a template.
-    this.contents = compileNode([], { template: id, path: '' }, this.content, parent);
-    cache[id] = this;
+    this.contents = compileNode([], { template: id, path: '' }, this.content, element);
+
+    // Stop child when template renderer stops
+    this.contents.forEach((renderer) => this.done(renderer));
 }
 
-assign(TemplateRenderer.prototype, Renderer.prototype, {
-    /**
-    .push(data)
-    Cues `data` to be rendered in the next render batch. Returns a promise that
-    resolves when the batch is finished rendering. [Todo: this is a bit bizarre,
-    perhaps implement .each().]
-
-    The `data` object is observed for mutations, and the renderer updates it
-    content until either a new data object is cued or the renderer is stopped.
-    **/
-    push: function(object) {
-        const data = object ? getTarget(object) : null ;
-
-        // Deduplicate. Not sure this is entirely necessary.
-        if (data === this.data) {
-            return Promise.reject('Attempt to render with same object as last render');
+assign(TemplateRenderer.prototype, {
+    push: function(data) {
+        if (this.status === 'stopped') {
+            throw new Error('Renderer is stopped, cannot .push() data');
         }
 
+        data = Observer(data);
+        if (this.data === data) { return; }
+
         this.data = data;
-        return Renderer.prototype.push.apply(this, arguments);
+
+        // Do we actually need to cue? I mean, the push on each child renderer
+        // is cue()d so why do we need to do it here?
+        //
+        // Well, at the moment we need to do it here because in update()
+        // children are appended to the DOM synchronously around line 230. And
+        // perhaps this is for the best: why cue multiple renderers when you can
+        // cue just this one, after all? Hmmm.
+        cue(this);
     },
 
-    render: function(object) {
+    update: function() {
         //console.log(this.constructor.name + '#' + this.id + '.render()');
 
-        if (!object) {
+        const data = this.data;
+
+        if (!data) {
             // Remove all but the first node to the renderer's content fragment
             const nodes = [];
             let node = this.first;
@@ -222,25 +225,22 @@ assign(TemplateRenderer.prototype, Renderer.prototype, {
             return nodes.length;
         }
 
-        const data      = getTarget(object);
-        const observer  = Observer(data);
-        const contents = this.contents;
-        var count = 0;
-
-        this.data = data;
-
         // Render the contents (synchronously)
-        contents.forEach((renderer) => count += renderer.render(observer));
+        this.mutations = 0;
+        this.contents.forEach((renderer) => {
+            renderer.data = data;
+            this.mutations += renderer.update().mutations
+        });
 
         // If this.first is not in the content fragment, it must be in the
         // parent DOM being used as a marker. It's time for its freshly rendered
         // brethren to join it.
         if (this.content.firstChild && this.first !== this.content.firstChild) {
             this.first.after(this.content);
-            ++count;
+            ++this.mutations;
         }
 
-        return count;
+        return this;
     },
 
     /**
@@ -266,13 +266,12 @@ assign(TemplateRenderer.prototype, Renderer.prototype, {
     **/
     stop: function() {
         uncue(this);
-
-        if (window.DEBUG) {
-            this.render = renderStopped;
-        }
-
+        this.status = 'stopped';
+        Stream.prototype.stop.apply(this);
         // object, method, status, payload
-        trigger(this, 'stop', 'done');
+        //trigger(this, 'stop', 'done');
         return this;
-    }
+    },
+
+    done: Stream.prototype.done
 });

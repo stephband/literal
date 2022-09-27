@@ -1,10 +1,13 @@
 
-import library   from '../modules/library.js';
-import Renderer, { renderString } from './renderer.js';
-import compile   from '../modules/compile.js';
-import names     from './property-names.js';
+import library        from './library.js';
+import Renderer       from './renderer.js';
+import compile        from './compile.js';
+import composeBoolean from './compose-boolean.js';
+import names          from './property-names.js';
 
 const assign = Object.assign;
+
+
 /**
 BooleanRenderer()
 Constructs an object responsible for rendering to a boolean attribute.
@@ -31,21 +34,24 @@ export function setBooleanProperty(node, name, value) {
     return 1;
 }
 
-export default function BooleanRenderer(source, render, node, name, element, options) {
-    this.element = element || node;
+export default function BooleanRenderer(source, node, name) {
+    this.element = node;
     this.node    = node;
     this.name    = name;
-    this.render  = render || compile(library, 'data, element', source, null, options, this.element);
 
-    Renderer.call(this, source, this.render);
+    const render = typeof source === 'string' ?
+        compile(library, 'data, element', source, null, {}, node) :
+        source ;
+
+    Renderer.call(this, render);
 
     // Remove the boolean until it is processed
     node.removeAttribute(name);
 }
 
 assign(BooleanRenderer.prototype, Renderer.prototype, {
-    compose: function() {
-        const value = renderString(arguments);
+    compose: function(strings) {
+        const value = composeBoolean(arguments);
         this.mutations = setBooleanProperty(this.node, this.name, value);
         return this;
     }

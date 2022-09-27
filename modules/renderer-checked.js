@@ -1,17 +1,13 @@
 
-import isDefined from '../../fn/modules/is-defined.js';
-import trigger   from '../../dom/modules/trigger.js';
-import config    from '../modules/config.js';
-import library   from '../modules/library.js';
-import compile   from '../modules/compile.js';
-import Renderer  from './renderer.js';
+import isDefined      from '../../fn/modules/is-defined.js';
+import trigger        from '../../dom/modules/trigger.js';
+import config         from './config.js';
+import library        from './library.js';
+import compile        from './compile.js';
+import composeBoolean from './compose-boolean.js';
+import Renderer       from './renderer.js';
 
 const assign  = Object.assign;
-const rempty  = /^\s*$/;
-
-function isNotEmpty(string) {
-    return !rempty.test(string);
-}
 
 
 /**
@@ -53,14 +49,17 @@ function setChecked(node, value, hasValue) {
     return 1;
 }
 
-export default function CheckedRenderer(source, render, node, name, element, options) {
-    this.element = element || node;
-    this.node    = node;
-    this.name    = 'checked';
-    this.render  = render || compile(library, 'data, element', source, null, options, this.element);
-    this.hasValue  = isDefined(node.getAttribute('value'));
+export default function CheckedRenderer(source, node, name) {
+    this.element  = node;
+    this.node     = node;
+    this.name     = 'checked';
+    this.hasValue = isDefined(node.getAttribute('value'));
 
-    Renderer.call(this, source, this.render);
+    const render = typeof source === 'string' ?
+        compile(library, 'data, element', source, null, {}, node) :
+        source ;
+
+    Renderer.call(this, render);
 
     // Negate the effects of having template content in the checked attribute -
     // resetting the form sets it back to attribute state
@@ -68,11 +67,8 @@ export default function CheckedRenderer(source, render, node, name, element, opt
 }
 
 assign(CheckedRenderer.prototype, Renderer.prototype, {
-    compose: function renderBoolean(strings, value) {
-        if (arguments.length !== 2 || strings.find(isNotEmpty)) {
-            throw new Error('A checked attribute may contain only one ${ tag }, optionally surrounded by white space');
-        }
-
+    compose: function(strings) {
+        const value = composeBoolean(arguments);
         this.mutations = setChecked(this.node, value, this.hasValue);
         return this;
     }
