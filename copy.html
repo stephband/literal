@@ -18,6 +18,14 @@
         .class-before::before {
             content: attr(class);
         }
+
+        :not(:checked) + .unchecked-before::before {
+            content: '✔ Input is unchecked'
+        }
+
+        :checked + .checked-before::before {
+            content: '✔ Input is checked'
+        }
     </style>
 
     <template id="attributes">
@@ -26,6 +34,8 @@
         <pre hidden="${ data.boolean }">✔ Boolean is false</pre>
         <input type="text" value="${ data.value }" />
         <input type="checkbox" checked="${ data.checked }" />
+        <pre class="unchecked-before"></pre>
+        <pre>${ data.content }</pre>
     </template>
 
     <template id="item">
@@ -215,7 +225,7 @@
     tests('TemplateRenderer', function(test, log) {
         test("TemplateRenderer()", function(equals, done) {
             const renderer = new TemplateRenderer('#attributes', document.body);
-            const data = { attribute: '✔ Attribute is rendered', class: '✔ Class is rendered', boolean: false, value: '✔ Value is rendered', checked: false };
+            const data = { attribute: '✔ Attribute is rendered', class: '✔ Class is rendered', boolean: false, value: '✔ Value is rendered', checked: false, content: '✔ Text is rendered' };
             renderer.push(data);
             document.body.append(renderer.first);
 

@@ -6,9 +6,9 @@ import toType   from '../../dom/modules/to-type.js';
 import AttributeRenderer from './renderer-attribute.js';
 import BooleanRenderer   from './renderer-boolean.js';
 import CheckedRenderer   from './renderer-checked.js';
-//import ContentRenderer   from './renderer-content.js';
 import TokensRenderer    from './renderer-tokens.js';
 import ValueRenderer     from './renderer-value.js';
+import DOMRenderer       from './renderer-dom.js';
 import decode            from './decode.js';
 
 const A = Array.prototype;
@@ -55,7 +55,7 @@ const compileAttribute = overload((renderers, options, node, attribute) => attri
 //        node.removeAttribute(attribute.localName);
 //        options.source = decode(source);
 //        options.name   = 'innerHTML';
-//        renderers.push(new ContentRenderer(node, options, parent));
+//        renderers.push(new DOMRenderer(node, options, parent));
     },
 
     'required': compileBoolean,
@@ -133,14 +133,12 @@ const compileNode = overload((renderers, options, node) => toType(node), {
 
     'fragment': compileChildren,
 
-    'text': (renderers, options, node, parent) => {
-return;
+    'text': (renderers, options, node, element) => {
         const string = node.nodeValue;
 
         if (string && rliteral.test(string)) {
-            options.source = decode(string);
-            options.name   = null;
-            renderers.push(new ContentRenderer(node, options, parent));
+            const source = decode(string);
+            renderers.push(new DOMRenderer(source, node, null, element));
         }
 
         return renderers;

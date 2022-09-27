@@ -4,7 +4,7 @@ Includes another template. Not available inside attributes.
 **/
 
 import { getTarget }    from '../../fn/observer/observer.js';
-import TemplateRenderer from '../renderers/template-renderer.js';
+import TemplateRenderer from '../modules/renderer-template.js';
 import request          from './request.js';
 
 export default function include(url, object, element) {

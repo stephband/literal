@@ -129,7 +129,7 @@ assign(Renderer.prototype, {
     update: function() {
         const data      = this.data;
         const observers = this.observers;
-
+// Todo: what is this.include doin' 'ere?
         const stats = render(this, this, data, this.element, this.include);
         reobserve(observers, stats.values, data, this.cue);
 

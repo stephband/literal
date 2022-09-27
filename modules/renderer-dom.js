@@ -1,20 +1,20 @@
 
 /**
-ContentRenderer()
+DOMRenderer()
 Constructs an object responsible for rendering to a text node. If the result of
 processing the literal content is more DOM content this renderer will insert
 that DOM after the text node.
 **/
 
-import curry          from '../../fn/modules/curry.js';
-import library        from '../modules/library.js';
-import compile        from '../modules/compile.js';
-import toText         from '../modules/to-text.js';
-import include        from '../library/include-literal.js';
-import Renderer, { removeNodes } from './renderer.js';
-import TemplateRenderer from './template-renderer.js';
-import { StreamRenderer, ArrayRenderer, PromiseRenderer, isStream } from './content-renderers.js';
-import analytics      from './analytics.js';
+import curry            from '../../fn/modules/curry.js';
+import include          from '../library/include-literal.js';
+import library          from './library.js';
+import compile          from './compile.js';
+import toText           from './to-text.js';
+import Renderer         from './renderer.js';
+import removeNodes      from './remove-nodes.js';
+import TemplateRenderer from './renderer-template.js';
+//import { StreamRenderer, ArrayRenderer, PromiseRenderer, isStream } from './content-renderers.js';
 
 
 const assign = Object.assign;
@@ -38,18 +38,17 @@ function toRenderer(value) {
         toText(value) ;
 }
 
-function renderValue(parent, string, value) {
-    const contents = parent.contents;
+function renderValue(domRenderer, string, value) {
+    const contents = domRenderer.contents;
     const renderer = toRenderer.call(parent, value);
 
     if (typeof renderer === 'string') {
         return string + renderer;
     }
-    else {
-        string && contents.push(string);
-        contents.push(renderer);
-        return '';
-    }
+
+    string && contents.push(string);
+    contents.push(renderer);
+    return '';
 }
 
 function setNodeValue(node, value) {
@@ -109,26 +108,26 @@ function setContents(first, last, contents, state) {
     return count;
 }
 
-export default function ContentRenderer(node, options, element) {
-    Renderer.apply(this, arguments);
+export default function DOMRenderer(source, node, name, element) {
+    const render = typeof source === 'string' ?
+        compile(library, 'data, element, include', source, null, {}, element) :
+        source ;
 
+    Renderer.call(this, render);
+
+    this.element   = element;
+    this.node      = node;
     this.first     = node;
     this.last      = document.createTextNode('');
     this.first.after(this.last);
     this.contents  = [];
-    this.literally = options.literally || compile(library, 'data, element, include', options.source, null, options, element);
 
     // Renderer scoped template functions
     this.include = curry((template, data) => include(template, data, element));
 
-    // Analytics
-    const id = '#' + options.template;
-
-    ++analytics[id].text || (analytics[id].text = 1);
-    ++analytics.Totals.text;
 }
 
-assign(ContentRenderer.prototype, Renderer.prototype, {
+assign(DOMRenderer.prototype, Renderer.prototype, {
     push: function() {
         // Preemptively stop all nodes, they are about to be updated
         this.contents.forEach(stop);
@@ -136,13 +135,13 @@ assign(ContentRenderer.prototype, Renderer.prototype, {
         return Renderer.prototype.push.apply(this, arguments);
     },
 
-    render: function(data) {
+    update: function() {
         // Stop all nodes, they are about to be recreated. This needs to be done
         // here as well as render, as update may be called by TemplateRenderer
         // without going through .push() cueing first. (??)
         this.contents.forEach(stop);
         this.contents.length = 0;
-        return Renderer.prototype.render.call(this, data, this.element, this.include);
+        return Renderer.prototype.update.call(this);
     },
 
     compose: function(strings) {
@@ -156,6 +155,13 @@ assign(ContentRenderer.prototype, Renderer.prototype, {
         }
 
         string && this.contents.push(string);
-        return setContents(this.first, this.last, this.contents, this.status);
+        this.mutations = setContents(this.first, this.last, this.contents, this.status);
+        return this;
+    },
+
+    stop: function() {
+        this.contents.forEach(stop);
+        this.contents.length = 0;
+        return Renderer.prototype.stop.apply(this);
     }
 });
