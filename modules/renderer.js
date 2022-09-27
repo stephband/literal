@@ -92,6 +92,11 @@ function reobserve(observers, values, data, cue) {
     }
 }
 
+/**
+Renderer(source, render)
+Takes a `source` string or optionally a compiled `render` function and creates
+a consumer stream.
+**/
 
 export default function Renderer(source, render, options = nothing, fn) {
     this.source    = source;
