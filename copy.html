@@ -24,7 +24,7 @@
     </include-literal>
 
     <script type="module">
-    import './elements/include-literal.js';
+    /*import './elements/include-literal.js';
 
     const data1 = {
         items: [{
@@ -47,19 +47,147 @@
 
     setTimeout(() => {
         Object.assign(element.data, data2)
-    }, 500);
+    }, 500);*/
 
 
 
 
-
-    import Renderer from './data-observer.js';
+    import tests        from "../fn/modules/test.js";
+    import Renderer     from './modules/renderer.js';
     import { Observer } from '../fn/observer/observer.js';
 
-    let n = 0;
+    const keys = Object.keys;
 
-    window.r = new Renderer();
-    window.O = Observer;
+    tests('Renderer', function(test, log) {
+        test("Renderer()", function(equals, done) {
+            const expected = [
+                'Hail ',
+                'Hail Bob',
+                'Hail Mike',
+                'Hail Mary',
+                'Hail Ceasar'
+            ];
 
+            const renderer = new Renderer('Hail ${ data.x ? data.a : data.b }', null, null, (string) =>
+                equals(expected.shift(), string)
+            );
+
+            const data = Observer({});
+
+            // Hail
+            renderer
+            .done(() => equals(0, expected.length))
+            .push(data);
+
+            Promise
+            .resolve()
+            .then(() => {
+                // Test for keys being observed
+                equals(['x', 'b'], keys(renderer.observers));
+
+                // Hail Bob
+                data.b = 'Does nothing becuase immediately followed by ...';
+                data.b = 'Bob';
+            })
+            .then(() => {
+                // Test for keys being observed
+                equals(['x', 'b'], keys(renderer.observers));
+
+                // Hail Mike
+                data.a = 'Mike';
+                data.x = true;
+            })
+            .then(() => {
+                // Test for keys being observed
+                equals(['x', 'a'], keys(renderer.observers));
+
+                // Hail Mary
+                data.a = 'Mary';
+            })
+            .then(() => {
+                // Test for keys being observed
+                equals(['x', 'a'], keys(renderer.observers));
+
+                // Hail Ceasar
+                renderer.push({ x: true, a: 'Ceasar' });
+            })
+            .then(() => {
+                // Test for keys being observed
+                equals(['x', 'a'], keys(renderer.observers));
+
+                // Stop
+                renderer.stop();
+            })
+            .then(() => {
+                // Test for keys being observed
+                equals([], keys(renderer.observers));
+
+                // Causes error
+                renderer.push({ x: false });
+            })
+            .catch((e) => {
+                // Error received
+                equals('Error', e.constructor.name);
+            })
+            .finally(done);
+        }, 13);
+
+
+        test("Renderer() Allow recueing from renderer.push() inside template", function(equals, done) {
+            const expected = [
+                'Hail ',
+                'Hail Mary'
+            ];
+
+            const renderer = new Renderer('Hail ${ data.x ? data.a : (this.push({ x: true, a: "Mary" })) }', null, null, (string) =>
+                equals(expected.shift(), string)
+            );
+
+            const data = Observer({ a: 'Mary' });
+
+            // Hail
+            renderer
+            .done(() => equals(0, expected.length))
+            .push(data);
+
+            Promise
+            .resolve()
+            .then(() => {
+                // Test for keys being observed
+                equals(['x', 'a'], keys(renderer.observers));
+
+                renderer.stop();
+            })
+            .finally(done);
+        }, 4);
+
+        test("Renderer() Allow recueing from data.prop = x inside template", function(equals, done) {
+            const expected = [
+                'Hail true',
+                'Hail Mary'
+            ];
+
+            const renderer = new Renderer('Hail ${ data.x ? data.a : (data.x = true) }', null, null, (string) =>
+                equals(expected.shift(), string)
+            );
+
+            const data = Observer({ a: 'Mary' });
+
+            // Hail
+            renderer
+            .done(() => equals(0, expected.length))
+            .push(data);
+
+            Promise
+            .resolve()
+            .then(() => {
+                // Test for keys being observed
+                equals(['x', 'a'], keys(renderer.observers));
+
+                renderer.stop();
+            })
+            .finally(done);
+        }, 4);
+    });
     </script>
 </body>

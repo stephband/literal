@@ -7,7 +7,7 @@ if (window.DEBUG) {
 }
 
 /**
-compile(scope, params, source, id, info, element)
+compile(data, params, source, id, info, element)
 Compiles a literal template to a function.
 **/
 
@@ -17,7 +17,7 @@ const indent = '  ';
 export const cache = {};
 
 // Last two params, info and element, are purely for debug messages
-export default function compile(scope, params, source, id, info, element) {
+export default function compile(data, params, source, id, info, element) {
     if (typeof source !== 'string') {
         throw new Error('Template is not a string');
     }
@@ -39,7 +39,7 @@ export default function compile(scope, params, source, id, info, element) {
                 text.replace(/\s+/g, ' ').replace(/"/g, '\\"') ;
 
             const t0 = window.performance.now();
-            cache[key] = compileFn(scope, params,
+            cache[key] = compileFn(data, params,
                 'try {' + code + '} catch(e) {' +
                 // Append useful info to error message
                 indent + 'e.message += " in template #" + this.template + (this.element && this.element.tagName ? ", <" + this.element.tagName.toLowerCase() + (this.name ? " " + this.name + "=\\"' + name + '\\">" : "> ' + name + '") : "");' +
@@ -62,5 +62,5 @@ export default function compile(scope, params, source, id, info, element) {
         }
     }
 
-    return cache[key] = compileFn(scope, params, code);
+    return cache[key] = compileFn(data, params, code);
 }
