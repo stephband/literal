@@ -34,16 +34,17 @@ export function setBooleanProperty(node, name, value) {
     return 1;
 }
 
-export default function BooleanRenderer(source, node, name) {
-    this.element = node;
-    this.node    = node;
-    this.name    = name;
-
+export default function BooleanRenderer(source, consts, path, node, name) {
     const render = typeof source === 'string' ?
-        compile(library, 'data, element', source, null, {}, node) :
+        compile(source, library, 'data, element', consts, null, {}, node) :
         source ;
 
     Renderer.call(this, render);
+
+    this.path    = path;
+    this.element = node;
+    this.node    = node;
+    this.name    = name;
 
     // Remove the boolean until it is processed
     node.removeAttribute(name);

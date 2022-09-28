@@ -10,6 +10,8 @@ import Records from './records.js';
 import { cue, uncue } from './cue.js';
 
 const assign = Object.assign;
+const keys   = Object.keys;
+const values = Object.values;
 
 
 // Observers
@@ -26,17 +28,18 @@ function stopObservers(observers) {
 
 // Values
 
-let values = {};
+// TODO: sort out stats
+let VALUES = {};
 
 function toValues(last, record) {
     // Check for paths traversed while getting to the end of the
     // path - is this path an extension of the last?
     if (last && last.length < record.path.length && record.path.startsWith(last)) {
-        delete values[last];
+        delete VALUES[last];
     }
 
     if (!(record.path in values)) {
-        values[record.path] = record.value;
+        VALUES[record.path] = record.value;
 
         // Signal to next reduce iteration that we just pushed a
         // path and therefore the next path should be checked as
@@ -45,11 +48,11 @@ function toValues(last, record) {
     }
 }
 
-function render(renderer, context, data, element, include) {
+function render(renderer, context, data, parameters, variables) {
     const object  = getTarget(data);
     const records = object ? Records(object) : nothing ;
 
-    values = {};
+    VALUES = {};
     records.reduce(toValues);
 
     // Update `this` before rendering
@@ -59,7 +62,7 @@ function render(renderer, context, data, element, include) {
     // Evaluate the template. Note that we are potentially leaving
     // observers live here, if any data is set during render we may trigger
     // a further render... not what we want. Do we need to pause observers?
-    const stats = renderer.render(data, element, include);
+    const stats = renderer.render.apply(renderer, parameters);
 
     // We may only collect synchronous gets – other templates may use
     // this data object and we don't want to include their gets by stopping
@@ -67,7 +70,7 @@ function render(renderer, context, data, element, include) {
     // proxy per template instance would be the way to go. Currently
     // observer proxies are shared by all observers. We're not going there.
     records.stop();
-    stats.values = values;
+    stats.values = VALUES;
     return stats;
 }
 
@@ -99,13 +102,18 @@ Takes a `source` string or optionally a compiled `render` function and creates
 a consumer stream.
 **/
 
-export default function Renderer(source, fn) {
-    this.render    = typeof source === 'string' ?
-        compile(library, 'data', source) :
+export default function Renderer(source, parameters, consts, fn) {
+    const names  = parameters && keys(parameters);
+    //const values = parameters && values(parameters);
+    const params = 'data' + (names ? ', ' + names.join(', ') : '');
+
+    this.render = typeof source === 'string' ?
+        compile(source, library, params, consts) :
         source ;
 
-    this.observers = {};
-    this.status    = 'idle';
+    this.observers  = {};
+    this.parameters = [];
+    this.status     = 'idle';
 
     // Avoid creating function multiple times in reobserve loop in .update()
     this.cue       = () => cue(this);
@@ -127,10 +135,12 @@ assign(Renderer.prototype, {
     },
 
     update: function() {
-        const data      = this.data;
-        const observers = this.observers;
-// Todo: what is this.include doin' 'ere?
-        const stats = render(this, this, data, this.element, this.include);
+        const data       = this.data;
+        const parameters = this.parameters;
+        const observers  = this.observers;
+
+        parameters[0] = data;
+        const stats = render(this, this, data, parameters);
         reobserve(observers, stats.values, data, this.cue);
 
         return this;

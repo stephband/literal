@@ -34,16 +34,17 @@ function setAttribute(node, name, value) {
     return 1;
 }
 
-export default function AttributeRenderer(source, node, name) {
-    this.element = node;
-    this.node    = node;
-    this.name    = name;
-
+export default function AttributeRenderer(source, consts, path, node, name) {
     const render = typeof source === 'string' ?
-        compile(library, 'data, element', source, null, {}, node) :
+        compile(source, library, 'data, element', consts, null, {}, node) :
         source ;
 
     Renderer.call(this, render);
+
+    this.path    = path;
+    this.element = node;
+    this.node    = node;
+    this.name    = name;
 }
 
 assign(AttributeRenderer.prototype, Renderer.prototype, {

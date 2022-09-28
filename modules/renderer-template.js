@@ -33,6 +33,7 @@ import removeNodes  from './remove-nodes.js';
 import { cue, uncue } from './cue.js';
 
 const assign = Object.assign;
+const keys   = Object.keys;
 const cache  = {};
 
 
@@ -107,7 +108,7 @@ function cloneRenderer(renderer) {
         // node itself is the context element for attributes
         node ;
 
-    const clone = new renderer.constructor(renderer.render, node, name, element);
+    const clone = new renderer.constructor(renderer.render, '', renderer.path, node, name, element);
 
     // Stop clone when template renderer stops
     this.done(clone);
@@ -140,8 +141,6 @@ export default function TemplateRenderer(template, element) {
 
     cache[id] = this;
 
-
-
     this.template = typeof template === 'string' ?
         document.getElementById(template[0] === '#' ? template.slice(1) : template) :
         template ;
@@ -171,15 +170,15 @@ export default function TemplateRenderer(template, element) {
     this.first    = this.content.childNodes[0];
     this.last     = this.content.childNodes[this.content.childNodes.length - 1];
 
-    // Analytics (must be declared before contents)
-    //stats['#' + id] = { template: 1 };
-    //++stats.Totals.template;
+    // Get template constants from dataset keys, where `data-name` becomes
+    // available as `name` inside the template
+    const consts = keys(this.template.dataset).join(', ');
 
     // The options object contains information for renderer objects. It is
     // mutated as it is passed to each renderer (specifically path, name,
     // source properties). We can do this because renderer construction is
     // synchronous within a template.
-    this.contents = compileNode([], { template: id, path: '' }, this.content, element);
+    this.contents = compileNode([], this.content, '', consts, element);
 
     // Stop child when template renderer stops
     this.contents.forEach((renderer) => this.done(renderer));

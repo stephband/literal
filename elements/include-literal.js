@@ -57,15 +57,15 @@ import { Observer }     from '../../fn/observer/observer.js';
 import element          from '../../dom/modules/element.js';
 import { requestGet }   from '../../dom/modules/request.js';
 import create           from '../../dom/modules/create.js';
-import request          from '../library/request.js';
-import TemplateRenderer from '../renderers/template-renderer.js';
-import print            from '../library/print.js';
-import { register }     from '../modules/library.js';
+import events           from '../../dom/modules/events.js';
+import trigger          from '../../dom/modules/trigger.js';
+import select           from '../../dom/modules/select.js';
 
-import events      from '../../dom/modules/events.js';
-import trigger     from '../../dom/modules/trigger.js';
-import select      from '../../dom/modules/select.js';
-import includeHTML from '../library/include-html.js';
+import request          from '../library/request.js';
+import print            from '../library/print.js';
+import includeHTML      from '../library/include-html.js';
+import { register }     from '../modules/library.js';
+import TemplateRenderer from '../modules/template-renderer.js';
 
 const rpath = /^\/|\.|^https?:\/\//;
 

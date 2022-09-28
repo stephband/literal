@@ -52,19 +52,20 @@ function updateTokens(list, cached, tokens, count) {
     return count;
 }
 
-export default function TokensRenderer(source, node, name) {
+export default function TokensRenderer(source, consts, path, node, name) {
+    const render = typeof source === 'string' ?
+        compile(source, library, 'data, element', consts, null, {}, node) :
+        source ;
+
+    Renderer.call(this, render);
+
+    this.path    = path;
     this.element = node;
     this.node    = node;
     this.name    = name;
     this.list    = getTokenList(node, name);
     this.tokens  = nothing;
     this.renders = 0;
-
-    const render = typeof source === 'string' ?
-        compile(library, 'data, element', source, null, {}, node) :
-        source ;
-
-    Renderer.call(this, render);
 
     // Empty the tokens until it is rendered to avoid code in literals
     // being interpreted as tokens

@@ -108,13 +108,14 @@ function setContents(first, last, contents, state) {
     return count;
 }
 
-export default function DOMRenderer(source, node, name, element) {
+export default function DOMRenderer(source, consts, path, node, name, element) {
     const render = typeof source === 'string' ?
-        compile(library, 'data, element, include', source, null, {}, element) :
+        compile(source, library, 'data, element, include', consts, null, {}, element) :
         source ;
 
     Renderer.call(this, render);
 
+    this.path      = path;
     this.element   = element;
     this.node      = node;
     this.first     = node;

@@ -49,17 +49,18 @@ function setChecked(node, value, hasValue) {
     return 1;
 }
 
-export default function CheckedRenderer(source, node, name) {
+export default function CheckedRenderer(source, consts, path, node) {
+    const render = typeof source === 'string' ?
+        compile(source, library, 'data, element', consts, null, {}, node) :
+        source ;
+
+    Renderer.call(this, render);
+
+    this.path     = path;
     this.element  = node;
     this.node     = node;
     this.name     = 'checked';
     this.hasValue = isDefined(node.getAttribute('value'));
-
-    const render = typeof source === 'string' ?
-        compile(library, 'data, element', source, null, {}, node) :
-        source ;
-
-    Renderer.call(this, render);
 
     // Negate the effects of having template content in the checked attribute -
     // resetting the form sets it back to attribute state

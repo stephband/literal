@@ -90,16 +90,17 @@ const compose = overload((value, type) => type, {
     'default':    composeValue
 });
 
-export default function ValueRenderer(source, node, name) {
-    this.element = node;
-    this.node    = node;
-    this.name    = 'value';
-
+export default function ValueRenderer(source, consts, path, node) {
     const render = typeof source === 'string' ?
-        compile(library, 'data, element', source, null, {}, node) :
+        compile(source, library, 'data, element', consts, null, {}, node) :
         source ;
 
     Renderer.call(this, render);
+
+    this.path    = path;
+    this.element = node;
+    this.node    = node;
+    this.name    = 'value';
 }
 
 assign(ValueRenderer.prototype, Renderer.prototype, {

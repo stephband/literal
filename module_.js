@@ -1,5 +1,4 @@
 
-
 /**
 Get Started
 
@@ -95,8 +94,30 @@ Contents
 - <a href="#template-functions">Literal template functions</a>
 */
 
-import TemplateRenderer from './modules/renderer-template.js';
+/* Importing include-literal registers – and instantiates – <include-literal> */
+import './elements/include-html.js';
+import './elements/include-literal.js';
+export { cache as compiled } from './modules/compile.js';
+
+import { register } from './modules/library.js';
+export { register };
+
+import analytics from './modules/analytics.js';
+export { analytics };
+
+// RLLY?
+import rect        from '../dom/modules/rect.js';
+register('rect',    rect);
+
+export { Observer }  from '../fn/observer/observer.js';
+export { default as observe } from '../fn/observer/observe.js';
 
 export default function Literal(id) {
     return new TemplateRenderer(id);
+}
+
+Literal.stats = analytics;
+
+if (window.DEBUG) {
+    window.Literal = Literal;
 }

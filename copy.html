@@ -28,14 +28,16 @@
         }
     </style>
 
-    <template id="attributes">
+    <template id="attributes" data-checked>
         <pre data-before="${ data.attribute }"></pre>
         <pre class="class-before ${ data.class }"></pre>
         <pre hidden="${ data.boolean }">✔ Boolean is false</pre>
         <input type="text" value="${ data.value }" />
-        <input type="checkbox" checked="${ data.checked }" />
+        <input type="checkbox" checked="${ checked }" />
         <pre class="unchecked-before"></pre>
-        <pre>${ data.content }</pre>
+        <pre>${ data.content }
+${ data.content }</pre>
+        <pre>${ data.content }<br/>${ data.content }</pre>
     </template>
 
     <template id="item">
