@@ -219,7 +219,6 @@ ${ data.content }</pre>
             .then(() => {
                 // Test for keys being observed
                 equals(['x', 'a'], keys(renderer.observers));
-
                 renderer.stop();
             })
             .finally(done);
@@ -232,7 +231,7 @@ ${ data.content }</pre>
     import TemplateRenderer from './modules/renderer-template.js';
 
     tests('TemplateRenderer', function(test, log) {
-        test("TemplateRenderer()", function(equals, done) {
+        test("TemplateRenderer() primitive properties", function(equals, done) {
             const renderer = new TemplateRenderer('#attributes', document.body);
             const data = { attribute: '✔ Attribute is rendered', class: '✔ Class is rendered', boolean: false, value: '✔ Value is rendered', checked: false, content: '✔ Text is rendered' };
             renderer.push(data);
@@ -240,11 +239,13 @@ ${ data.content }</pre>
 
             window.r = renderer;
             window.data = Observer(data);
+
+            done();
         }, 0);
     });
 
     tests('TemplateRenderer', function(test, log) {
-        test("TemplateRenderer()", function(equals, done) {
+        test("TemplateRenderer() stream property", function(equals, done) {
             const renderer = new TemplateRenderer('#stream', document.body);
             const data = { boolean: (new IntervalStream(0.4)).scan((value) => !value) };
             renderer.push(data);
@@ -252,6 +253,8 @@ ${ data.content }</pre>
 
             window.r = renderer;
             window.data = Observer(data);
+
+            done();
         }, 0);
     });
     </script>
