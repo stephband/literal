@@ -137,6 +137,10 @@ export default function Renderer(source, scope, parameters, consts, fn) {
 
 assign(Renderer.prototype, {
     push: function(data) {
+        if (this.status === 'rendering') {
+            throw new Error('Renderer is rendering, cannot .push() data');
+        }
+
         if (this.status === 'stopped') {
             throw new Error('Renderer is stopped, cannot .push() data');
         }

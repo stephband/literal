@@ -167,7 +167,7 @@ ${ data.content }</pre>
             .finally(done);
         }, 13);
 
-
+/*
         test("Renderer() Allow recueing from renderer.push() inside template", function(equals, done) {
             const expected = [
                 'Hail ',
@@ -195,6 +195,7 @@ ${ data.content }</pre>
             })
             .finally(done);
         }, 4);
+*/
 
         test("Renderer() Allow recueing from data.prop = x inside template", function(equals, done) {
             const expected = [
@@ -229,7 +230,7 @@ ${ data.content }</pre>
     import Stream           from '../fn/modules/stream.js';
     import IntervalStream   from '../fn/modules/stream/interval-stream.js';
     import TemplateRenderer from './modules/renderer-template.js';
-/*
+
     tests('TemplateRenderer', function(test, log) {
         test("TemplateRenderer()", function(equals, done) {
             const renderer = new TemplateRenderer('#attributes', document.body);
@@ -242,7 +243,6 @@ ${ data.content }</pre>
         }, 0);
     });
 
-
     tests('TemplateRenderer', function(test, log) {
         test("TemplateRenderer()", function(equals, done) {
             const renderer = new TemplateRenderer('#stream', document.body);
@@ -254,6 +254,5 @@ ${ data.content }</pre>
             window.data = Observer(data);
         }, 0);
     });
-*/
     </script>
 </body>

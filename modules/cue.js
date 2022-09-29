@@ -42,9 +42,9 @@ function render(renderers) {
     }
 
     let renderer, stats;
+    //console.log('CYCLE -------------');
     while (renderer = renderers.shift()) {
         // Allow changes inside template to recue render
-        renderer.status = 'rendering';
         stats = renderer.update();
 
         if (window.DEBUG) {
@@ -53,6 +53,7 @@ function render(renderers) {
             ids && (ids[renderer.id] = ids[renderer.id] === undefined ? 1 : ids[renderer.id] + 1);
         }
     }
+    //console.log('END ---------------');
 
     cued = undefined;
 
@@ -119,7 +120,7 @@ export function cue(renderer) {
     if (!cued) {
         cued = promise.then(render);
     }
-
+//console.log('CUE');
     renderers.push(renderer);
     renderer.status = 'cued';
     return cued;
@@ -131,7 +132,7 @@ Removes renderer from the render queue.
 **/
 
 export function uncue(renderer) {
-    if (!renderer.cued) { return; }
+    if (renderer.status !== 'cued') { return; }
     if (!renderers.length) { return; }
 
     const i = renderers.indexOf(renderer);
