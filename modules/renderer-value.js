@@ -3,7 +3,6 @@ import overload      from '../../fn/modules/overload.js';
 import trigger       from '../../dom/modules/trigger.js';
 import config        from './config.js';
 import library       from './library.js';
-import compile       from './compile.js';
 import Renderer      from './renderer.js';
 import composeString from './compose-string.js';
 import composeValue  from './compose-value.js';
@@ -91,11 +90,7 @@ const compose = overload((value, type) => type, {
 });
 
 export default function ValueRenderer(source, consts, path, node) {
-    const render = typeof source === 'string' ?
-        compile(source, library, 'data, element', consts, null, {}, node) :
-        source ;
-
-    Renderer.call(this, render);
+    Renderer.call(this, source, library, { element: node }, consts);
 
     this.path    = path;
     this.element = node;
@@ -104,7 +99,7 @@ export default function ValueRenderer(source, consts, path, node) {
 }
 
 assign(ValueRenderer.prototype, Renderer.prototype, {
-    compose: function() {
+    render: function() {
         const value = compose(arguments, this.node.type);
         this.mutations = setValue(this.node, value);
         return this;

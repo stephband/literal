@@ -1,6 +1,5 @@
 
 import library       from './library.js';
-import compile       from './compile.js';
 import Renderer      from './renderer.js';
 import composeString from './compose-string.js';
 import names         from './property-names.js';
@@ -35,11 +34,7 @@ function setAttribute(node, name, value) {
 }
 
 export default function AttributeRenderer(source, consts, path, node, name) {
-    const render = typeof source === 'string' ?
-        compile(source, library, 'data, element', consts, null, {}, node) :
-        source ;
-
-    Renderer.call(this, render);
+    Renderer.call(this, source, library, { element: node }, consts);
 
     this.path    = path;
     this.element = node;
@@ -48,7 +43,7 @@ export default function AttributeRenderer(source, consts, path, node, name) {
 }
 
 assign(AttributeRenderer.prototype, Renderer.prototype, {
-    compose: function() {
+    render: function() {
         const value = composeString(arguments);
         this.mutations = setAttribute(this.node, this.name, value);
         return this;

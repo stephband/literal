@@ -4,8 +4,8 @@ import Stream  from '../../fn/modules/stream/stream.js';
 import observe from '../../fn/observer/observe.js';
 import { Observer, getTarget } from '../../fn/observer/observer.js';
 
-import library from './library.js';
 import compile from './compile.js';
+import toText  from './to-text.js';
 import Records from './records.js';
 import { cue, uncue } from './cue.js';
 
@@ -16,6 +16,10 @@ const values = Object.values;
 
 // Observers
 
+function stop(object) {
+    object.stop();
+}
+
 function stopObservers(observers) {
     let path;
     for (path in observers) {
@@ -23,6 +27,12 @@ function stopObservers(observers) {
         observers[path].stop();
         delete observers[path];
     }
+}
+
+function stopStreams(streams) {
+    if (!streams) { return; }
+    streams.forEach(stop);
+    streams.length = 0;
 }
 
 
@@ -48,33 +58,38 @@ function toValues(last, record) {
     }
 }
 
-function render(renderer, context, data, parameters, variables) {
-    const object  = getTarget(data);
-    const records = object ? Records(object) : nothing ;
+function renderValue(renderer, values, n, object) {
+    if (object && typeof object === 'object') {
+        // Avoid having properties of object registered as observers
+        object = getTarget(object);
 
-    VALUES = {};
-    records.reduce(toValues);
+        // Is object a Promise?
+        /*if (object.then) {
+            values[n] = '';
+            object.then((value) => renderValue(renderer, values, n, value));
+            return;
+        }*/
 
-    // Update `this` before rendering
-    //renderer.data = object;
-    //++renderer.count;
+        // Is object a Stream?
+        if (object.each) {
+            const streams = renderer.streams || (renderer.streams = []);
+            values[n] = '';
+            object.each((value) => renderValue(renderer, values, n, value));
+            streams.push(object);
+            return;
+        }
+    }
 
-    // Evaluate the template. Note that we are potentially leaving
-    // observers live here, if any data is set during render we may trigger
-    // a further render... not what we want. Do we need to pause observers?
-    const stats = renderer.render.apply(renderer, parameters);
+    values[n] = toText(object);
 
-    // We may only collect synchronous gets – other templates may use
-    // this data object and we don't want to include their gets by stopping
-    // any later. Stop now. If we want to change this, making an observer
-    // proxy per template instance would be the way to go. Currently
-    // observer proxies are shared by all observers. We're not going there.
-    records.stop();
-    stats.values = VALUES;
-    return stats;
+    // If the isRender flag is set, send to render
+    if (renderer.status !== 'rendering') {
+        // Todo: work out a way of cueing this render
+        renderer.render.apply(renderer, values);
+    }
 }
 
-function reobserve(observers, values, data, cue) {
+function observeData(observers, values, data, cue) {
     let path;
 
     for (path in observers) {
@@ -102,20 +117,20 @@ Takes a `source` string or optionally a compiled `render` function and creates
 a consumer stream.
 **/
 
-export default function Renderer(source, parameters, consts, fn) {
+export default function Renderer(source, scope, parameters, consts, fn) {
     const names  = parameters && keys(parameters);
     //const values = parameters && values(parameters);
     const params = 'data' + (names ? ', ' + names.join(', ') : '');
 
-    this.render = typeof source === 'string' ?
-        compile(source, library, params, consts) :
+    this.evaluate = typeof source === 'string' ?
+        compile(source, scope, params, consts) :
         source ;
 
     this.observers  = {};
     this.parameters = [];
     this.status     = 'idle';
 
-    // Avoid creating function multiple times in reobserve loop in .update()
+    // Avoid creating function multiple times in observeData loop in .update()
     this.cue       = () => cue(this);
     this.consume   = fn;
 }
@@ -131,7 +146,7 @@ assign(Renderer.prototype, {
 
         stopObservers(this.observers);
         this.data = data;
-        this.cue();
+        cue(this);
     },
 
     update: function() {
@@ -140,30 +155,67 @@ assign(Renderer.prototype, {
         const observers  = this.observers;
 
         parameters[0] = data;
-        const stats = render(this, this, data, parameters);
-        reobserve(observers, stats.values, data, this.cue);
+        stopStreams(this.streams);
+
+        // Calls this.render and this.compose
+        this.status = 'rendering';
+
+        VALUES = {};
+        const records = data ? Records(data) : nothing ;
+        records.reduce(toValues);
+
+        // Update `this` before rendering
+        //renderer.data = object;
+        //++renderer.count;
+
+        // Evaluate the template. Todo: note that we are potentially leaving
+        // observers live here, if any data is set during render we may trigger
+        // a further render... not what we want. Do we need to pause observers?
+        const stats = this.evaluate.apply(this, parameters);
+
+        // We may only collect synchronous gets – other templates may use
+        // this data object and we don't want to include their gets by stopping
+        // any later. Stop now. If we want to change this, making an observer
+        // proxy per template instance would be the way to go. Currently
+        // observer proxies are shared by all observers. We're not going there.
+        records.stop();
+        stats.values = VALUES;
+
+        observeData(observers, stats.values, data, this.cue);
+        this.status = 'idle';
 
         return this;
     },
 
     compose: function(strings) {
         let n = 0;
+
+        while (strings[++n] !== undefined) {
+            renderValue(this, arguments, n, arguments[n]);
+        }
+
+        this.render.apply(this, arguments);
+        return this;
+    },
+
+    render: function(strings) {
+        let n = 0;
         let string = '';
 
         while (strings[++n] !== undefined) {
             // Append to string
-            string += (strings[n - 1] + (arguments[n] || ''));
+            string += strings[n - 1] + arguments[n];
         }
 
         string += strings[n - 1];
         this.consume(string);
-        this.mutations = 0;
         return this;
     },
 
     stop: function() {
         uncue(this);
         stopObservers(this.observers);
+        stopStreams(this.streams);
         this.status = 'stopped';
         Stream.prototype.stop.apply(this);
         return this;

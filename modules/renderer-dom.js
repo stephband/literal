@@ -9,7 +9,6 @@ that DOM after the text node.
 import curry            from '../../fn/modules/curry.js';
 import include          from '../library/include-literal.js';
 import library          from './library.js';
-import compile          from './compile.js';
 import toText           from './to-text.js';
 import Renderer         from './renderer.js';
 import removeNodes      from './remove-nodes.js';
@@ -109,11 +108,7 @@ function setContents(first, last, contents, state) {
 }
 
 export default function DOMRenderer(source, consts, path, node, name, element) {
-    const render = typeof source === 'string' ?
-        compile(source, library, 'data, element, include', consts, null, {}, element) :
-        source ;
-
-    Renderer.call(this, render);
+    Renderer.call(this, source, library, { element: node, include: () => {} }, consts);
 
     this.path      = path;
     this.element   = element;

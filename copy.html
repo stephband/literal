@@ -40,6 +40,10 @@ ${ data.content }</pre>
         <pre>${ data.content }<br/>${ data.content }</pre>
     </template>
 
+    <template id="stream">
+        <pre hidden="${ data.boolean }">✔ Boolean is false</pre>
+    </template>
+
     <template id="item">
         ${ this.done(() => console.log('STOPPED')), '' }
         <pre>${ this.id + ': ' + this.constructor.name } - ${ data.label }</pre>
@@ -88,7 +92,7 @@ ${ data.content }</pre>
     import { Observer } from '../fn/observer/observer.js';
 
     const keys = Object.keys;
-/*
+
     tests('Renderer', function(test, log) {
         test("Renderer()", function(equals, done) {
             const expected = [
@@ -99,7 +103,7 @@ ${ data.content }</pre>
                 'Hail Ceasar'
             ];
 
-            const renderer = new Renderer('Hail ${ data.x ? data.a : data.b }', (string) =>
+            const renderer = new Renderer('Hail ${ data.x ? data.a : data.b }', {}, {}, '', (string) =>
                 equals(expected.shift(), string)
             );
 
@@ -170,7 +174,7 @@ ${ data.content }</pre>
                 'Hail Mary'
             ];
 
-            const renderer = new Renderer('Hail ${ data.x ? data.a : (this.push({ x: true, a: "Mary" })) }', (string) =>
+            const renderer = new Renderer('Hail ${ data.x ? data.a : (this.push({ x: true, a: "Mary" })) }', {}, {}, '', (string) =>
                 equals(expected.shift(), string)
             );
 
@@ -198,7 +202,7 @@ ${ data.content }</pre>
                 'Hail Mary'
             ];
 
-            const renderer = new Renderer('Hail ${ data.x ? data.a : (data.x = true) }', (string) =>
+            const renderer = new Renderer('Hail ${ data.x ? data.a : (data.x = true) }', {}, {}, '', (string) =>
                 equals(expected.shift(), string)
             );
 
@@ -220,10 +224,12 @@ ${ data.content }</pre>
             .finally(done);
         }, 4);
     });
-*/
 
+
+    import Stream           from '../fn/modules/stream.js';
+    import IntervalStream   from '../fn/modules/stream/interval-stream.js';
     import TemplateRenderer from './modules/renderer-template.js';
-
+/*
     tests('TemplateRenderer', function(test, log) {
         test("TemplateRenderer()", function(equals, done) {
             const renderer = new TemplateRenderer('#attributes', document.body);
@@ -235,5 +241,19 @@ ${ data.content }</pre>
             window.data = Observer(data);
         }, 0);
     });
+
+
+    tests('TemplateRenderer', function(test, log) {
+        test("TemplateRenderer()", function(equals, done) {
+            const renderer = new TemplateRenderer('#stream', document.body);
+            const data = { boolean: (new IntervalStream(0.4)).scan((value) => !value) };
+            renderer.push(data);
+            document.body.append(renderer.first);
+
+            window.r = renderer;
+            window.data = Observer(data);
+        }, 0);
+    });
+*/
     </script>
 </body>

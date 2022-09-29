@@ -1,8 +1,6 @@
 
 import overload  from '../../fn/modules/overload.js';
 import library   from './library.js';
-import compile   from './compile.js';
-import toText    from './to-text.js';
 import Renderer  from './renderer.js';
 
 const A      = Array.prototype;
@@ -19,12 +17,6 @@ as a class attribute.
 const getTokenList = overload((node, name) => name, {
     'class': (node) => node.classList
 });
-
-function valueify(value) {
-    return (value && typeof value === 'object' && value.length !== undefined) ?
-        value.join(' ') :
-        toText(value) ;
-}
 
 function updateTokens(list, cached, tokens, count) {
     // Remove all tokens from cached that are found in new tokens
@@ -53,11 +45,7 @@ function updateTokens(list, cached, tokens, count) {
 }
 
 export default function TokensRenderer(source, consts, path, node, name) {
-    const render = typeof source === 'string' ?
-        compile(source, library, 'data, element', consts, null, {}, node) :
-        source ;
-
-    Renderer.call(this, render);
+    Renderer.call(this, source, library, { element: node }, consts);
 
     this.path    = path;
     this.element = node;
@@ -73,7 +61,7 @@ export default function TokensRenderer(source, consts, path, node, name) {
 }
 
 assign(TokensRenderer.prototype, Renderer.prototype, {
-    compose: function(strings) {
+    render: function(strings) {
         let mutations = 0;
 
         // Set permanent tokens on first render only
@@ -89,8 +77,6 @@ assign(TokensRenderer.prototype, Renderer.prototype, {
 
         // Turn evaluated values into an array of strings
         const tokens = A.slice.call(arguments, 1)
-            .map(valueify)
-            .filter((string) => !!string)
             .join(' ')
             .trim()
             .split(/\s+/);

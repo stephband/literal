@@ -1,10 +1,10 @@
 
-/** 
+/**
 Template tags
 
 Literal template tags can contain any valid JavaScript expression. The renderer
-decides how to render the evaluated output of each tag based on its type and 
-constructor. Where an expression evaluates to a promise, the promise resolves 
+decides how to render the evaluated output of each tag based on its type and
+constructor. Where an expression evaluates to a promise, the promise resolves
 before being rendered.
 
 <table class="striped-table x-bleed">
@@ -133,10 +133,10 @@ const rarrowents = /\s*(\([\w,\s]*\))/;
 const rarguments = /function(?:\s+\w+)?\s*(\([\w,\s]*\))/;
 
 export default overload(toType, {
-    /** 
-    
+    /**
+
     **/
-    'boolean': (value) => value + '',
+    'boolean': id,
 
     // Print function and parameters
     'function': (value) => (
@@ -148,7 +148,7 @@ export default overload(toType, {
     // Convert NaN to empty string and Infinity to ∞ symbol
     'number': (value) => (
         Number.isNaN(value) ? '' :
-        Number.isFinite(value) ? value + '' :
+        Number.isFinite(value) ? value :
         value < 0 ? '-∞' : '∞'
     ),
 

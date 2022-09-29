@@ -3,7 +3,6 @@ import isDefined      from '../../fn/modules/is-defined.js';
 import trigger        from '../../dom/modules/trigger.js';
 import config         from './config.js';
 import library        from './library.js';
-import compile        from './compile.js';
 import composeBoolean from './compose-boolean.js';
 import Renderer       from './renderer.js';
 
@@ -50,11 +49,7 @@ function setChecked(node, value, hasValue) {
 }
 
 export default function CheckedRenderer(source, consts, path, node) {
-    const render = typeof source === 'string' ?
-        compile(source, library, 'data, element', consts, null, {}, node) :
-        source ;
-
-    Renderer.call(this, render);
+    Renderer.call(this, source, library, { element: node }, consts);
 
     this.path     = path;
     this.element  = node;
@@ -68,7 +63,7 @@ export default function CheckedRenderer(source, consts, path, node) {
 }
 
 assign(CheckedRenderer.prototype, Renderer.prototype, {
-    compose: function(strings) {
+    render: function(strings) {
         const value = composeBoolean(arguments);
         this.mutations = setChecked(this.node, value, this.hasValue);
         return this;
