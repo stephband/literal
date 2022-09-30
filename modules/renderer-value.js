@@ -78,15 +78,11 @@ function setValue(node, value) {
 }
 
 const compose = overload((value, type) => type, {
-    //'checkbox':  compileValueChecked,
-    //'date':      compileValueDate,
-    //'number':    compileValueNumber,
-    //'range':     compileValueNumber,
-    //'select-multiple': compileValueArray,
-    'text':       composeString,
-    'search':     composeString,
-    'select-one': composeString,
-    'default':    composeNumber
+    //'date':      composeDate,
+    //'select-multiple': composeArray,
+    'number':     composeNumber,
+    'range':      composeNumber,
+    'default':    composeString
 });
 
 export default function ValueRenderer(source, consts, path, node) {
