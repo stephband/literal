@@ -5,7 +5,7 @@ import config        from './config.js';
 import library       from './library.js';
 import Renderer      from './renderer.js';
 import composeString from './compose-string.js';
-import composeValue  from './compose-value.js';
+import composeNumber from './compose-number.js';
 
 const assign = Object.assign;
 
@@ -86,7 +86,7 @@ const compose = overload((value, type) => type, {
     'text':       composeString,
     'search':     composeString,
     'select-one': composeString,
-    'default':    composeValue
+    'default':    composeNumber
 });
 
 export default function ValueRenderer(source, consts, path, node) {

@@ -35,13 +35,11 @@
         <input type="text" value="${ data.value }" />
         <input type="checkbox" checked="${ checked }" />
         <pre class="unchecked-before"></pre>
-        <pre>${ data.content }
-${ data.content }</pre>
-        <pre>${ data.content }<br/>${ data.content }</pre>
+        <pre>${ data.text }<br/>${ data.node }<br/>${ data.fragment }</pre>
     </template>
 
     <template id="stream">
-        <pre hidden="${ data.boolean }">✔ Boolean is false</pre>
+        <pre hidden="${ data.stream }">✔ Stream of booleans is rendered (if this is flashing)</pre>
     </template>
 
     <template id="item">
@@ -226,6 +224,7 @@ ${ data.content }</pre>
     });
 
 
+    import create           from '../dom/modules/create.js';
     import Stream           from '../fn/modules/stream.js';
     import IntervalStream   from '../fn/modules/stream/interval-stream.js';
     import TemplateRenderer from './modules/renderer-template.js';
@@ -233,7 +232,17 @@ ${ data.content }</pre>
     tests('TemplateRenderer', function(test, log) {
         test("TemplateRenderer() primitive properties", function(equals, done) {
             const renderer = new TemplateRenderer('#attributes', document.body);
-            const data = { attribute: '✔ Attribute is rendered', class: '✔ Class is rendered', boolean: false, value: '✔ Value is rendered', checked: false, content: '✔ Text is rendered' };
+            const data = {
+                attribute: '✔ Attribute is rendered',
+                class:     '✔ Class is rendered',
+                boolean:   false,
+                value:     '✔ Value is rendered',
+                checked:   false,
+                text:      '✔ Text is rendered',
+                node:      create('text', '✔ Text node is rendered'),
+                fragment:  create('fragment', '✔ Fragment is rendered')
+            };
+
             renderer.push(data);
             document.body.append(renderer.first);
 
@@ -247,7 +256,7 @@ ${ data.content }</pre>
     tests('TemplateRenderer', function(test, log) {
         test("TemplateRenderer() stream property", function(equals, done) {
             const renderer = new TemplateRenderer('#stream', document.body);
-            const data = { boolean: (new IntervalStream(0.4)).scan((value) => !value) };
+            const data = { stream: (new IntervalStream(0.4)).scan((value) => !value) };
             renderer.push(data);
             document.body.append(renderer.first);
 

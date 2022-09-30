@@ -2,6 +2,7 @@
 import overload  from '../../fn/modules/overload.js';
 import library   from './library.js';
 import Renderer  from './renderer.js';
+import toText    from './to-text.js';
 
 const A      = Array.prototype;
 const assign = Object.assign;
@@ -77,6 +78,7 @@ assign(TokensRenderer.prototype, Renderer.prototype, {
 
         // Turn evaluated values into an array of strings
         const tokens = A.slice.call(arguments, 1)
+            .map(toText)
             .join(' ')
             .trim()
             .split(/\s+/);

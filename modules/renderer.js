@@ -1,7 +1,8 @@
 
-import nothing from '../../fn/modules/nothing.js';
-import Stream  from '../../fn/modules/stream/stream.js';
-import observe from '../../fn/observer/observe.js';
+import nothing    from '../../fn/modules/nothing.js';
+import { remove } from '../../fn/modules/remove.js';
+import Stream     from '../../fn/modules/stream/stream.js';
+import observe    from '../../fn/observer/observe.js';
 import { Observer, getTarget } from '../../fn/observer/observer.js';
 
 import compile from './compile.js';
@@ -20,6 +21,10 @@ function stop(object) {
     object.stop();
 }
 
+function setStopped(object) {
+    object.stopped = true;
+}
+
 function stopObservers(observers) {
     let path;
     for (path in observers) {
@@ -27,6 +32,12 @@ function stopObservers(observers) {
         observers[path].stop();
         delete observers[path];
     }
+}
+
+function stopPromises(promises) {
+    if (!promises) { return; }
+    promises.forEach(setStopped);
+    promises.length = 0;
 }
 
 function stopStreams(streams) {
@@ -64,11 +75,18 @@ function renderValue(renderer, values, n, object) {
         object = getTarget(object);
 
         // Is object a Promise?
-        /*if (object.then) {
+        if (object.then) {
+            const promises = renderer.promises || (renderer.promises = []);
             values[n] = '';
-            object.then((value) => renderValue(renderer, values, n, value));
+            object.then((value) => {
+                // You can't stop a promises, but we can flag it to be ignored
+                if (object.stopped) { return; }
+                remove(promises, object);
+                return renderValue(renderer, values, n, value);
+            });
+            promises.push(object);
             return;
-        }*/
+        }
 
         // Is object a Stream?
         if (object.each) {
@@ -80,7 +98,7 @@ function renderValue(renderer, values, n, object) {
         }
     }
 
-    values[n] = toText(object);
+    values[n] = object;
 
     // If the isRender flag is set, send to render
     if (renderer.status !== 'rendering') {
@@ -159,6 +177,7 @@ assign(Renderer.prototype, {
         const observers  = this.observers;
 
         parameters[0] = data;
+        stopPromises(this.promises);
         stopStreams(this.streams);
 
         // Calls this.render and this.compose
@@ -186,8 +205,7 @@ assign(Renderer.prototype, {
         stats.values = VALUES;
 
         observeData(observers, stats.values, data, this.cue);
-        this.status = 'idle';
-
+        this.status = this.status === 'rendering' ? 'idle' : this.status ;
         return this;
     },
 
@@ -204,14 +222,13 @@ assign(Renderer.prototype, {
 
     render: function(strings) {
         let n = 0;
-        let string = '';
+        let string = strings[n];
 
         while (strings[++n] !== undefined) {
             // Append to string
-            string += strings[n - 1] + arguments[n];
+            string += toText(arguments[n]) + strings[n];
         }
 
-        string += strings[n - 1];
         this.consume(string);
         return this;
     },
@@ -219,6 +236,7 @@ assign(Renderer.prototype, {
     stop: function() {
         uncue(this);
         stopObservers(this.observers);
+        stopPromises(this.promises);
         stopStreams(this.streams);
         this.status = 'stopped';
         Stream.prototype.stop.apply(this);

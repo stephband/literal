@@ -19,21 +19,11 @@ import TemplateRenderer from './renderer-template.js';
 const assign = Object.assign;
 
 function toRenderer(value) {
-    // `this` should be the parent renderer
-    const parent = this;
-
-    return (!value || typeof value !== 'object') ?
-            toText(value) :
-        value instanceof Node ?
-            value :
-        value instanceof TemplateRenderer ?
-            value :
-        (typeof value.length === 'number') ?
-            new ArrayRenderer(value) :
-        value instanceof Promise ?
-            new PromiseRenderer(value, parent) :
-        isStream(value) ?
-            new StreamRenderer(value) :
+    return (value && typeof value === 'object') ?
+        value instanceof Node ? value :
+        value instanceof TemplateRenderer ? value :
+        (typeof value.length === 'number') ? new ArrayRenderer(value) :
+        toText(value) :
         toText(value) ;
 }
 
@@ -140,7 +130,7 @@ assign(DOMRenderer.prototype, Renderer.prototype, {
         return Renderer.prototype.update.call(this);
     },
 
-    compose: function(strings) {
+    render: function(strings) {
         let n = -1;
         let string = '';
 
