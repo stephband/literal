@@ -7,45 +7,46 @@ import compileAttribute from './compile-attribute.js';
 import DOMRenderer      from './renderer-dom.js';
 import isLiteral        from './is-literal.js';
 import decode           from './decode.js';
+import truncate         from './truncate.js';
 
 
 /**
 compileElement()
 **/
 
-function compileChildren(renderers, node, path, consts, template, element) {
+function compileChildren(renderers, node, path, consts, message, element) {
     const children = node.childNodes;
 
     if (children) {
         let n = -1;
 
         while(children[++n]) {
-            compileNode(renderers, children[n], path ? path + '.' + n : '' + n, consts, template, element);
+            compileNode(renderers, children[n], path ? path + '.' + n : '' + n, consts, message, element);
         }
     }
 
     return renderers;
 }
 
-function compileAttributes(renderers, node, path, consts, template) {
+function compileAttributes(renderers, node, path, consts, message) {
     // Attributes may be removed during parsing so copy the list before looping
     const attributes = Array.from(node.attributes);
     var n = -1, attribute;
     // Todo: order attributes so that min, max, value come last?
     while (attribute = attributes[++n]) {
-        compileAttribute(renderers, attribute, path, consts, template);
+        compileAttribute(renderers, attribute, path, consts, message + ' <' + node.tagName.toLowerCase());
     }
 }
 
 const compileElement = overload((renderers, node) => node.tagName.toLowerCase(), {
     // Ignore SVG <defs>, which for our purposes we consider as inert like
-    // an HTML <template>
+    // an HTML <message>
     'defs': noop,
 
-    'default': (renderers, node, path, consts, template) => {
+    'default': (renderers, node, path, consts, message) => {
         // Children first means inner DOM to outer DOM
-        compileChildren(renderers, node, path, consts, template, node);
-        compileAttributes(renderers, node, path, consts, template);
+        compileChildren(renderers, node, path, consts, message, node);
+        compileAttributes(renderers, node, path, consts, message);
         return renderers;
     }
 });
@@ -62,12 +63,12 @@ const compileNode = overload((renderers, node) => toType(node), {
 
     'fragment': compileChildren,
 
-    'text': (renderers, node, path, consts, template, element) => {
+    'text': (renderers, node, path, consts, message, element) => {
         const string = node.nodeValue;
 
         if (isLiteral(string)) {
             const source = decode(string);
-            renderers.push(new DOMRenderer(source, consts, path, node, null, template, element));
+            renderers.push(new DOMRenderer(source, consts, path, node, null, message + ' <' + element.tagName.toLowerCase() + '>' + truncate(32, source), element));
         }
 
         return renderers;
@@ -75,8 +76,8 @@ const compileNode = overload((renderers, node) => toType(node), {
 
     'doctype': noop,
 
-    'document': (renderers, document, path, consts, template) => {
-        compileElement(renderers, document.documentElement, path, consts, template);
+    'document': (renderers, document, path, consts, message) => {
+        compileElement(renderers, document.documentElement, path, consts, message + '<html');
         return renderers;
     },
 

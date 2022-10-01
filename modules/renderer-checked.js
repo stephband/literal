@@ -5,7 +5,6 @@ import config         from './config.js';
 import library        from './library.js';
 import composeBoolean from './compose-boolean.js';
 import Renderer       from './renderer.js';
-import toDebugString  from './to-debug-string.js';
 
 const assign  = Object.assign;
 
@@ -49,10 +48,9 @@ function setChecked(node, value, hasValue) {
     return 1;
 }
 
-export default function CheckedRenderer(source, consts, path, node, name, template) {
-    Renderer.call(this, source, library, { element: node }, consts, window.DEBUG && typeof source === 'string' && toDebugString(source, node, template));
+export default function CheckedRenderer(source, consts, path, node, name, message) {
+    Renderer.call(this, source, library, { element: node }, consts, message);
 
-    //this.template = template;
     this.path     = path;
     this.node     = node;
     this.name     = 'checked';

@@ -3,7 +3,6 @@ import overload      from '../../fn/modules/overload.js';
 import library       from './library.js';
 import Renderer      from './renderer.js';
 import toText        from './to-text.js';
-import toDebugString from './to-debug-string.js';
 
 const A      = Array.prototype;
 const assign = Object.assign;
@@ -46,8 +45,8 @@ function updateTokens(list, cached, tokens, count) {
     return count;
 }
 
-export default function TokensRenderer(source, consts, path, node, name, template) {
-    Renderer.call(this, source, library, { element: node }, consts, window.DEBUG && window.DEBUG && typeof source === 'string' && toDebugString(source, node, template));
+export default function TokensRenderer(source, consts, path, node, name, message) {
+    Renderer.call(this, source, library, { element: node }, consts, window.DEBUG && message);
 
     this.path     = path;
     this.node     = node;

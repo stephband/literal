@@ -13,7 +13,7 @@ const indent = '  ';
 export const cache = {};
 
 // Last two params, info and element, are purely for debug messages
-export default function compile(source, scope, params, consts, id, debugString = '') {
+export default function compile(source, scope, params, consts, id, message = '') {
     if (typeof source !== 'string') {
         throw new Error('Template is not a string');
     }
@@ -34,7 +34,7 @@ export default function compile(source, scope, params, consts, id, debugString =
             cache[key] = compileFn(scope, params,
                 'try {' + code + '} catch(e) {' +
                 // Append useful info to error message
-                indent + 'e.message += "' + debugString.replace(/"/g, '\\"') + '";' +
+                indent + 'e.message += " ' + message.replace(/"/g, '\\"') + '";' +
                 indent + 'throw e;' +
                 '}'
             );
@@ -47,7 +47,7 @@ export default function compile(source, scope, params, consts, id, debugString =
         }
         catch(e) {
             // Append useful info to error message
-            e.message += debugString;
+            e.message += ' ' + message;
             throw e;
         }
     }

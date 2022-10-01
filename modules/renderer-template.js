@@ -108,7 +108,7 @@ function cloneRenderer(renderer) {
         // node itself is the context element for attributes
         node ;
 
-    const clone = new renderer.constructor(renderer.literal, '', renderer.path, node, name, renderer.template, element);
+    const clone = new renderer.constructor(renderer.literal, '', renderer.path, node, name, '', element);
 
     // Stop clone when template renderer stops
     this.done(clone);
@@ -174,7 +174,7 @@ export default function TemplateRenderer(template, element) {
     // available as `name` inside the template
     const consts = keys(this.template.dataset).join(', ');
     // renderers, node, path, consts, element
-    this.contents = compileNode([], this.content, '', consts, this.template, element);
+    this.contents = compileNode([], this.content, '', consts, 'in template#' + this.template.id, element);
 
     // Stop child when template renderer stops
     this.contents.forEach((renderer) => this.done(renderer));

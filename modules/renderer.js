@@ -148,11 +148,11 @@ Takes a `source` string or optionally a compiled `render` function and creates
 a consumer stream.
 **/
 
-export default function Renderer(source, scope, parameters, consts, errorstring, fn) {
+export default function Renderer(source, scope, parameters, consts, message, fn) {
     this.literal = typeof source === 'string' ?
-        compile(source, scope, 'data' + (parameters ? ', ' + keys(parameters).join(', ') : ''), consts, errorstring) :
+        compile(source, scope, 'data' + (parameters ? ', ' + keys(parameters).join(', ') : ''), consts, message) :
         source ;
-
+console.log(message);
     this.parameters = parameters ?
         values(parameters).reduce(toParameters, { length: 1 }) :
         {} ;
