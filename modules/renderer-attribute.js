@@ -3,6 +3,7 @@ import library       from './library.js';
 import Renderer      from './renderer.js';
 import composeString from './compose-string.js';
 import names         from './property-names.js';
+import toDebugString from './to-debug-string.js';
 
 const assign = Object.assign;
 
@@ -33,12 +34,12 @@ function setAttribute(node, name, value) {
     return 1;
 }
 
-export default function AttributeRenderer(source, consts, path, node, name) {
-    Renderer.call(this, source, library, { element: node }, consts);
+export default function AttributeRenderer(source, consts, path, node, name, template) {
+    Renderer.call(this, source, library, { element: node }, consts, window.DEBUG && typeof source === 'string' && toDebugString(source, node, template));
 
-    this.path    = path;
-    this.node    = node;
-    this.name    = name;
+    this.path     = path;
+    this.node     = node;
+    this.name     = name;
 }
 
 assign(AttributeRenderer.prototype, Renderer.prototype, {

@@ -13,39 +13,39 @@ import decode           from './decode.js';
 compileElement()
 **/
 
-function compileChildren(renderers, node, path, consts, element) {
+function compileChildren(renderers, node, path, consts, template, element) {
     const children = node.childNodes;
 
     if (children) {
         let n = -1;
 
         while(children[++n]) {
-            compileNode(renderers, children[n], path ? path + '.' + n : '' + n, consts, element);
+            compileNode(renderers, children[n], path ? path + '.' + n : '' + n, consts, template, element);
         }
     }
 
     return renderers;
 }
 
-function compileAttributes(renderers, node, path, consts) {
+function compileAttributes(renderers, node, path, consts, template) {
     // Attributes may be removed during parsing so copy the list before looping
     const attributes = Array.from(node.attributes);
     var n = -1, attribute;
     // Todo: order attributes so that min, max, value come last?
     while (attribute = attributes[++n]) {
-        compileAttribute(renderers, attribute, path, consts);
+        compileAttribute(renderers, attribute, path, consts, template);
     }
 }
 
-const compileElement = overload((renderers, node, path, consts) => node.tagName.toLowerCase(), {
+const compileElement = overload((renderers, node) => node.tagName.toLowerCase(), {
     // Ignore SVG <defs>, which for our purposes we consider as inert like
     // an HTML <template>
     'defs': noop,
 
-    'default': (renderers, node, path, consts) => {
+    'default': (renderers, node, path, consts, template) => {
         // Children first means inner DOM to outer DOM
-        compileChildren(renderers, node, path, consts, node);
-        compileAttributes(renderers, node, path, consts);
+        compileChildren(renderers, node, path, consts, template, node);
+        compileAttributes(renderers, node, path, consts, template);
         return renderers;
     }
 });
@@ -55,19 +55,19 @@ const compileElement = overload((renderers, node, path, consts) => node.tagName.
 compileNode()
 **/
 
-const compileNode = overload((renderers, node, path, consts, element) => toType(node), {
+const compileNode = overload((renderers, node) => toType(node), {
     'comment': noop,
 
     'element': compileElement,
 
     'fragment': compileChildren,
 
-    'text': (renderers, node, path, consts, element) => {
+    'text': (renderers, node, path, consts, template, element) => {
         const string = node.nodeValue;
 
         if (isLiteral(string)) {
             const source = decode(string);
-            renderers.push(new DOMRenderer(source, consts, path, node, null, element));
+            renderers.push(new DOMRenderer(source, consts, path, node, null, template, element));
         }
 
         return renderers;
@@ -75,8 +75,8 @@ const compileNode = overload((renderers, node, path, consts, element) => toType(
 
     'doctype': noop,
 
-    'document': (renderers, document, path, consts) => {
-        compileElement(renderers, consts, document.documentElement, path);
+    'document': (renderers, document, path, consts, template) => {
+        compileElement(renderers, document.documentElement, path, consts, template);
         return renderers;
     },
 

@@ -7,7 +7,7 @@ import { Observer, getTarget } from '../../fn/observer/observer.js';
 
 import compile from './compile.js';
 import toText  from './to-text.js';
-import Records from './records.js';
+import Gets    from './gets.js';
 import { cue, uncue } from './cue.js';
 
 const assign = Object.assign;
@@ -148,9 +148,9 @@ Takes a `source` string or optionally a compiled `render` function and creates
 a consumer stream.
 **/
 
-export default function Renderer(source, scope, parameters, consts, fn) {
+export default function Renderer(source, scope, parameters, consts, errorstring, fn) {
     this.literal = typeof source === 'string' ?
-        compile(source, scope, 'data' + (parameters ? ', ' + keys(parameters).join(', ') : ''), consts) :
+        compile(source, scope, 'data' + (parameters ? ', ' + keys(parameters).join(', ') : ''), consts, errorstring) :
         source ;
 
     this.parameters = parameters ?
@@ -194,7 +194,7 @@ assign(Renderer.prototype, {
         this.status = 'rendering';
 
         VALUES = {};
-        const records = data ? Records(data) : nothing ;
+        const records = data ? Gets(data) : nothing ;
         records.reduce(toValues);
 
         // Update `this` before rendering

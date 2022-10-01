@@ -1,8 +1,9 @@
 
-import overload  from '../../fn/modules/overload.js';
-import library   from './library.js';
-import Renderer  from './renderer.js';
-import toText    from './to-text.js';
+import overload      from '../../fn/modules/overload.js';
+import library       from './library.js';
+import Renderer      from './renderer.js';
+import toText        from './to-text.js';
+import toDebugString from './to-debug-string.js';
 
 const A      = Array.prototype;
 const assign = Object.assign;
@@ -45,15 +46,15 @@ function updateTokens(list, cached, tokens, count) {
     return count;
 }
 
-export default function TokensRenderer(source, consts, path, node, name) {
-    Renderer.call(this, source, library, { element: node }, consts);
+export default function TokensRenderer(source, consts, path, node, name, template) {
+    Renderer.call(this, source, library, { element: node }, consts, window.DEBUG && window.DEBUG && typeof source === 'string' && toDebugString(source, node, template));
 
-    this.path    = path;
-    this.node    = node;
-    this.name    = name;
-    this.list    = getTokenList(node, name);
-    this.tokens  = nothing;
-    this.renders = 0;
+    this.path     = path;
+    this.node     = node;
+    this.name     = name;
+    this.list     = getTokenList(node, name);
+    this.tokens   = nothing;
+    this.renders  = 0;
 
     // Empty the tokens until it is rendered to avoid code in literals
     // being interpreted as tokens
@@ -68,11 +69,12 @@ assign(TokensRenderer.prototype, Renderer.prototype, {
         if (++this.renders === 1) {
             const tokens = strings
                 .join(' ')
-                .trim()
-                .split(/\s+/);
+                .trim();
 
-            this.list.add.apply(this.list, tokens);
-            ++mutations;
+            if (tokens) {
+                this.list.add.apply(this.list, tokens.split(/\s+/));
+                ++mutations;
+            }
         }
 
         // Turn evaluated values into an array of strings

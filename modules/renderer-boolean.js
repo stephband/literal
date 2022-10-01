@@ -3,6 +3,7 @@ import library        from './library.js';
 import Renderer       from './renderer.js';
 import composeBoolean from './compose-boolean.js';
 import names          from './property-names.js';
+import toDebugString  from './to-debug-string.js';
 
 const assign = Object.assign;
 
@@ -33,12 +34,13 @@ export function setBooleanProperty(node, name, value) {
     return 1;
 }
 
-export default function BooleanRenderer(source, consts, path, node, name) {
-    Renderer.call(this, source, library, { element: node }, consts);
+export default function BooleanRenderer(source, consts, path, node, name, template) {
+    Renderer.call(this, source, library, { element: node }, consts, window.DEBUG && typeof source === 'string' && toDebugString(source, node, template));
 
-    this.path    = path;
-    this.node    = node;
-    this.name    = name;
+    //this.template = template;
+    this.path     = path;
+    this.node     = node;
+    this.name     = name;
 
     // Remove the boolean until it is processed
     node.removeAttribute(name);

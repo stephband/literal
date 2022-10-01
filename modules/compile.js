@@ -13,7 +13,7 @@ const indent = '  ';
 export const cache = {};
 
 // Last two params, info and element, are purely for debug messages
-export default function compile(source, scope, params, consts, id, info, element) {
+export default function compile(source, scope, params, consts, id, debugString = '') {
     if (typeof source !== 'string') {
         throw new Error('Template is not a string');
     }
@@ -30,16 +30,11 @@ export default function compile(source, scope, params, consts, id, info, element
 
     if (window.DEBUG) {
         try {
-            const text = source.trim();
-            const name = text.length > 32 ?
-                text.slice(0, 30).replace(/\s+/g, ' ').replace(/"/g, '\\"') + ' …' :
-                text.replace(/\s+/g, ' ').replace(/"/g, '\\"') ;
-
             const t0 = window.performance.now();
             cache[key] = compileFn(scope, params,
                 'try {' + code + '} catch(e) {' +
                 // Append useful info to error message
-                indent + 'e.message += " in template #" + this.template + (element && element.tagName ? ", <" + element.tagName.toLowerCase() + (this.name ? " " + this.name + "=\\"' + name + '\\">" : "> ' + name + '") : "");' +
+                indent + 'e.message += "' + debugString.replace(/"/g, '\\"') + '";' +
                 indent + 'throw e;' +
                 '}'
             );
@@ -52,9 +47,7 @@ export default function compile(source, scope, params, consts, id, info, element
         }
         catch(e) {
             // Append useful info to error message
-            if (info) {
-                e.message += ' in template #' + info.template + (element && element.tagName ? ', <' + element.tagName.toLowerCase() + (info.name ? ' ' + info.name + '="' + source + '">' : '>') : '') ;
-            }
+            e.message += debugString;
             throw e;
         }
     }

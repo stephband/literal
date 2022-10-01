@@ -40,6 +40,7 @@
 
     <template id="stream">
         <pre hidden="${ data.stream }">✔ Stream of booleans is rendered (if this is flashing)</pre>
+        <!--pre hidden="${ data.nope }">✔ Should be permanently shown</pre-->
     </template>
 
     <template id="includee">
@@ -107,7 +108,8 @@
                 'Hail Ceasar'
             ];
 
-            const renderer = new Renderer('Hail ${ data.x ? data.a : data.b }', {}, {}, '', (string) =>
+            // source, scope, parameters, consts, errorstring, fn
+            const renderer = new Renderer('Hail ${ data.x ? data.a : data.b }', {}, {}, '', null, (string) =>
                 equals(expected.shift(), string)
             );
 
@@ -178,7 +180,7 @@
                 'Hail Mary'
             ];
 
-            const renderer = new Renderer('Hail ${ data.x ? data.a : (this.push({ x: true, a: "Mary" })) }', {}, {}, '', (string) =>
+            const renderer = new Renderer('Hail ${ data.x ? data.a : (this.push({ x: true, a: "Mary" })) }', {}, {}, '', null, (string) =>
                 equals(expected.shift(), string)
             );
 
@@ -207,7 +209,7 @@
                 'Hail Mary'
             ];
 
-            const renderer = new Renderer('Hail ${ data.x ? data.a : (data.x = true) }', {}, {}, '', (string) =>
+            const renderer = new Renderer('Hail ${ data.x ? data.a : (data.x = true) }', {}, {}, '', null, (string) =>
                 equals(expected.shift(), string)
             );
 
@@ -254,14 +256,6 @@
             done();
         }, 0);
 
-        test("TemplateRenderer() stream property", function(equals, done) {
-            const renderer = new TemplateRenderer('#stream', document.body);
-            const data = { stream: (new IntervalStream(0.4)).scan((value) => !value) };
-            renderer.push(data);
-            document.body.append(renderer.first);
-            done();
-        }, 0);
-
         test("TemplateRenderer() include", function(equals, done) {
             const renderer = new TemplateRenderer('#includer', document.body);
             const data = {};
@@ -277,6 +271,14 @@
             document.body.append(renderer.first);
             done();
         });
+
+        test("TemplateRenderer() stream property", function(equals, done) {
+            const renderer = new TemplateRenderer('#stream', document.body);
+            const data = { stream: (new IntervalStream(0.4)).scan((value) => !value) };
+            renderer.push(data);
+            document.body.append(renderer.first);
+            done();
+        }, 0);
     });
     </script>
 </body>
