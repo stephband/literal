@@ -34,7 +34,7 @@ function compileAttributes(renderers, node, path, consts, message) {
     var n = -1, attribute;
     // Todo: order attributes so that min, max, value come last?
     while (attribute = attributes[++n]) {
-        compileAttribute(renderers, attribute, path, consts, message + ' <' + node.tagName.toLowerCase());
+        compileAttribute(renderers, attribute, path, consts, message + ', <' + node.tagName.toLowerCase());
     }
 }
 
@@ -68,7 +68,7 @@ const compileNode = overload((renderers, node) => toType(node), {
 
         if (isLiteral(string)) {
             const source = decode(string);
-            renderers.push(new DOMRenderer(source, consts, path, node, null, message + ' <' + element.tagName.toLowerCase() + '>' + truncate(32, source), element));
+            renderers.push(new DOMRenderer(source, consts, path, node, null, message + ', <' + element.tagName.toLowerCase() + '>' + truncate(32, source), element));
         }
 
         return renderers;

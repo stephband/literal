@@ -174,7 +174,7 @@ export default function TemplateRenderer(template, element) {
     // available as `name` inside the template
     const consts = keys(this.template.dataset).join(', ');
     // renderers, node, path, consts, element
-    this.contents = compileNode([], this.content, '', consts, 'in template#' + this.template.id, element);
+    this.contents = compileNode([], this.content, '', consts, 'in template #' + this.template.id, element);
 
     // Stop child when template renderer stops
     this.contents.forEach((renderer) => this.done(renderer));

@@ -65,7 +65,7 @@ import request          from '../library/request.js';
 import print            from '../library/print.js';
 import includeHTML      from '../library/include-html.js';
 import { register }     from '../modules/library.js';
-import TemplateRenderer from '../modules/template-renderer.js';
+import TemplateRenderer from '../modules/renderer-template.js';
 
 const rpath = /^\/|\.|^https?:\/\//;
 
@@ -156,9 +156,10 @@ element('<include-literal>', {
         this.promise.then((data) => {
             this.loading = false;
             this.renderer.element = this.parentElement;
-            this.renderer.render(data);
+            this.renderer.data = data;
+            this.renderer.update();
             this.replaceWith(this.renderer.content);
-            this.renderer.connect();
+            //this.renderer.connect();
         });
 
         // Where no data or data-* attribute has been defined resolve with an

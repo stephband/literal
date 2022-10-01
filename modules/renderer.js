@@ -152,7 +152,7 @@ export default function Renderer(source, scope, parameters, consts, message, fn)
     this.literal = typeof source === 'string' ?
         compile(source, scope, 'data' + (parameters ? ', ' + keys(parameters).join(', ') : ''), consts, message) :
         source ;
-console.log(message);
+
     this.parameters = parameters ?
         values(parameters).reduce(toParameters, { length: 1 }) :
         {} ;
