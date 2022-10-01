@@ -46,6 +46,11 @@ function stopStreams(streams) {
     streams.length = 0;
 }
 
+function toParameters(parameters, value, i) {
+    parameters[i + 1] = value;
+    parameters.length = i + 2;
+    return parameters;
+}
 
 // Values
 
@@ -96,6 +101,14 @@ function renderValue(renderer, values, n, object) {
             streams.push(object);
             return;
         }
+
+        // Is object an array?
+        if (typeof object.length === 'number') {
+            let n = object.length;
+            while (n--) {
+                renderValue(renderer, object, n, object[n]);
+            }
+        }
     }
 
     values[n] = object;
@@ -136,19 +149,16 @@ a consumer stream.
 **/
 
 export default function Renderer(source, scope, parameters, consts, fn) {
-    const names  = parameters && keys(parameters);
-    //const values = parameters && values(parameters);
-    const params = 'data' + (names ? ', ' + names.join(', ') : '');
-
-    this.evaluate = typeof source === 'string' ?
-        compile(source, scope, params, consts) :
+    this.literal = typeof source === 'string' ?
+        compile(source, scope, 'data' + (parameters ? ', ' + keys(parameters).join(', ') : ''), consts) :
         source ;
 
-    this.observers  = {};
-    this.parameters = [];
-    this.status     = 'idle';
+    this.parameters = parameters ?
+        values(parameters).reduce(toParameters, { length: 1 }) :
+        {} ;
 
-    // Avoid creating function multiple times in observeData loop in .update()
+    this.observers = {};
+    this.status    = 'idle';
     this.cue       = () => cue(this);
     this.consume   = fn;
 }
@@ -191,10 +201,10 @@ assign(Renderer.prototype, {
         //renderer.data = object;
         //++renderer.count;
 
-        // Evaluate the template. Todo: note that we are potentially leaving
+        // literal the template. Todo: note that we are potentially leaving
         // observers live here, if any data is set during render we may trigger
         // a further render... not what we want. Do we need to pause observers?
-        const stats = this.evaluate.apply(this, parameters);
+        const stats = this.literal.apply(this, parameters);
 
         // We may only collect synchronous gets – other templates may use
         // this data object and we don't want to include their gets by stopping

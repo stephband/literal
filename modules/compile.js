@@ -39,7 +39,7 @@ export default function compile(source, scope, params, consts, id, info, element
             cache[key] = compileFn(scope, params,
                 'try {' + code + '} catch(e) {' +
                 // Append useful info to error message
-                indent + 'e.message += " in template #" + this.template + (this.element && this.element.tagName ? ", <" + this.element.tagName.toLowerCase() + (this.name ? " " + this.name + "=\\"' + name + '\\">" : "> ' + name + '") : "");' +
+                indent + 'e.message += " in template #" + this.template + (element && element.tagName ? ", <" + element.tagName.toLowerCase() + (this.name ? " " + this.name + "=\\"' + name + '\\">" : "> ' + name + '") : "");' +
                 indent + 'throw e;' +
                 '}'
             );

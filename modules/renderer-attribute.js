@@ -37,7 +37,6 @@ export default function AttributeRenderer(source, consts, path, node, name) {
     Renderer.call(this, source, library, { element: node }, consts);
 
     this.path    = path;
-    this.element = node;
     this.node    = node;
     this.name    = name;
 }

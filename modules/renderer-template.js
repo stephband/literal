@@ -108,7 +108,7 @@ function cloneRenderer(renderer) {
         // node itself is the context element for attributes
         node ;
 
-    const clone = new renderer.constructor(renderer.render, '', renderer.path, node, name, element);
+    const clone = new renderer.constructor(renderer.literal, '', renderer.path, node, name, element);
 
     // Stop clone when template renderer stops
     this.done(clone);
@@ -173,11 +173,7 @@ export default function TemplateRenderer(template, element) {
     // Get template constants from dataset keys, where `data-name` becomes
     // available as `name` inside the template
     const consts = keys(this.template.dataset).join(', ');
-
-    // The options object contains information for renderer objects. It is
-    // mutated as it is passed to each renderer (specifically path, name,
-    // source properties). We can do this because renderer construction is
-    // synchronous within a template.
+    // renderers, node, path, consts, element
     this.contents = compileNode([], this.content, '', consts, element);
 
     // Stop child when template renderer stops
@@ -267,8 +263,6 @@ assign(TemplateRenderer.prototype, {
         uncue(this);
         this.status = 'stopped';
         Stream.prototype.stop.apply(this);
-        // object, method, status, payload
-        //trigger(this, 'stop', 'done');
         return this;
     },
 

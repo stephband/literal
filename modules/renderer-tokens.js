@@ -49,7 +49,6 @@ export default function TokensRenderer(source, consts, path, node, name) {
     Renderer.call(this, source, library, { element: node }, consts);
 
     this.path    = path;
-    this.element = node;
     this.node    = node;
     this.name    = name;
     this.list    = getTokenList(node, name);

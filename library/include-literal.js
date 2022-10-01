@@ -35,7 +35,6 @@ export default function include(url, object, element) {
 
     // Cue the renderer so that we do not end up collecting read paths read by
     // the child renderer in the parent.
-    return renderer
-    .push(data || {})
-    .then(() => renderer);
+    renderer.push(data || {});
+    return renderer;
 }

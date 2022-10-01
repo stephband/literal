@@ -42,16 +42,22 @@
         <pre hidden="${ data.stream }">✔ Stream of booleans is rendered (if this is flashing)</pre>
     </template>
 
+    <template id="includee">
+        <pre>✔ Template included</pre>
+    </template>
+
+    <template id="includer">
+        ${ include('#includee', data) }
+    </template>
+
     <template id="item">
-        ${ this.done(() => console.log('STOPPED')), '' }
-        <pre>${ this.id + ': ' + this.constructor.name } - ${ data.label }</pre>
+        TING
+        <pre>${ this.constructor.name } - ${ data.label }</pre>
     </template>
 
     <template id="item-list">
         <h3>Test</h3>
-        <pre>${ this.id + ': ' + this.constructor.name }</pre>
         ${ data.items.map(include('#item')) }
-        <pre>${ this.id + ': ' + this.constructor.name }</pre>
     </template>
 </head>
 
@@ -245,26 +251,32 @@
 
             renderer.push(data);
             document.body.append(renderer.first);
-
-            window.r = renderer;
-            window.data = Observer(data);
-
             done();
         }, 0);
-    });
 
-    tests('TemplateRenderer', function(test, log) {
         test("TemplateRenderer() stream property", function(equals, done) {
             const renderer = new TemplateRenderer('#stream', document.body);
             const data = { stream: (new IntervalStream(0.4)).scan((value) => !value) };
             renderer.push(data);
             document.body.append(renderer.first);
-
-            window.r = renderer;
-            window.data = Observer(data);
-
             done();
         }, 0);
+
+        test("TemplateRenderer() include", function(equals, done) {
+            const renderer = new TemplateRenderer('#includer', document.body);
+            const data = {};
+            renderer.push(data);
+            document.body.append(renderer.first);
+            done();
+        });
+
+        test("TemplateRenderer() looped include", function(equals, done) {
+            const renderer = new TemplateRenderer('#item-list', document.body);
+            const data = { items: [{ label: 'one' }, { label: 'two' }, { label: 'three' }] };
+            renderer.push(data);
+            document.body.append(renderer.first);
+            done();
+        });
     });
     </script>
 </body>

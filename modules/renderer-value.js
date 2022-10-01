@@ -89,7 +89,6 @@ export default function ValueRenderer(source, consts, path, node) {
     Renderer.call(this, source, library, { element: node }, consts);
 
     this.path    = path;
-    this.element = node;
     this.node    = node;
     this.name    = 'value';
 }

@@ -29,7 +29,7 @@
     <template id="variation-controls">
         <form>
             ${
-                events('input', this.element).each(overload((e) => e.target.name.replace(/:.*$/, ''), {
+                events('input', element).each(overload((e) => e.target.name.replace(/:.*$/, ''), {
                     'variation': (e) => {
                         const name  = e.target.name.replace(/^variation:/, '');
                         data.settings.find(matches({ name })).value = parseFloat(e.target.value);
@@ -85,7 +85,7 @@
         </div>
 
         ${
-            events('input', this.element)
+            events('input', element)
             .filter((e) => e.target.id === 'select-pw-{{instance.pk}}')
             .each((e) => {
                 const value = e.target.value;

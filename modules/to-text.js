@@ -132,7 +132,7 @@ import toType   from '../../fn/modules/to-type.js';
 const rarrowents = /\s*(\([\w,\s]*\))/;
 const rarguments = /function(?:\s+\w+)?\s*(\([\w,\s]*\))/;
 
-export default overload(toType, {
+const toText = overload(toType, {
     /**
 
     **/
@@ -159,6 +159,9 @@ export default overload(toType, {
     'undefined': (value) => '',
 
     'object': overload((object) => (object && object.constructor.name), {
+        'Array':   (object) => {
+            console.log('ARRAY', object);
+            return object.map(toText).join('')},
         'RegExp':  (object) => '/' + object.source + '/',
         'null':    () => '',
         'default': (object) => JSON.stringify(object, null, 2)
@@ -166,3 +169,5 @@ export default overload(toType, {
 
     'default': JSON.stringify
 });
+
+export default toText;

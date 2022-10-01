@@ -6,38 +6,44 @@ processing the literal content is more DOM content this renderer will insert
 that DOM after the text node.
 **/
 
-import curry            from '../../fn/modules/curry.js';
 import include          from '../library/include-literal.js';
 import library          from './library.js';
 import toText           from './to-text.js';
 import Renderer         from './renderer.js';
 import removeNodes      from './remove-nodes.js';
 import TemplateRenderer from './renderer-template.js';
-//import { StreamRenderer, ArrayRenderer, PromiseRenderer, isStream } from './content-renderers.js';
-
 
 const assign = Object.assign;
+
+function stop(node) {
+    node && typeof node === 'object' && node.stop && node.stop();
+}
 
 function toRenderer(value) {
     return (value && typeof value === 'object') ?
         value instanceof Node ? value :
         value instanceof TemplateRenderer ? value :
-        (typeof value.length === 'number') ? new ArrayRenderer(value) :
         toText(value) :
         toText(value) ;
 }
 
-function renderValue(domRenderer, string, value) {
-    const contents = domRenderer.contents;
-    const renderer = toRenderer.call(parent, value);
-
-    if (typeof renderer === 'string') {
-        return string + renderer;
+function pushContents(contents, object) {
+    if (typeof object === 'string' && typeof contents[contents.length] === 'string') {
+        contents[contents.length] += object;
+    }
+    else {
+        contents.push(object);
     }
 
-    string && contents.push(string);
-    contents.push(renderer);
-    return '';
+    return contents;
+}
+
+function composeDOM(contents, object) {
+    if (Array.isArray(object)) {
+        return object.reduce(composeDOM, contents);
+    }
+
+    return pushContents(contents, toRenderer(object));
 }
 
 function setNodeValue(node, value) {
@@ -49,10 +55,6 @@ function setNodeValue(node, value) {
     return 0;
 }
 
-function stop(node) {
-    node && typeof node === 'object' && node.stop && node.stop();
-}
-
 function toContent(object) {
     return typeof object === 'string' ? object :
         object.content ? toContent(object.content) :
@@ -61,8 +63,6 @@ function toContent(object) {
 
 function setContents(first, last, contents, state) {
     let count = 0;
-
-    // TODO: get rid of need to slice
     const nodes = contents.map(toContent);
 
     // Remove existing nodes, leaving first and last alone
@@ -88,9 +88,9 @@ function setContents(first, last, contents, state) {
 
     if (nodes.length) {
         first.after.apply(first, nodes);
-        state === 'dom' && contents.forEach((renderer) =>
+        /*state === 'dom' && contents.forEach((renderer) =>
             (typeof renderer === 'object' && renderer.connect && renderer.connect())
-        );
+        );*/
         count += contents.length;
     }
 
@@ -98,19 +98,20 @@ function setContents(first, last, contents, state) {
 }
 
 export default function DOMRenderer(source, consts, path, node, name, element) {
-    Renderer.call(this, source, library, { element: node, include: () => {} }, consts);
+    Renderer.call(this, source, library, {
+        element: node,
+        include: (url, data) => (data ?
+            include(url, data, element) :
+            (data) => include(url, data, element)
+        )
+    }, consts);
 
     this.path      = path;
-    this.element   = element;
     this.node      = node;
     this.first     = node;
     this.last      = document.createTextNode('');
     this.first.after(this.last);
     this.contents  = [];
-
-    // Renderer scoped template functions
-    this.include = curry((template, data) => include(template, data, element));
-
 }
 
 assign(DOMRenderer.prototype, Renderer.prototype, {
@@ -131,16 +132,14 @@ assign(DOMRenderer.prototype, Renderer.prototype, {
     },
 
     render: function(strings) {
-        let n = -1;
-        let string = '';
+        let n = 0;
+        this.contents.push(strings[0]);
 
         while (strings[++n] !== undefined) {
-            // Append to string until it has to be pushed to contents because
-            // a node or renderer has to be pushed in behind it
-            string = renderValue(this, string + strings[n], arguments[n + 1]);
+            composeDOM(this.contents, arguments[n]);
+            pushContents(this.contents, strings[n]);
         }
 
-        string && this.contents.push(string);
         this.mutations = setContents(this.first, this.last, this.contents, this.status);
         return this;
     },

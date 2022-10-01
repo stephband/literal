@@ -52,7 +52,6 @@ export default function CheckedRenderer(source, consts, path, node) {
     Renderer.call(this, source, library, { element: node }, consts);
 
     this.path     = path;
-    this.element  = node;
     this.node     = node;
     this.name     = 'checked';
     this.hasValue = isDefined(node.getAttribute('value'));
