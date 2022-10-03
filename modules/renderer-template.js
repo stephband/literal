@@ -118,18 +118,15 @@ function cloneRenderer(renderer) {
 
 export default function TemplateRenderer(template, element) {
     // TemplateRenderer may be called with a string id or a template element
-    const id = typeof template === 'string' ?
-        template :
-        identify(template) ;
+    const id = identify(template) ;
 
-    //this.id      = ++meta.count;
-    this.element = element;
+    this.template = template;
+    this.element  = element;
 
     // If the template is already compiled and cached, clone it
     const renderer = cache[id];
 
     if (renderer) {
-        this.template  = renderer.template;
         this.content   = renderer.template.content ?
             renderer.template.content.cloneNode(true) :
             renderer.template.cloneNode(true) ;
@@ -140,10 +137,6 @@ export default function TemplateRenderer(template, element) {
     }
 
     cache[id] = this;
-
-    this.template = typeof template === 'string' ?
-        document.getElementById(template[0] === '#' ? template.slice(1) : template) :
-        template ;
 
     if (window.DEBUG && !template) {
         throw new Error('Template id="' + id + '" not found in document');

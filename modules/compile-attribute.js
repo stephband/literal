@@ -21,6 +21,10 @@ const compileBoolean = (attribute, path, source, consts, message) =>
     new BooleanRenderer(source, consts, path, attribute.ownerElement, attribute.localName, message);
 
 const compileAttributeByName = overload(get('localName'), {
+    'disabled': compileBoolean,
+    'hidden':   compileBoolean,
+    'required': compileBoolean,
+
     'checked': (attribute, path, source, consts, message) =>
         new CheckedRenderer(source, consts, path, attribute.ownerElement, 'checked', message),
 
@@ -31,9 +35,6 @@ const compileAttributeByName = overload(get('localName'), {
         if (window.DEBUG) { console.log('Todo: compile datetime attribute'); }
     },
 
-    'disabled': compileBoolean,
-    'hidden':   compileBoolean,
-
     // Special workaround attribute used in cases where ${} cannot be added
     // directly to the HTML content, such as in <tbody> or <tr>
     'inner-content': (attribute, path, source, consts, message) => {
@@ -41,8 +42,6 @@ const compileAttributeByName = overload(get('localName'), {
         node.removeAttribute(attribute.localName);
         return new DOMRenderer(decode(source), consts, path, node, 'innerHTML', message);
     },
-
-    'required': compileBoolean,
 
     'value': (attribute, path, source, consts, message) =>
         new ValueRenderer(source, consts, path, attribute.ownerElement, 'value', message),

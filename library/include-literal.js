@@ -13,7 +13,10 @@ export default function include(url, object, element) {
     }
 
     // Currently we accept string URLs in the form '#id' only
-    const renderer = new TemplateRenderer(typeof url === 'string' ? url.slice(1) : url, element);
+    const renderer = new TemplateRenderer(
+        typeof url === 'string' ? document.getElementById(url.slice(1)) : url,
+        element
+    );
 
     // Accept a url, fetch or import it before rendering
     if (typeof object === 'string') {
@@ -38,3 +41,5 @@ export default function include(url, object, element) {
     renderer.push(data || {});
     return renderer;
 }
+
+
