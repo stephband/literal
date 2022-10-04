@@ -58,7 +58,7 @@ export default function TokensRenderer(source, consts, template, path, node, nam
 
     // Empty the tokens until it is rendered to avoid code in literals
     // being interpreted as tokens
-    node.setAttribute(this.name, '');
+    node.setAttribute(name, '');
 }
 
 assign(TokensRenderer.prototype, Renderer.prototype, {

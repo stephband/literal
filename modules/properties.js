@@ -1,5 +1,6 @@
 
 import Privates        from '../../fn/modules/privates.js';
+import getTemplate     from '../modules/get-template.js';
 import requestTemplate from './request-template.js';
 
 /* Properties */
@@ -75,28 +76,21 @@ export default {
         attribute: function(value) {
             const privates = Privates(this);
 
-            if (!/^#/.test(value)) {
-                // Flag loading until we connect, at which point we add the
-                // loading attribute that may be used to indicate loading. Why
-                // wait? Because we are not in the DOM yet, and if we want a
-                // loading icon to transition in the transition must begin after
-                // we are already in the DOM.
-                this.loading = true;
-                requestTemplate(value).then((template) => {
-                    privates.templates.push(template);
-                });
-
+            if (/^#/.test(value)) {
+                const template = getTemplate(value);
+                privates.templates.push(template);
                 return;
             }
 
-            const id       = value.slice(1);
-            const template = document.getElementById(id);
-
-            if (!template) {
-                throw new Error('<include-literal src="' + value + '"> Template not found');
-            }
-
-            privates.templates.push(template);
+            // Flag loading until we connect, at which point we add the
+            // loading attribute that may be used to indicate loading. Why
+            // wait? Because we are not in the DOM yet, and if we want a
+            // loading icon to transition in the transition must begin after
+            // we are already in the DOM.
+            this.loading = true;
+            requestTemplate(value).then((template) => {
+                privates.templates.push(template);
+            });
         }
     }
 };

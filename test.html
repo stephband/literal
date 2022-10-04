@@ -72,6 +72,18 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
 </head>
 
 <body>
+    <section title="Loading">
+        <h3 class="text-03">Loading <span class="test-count">(4 tests)</span></h3>
+        <include-literal src="#test" id="data-never">
+            <pre>✔ Default content</pre>
+        </include-literal>
+        <include-literal src="#test" data="./test/test.json"></include-literal>
+        <include-literal src="#test" data-one="One" data-two="Two" data-three="Three"></include-literal>
+        <include-literal src="#test" data-one="./test/test.json" data-two="./test/test.json"></include-literal>
+        <include-literal src="#test" data="./test/test-bad.json"></include-literal>
+        <include-literal src="#test" id="data-later"></include-literal>
+    </section>
+
     <section title="Values">
         <h3 class="text-03">Values <span class="test-count">(1 test)</span></h3>
 
@@ -116,18 +128,6 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
         <include-literal src="#values-template" data='{ "a": 4 }'></include-literal>
 
         <hr/>
-    </section>
-
-    <section title="Loading">
-        <h3 class="text-03">Loading <span class="test-count">(4 tests)</span></h3>
-        <include-literal src="#test" id="data-never">
-            <pre>✔ Default content</pre>
-        </include-literal>
-        <include-literal src="#test" data="./test/test.json"></include-literal>
-        <include-literal src="#test" data-one="One" data-two="Two" data-three="Three"></include-literal>
-        <include-literal src="#test" data-one="./test/test.json" data-two="./test/test.json"></include-literal>
-        <include-literal src="#test" data="./test/test-bad.json"></include-literal>
-        <include-literal src="#test" id="data-later"></include-literal>
     </section>
 
     <section title="Binding">
