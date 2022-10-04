@@ -69,8 +69,7 @@ const compileNode = overload((renderers, node) => toType(node), {
 
         if (isLiteral(string)) {
             const source = decode(string);
-            const debug = window.DEBUG && 'template '
-                + template + ' '
+            const debug = window.DEBUG && template + ' '
                 + path + ', '
                 + '<' + element.tagName.toLowerCase() + '>'
                 + truncate(32, source)

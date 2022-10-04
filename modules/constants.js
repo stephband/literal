@@ -1,3 +1,6 @@
 
-// Use space as a separator - it is the only character not allowed in an id
-export const pathSeparator = ' ';
+// Use > as a path separator as it is not valid in attribute names
+export const pathSeparator = '>';
+
+// Indentation in compiled functions
+export const indent = window.DEBUG ? '  ' : '' ;

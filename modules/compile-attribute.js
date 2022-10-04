@@ -55,8 +55,7 @@ export default function compileAttribute(renderers, attribute, template, path, c
     const source = attribute.value;
     if (!isLiteral(source)) { return; }
 
-    const debug = window.DEBUG && 'template '
-        + template + ' '
+    const debug = window.DEBUG && template + ' '
         + path + ', <'
         + attribute.ownerElement.tagName.toLowerCase() + ' '
         + attribute.localName + '="' + truncate(32, source)

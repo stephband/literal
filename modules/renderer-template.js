@@ -110,11 +110,10 @@ function cloneRenderer(renderer) {
         node ;
 
         //source, consts, template, path, node, name, element
-    const clone = new renderer.constructor(renderer.literal, '', renderer.template, renderer.path, node, name, element);
+    const clone = new renderer.constructor(renderer.literal, '', renderer.template, renderer.path, node, name, '', element);
 
     // Stop clone when template renderer stops
     this.done(clone);
-
     return clone;
 }
 
