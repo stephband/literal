@@ -1,7 +1,6 @@
 
-import Privates       from '../../fn/modules/privates.js';
-import create         from '../../dom/modules/create.js';
-import { requestGet } from '../../dom/modules/request.js';
+import Privates        from '../../fn/modules/privates.js';
+import requestTemplate from './request-template.js';
 
 /* Properties */
 
@@ -83,8 +82,8 @@ export default {
                 // loading icon to transition in the transition must begin after
                 // we are already in the DOM.
                 this.loading = true;
-                requestGet(value).then((html) => {
-                    privates.templates.push(create('fragment', html));
+                requestTemplate(value).then((template) => {
+                    privates.templates.push(template);
                 });
 
                 return;

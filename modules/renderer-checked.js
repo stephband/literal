@@ -48,9 +48,10 @@ function setChecked(node, value, hasValue) {
     return 1;
 }
 
-export default function CheckedRenderer(source, consts, path, node, name, message) {
+export default function CheckedRenderer(source, consts, template, path, node, name, message) {
     Renderer.call(this, source, library, { element: node }, consts, message);
 
+    this.template = template;
     this.path     = path;
     this.node     = node;
     this.name     = 'checked';

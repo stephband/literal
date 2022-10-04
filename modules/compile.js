@@ -10,30 +10,27 @@ Compiles a literal template to a function.
 const indent = '  ';
 
 // Store render functions against their source
-export const cache = {};
+export const literals = {};
 
 // Last two params, info and element, are purely for debug messages
-export default function compile(source, scope, params, consts, id, message = '') {
-    if (typeof source !== 'string') {
-        throw new Error('Template is not a string');
-    }
-
-    const key = id || source;
-
-    // Return cached fn
-    if (cache[key]) { return cache[key]; }
-
+export default function compile(source, scope, params, consts, message = '') {
     const code = '\n'
-        + (id ? indent + '// Template #' + id + '\n' : '')
         + (consts ? indent + 'const { ' + consts + ' } = data;\n' : '')
         + indent + 'return this.compose`' + source + '`;\n';
+
+    // Return literalsd fn
+    // Todo: factor in keys from scope to make this key truly unique to all
+    // same instances of compiled function
+    const key = code;
+    if (literals[key]) { return literals[key]; }
 
     if (window.DEBUG) {
         try {
             const t0 = window.performance.now();
-            cache[key] = compileFn(scope, params,
+
+            literals[key] = compileFn(scope, params,
                 'try {' + code + '} catch(e) {' +
-                // Append useful info to error message
+                // Append info to error message
                 indent + 'e.message += " ' + message.replace(/"/g, '\\"') + '";' +
                 indent + 'throw e;' +
                 '}'
@@ -42,15 +39,14 @@ export default function compile(source, scope, params, consts, id, message = '')
             const t1 = window.performance.now();
             //analytics.totalCompileTime += (t1 - t0);
 
-            // timeEnd(name);
-            return cache[key];
+            return literals[key];
         }
         catch(e) {
-            // Append useful info to error message
+            // Append info to error message
             e.message += ' ' + message;
             throw e;
         }
     }
 
-    return cache[key] = compileFn(scope, params, code);
+    return literals[key] = compileFn(scope, params, code);
 }

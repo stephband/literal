@@ -1,4 +1,6 @@
 
+@import './library/print.css';
+
 /* Animation */
 
 @-webkit-keyframes rotate {

@@ -33,9 +33,10 @@ export function setBooleanProperty(node, name, value) {
     return 1;
 }
 
-export default function BooleanRenderer(source, consts, path, node, name, message) {
+export default function BooleanRenderer(source, consts, template, path, node, name, message) {
     Renderer.call(this, source, library, { element: node }, consts, message);
 
+    this.template = template;
     this.path     = path;
     this.node     = node;
     this.name     = name;

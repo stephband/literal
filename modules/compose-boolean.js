@@ -5,7 +5,7 @@ export default function composeBoolean(values) {
     values = Array.from(values);
 
     // Ignore space in the attribute
-    values[0] = values[0]
+    values[0] = !!values[0]
         .join(' ')
         .trim()
         .split(/\s+/)
@@ -13,7 +13,7 @@ export default function composeBoolean(values) {
         .reduce(sum);
 
     // But not from the literal values
-    return values
+    return !!values
         .map(Boolean)
         .reduce(sum);
 }

@@ -6,6 +6,7 @@ import library       from './library.js';
 import Renderer      from './renderer.js';
 import composeString from './compose-string.js';
 import composeNumber from './compose-number.js';
+import truncate      from './truncate.js';
 
 const assign = Object.assign;
 
@@ -85,9 +86,10 @@ const compose = overload((value, type) => type, {
     'default':    composeString
 });
 
-export default function ValueRenderer(source, consts, path, node, name, message) {
+export default function ValueRenderer(source, consts, template, path, node, name, message) {
     Renderer.call(this, source, library, { element: node }, consts, message);
 
+    this.template = template;
     this.path     = path;
     this.node     = node;
     this.name     = 'value';

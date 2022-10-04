@@ -5,7 +5,7 @@ Includes another template. Not available inside attributes.
 
 import { getTarget }    from '../../fn/observer/observer.js';
 import TemplateRenderer from '../modules/renderer-template.js';
-import request          from './request.js';
+import requestData      from '../modules/request-data.js';
 
 export default function include(url, object, element) {
     if (typeof url === 'string' && !/^#/.test(url)) {
@@ -20,9 +20,11 @@ export default function include(url, object, element) {
 
     // Accept a url, fetch or import it before rendering
     if (typeof object === 'string') {
-        return request(object)
-        .then((data) => renderer.push(data))
-        .then(() => renderer);
+        return requestData(object)
+        .then((data) => {
+            renderer.push(data);
+            return renderer
+        });
     }
 
     // Operate on target to be sure we are not registering gets for data.then
@@ -32,8 +34,10 @@ export default function include(url, object, element) {
     // Accept a promise of data
     if (data && data.then) {
         return data
-        .then((data) => renderer.push(data))
-        .then(() => renderer);
+        .then((data) => {
+            renderer.push(data);
+            return renderer
+        });
     }
 
     // Cue the renderer so that we do not end up collecting read paths read by

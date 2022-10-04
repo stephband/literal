@@ -12,6 +12,7 @@ import toText           from './to-text.js';
 import Renderer         from './renderer.js';
 import removeNodes      from './remove-nodes.js';
 import TemplateRenderer from './renderer-template.js';
+import truncate         from './truncate.js';
 
 const assign = Object.assign;
 
@@ -97,7 +98,7 @@ function setContents(first, last, contents, state) {
     return count;
 }
 
-export default function DOMRenderer(source, consts, path, node, name, message, element) {
+export default function DOMRenderer(source, consts, template, path, node, name, message, element) {
     Renderer.call(this, source, library, {
         element: node,
         include: (url, data) => (data ?
@@ -106,6 +107,7 @@ export default function DOMRenderer(source, consts, path, node, name, message, e
         )
     }, consts, message);
 
+    this.template = template;
     this.path     = path;
     this.node     = node;
     this.first    = node;

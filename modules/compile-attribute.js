@@ -14,44 +14,53 @@ import truncate          from './truncate.js';
 
 
 /**
-compileAttributes(renderers, attribute, path, consts)
+compileAttributes(renderers, attribute, template, path, consts, debug)
 **/
 
-const compileBoolean = (attribute, path, source, consts, message) =>
-    new BooleanRenderer(source, consts, path, attribute.ownerElement, attribute.localName, message);
+const compileBoolean = (attribute, template, path, source, consts, debug) =>
+    new BooleanRenderer(source, consts, template, path, attribute.ownerElement, attribute.localName, debug);
 
 const compileAttributeByName = overload(get('localName'), {
     'disabled': compileBoolean,
     'hidden':   compileBoolean,
     'required': compileBoolean,
 
-    'checked': (attribute, path, source, consts, message) =>
-        new CheckedRenderer(source, consts, path, attribute.ownerElement, 'checked', message),
+    'checked': (attribute, template, path, source, consts, debug) =>
+        new CheckedRenderer(source, consts, template, path, attribute.ownerElement, null, debug),
 
-    'class': (attribute, path, source, consts, message) =>
-        new TokensRenderer(source, consts, path, attribute.ownerElement, 'class', message),
+    'class': (attribute, template, path, source, consts, debug) =>
+        new TokensRenderer(source, consts, template, path, attribute.ownerElement, 'class', debug),
 
-    'datetime': function compileDatetime(attribute, path, source, consts, message) {
+    'datetime': function compileDatetime(attribute, template, path, source, consts, debug) {
         if (window.DEBUG) { console.log('Todo: compile datetime attribute'); }
     },
 
     // Special workaround attribute used in cases where ${} cannot be added
     // directly to the HTML content, such as in <tbody> or <tr>
-    'inner-content': (attribute, path, source, consts, message) => {
+    'inner-content': (attribute, template, path, source, consts, debug) => {
         const node = attribute.ownerElement;
         node.removeAttribute(attribute.localName);
-        return new DOMRenderer(decode(source), consts, path, node, 'innerHTML', message);
+        // source, consts, template, path, node, name, element
+        return new DOMRenderer(decode(source), consts, template, path, node, 'innerHTML', debug, node);
     },
 
-    'value': (attribute, path, source, consts, message) =>
-        new ValueRenderer(source, consts, path, attribute.ownerElement, 'value', message),
+    'value': (attribute, template, path, source, consts, debug) =>
+        new ValueRenderer(source, consts, template, path, attribute.ownerElement, null, debug),
 
-    'default': (attribute, path, source, consts, message) =>
-        new AttributeRenderer(source, consts, path, attribute.ownerElement, attribute.localName, message)
+    'default': (attribute, template, path, source, consts, debug) =>
+        new AttributeRenderer(source, consts, template, path, attribute.ownerElement, attribute.localName, debug)
 });
 
-export default function compileAttribute(renderers, attribute, path, consts, message) {
+export default function compileAttribute(renderers, attribute, template, path, consts) {
     const source = attribute.value;
     if (!isLiteral(source)) { return; }
-    renderers.push(compileAttributeByName(attribute, path, source, consts, message + ' ' + attribute.localName + '="' + truncate(32, source) + '">'));
+
+    const debug = window.DEBUG && 'template '
+        + template + ' '
+        + path + ', <'
+        + attribute.ownerElement.tagName.toLowerCase() + ' '
+        + attribute.localName + '="' + truncate(32, source)
+        + '">';
+
+    renderers.push(compileAttributeByName(attribute, template, path, source, consts, debug));
 }

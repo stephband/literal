@@ -1,8 +1,10 @@
 {
-    "title": "JSON object",
-    "string": "String",
-    "number": 1,
-    "array": [],
-    "object": {},
-    "null": null
+    "one":       "✔ One",
+    "two":       2,
+    "three":     [3],
+    "string":    "String",
+    "number":    1,
+    "array":     [0,1,2,3],
+    "object":    { "property": "value" },
+    "null":      null
 }

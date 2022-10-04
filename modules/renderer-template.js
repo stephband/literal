@@ -25,12 +25,13 @@ renderer
 **/
 
 import Stream       from '../../fn/modules/stream/stream.js';
-import { Observer } from '../../fn/observer/observer.js';
-import identify     from '../../dom/modules/identify.js';
-import isTextNode   from '../../dom/modules/is-text-node.js';
-import compileNode  from './compile-node.js';
-import removeNodes  from './remove-nodes.js';
-import { cue, uncue } from './cue.js';
+import { Observer }      from '../../fn/observer/observer.js';
+import identify          from '../../dom/modules/identify.js';
+import isTextNode        from '../../dom/modules/is-text-node.js';
+import compileNode       from './compile-node.js';
+import removeNodes       from './remove-nodes.js';
+import { cue, uncue }    from './cue.js';
+import { pathSeparator } from './constants.js';
 
 const assign = Object.assign;
 const keys   = Object.keys;
@@ -39,7 +40,7 @@ const cache  = {};
 
 /*
 TemplateRenderer
-Descendant paths are stored in the form `"1.12.3.class"`, enabling fast
+Descendant paths are stored in the form `"#id 1:12:3:attribute"`, enabling fast
 cloning of template instances without retraversing their DOMs looking for
 literal attributes and text.
 */
@@ -52,7 +53,7 @@ function child(parent, index) {
 
 function getDescendant(path, root) {
     // If path is empty return root
-    const p = path && path.split(/\./);
+    const p = path && path.split(pathSeparator);
     return path ?
         p.reduce(child, root) :
         root ;
@@ -108,7 +109,8 @@ function cloneRenderer(renderer) {
         // node itself is the context element for attributes
         node ;
 
-    const clone = new renderer.constructor(renderer.literal, '', renderer.path, node, name, '', element);
+        //source, consts, template, path, node, name, element
+    const clone = new renderer.constructor(renderer.literal, '', renderer.template, renderer.path, node, name, element);
 
     // Stop clone when template renderer stops
     this.done(clone);
@@ -167,7 +169,8 @@ export default function TemplateRenderer(template, element) {
     // available as `name` inside the template
     const consts = keys(this.template.dataset).join(', ');
     // renderers, node, path, consts, element
-    this.contents = compileNode([], this.content, '', consts, 'in template #' + this.template.id, element);
+    // Use a space after the id in path
+    this.contents = compileNode([], this.content, '#' + this.template.id, '', consts, element);
 
     // Stop child when template renderer stops
     this.contents.forEach((renderer) => this.done(renderer));

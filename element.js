@@ -58,4 +58,4 @@ import properties from './modules/properties.js';
 export default element('include-literal', lifecycle, properties);
 
 // Log registration to console
-window.console && window.console.log('%c<include-literal>%c registered (documentation at %chttps://stephen.band/literal/%c)', 'color: #3a8ab0; font-weight: 600;', 'color: #888888; font-weight: 400;', 'color: inherit; font-weight: 400;', 'color: #888888; font-weight: 400;');
+window.console && window.console.log('%c<include-literal>%c registered (documentation at https://stephen.band/literal/)', 'color: #3a8ab0; font-weight: 600;', 'color: #888888; font-weight: 400;');

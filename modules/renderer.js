@@ -14,6 +14,7 @@ const assign = Object.assign;
 const keys   = Object.keys;
 const values = Object.values;
 
+let id = 0;
 
 // Observers
 
@@ -149,6 +150,8 @@ a consumer stream.
 **/
 
 export default function Renderer(source, scope, parameters, consts, message, fn) {
+    if (window.DEBUG) { this.id = ++id; }
+
     this.literal = typeof source === 'string' ?
         compile(source, scope, 'data' + (parameters ? ', ' + keys(parameters).join(', ') : ''), consts, message) :
         source ;
@@ -161,6 +164,8 @@ export default function Renderer(source, scope, parameters, consts, message, fn)
     this.status    = 'idle';
     this.cue       = () => cue(this);
     this.consume   = fn;
+
+    ++Renderer.count;
 }
 
 assign(Renderer.prototype, {
@@ -250,8 +255,13 @@ assign(Renderer.prototype, {
         stopStreams(this.streams);
         this.status = 'stopped';
         Stream.prototype.stop.apply(this);
+        --Renderer.count;
         return this;
     },
 
     done: Stream.prototype.done
+});
+
+assign(Renderer, {
+    count: 0
 });

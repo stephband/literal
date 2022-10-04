@@ -1,7 +1,5 @@
 
 import { log, group, groupCollapsed, groupEnd } from '../modules/log.js';
-//import analytics from './analytics.js';
-import { cache as compileCache } from '../modules/compile.js';
 
 const renderers = [];
 const promise   = Promise.resolve(renderers);
@@ -36,6 +34,7 @@ function render(renderers) {
     var t0, ids;
     if (window.DEBUG) {
         t0 = window.performance.now() / 1000;
+        logs.renderers = 0;
         logs.mutations = 0;
         //groupCollapsed('batch', t0.toFixed(3) + 's - cued ' + constructorCount(renderers), '#B6BD00');
         ids = {};
@@ -48,9 +47,9 @@ function render(renderers) {
         stats = renderer.update();
 
         if (window.DEBUG) {
+            ++logs.renderers;
             logs.mutations      += stats.mutations;
             logs.totalMutations += stats.mutations;
-            ids && (ids[renderer.id] = ids[renderer.id] === undefined ? 1 : ids[renderer.id] + 1);
         }
     }
     //console.log('END ---------------');
@@ -81,20 +80,18 @@ function render(renderers) {
         log('render',
             t0.toFixed(3) + 's - '
             // renderers
-            + keys.length + ' renderer' + (keys.length === 1 ? ', ' : 's, ')
+            + logs.renderers + ' renderer' + (logs.renderers === 1 ? ', ' : 's, ')
             // mutations
             + logs.mutations + ' mutation' + (logs.mutations === 1 ? ', ' : 's, ')
             // duration
-            + ((t1 - t0) * 1000 - logs.batchCompileTime).toPrecision(3) + 'ms'
-            // ids
-            + ' (#' + keys.slice(0, 12).join(', #') + (keys.length > 12 ? ', ...)' : ')'),
+            + ((t1 - t0) * 1000 - logs.batchCompileTime).toPrecision(3) + 'ms',
             //
             '', '', '#B6BD00'
         );
 
-        if (Object.values(ids).find((n) => n > 1)) {
-            console.warn('Literal', 'same renderer rendered multiple times in batch', ids);
-        }
+        //if (Object.values(ids).find((n) => n > 1)) {
+        //    console.warn('Literal', 'same renderer rendered multiple times in batch', ids);
+        //}
 
         //groupEnd();
 
