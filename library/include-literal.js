@@ -16,6 +16,13 @@ function push(template, data, element) {
     return renderer;
 }
 
+function pipe(template, data, element) {
+    const renderer = new TemplateRenderer(template, element);
+    data.each((data) => renderer.push(data));
+    renderer.done(data);
+    return renderer;
+}
+
 export default function include(src, data, element) {
     // Operate on target to be sure we are not registering gets in
     // parent renderer
@@ -31,13 +38,25 @@ export default function include(src, data, element) {
             return dataRequest.then((data) => push(template, data, element));
         }
 
-        return push(template, data || {}, element);
+        if (object && object.each) {
+            return pipe(template, object, element);
+        }
+
+        return push(template, object || {}, element);
     }
 
     const templateRequest = requestTemplate(src);
-    const dataRequest = typeof object === 'string' ?
-        requestData(object) :
+    const dataRequest = typeof object === 'string' ? requestData(object) :
+        object && object.then ? object :
         object ;
+
+
+
+    if (object && object.each) {
+        return templateRequest.then((template) => {
+            return pipe(template, data, element);
+        });
+    }
 
     return Promise
     .all([templateRequest, dataRequest])
