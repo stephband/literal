@@ -57,11 +57,13 @@ export default {
 
         /**
         .loading
-        Read-only (pseudo-read-only) boolean indicating status of `src` and
-        `data` requests.
+        Read-only boolean indicating status of `src` and `data` requests.
         **/
-        value: false,
-        writable: true
+
+        get: function() {
+            const privates = Privates(this);
+            return privates.loading;
+        }
     },
 
     /**

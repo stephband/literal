@@ -100,3 +100,5 @@ import TemplateRenderer from './modules/renderer-template.js';
 export default function Literal(id) {
     return new TemplateRenderer(id);
 }
+
+export { Observer as Data } from '../fn/observer/observer.js';

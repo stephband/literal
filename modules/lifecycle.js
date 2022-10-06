@@ -25,22 +25,45 @@ function resolveData(value) {
         parseData(value) ;
 }
 
-const onerror = window.DEBUG ? (e, element) => {
-    element.loading = false;
-    element.replaceWith(print(e));
-    throw e;
-} : (e, element) => {
-    element.loading = false;
-    if (element.frame) { cancelAnimationFrame(element.frame); }
-    else { element.removeAttribute('loading'); }
-    throw e;
-} ;
+function addLoading(element) {
+    const privates = Privates(element);
+
+    if (!privates.loading) {
+        privates.loading = true;
+        //element.setAttribute('loading', '');
+    }
+}
+
+function removeLoading(element) {
+    const privates = Privates(element);
+
+    if (privates.loading) {
+        privates.loading = false;
+
+        if (privates.frame) {
+            cancelAnimationFrame(privates.frame);
+            privates.frame = null;
+        }
+        else {
+            element.removeAttribute('loading');
+        }
+    }
+}
+
+const onerror = window.DEBUG ?
+    (e, element) => {
+        removeLoading(element);
+        element.replaceWith(print(e));
+        throw e;
+    } :
+    (e, element) => {
+        removeLoading(element);
+        throw e;
+    } ;
 
 export default {
     construct: function() {
         const privates   = Privates(this);
-        const connected  = privates.connected  = Stream.broadcast();
-        const load       = privates.load       = Stream.broadcast();
         const datas      = privates.datas      = Stream.of();
         const dataoutput = privates.dataoutput = Stream.of();
         const templates  = privates.templates  = Stream.of();
@@ -52,9 +75,9 @@ export default {
                 if (rpath.test(value)) {
                     requestData(value)
                     .then((data) => dataoutput.push(data))
-                    .catch((e) => onerror(e, this));
+                    .catch((e) => onerror(e, marker, privates));
 
-                    this.loading = true;
+                    addLoading(this);
                 }
                 else {
                     dataoutput.push(JSON.parse(value));
@@ -77,11 +100,7 @@ export default {
 
             renderer.push(data);
             marker.replaceWith(renderer.content);
-
-            if (this.loading) {
-                this.loading = false;
-                this.removeAttribute('loading');
-            }
+            removeLoading(this);
         });
 
         // Resolve data from dataset attributes
@@ -107,20 +126,14 @@ export default {
 */
     connect: function(shadow) {
         const privates = Privates(this);
-        privates.connected.push(true);
 
         // DOM nonsense. If we are loading at connect add the loading attribute
         // after a couple of frames to allowing time for styled transitions to
         // initialise.
-        (this.loading && (this.frame = requestAnimationFrame(() =>
-            (this.loading && (this.frame = requestAnimationFrame(() =>
-                (this.loading && this.setAttribute('loading', ''))
+        (privates.loading && (privates.frame = requestAnimationFrame(() =>
+            (privates.loading && (privates.frame = requestAnimationFrame(() =>
+                (privates.loading && this.setAttribute('loading', ''))
             )))
         )));
-    },
-
-    disconnect: function(shadow) {
-        const privates = Privates(this);
-        privates.connected.push(false);
     }
 };
