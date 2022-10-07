@@ -1,7 +1,7 @@
 
 import nothing    from '../../fn/modules/nothing.js';
 import { remove } from '../../fn/modules/remove.js';
-import Stream     from '../../fn/modules/stream/stream.js';
+import Stream, { isStream } from '../../fn/modules/stream/stream.js';
 import observe    from '../../fn/observer/observe.js';
 import { Observer, getTarget } from '../../fn/observer/observer.js';
 
@@ -47,9 +47,9 @@ function stopStreams(streams) {
     streams.length = 0;
 }
 
-function toParameters(parameters, value, i) {
-    parameters[i + 1] = value;
-    parameters.length = i + 2;
+function toParameters(parameters, value) {
+    parameters[parameters.length] = value;
+    parameters.length += 1;
     return parameters;
 }
 
@@ -99,6 +99,16 @@ function renderValue(renderer, values, n, object) {
             const streams = renderer.streams || (renderer.streams = []);
             values[n] = '';
             object.each((value) => renderValue(renderer, values, n, value));
+            streams.push(object);
+            return;
+        }
+
+        // Is object a Stream that is already consumed, and therefore does not
+        // have .each()? We still want to stop it when the renderer is
+        // destroyed, but we don't want to renderer anything.
+        if (isStream(object)) {
+            const streams = renderer.streams || (renderer.streams = []);
+            values[n] = '';
             streams.push(object);
             return;
         }
@@ -153,12 +163,15 @@ export default function Renderer(source, scope, parameters, consts, message, fn)
     if (window.DEBUG) { this.id = ++id; }
 
     this.literal = typeof source === 'string' ?
-        compile(source, scope, 'data' + (parameters ? ', ' + keys(parameters).join(', ') : ''), consts, message) :
+        // data will be the observer proxy of DATA, which we set in .update()
+        compile(source, scope, 'data, DATA' + (parameters ? ', ' + keys(parameters).join(', ') : ''), consts, message) :
+        // source is assumed to be the compiled function
         source ;
 
+    // Parameters have at least length 2 because (data, DATA)
     this.parameters = parameters ?
-        values(parameters).reduce(toParameters, { length: 1 }) :
-        {} ;
+        values(parameters).reduce(toParameters, { length: 2 }) :
+        { length: 2 } ;
 
     this.observers = {};
     this.status    = 'idle';
@@ -196,6 +209,7 @@ assign(Renderer.prototype, {
         const observers  = this.observers;
 
         parameters[0] = data;
+        parameters[1] = getTarget(data);
         stopPromises(this.promises);
         stopStreams(this.streams);
 
@@ -205,10 +219,6 @@ assign(Renderer.prototype, {
         VALUES = {};
         const records = data ? Gets(data) : nothing ;
         records.reduce(toValues);
-
-        // Update `this` before rendering
-        //renderer.data = object;
-        //++renderer.count;
 
         // literal the template. Todo: note that we are potentially leaving
         // observers live here, if any data is set during render we may trigger

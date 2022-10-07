@@ -159,10 +159,9 @@ const toText = overload(toType, {
     'undefined': (value) => '',
 
     'object': overload((object) => (object && object.constructor.name), {
-        'Array':   (object) => {
-            console.log('ARRAY', object);
-            return object.map(toText).join('')},
+        'Array':   (object) => object.map(toText).join(''),
         'RegExp':  (object) => '/' + object.source + '/',
+        'Stream':  () => '',
         'null':    () => '',
         'default': (object) => JSON.stringify(object, null, 2)
     }),
