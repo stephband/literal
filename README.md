@@ -14,7 +14,7 @@ Import Literal.
 ```
 
 This registers two custom elements, `&lt;template&gt;` and
-`&lt;include-literal&gt;`.
+`&lt;include-template&gt;`.
 
 ```html
 <!-- Define a template -->
@@ -23,10 +23,10 @@ This registers two custom elements, `&lt;template&gt;` and
 </template>
 
 <!-- Include the template -->
-<include-literal src="#title-template" data="./package.json"></include-literal>
+<include-template src="#title-template" data="./package.json"></include-template>
 ```
 
-A `&lt;include-literal&gt;` is replaced with the rendered content of its `src` 
+A `&lt;include-template&gt;` is replaced with the rendered content of its `src` 
 template as soon as `data` is fetched. In the example above, when `package.json` 
 is fetched the include renders to the DOM as
 
@@ -35,12 +35,12 @@ is fetched the include renders to the DOM as
 ```
 
 A `&lt;template&gt;` may be reused by multiple 
-`&lt;include-literal&gt;`s.
+`&lt;include-template&gt;`s.
 
 
 ### The data attribute or attributes
 
-A `&lt;include-literal&gt;` may have either a `data` attribute or one or more
+A `&lt;include-template&gt;` may have either a `data` attribute or one or more
 `data-` attributes (but not both). Data attributes may contain
 
 - a URL pointing to a `.json` file
@@ -56,7 +56,7 @@ refers to the imported object.
     <h1>I am ${ data.title }</h1>
 </template>
 
-<include-literal src="#title-template" data="./package.json"></include-literal>
+<include-template src="#title-template" data="./package.json"></include-template>
 ```
 
 Where dataset (`data-`) attributes are used, the object `data` inside a 
@@ -67,7 +67,7 @@ template is given properties with corresponding names.
     <h1>I am ${ data.package.title }. Number is ${ data.number }</h1>
 </template>
 
-<include-literal src="#title-template" data-package="./package.json" data-number="1"></include-literal>
+<include-template src="#title-template" data-package="./package.json" data-number="1"></include-template>
 ```
 
 

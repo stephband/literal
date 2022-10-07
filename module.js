@@ -22,7 +22,7 @@ And grab the associated CSS:
 <p class="right-bubble bubble">Clearly you should not rely on this resource in
 production. Use a bundler to package it into your own CSS.</p>
 
-This registers the custom element `<include-literal>`. Here is how to use it:
+This registers the custom element `<include-template>`. Here is how to use it:
 
 ```html
 <template id="item">
@@ -34,12 +34,12 @@ This registers the custom element `<include-literal>`. Here is how to use it:
     <ul>${ data.tasks.map(include('#item')) }</ul>
 </template>
 
-<include-literal src="#todo-list" data="./data/todo.json">
+<include-template src="#todo-list" data="./data/todo.json">
     <p>Fallback content.</p>
-</include-literal>
+</include-template>
 ```
 
-A `<include-literal>` is replaced with the content of its `src` template when
+A `<include-template>` is replaced with the content of its `src` template when
 its `data` is fetched and rendered. Inside the template, data to render
 is accessed through the variable `${ data }`. The result of this example is:
 
@@ -52,9 +52,9 @@ is accessed through the variable `${ data }`. The result of this example is:
     <ul>${ data.tasks.map(include('#item')) }</ul>
 </template>
 
-<include-literal src="#author" data="./data/todo.json">
+<include-template src="#author" data="./data/todo.json">
     <p>Fallback content.</p>
-</include-literal>
+</include-template>
 
 The template renderer observes `data` objects and updates the DOM if changes are
 detected. In the following example a mutating `data` object is imported from a
@@ -69,9 +69,9 @@ JS module and used to rotate an SVG:
     <p>You loaded this <b>${ round(data.time) + 's' }</b> ago.</p>
 </template>
 
-<include-literal src="#clock" data="./data/dom-clock.js">
+<include-template src="#clock" data="./data/dom-clock.js">
     <p>You loaded this.</p>
-</include-literal>
+</include-template>
 ```
 
 And the result is:
@@ -84,14 +84,14 @@ And the result is:
     <p>You loaded this <b>${ round(data.time) + 's' }</b> ago.</p>
 </template>
 
-<include-literal src="#clock" data="./data/dom-clock.js">
+<include-template src="#clock" data="./data/dom-clock.js">
     <p>You loaded this.</p>
-</include-literal>
+</include-template>
 **/
 
 /*
 Contents
-- <a href="#include-literal">`<include-literal>`</a>
+- <a href="#include-template">`<include-template>`</a>
 - <a href="#template-functions">Literal template functions</a>
 */
 
@@ -101,4 +101,5 @@ export default function Literal(id) {
     return new TemplateRenderer(id);
 }
 
-export { Observer as Data } from '../fn/observer/observer.js';
+export { Observer as Data }   from '../fn/observer/observer.js';
+export { default as library } from './modules/library.js';

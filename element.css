@@ -1,5 +1,5 @@
 
-@import './library/print.css';
+@import './modules/library/print.css';
 
 /* Animation */
 
@@ -16,20 +16,20 @@
 /* Literal include */
 
 include-html,
-include-literal {
+include-template {
     display: contents;
     position: relative;
 }
 
 include-html::after,
-include-literal::after {
+include-template::after {
     content: '';
     opacity: 0;
     transition: opacity 0.6s linear 0.3s;
 }
 
 include-html[loading]::after,
-include-literal[loading]::after {
+include-template[loading]::after {
     content: '';
     position: absolute;
     left: 50%;

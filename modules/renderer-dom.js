@@ -6,7 +6,7 @@ processing the literal content is more DOM content this renderer will insert
 that DOM after the text node.
 **/
 
-import include          from '../library/include-literal.js';
+import include          from './library/include.js';
 import library          from './library.js';
 import toText           from './to-text.js';
 import Renderer         from './renderer.js';
@@ -100,7 +100,7 @@ function setContents(first, last, contents, state) {
 
 export default function DOMRenderer(source, consts, template, path, node, name, message, element) {
     Renderer.call(this, source, library, {
-        element: node,
+        element: element,
         include: (url, data) => (data ?
             include(url, data, element) :
             (data) => include(url, data, element)

@@ -4,11 +4,11 @@ include(src, data)
 Includes another template. Not available inside attributes.
 **/
 
-import { getTarget }    from '../../fn/observer/observer.js';
-import TemplateRenderer from '../modules/renderer-template.js';
-import getTemplate      from '../modules/get-template.js';
-import requestTemplate  from '../modules/request-template.js';
-import requestData      from '../modules/request-data.js';
+import { getTarget }    from '../../../fn/observer/observer.js';
+import TemplateRenderer from '../renderer-template.js';
+import getTemplate      from '../get-template.js';
+import requestTemplate  from '../request-template.js';
+import requestData      from '../request-data.js';
 
 function push(template, data, element) {
     const renderer = new TemplateRenderer(template, element);

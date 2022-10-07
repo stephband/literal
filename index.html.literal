@@ -68,12 +68,12 @@
     </header>
 
     ${ include("./templates/section.literal", await comments("./module.js")) }
-    ${ include("./templates/element.literal", await comments("./elements/include-literal.js")) }
+    ${ include("./templates/element.literal", await comments("./elements/include-template.js")) }
     ${ include("./templates/section.literal", await comments("./modules/to-text.js")) }
     ${ include("./templates/section.literal", await comments(
         "./modules/library.js",
         "./library/location.js",
-        "./library/include-literal.js",
+        "./library/include-template.js",
         "./library/include-html.js",
         "../dom/modules/parse-length.js"
     )) }

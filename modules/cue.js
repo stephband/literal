@@ -1,5 +1,5 @@
 
-import { log } from './log.js';
+import { log, group, groupEnd } from './log.js';
 
 const renderers = [];
 const promise   = Promise.resolve(renderers);
@@ -8,9 +8,11 @@ let cued;
 
 function render(renderers) {
     var t0, mutations;
+
     if (window.DEBUG) {
         t0 = window.performance.now() / 1000;
         mutations = 0;
+        group('frame', t0.toFixed(3) + 's', '#ff9433');
     }
 
     let stats, n = -1;
@@ -23,19 +25,15 @@ function render(renderers) {
         }
     }
 
-    cued = undefined;
-
     if (window.DEBUG) {
         const t1              = window.performance.now() / 1000;
 
         log('render',
-            t0.toFixed(3) + 's – '
+            ((t1 - t0) * 1000).toPrecision(3) + 'ms – '
             // renderers
             + renderers.length + ' renderer' + (renderers.length === 1 ? ', ' : 's, ')
             // mutations
-            + mutations + ' mutation' + (mutations === 1 ? ', ' : 's, ')
-            // duration
-            + ((t1 - t0) * 1000).toPrecision(3) + 'ms',
+            + mutations + ' mutation' + (mutations === 1 ? ', ' : 's'),
             //
             '', '', '#B6BD00'
         );
@@ -43,8 +41,11 @@ function render(renderers) {
         if (t1 - t0 > 0.016666667) {
             log('render took longer than a frame (16.7ms) ' + ((t1 - t0) * 1000).toPrecision(3) + 'ms', '', '', '', '#ba4029');
         }
+
+        groupEnd();
     }
 
+    cued = undefined;
     renderers.length = 0;
 }
 
@@ -58,6 +59,10 @@ export function cue(renderer) {
     // Create a new batch end promise where required
     if (!cued) {
         cued = promise.then(render);
+    }
+
+    if (renderers.indexOf(renderer) !== -1) {
+        console.trace('RENDERER ALREADY IN CUE', 'This is probably not good');
     }
 
     renderers.push(renderer);

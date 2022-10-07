@@ -68,6 +68,8 @@ assign(GetProducer.prototype, {
         if (this.path === '') {
             stop(this[0]);
         }
+
+        this.status = 'stopped';
     }
 });
 

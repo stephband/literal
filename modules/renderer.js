@@ -162,7 +162,12 @@ export default function Renderer(source, scope, parameters, consts, message, fn)
 
     this.observers = {};
     this.status    = 'idle';
-    this.cue       = () => cue(this);
+
+    this.cue = () => {
+        stopObservers(this.observers);
+        cue(this);
+    };
+
     this.consume   = fn;
 
     ++Renderer.count;
@@ -181,9 +186,8 @@ assign(Renderer.prototype, {
         data = Observer(data);
         if (this.data === data) { return; }
 
-        stopObservers(this.observers);
         this.data = data;
-        cue(this);
+        this.cue();
     },
 
     update: function() {

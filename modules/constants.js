@@ -3,4 +3,5 @@
 export const pathSeparator = '>';
 
 // Indentation in compiled functions
+export const line   = window.DEBUG ? '\n' : '' ;
 export const indent = window.DEBUG ? '  ' : '' ;

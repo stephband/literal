@@ -1,6 +1,6 @@
 
 import compileFn from '../../fn/modules/compile.js';
-import { indent } from './constants.js';
+import { indent, line } from './constants.js';
 import { log } from './log.js';
 import truncate from './truncate.js';
 
@@ -30,17 +30,18 @@ export default function compile(source, scope, params, consts, message = '') {
             const t0 = window.performance.now();
 
             literals[key] = compileFn(scope, params,
-                'try {' + code + '} catch(e) {' +
+                'try {' + code + '}' + line +
+                'catch(e) {' + line +
                 // Append info to error message
-                indent + "e.message += ' in ' + this.template + ' ' + this.path + ' - <' + this.element.tagName + '>';\n" +
-                indent + 'throw e;' +
-                '}'
+                indent + 'e.message += " in " + this.template + " ' + message.replace(/"/g, '\\"') + '";' + line +
+                indent + 'throw e;' + line +
+                '}' + line
             );
 
             const t1 = window.performance.now();
             compile.duration += (t1 - t0);
             compile.count    += 1;
-            log('compile', (t1 - t0).toPrecision(3) + 'ms – ' + truncate(32, source), undefined, undefined, '#DDB523');
+            log('compile', (t1 - t0).toPrecision(3) + 'ms – ' + message/* truncate(32, source)*/, undefined, undefined, '#DDB523');
 
             return literals[key];
         }

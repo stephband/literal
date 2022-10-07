@@ -14,19 +14,19 @@ export default {
     To get data from a JSON file specify a path to JSON:
 
     ```html
-    <include-literal src="#greetings" data="./package.json"></include-literal>
+    <include-template src="#greetings" data="./package.json"></include-template>
     ```
 
     Or import the default export of a JS module:
 
     ```html
-    <include-literal src="#greetings" data="./modules/literal.js"></include-literal>
+    <include-template src="#greetings" data="./modules/literal.js"></include-template>
     ```
 
     Or import a named export of JS module:
 
     ```html
-    <include-literal src="#greetings" data="./modules/literal.js#name"></include-literal>
+    <include-template src="#greetings" data="./modules/literal.js#name"></include-template>
     ```
     **/
 
@@ -69,7 +69,7 @@ export default {
     /**
     src=""
     Define a source template whose rendered content replaces this
-    `<include-literal>`. This is a required attribute and must be in
+    `<include-template>`. This is a required attribute and must be in
     the form of a fragment identifier pointing to a `template` element
     in the DOM.
     **/

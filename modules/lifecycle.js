@@ -1,7 +1,7 @@
 
 import Privates         from '../../fn/modules/privates.js';
 import Stream           from '../../fn/modules/stream.js';
-import print            from '../library/print.js';
+import print            from './library/print.js';
 import requestData      from './request-data.js';
 import TemplateRenderer from './renderer-template.js';
 
@@ -118,12 +118,7 @@ export default {
             );
         }
     },
-/*
-    load: function (shadow) {
-        const privates = Privates(this);
-        privates.load.push(this);
-    },
-*/
+
     connect: function(shadow) {
         const privates = Privates(this);
 

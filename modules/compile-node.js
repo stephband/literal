@@ -69,11 +69,11 @@ const compileNode = overload((renderers, node) => toType(node), {
 
         if (isLiteral(string)) {
             const source = decode(string);
-            const debug = window.DEBUG && template + ' '
-                + path + ', '
+            const debug = window.DEBUG && ''
+                //+ path + ', '
                 + '<' + element.tagName.toLowerCase() + '>'
-                + truncate(32, source)
-                + '</' + element.tagName.toLowerCase() + '>';
+                + truncate(32, source);
+                //+ '</' + element.tagName.toLowerCase() + '>';
 
             renderers.push(new DOMRenderer(source, consts, template, path, node, null, debug, element));
         }

@@ -74,14 +74,14 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
 <body>
     <section title="Loading">
         <h3 class="text-03">Loading <span class="test-count">(4 tests)</span></h3>
-        <include-literal src="#test" id="data-never">
+        <include-template src="#test" id="data-never">
             <pre>✔ Default content</pre>
-        </include-literal>
-        <include-literal src="#test" data="./test/test.json"></include-literal>
-        <include-literal src="#test" data-one="One" data-two="Two" data-three="Three"></include-literal>
-        <include-literal src="#test" data-one="./test/test.json" data-two="./test/test.json"></include-literal>
-        <include-literal src="#test" data="./test/test-bad.json"></include-literal>
-        <include-literal src="#test" id="data-later"></include-literal>
+        </include-template>
+        <include-template src="#test" data="./test/test.json"></include-template>
+        <include-template src="#test" data-one="One" data-two="Two" data-three="Three"></include-template>
+        <include-template src="#test" data-one="./test/test.json" data-two="./test/test.json"></include-template>
+        <include-template src="#test" data="./test/test-bad.json"></include-template>
+        <include-template src="#test" id="data-later"></include-template>
     </section>
 
     <section title="Values">
@@ -125,7 +125,7 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
             <input type="number" value="  ${ 5 } " />
         </template>
 
-        <include-literal src="#values-template" data='{ "a": 4 }'></include-literal>
+        <include-template src="#values-template" data='{ "a": 4 }'></include-template>
 
         <hr/>
     </section>
@@ -137,11 +137,11 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
             <p>Time since load: ${ parseInt(data.time, 10) }</p>
         </template>
 
-        <include-literal src="#clock-template" data="./test/test-clock.js"></include-literal>
+        <include-template src="#clock-template" data="./test/test-clock.js"></include-template>
 
         <hr/>
 
-        <include-literal src="#clock-template" data="./test/test-clock.js"></include-literal>
+        <include-template src="#clock-template" data="./test/test-clock.js"></include-template>
 
         <hr/>
 
@@ -157,7 +157,7 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
             ${ include(parseInt(data.time, 10) % 2 === 0 ? '#even-template' : '#odd-template', data) }
         </template>
 
-        <include-literal src="#evenodd-template" data="./test/test-clock.js"></include-literal>
+        <include-template src="#evenodd-template" data="./test/test-clock.js"></include-template>
 
         <hr/>
 
@@ -201,9 +201,15 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
             </select>
         </template>
 
-        <include-literal src="#numbers-template" data="./test/test-clock.js"></include-literal>
+        <include-template src="#numbers-template" data="./test/test-clock.js"></include-template>
 
         <hr/>
+    </section>
+
+    <section title="Loops">
+        <include-template src="#item-list" id="test-list">
+            Default
+        </include-template>
     </section>
 
     <script type="module">
@@ -406,5 +412,13 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
 
     const literal = document.getElementById('data-later');
     literal.data = { one: '✔ One', two: '✔ Two', three: '✔ Three' };
+
+    const element = document.getElementById('test-list');
+    element.data = { items: [{ label: 'Thing' }, { label: 'Other' }] };
+
+    Object.assign(element.data, {
+        items: [{ label: 'One' }, { label: 'Two' }]
+    });
+
     </script>
 </body>

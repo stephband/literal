@@ -3,7 +3,6 @@
     "assets/",
     "archive/",
     "deno/",
-    "library/",
     "libs/",
     "modules/",
     "templates/"

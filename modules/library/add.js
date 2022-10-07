@@ -1,4 +1,4 @@
-import { register } from '../modules/library.js';
+import { register } from '../library.js';
 
 /**
 add(number|date|time)

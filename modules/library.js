@@ -10,7 +10,7 @@ routing and value transformations.
 
 import id              from '../../fn/modules/id.js';
 import by              from '../../fn/modules/by.js';
-import capture         from '../../fn/modules/capture.js';
+//import capture         from '../../fn/modules/capture.js';
 import equals          from '../../fn/modules/equals.js';
 import matches         from '../../fn/modules/matches.js';
 import nothing         from '../../fn/modules/nothing.js';
@@ -23,7 +23,9 @@ import { px, em, rem, vw, vh } from '../../dom/modules/parse-length.js';
 import { Observer, notify }    from '../../fn/observer/observer.js';
 import observe         from '../../fn/observer/observe.js';
 import Stream          from '../../fn/modules/stream.js';
-import print           from '../library/print.js';
+
+import paramify        from './library/paramify.js';
+import print           from './library/print.js';
 
 const library = {
     /** assign(a, b, ...)
@@ -45,7 +47,7 @@ const library = {
     /**
     capture()
     **/
-    capture,
+    //capture,
 
     /** ceil(n)
     Alias of `Math.ceil()`.
@@ -120,7 +122,7 @@ const library = {
     nothing
     A frozen array representing no value.
     */
-    //nothing,
+    nothing,
 
     /** notify(path, object)
     Force observer to register a mutation at `path` of `object`.
@@ -177,20 +179,7 @@ const library = {
     parameters object, rejecting undefined properties and flattening out
     array values.
     **/
-    paramify: function(object) {
-        // If this is an object with properties that may be arrays, flatten it
-        // out into entries
-        const params = typeof object === 'object' && typeof object.length !== 'number' ?
-            Object.entries(object).flatMap((entry) => (
-                entry[1] === undefined ? nothing :
-                entry[1] && typeof entry[1] === 'object' && entry[1].map ? entry[1].map((value) => [entry[0], value]) :
-                [entry]
-            )) :
-            object ;
-
-        //console.log('PARAMIFY', object, params);
-        return new URLSearchParams(params);
-    },
+    paramify,
 
     /** slugify(string)
     Returns the slug of `string`.

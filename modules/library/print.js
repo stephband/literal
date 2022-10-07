@@ -1,10 +1,10 @@
 
-/** 
+/**
 Template debugging
 
-Where `window.DEBUG` is truthy at the time Literal is loaded (or where Literal 
+Where `window.DEBUG` is truthy at the time Literal is loaded (or where Literal
 is built into a module with the environment variable `DEBUG` set to `true`),
-the function `print(object)` prints an object or objects to the DOM as a debug 
+the function `print(object)` prints an object or objects to the DOM as a debug
 message.
 
 ```html
@@ -13,7 +13,7 @@ message.
     ${ print(this, data) }
 </template>
 
-<include-literal src="#debug" data="./package.json"></include-literal>
+<include-template src="#debug" data="./package.json"></include-template>
 ```
 
 Renders as:
@@ -22,19 +22,19 @@ Renders as:
     ${ print(this, data) }
 </template>
 
-<include-literal src="#debug" data="./package.json"></include-literal>
+<include-template src="#debug" data="./package.json"></include-template>
 
 <!--
 Messages should be styled with the print stylesheet:
 
 ```css
-@import "http://stephen.band/literal/library/print.css";
+@import "http://stephen.band/literal/modules/library/print.css";
 ```-->
 
 Where `window.DEBUG` is false, `print()` does nothing.
 **/
 
-import { getTarget }     from '../../fn/observer/observer.js';
+import { getTarget }     from '../../../fn/observer/observer.js';
 
 function toHTML(object) {
     // Print different kinds of objects differently
@@ -63,7 +63,7 @@ export default function print(object) {
     }
     else {
         let n = -1;
-        pre.setAttribute('class', 'literal-print');    
+        pre.setAttribute('class', 'literal-print');
         while (arguments[++n] !== undefined) {
             html += toHTML(getTarget(arguments[n]));
         }
