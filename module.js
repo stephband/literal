@@ -103,3 +103,4 @@ export default function Literal(id) {
 
 export { Observer as Data }   from '../fn/observer/observer.js';
 export { default as library } from './modules/library.js';
+export { literals }           from './modules/compile.js';

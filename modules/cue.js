@@ -12,7 +12,13 @@ function render(renderers) {
     if (window.DEBUG) {
         t0 = window.performance.now() / 1000;
         mutations = 0;
-        group('frame', t0.toFixed(3) + 's', '#ff9433');
+        group('update',
+            t0.toFixed(3) + 's – '
+            // renderers
+            + renderers.length + ' renderer' + (renderers.length === 1 ? '' : 's'),
+            //
+            '#ff9433'
+        );
     }
 
     let stats, n = -1;
