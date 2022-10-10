@@ -127,6 +127,7 @@ before being rendered.
 import id       from '../../fn/modules/id.js';
 import overload from '../../fn/modules/overload.js';
 import toType   from '../../fn/modules/to-type.js';
+import { Observer } from '../../fn/observer/observer.js';
 
 // Matches the arguments list in the result of fn.toString()
 const rarrowents = /\s*(\([\w,\s]*\))/;
@@ -163,7 +164,12 @@ const toText = overload(toType, {
         'RegExp':  (object) => '/' + object.source + '/',
         'Stream':  () => '',
         'null':    () => '',
-        'default': (object) => JSON.stringify(object, null, 2)
+
+        // We do want keys of observer to be read so that changes will cause
+        // updates. TODO: it may be better not to getTarget these things
+        // before sending to toText() ? I mean, ${ DATA } wont be static like
+        // this !
+        'default': (object) => JSON.stringify(Observer(object), null, 2)
     }),
 
     'default': JSON.stringify

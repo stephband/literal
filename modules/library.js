@@ -211,15 +211,3 @@ const library = {
 };
 
 export default library;
-
-export function register(name, fn) {
-    if (library[name]) {
-        throw new Error('Literal: function "' + name + '" already registered');
-    }
-
-    library[name] = fn;
-
-    // Allow registered fns to be exported directly from their modules via
-    // `export default register(name, fn);` by returning `fn`.
-    return fn;
-}

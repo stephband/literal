@@ -86,8 +86,8 @@ const compose = overload((value, type) => type, {
     'default':    composeString
 });
 
-export default function ValueRenderer(source, consts, template, path, node, name, message) {
-    Renderer.call(this, source, library, { element: node }, consts, message);
+export default function ValueRenderer(source, consts, template, path, node, name, message, parameters) {
+    Renderer.call(this, source, library, assign({}, parameters, { element: node }), consts, message);
 
     this.template = template;
     this.path     = path;

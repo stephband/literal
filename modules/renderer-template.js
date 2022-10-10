@@ -1,6 +1,6 @@
 
 /**
-TemplateRenderer(template)
+TemplateRenderer(template, parameters)
 
 Import the `TemplateRenderer` constructor from the main module:
 
@@ -96,7 +96,7 @@ function cloneRenderer(renderer) {
     // `this` is the parent renderer of the new renderer
     const node = getDescendant(renderer.path, this.content);
 
-    // Where node is a text node we must find its context element
+/*    // Where node is a text node we must find its context element
     const element = isTextNode(node) ?
         // If it's a direct child of template, use the template renderer's
         // element as context element
@@ -107,22 +107,22 @@ function cloneRenderer(renderer) {
             node.parentNode :
 
         // node itself is the context element for attributes
-        node ;
+        node ;*/
 
-        //source, consts, template, path, node, name, element
-    const clone = new renderer.constructor(renderer.literal, '', renderer.template, renderer.path, node, renderer.name, '', element);
+    //source, consts, template, path, node, name, message, parameters
+    const clone = new renderer.constructor(renderer.literal, '', renderer.template, renderer.path, node, renderer.name, '', renderer.parameters);
 
     // Stop clone when template renderer stops
     this.done(clone);
     return clone;
 }
 
-export default function TemplateRenderer(template, element) {
+export default function TemplateRenderer(template, parameters) {
     // TemplateRenderer may be called with a string id or a template element
     const id = identify(template) ;
 
-    this.template = template;
-    this.element  = element;
+    this.template   = template;
+    this.parameters = parameters;
 
     // If the template is already compiled and cached, clone it
     const renderer = cache[id];
@@ -169,7 +169,8 @@ export default function TemplateRenderer(template, element) {
     const consts = keys(this.template.dataset).join(', ');
     // renderers, node, path, consts, element
     // Use a space after the id in path
-    this.contents = compileNode([], this.content, '#' + this.template.id, '', consts, element);
+    // compileNode(renderers, node, template, path, parameters, consts)
+    this.contents = compileNode([], this.content, '#' + this.template.id, '', parameters, consts);
 
     // Stop child when template renderer stops
     this.contents.forEach((renderer) => this.done(renderer));

@@ -10,20 +10,20 @@ import getTemplate      from '../get-template.js';
 import requestTemplate  from '../request-template.js';
 import requestData      from '../request-data.js';
 
-function push(template, data, element) {
-    const renderer = new TemplateRenderer(template, element);
+function push(template, data, parameters) {
+    const renderer = new TemplateRenderer(template, parameters);
     renderer.push(data);
     return renderer;
 }
 
-function pipe(template, data, element) {
-    const renderer = new TemplateRenderer(template, element);
+function pipe(template, data, parameters) {
+    const renderer = new TemplateRenderer(template, parameters);
     data.each((data) => renderer.push(data));
     renderer.done(data);
     return renderer;
 }
 
-export default function include(src, data, element) {
+export default function include(src, data, parameters) {
     // Operate on target to be sure we are not registering gets in
     // parent renderer
     const object = getTarget(data);
@@ -35,14 +35,14 @@ export default function include(src, data, element) {
             null;
 
         if (dataRequest) {
-            return dataRequest.then((data) => push(template, data, element));
+            return dataRequest.then((data) => push(template, data, parameters));
         }
 
         if (object && object.each) {
-            return pipe(template, object, element);
+            return pipe(template, object, parameters);
         }
 
-        return push(template, object || {}, element);
+        return push(template, object || {}, parameters);
     }
 
     const templateRequest = requestTemplate(src);
@@ -54,13 +54,13 @@ export default function include(src, data, element) {
 
     if (object && object.each) {
         return templateRequest.then((template) => {
-            return pipe(template, data, element);
+            return pipe(template, data, parameters);
         });
     }
 
     return Promise
     .all([templateRequest, dataRequest])
-    .then(([template, data]) => push(template, data, element));
+    .then(([template, data]) => push(template, data, parameters));
 }
 
 

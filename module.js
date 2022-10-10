@@ -97,8 +97,8 @@ Contents
 
 import TemplateRenderer from './modules/renderer-template.js';
 
-export default function Literal(id) {
-    return new TemplateRenderer(id);
+export default function Literal(template, parameters) {
+    return new TemplateRenderer(template, parameters);
 }
 
 export { Observer as Data }   from '../fn/observer/observer.js';

@@ -17,7 +17,7 @@ import truncate          from './truncate.js';
 compileAttributes(renderers, attribute, template, path, consts, debug)
 **/
 
-const compileBoolean = (attribute, template, path, source, consts, debug) =>
+const compileBoolean = (attribute, template, path, source, parameters, consts, debug) =>
     new BooleanRenderer(source, consts, template, path, attribute.ownerElement, attribute.localName, debug);
 
 const compileAttributeByName = overload(get('localName'), {
@@ -25,33 +25,33 @@ const compileAttributeByName = overload(get('localName'), {
     'hidden':   compileBoolean,
     'required': compileBoolean,
 
-    'checked': (attribute, template, path, source, consts, debug) =>
+    'checked': (attribute, template, path, source, parameters, consts, debug) =>
         new CheckedRenderer(source, consts, template, path, attribute.ownerElement, null, debug),
 
-    'class': (attribute, template, path, source, consts, debug) =>
+    'class': (attribute, template, path, source, parameters, consts, debug) =>
         new TokensRenderer(source, consts, template, path, attribute.ownerElement, 'class', debug),
 
-    'datetime': function compileDatetime(attribute, template, path, source, consts, debug) {
+    'datetime': function compileDatetime(attribute, template, path, source, parameters, consts, debug) {
         if (window.DEBUG) { console.log('Todo: compile datetime attribute'); }
     },
 
     // Special workaround attribute used in cases where ${} cannot be added
     // directly to the HTML content, such as in <tbody> or <tr>
-    'inner-content': (attribute, template, path, source, consts, debug) => {
+    'inner-content': (attribute, template, path, source, parameters, consts, debug) => {
         const node = attribute.ownerElement;
         node.removeAttribute(attribute.localName);
         // source, consts, template, path, node, name, element
         return new DOMRenderer(decode(source), consts, template, path, node, 'innerHTML', debug, node);
     },
 
-    'value': (attribute, template, path, source, consts, debug) =>
+    'value': (attribute, template, path, source, parameters, consts, debug) =>
         new ValueRenderer(source, consts, template, path, attribute.ownerElement, null, debug),
 
-    'default': (attribute, template, path, source, consts, debug) =>
+    'default': (attribute, template, path, source, parameters, consts, debug) =>
         new AttributeRenderer(source, consts, template, path, attribute.ownerElement, attribute.localName, debug)
 });
 
-export default function compileAttribute(renderers, attribute, template, path, consts) {
+export default function compileAttribute(renderers, attribute, template, path, parameters, consts) {
     const source = attribute.value;
     if (!isLiteral(source)) { return; }
 
@@ -63,5 +63,5 @@ export default function compileAttribute(renderers, attribute, template, path, c
         + attribute.localName + '="' + truncate(32, source)
         + '">';
 
-    renderers.push(compileAttributeByName(attribute, template, path, source, consts, debug));
+    renderers.push(compileAttributeByName(attribute, template, path, source, parameters, consts, debug));
 }

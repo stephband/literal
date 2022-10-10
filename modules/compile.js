@@ -41,7 +41,7 @@ export default function compile(source, scope, params, consts, message = '') {
             const t1 = window.performance.now();
             compile.duration += (t1 - t0);
             compile.count    += 1;
-            log('compile', (t1 - t0).toPrecision(3) + 'ms – ' + message/* truncate(32, source)*/, undefined, undefined, '#DDB523');
+            log('compile', (t1 - t0).toPrecision(3) + 'ms – ' + message, undefined, undefined, '#DDB523');
 
             return literals[key];
         }

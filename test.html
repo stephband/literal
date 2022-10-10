@@ -4,7 +4,7 @@
     <meta name="description" content="Documentation for Literal. Literal puts JS into your HTML. Literal defines a custom include element that parses and renders templates written as JS Literals, in a small library under 15kB minified and gzipped." />
     <meta name="viewport" content="width=device-width" />
 
-    <link rel="stylesheet" href="./element.css" />
+    <link rel="stylesheet" href="./include-template.css" />
 
     <script>
         window.DEBUG = true;
@@ -216,35 +216,41 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
     import test        from "../fn/modules/test.js";
     import Renderer     from './modules/renderer.js';
     import { Observer } from '../fn/observer/observer.js';
-
-    const keys = Object.keys;
 /*
-    test("Renderer()", function(equals, done) {
-        const expected = [
-            'Hail ',
-            'Hail Bob',
-            'Hail Mike',
-            'Hail Mary',
-            'Hail Ceasar'
-        ];
+    const keys = Object.keys;
 
+    test("Renderer()", [
+        'Hail ',
+        ['x', 'b'],
+        'Hail Bob',
+        ['x', 'b'],
+        'Hail Mike',
+        ['x', 'a'],
+        'Hail Mary',
+        ['x', 'a'],
+        'Hail Ceasar',
+        ['x', 'a'],
+        'done',
+        [],
+        'Error'
+    ], function(expects, done) {
         // source, scope, parameters, consts, errorstring, fn
-        const renderer = new Renderer('Hail ${ data.x ? data.a : data.b }', {}, {}, '', null, (string) =>
-            equals(expected.shift(), string)
+        const renderer = new Renderer('Hail ${ data.x ? data.a : data.b }', {}, {}, '', 'TEST', (string) =>
+            expects(string)
         );
 
         const data = Observer({});
 
         // Hail
         renderer
-        .done(() => equals(0, expected.length))
+        .done(() => expects('done'))
         .push(data);
 
         Promise
         .resolve()
         .then(() => {
             // Test for keys being observed
-            equals(['x', 'b'], keys(renderer.observers));
+            expects(keys(renderer.observers));
 
             // Hail Bob
             data.b = 'Does nothing becuase immediately followed by ...';
@@ -252,7 +258,7 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
         })
         .then(() => {
             // Test for keys being observed
-            equals(['x', 'b'], keys(renderer.observers));
+            expects(keys(renderer.observers));
 
             // Hail Mike
             data.a = 'Mike';
@@ -260,38 +266,38 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
         })
         .then(() => {
             // Test for keys being observed
-            equals(['x', 'a'], keys(renderer.observers));
+            expects(keys(renderer.observers));
 
             // Hail Mary
             data.a = 'Mary';
         })
         .then(() => {
             // Test for keys being observed
-            equals(['x', 'a'], keys(renderer.observers));
+            expects(keys(renderer.observers));
 
             // Hail Ceasar
             renderer.push({ x: true, a: 'Ceasar' });
         })
         .then(() => {
             // Test for keys being observed
-            equals(['x', 'a'], keys(renderer.observers));
+            expects(keys(renderer.observers));
 
             // Stop
             renderer.stop();
         })
         .then(() => {
             // Test for keys being observed
-            equals([], keys(renderer.observers));
+            expects(keys(renderer.observers));
 
             // Causes error
             renderer.push({ x: false });
         })
         .catch((e) => {
             // Error received
-            equals('Error', e.constructor.name);
+            expects(e.constructor.name);
         })
         .finally(done);
-    }, 13);
+    });
 
 /*
     test("Renderer() Allow recueing from renderer.push() inside template", function(equals, done) {
@@ -315,7 +321,7 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
         .resolve()
         .then(() => {
             // Test for keys being observed
-            equals(['x', 'a'], keys(renderer.observers));
+            expects(keys(renderer.observers));
 
             renderer.stop();
         })
@@ -344,21 +350,21 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
         .resolve()
         .then(() => {
             // Test for keys being observed
-            equals(['x', 'a'], keys(renderer.observers));
+            expects(keys(renderer.observers));
             renderer.stop();
         })
         .finally(done);
     }, 4);
-
-
+*/
+/*
 import create           from '../dom/modules/create.js';
 import Stream           from '../fn/modules/stream.js';
 import IntervalStream   from '../fn/modules/stream/interval-stream.js';
 import TemplateRenderer from './modules/renderer-template.js';
 
-    test("TemplateRenderer() primitive properties", function(equals, done) {
+    test("TemplateRenderer() primitive properties", [], function(equals, done) {
         const template = document.getElementById('attributes');
-        const renderer = new TemplateRenderer(template, document.body);
+        const renderer = new TemplateRenderer(template, { element: document.body });
         const data = {
             attribute: '✔ Attribute is rendered',
             class:     '✔ Class is rendered',
@@ -373,38 +379,38 @@ import TemplateRenderer from './modules/renderer-template.js';
         renderer.push(data);
         document.body.append(renderer.first);
         done();
-    }, 0);
+    });
 
-    test("TemplateRenderer() include", function(equals, done) {
+    test("TemplateRenderer() include", [], function(equals, done) {
         const template = document.getElementById('includer');
-        const renderer = new TemplateRenderer(template, document.body);
+        const renderer = new TemplateRenderer(template, { element: document.body });
         const data = {};
         renderer.push(data);
         document.body.append(renderer.first);
         done();
     });
 
-    test("TemplateRenderer() looped include", function(equals, done) {
+    test("TemplateRenderer() looped include", [], function(equals, done) {
         const template = document.getElementById('item-list');
-        const renderer = new TemplateRenderer(template, document.body);
+        const renderer = new TemplateRenderer(template, { element: document.body });
         const data = { items: [{ label: 'one' }, { label: 'two' }, { label: 'three' }] };
         renderer.push(data);
         document.body.append(renderer.first);
         done();
     });
 
-    test("TemplateRenderer() stream property", function(equals, done) {
+    test("TemplateRenderer() stream property", [],  function(equals, done) {
         const template = document.getElementById('stream');
-        const renderer = new TemplateRenderer(template, document.body);
+        const renderer = new TemplateRenderer(template, { element: document.body });
         const data = { stream: (new IntervalStream(0.4)).scan((value) => !value) };
         renderer.push(data);
         document.body.append(renderer.first);
         done();
-    }, 0);
-*/
+    });
 
+*/
     import './module.js';
-    import './element.js';
+    import './include-template.js';
 
     const literal = document.getElementById('data-later');
     literal.data = { one: '✔ One', two: '✔ Two', three: '✔ Three' };

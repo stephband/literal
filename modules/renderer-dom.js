@@ -98,14 +98,21 @@ function setContents(first, last, contents, state) {
     return count;
 }
 
-export default function DOMRenderer(source, consts, template, path, node, name, message, element) {
-    Renderer.call(this, source, library, {
-        element: element,
+export default function DOMRenderer(source, consts, template, path, node, name, message, parameters) {
+    const params = assign({}, parameters, {
+        // If path is empty node is a direct child of a template, but if not
+        // element should be set to this text node's parent
+        element: !/\./.test(path) ?
+            parameters.element :
+            node.parentNode,
+
         include: (url, data) => (data ?
-            include(url, data, element) :
-            (data) => include(url, data, element)
+            include(url, data, params) :
+            (data) => include(url, data, params)
         )
-    }, consts, message);
+    });
+
+    Renderer.call(this, source, library, params, consts, message);
 
     this.template = template;
     this.path     = path;

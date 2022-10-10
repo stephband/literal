@@ -1,12 +1,11 @@
 
 import { Observer } from '../../fn/observer/observer.js';
 
-const clock = Observer({
-    time: 0
-});
+const clock = { time: 0 };
+const data  = Observer(clock);
 
 const interval = setInterval(function() {
-    clock.time = window.performance.now() / 1000;
+    data.time = Math.round(window.performance.now() / 1000);
     if (clock.time > 10) {
         clearInterval(interval);
     }
