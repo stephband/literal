@@ -11,3 +11,4 @@ modules:
 	rm -rf ./build
 	deno run --allow-read --allow-env --allow-net --allow-write --allow-run ../fn/deno/make-modules.js build module.js module.css
 	deno run --allow-read --allow-env --allow-net --allow-write --allow-run ../fn/deno/make-modules.js build include-template.js include-template.css
+	deno run --allow-read --allow-env --allow-net --allow-write --allow-run ../fn/deno/make-modules.js build define-element.js

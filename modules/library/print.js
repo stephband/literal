@@ -34,7 +34,8 @@ Messages should be styled with the print stylesheet:
 Where `window.DEBUG` is false, `print()` does nothing.
 **/
 
-import { getTarget }     from '../../../fn/observer/observer.js';
+import noop          from '../../../fn/modules/noop.js';
+import { getTarget } from '../../../fn/observer/observer.js';
 
 function toHTML(object) {
     // Print different kinds of objects differently
@@ -51,7 +52,7 @@ function toHTML(object) {
     }
 }
 
-export default function print(object) {
+export default window.DEBUG ? function print(object) {
     // Print renderer
     const pre = document.createElement('pre');
     let html = '';
@@ -71,4 +72,4 @@ export default function print(object) {
 
     pre.innerHTML = html;
     return pre;
-}
+} : noop ;

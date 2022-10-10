@@ -25,7 +25,6 @@ import observe         from '../../fn/observer/observe.js';
 import Stream          from '../../fn/modules/stream.js';
 
 import paramify        from './library/paramify.js';
-import print           from './library/print.js';
 
 const library = {
     /** assign(a, b, ...)
@@ -108,8 +107,9 @@ const library = {
     last,
 
     /** matches(selector, object)
-    Returns true where all the properties of `selector` are strictly equal to the
-    same properties of `object`.
+    For filtering and pattern matching. Returns true where all the properties
+    of `selector` object are strictly equal to the same properties of `object`.
+    Note that `object` may have more properties than `selector`.
     **/
     matches,
 
@@ -120,27 +120,27 @@ const library = {
 
     /*
     nothing
-    A frozen array representing no value.
+    A frozen array/stream-like object representing no value.
     */
     nothing,
 
     /** notify(path, object)
     Force observer to register a mutation at `path` of `object`.
     **/
-    notify,
+    //notify,
 
     /** observe(path, object)
-    Returns an observable of mutations to `path` in `object`. Consume mutations
-    with an observable's `.each()` method.
+    Returns a stream of mutations to `path` in `object`. Consume mutations
+    with the stream's `.each()` method.
 
     ```js
-    const observable = observe('title', data).each((title) => console.log(title));
+    ${ observe('title', data).map(slugify) }
     ```
 
-    Observables may be stopped with the method `.stop()`:
+    Streams may be stopped with the method `.stop()`:
 
     ```js
-    observable.stop();
+    stream.stop();
     ```
 
     Renderers (which are exposed as `this` inside templates), have a `.done()`
@@ -153,16 +153,14 @@ const library = {
     **/
     observe,
 
-    /* Observer(object)
-    Returns the Observer proxy of `object`. Use this proxy to make changes to
-    an object that may be observed using `observe(path, object)` (above).
+    /* Data(object)
+    Returns the observer data proxy of `object`. Use this proxy to set
+    properties in a way that will be observed by `observe(path, object)`.
     */
-    Observer,
+    Data: Observer,
 
     /* overload(fn, object) */
     overload,
-
-    print: window.DEBUG ? print : noop,
 
     /** rect(node)
     **/

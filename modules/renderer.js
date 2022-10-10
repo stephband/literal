@@ -4,10 +4,10 @@ import { remove } from '../../fn/modules/remove.js';
 import Stream, { isStream } from '../../fn/modules/stream/stream.js';
 import observe    from '../../fn/observer/observe.js';
 import { Observer, getTarget } from '../../fn/observer/observer.js';
+import Gets       from '../../fn/observer/gets.js';
 
-import compile from './compile.js';
-import toText  from './to-text.js';
-import Gets    from './gets.js';
+import compile    from './compile.js';
+import toText     from './to-text.js';
 import { cue, uncue } from './cue.js';
 
 const assign = Object.assign;

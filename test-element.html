@@ -20,7 +20,7 @@
         </pre>
     </template>
 
-    <template is="element-definition" tag="defined-element" attribute="attribute" property="property" number="number" string="string" boolean="boolean" tokens="tokens" data="arse">
+    <template is="define-element" tag="defined-element" attribute="attribute" property="property" number="number" string="string" boolean="boolean" tokens="tokens" data="arse">
         <link rel="stylesheet" href="./test-element.css" />
         <pre>${ data }</pre>
         <slot>Default content</slot>
@@ -87,6 +87,6 @@ ${ element.property = 3, '' }
         }
     });
 
-    import './element-definition.js';
+    import './define-element.js';
     </script>
 </body>

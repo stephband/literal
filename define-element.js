@@ -24,7 +24,7 @@ function assignProperty(properties, attribute) {
     return properties;
 }
 
-export default element('<template is="element-definition">', {
+export default element('<template is="define-element">', {
     connect: function() {
         const state = State(this);
         const properties = Array.from(this.attributes)

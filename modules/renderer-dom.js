@@ -12,7 +12,7 @@ import toText           from './to-text.js';
 import Renderer         from './renderer.js';
 import removeNodes      from './remove-nodes.js';
 import TemplateRenderer from './renderer-template.js';
-import truncate         from './truncate.js';
+import print            from './library/print.js';
 
 const assign = Object.assign;
 
@@ -109,7 +109,9 @@ export default function DOMRenderer(source, consts, template, path, node, name, 
         include: (url, data) => (data ?
             include(url, data, params) :
             (data) => include(url, data, params)
-        )
+        ),
+
+        print: print
     });
 
     Renderer.call(this, source, library, params, consts, message);
