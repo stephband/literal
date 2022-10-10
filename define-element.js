@@ -1,6 +1,14 @@
 /**
-<template is="element-template">
+<template is="define-element">
 Defines a custom element.
+
+```
+<template is="define-element" tag="cool-element" awesome="boolean">
+    ...
+</template>
+
+<cool-element awesome></cool-element>
+```
 **/
 
 import element, { State } from '../dom/modules/element.js';
@@ -16,7 +24,7 @@ const ignore = {
 
 function isDefineableAttribute(attribute) {
     return !ignore[attribute.localName];
-    //console.error('<element-template> Cannot define property ' + attribute.localName + '="' + attribute.value + '"');
+    //console.error('<template is="define-element"> Not permitted to define property ' + attribute.localName + '="' + attribute.value + '"');
 }
 
 function assignProperty(properties, attribute) {
@@ -27,6 +35,11 @@ function assignProperty(properties, attribute) {
 export default element('<template is="define-element">', {
     connect: function() {
         const state = State(this);
+
+        if (!state.tag) {
+            throw new SyntaxError('<template is="define-element"> must have an attribute tag="name-of-element".');
+        }
+
         const properties = Array.from(this.attributes)
             .filter(isDefineableAttribute)
             .reduce(assignProperty, {}) ;
@@ -38,7 +51,6 @@ export default element('<template is="define-element">', {
         /** tag=""
         Defines the tag name of the custom element.
         **/
-
         attribute: function(value) {
             const state = State(this);
             state.tag = value;
