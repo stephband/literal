@@ -95,12 +95,8 @@ Contents
 - <a href="#template-functions">Literal template functions</a>
 */
 
-import TemplateRenderer from './modules/renderer-template.js';
+export { default as Renderer } from './modules/renderer-template.js';
+export { Observer as Data }    from '../fn/observer/observer.js';
+export { default as library }  from './modules/library.js';
+export { literals }            from './modules/compile.js';
 
-export default function Literal(template, parameters) {
-    return new TemplateRenderer(template, parameters);
-}
-
-export { Observer as Data }   from '../fn/observer/observer.js';
-export { default as library } from './modules/library.js';
-export { literals }           from './modules/compile.js';
