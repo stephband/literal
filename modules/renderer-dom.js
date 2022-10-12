@@ -107,8 +107,9 @@ export default function DOMRenderer(source, consts, template, path, node, name, 
             node.parentNode,
 
         include: (url, data) => (data ?
-            include(url, data, params) :
-            (data) => include(url, data, params)
+            // Do we must update elerment here?
+            include(url, data, parameters) :
+            (data) => include(url, data, parameters)
         ),
 
         print: print
