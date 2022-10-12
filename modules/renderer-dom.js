@@ -99,7 +99,7 @@ function setContents(first, last, contents, state) {
 }
 
 export default function DOMRenderer(source, consts, template, path, node, name, message, parameters) {
-    const params = assign({}, parameters, {
+    Renderer.call(this, source, library, assign({}, parameters, {
         // If path is empty node is a direct child of a template, but if not
         // element should be set to this text node's parent
         element: !/\./.test(path) ?
@@ -107,15 +107,13 @@ export default function DOMRenderer(source, consts, template, path, node, name, 
             node.parentNode,
 
         include: (url, data) => (data ?
-            // Do we must update elerment here?
+            // Do we must update element here? No, right?
             include(url, data, parameters) :
             (data) => include(url, data, parameters)
         ),
 
         print: print
-    });
-
-    Renderer.call(this, source, library, params, consts, message);
+    }), consts, message);
 
     this.template = template;
     this.path     = path;
