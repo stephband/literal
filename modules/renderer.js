@@ -47,10 +47,10 @@ function stopStreams(streams) {
     streams.length = 0;
 }
 
-function toParameters(parameters, value) {
-    parameters[parameters.length] = value;
-    parameters.length += 1;
-    return parameters;
+function toParams(params, value) {
+    params[params.length] = value;
+    params.length += 1;
+    return params;
 }
 
 // Values
@@ -168,20 +168,22 @@ export default function Renderer(source, scope, parameters, consts, message, fn)
         // source is assumed to be the compiled function
         source ;
 
+    this.parameters = parameters;
+
     // Parameters have at least length 2 because (data, DATA)
-    this.parameters = parameters ?
-        values(parameters).reduce(toParameters, { length: 2 }) :
+    this.params = parameters ?
+        values(parameters).reduce(toParams, { length: 2 }) :
         { length: 2 } ;
 
     this.observers = {};
     this.status    = 'idle';
 
-    this.cue = () => {
+    this.cue = (value) => {
         stopObservers(this.observers);
         cue(this);
     };
 
-    this.consume   = fn;
+    this.consume = fn;
 
     ++Renderer.count;
 }
@@ -203,13 +205,17 @@ assign(Renderer.prototype, {
         this.cue();
     },
 
-    update: function() {
-        const data       = this.data;
-        const parameters = this.parameters;
-        const observers  = this.observers;
+    getParameters: function() {
+        const parameters = this.params;
+        parameters[0] = this.data;
+        parameters[1] = getTarget(this.data);
+        return parameters;
+    },
 
-        parameters[0] = data;
-        parameters[1] = getTarget(data);
+    update: function() {
+        const data      = this.data;
+        const observers = this.observers;
+
         stopPromises(this.promises);
         stopStreams(this.streams);
 
@@ -223,7 +229,7 @@ assign(Renderer.prototype, {
         // literal the template. Todo: note that we are potentially leaving
         // observers live here, if any data is set during render we may trigger
         // a further render... not what we want. Do we need to pause observers?
-        const stats = this.literal.apply(this, parameters);
+        const stats = this.literal.apply(this, this.getParameters());
 
         // We may only collect synchronous gets – other templates may use
         // this data object and we don't want to include their gets by stopping

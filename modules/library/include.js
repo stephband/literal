@@ -9,7 +9,7 @@ import TemplateRenderer from '../renderer-template.js';
 import getTemplate      from '../get-template.js';
 import requestTemplate  from '../request-template.js';
 import requestData      from '../request-data.js';
-
+var n = 0;
 function push(template, data, parameters) {
     const renderer = new TemplateRenderer(template, parameters);
     renderer.push(data);

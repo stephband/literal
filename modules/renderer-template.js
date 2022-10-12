@@ -93,21 +93,8 @@ function prepareContent(content) {
 }
 
 function cloneRenderer(renderer) {
-    // `this` is the parent renderer of the new renderer
+    // `this` is the parent templateRenderer of the new renderer
     const node = getDescendant(renderer.path, this.content);
-
-/*    // Where node is a text node we must find its context element
-    const element = isTextNode(node) ?
-        // If it's a direct child of template, use the template renderer's
-        // element as context element
-        !/\./.test(renderer.path) ?
-            this.element :
-
-            // Otherwise it is already inside its context element
-            node.parentNode :
-
-        // node itself is the context element for attributes
-        node ;*/
 
     //source, consts, template, path, node, name, message, parameters
     const clone = new renderer.constructor(renderer.literal, '', renderer.template, renderer.path, node, renderer.name, '', renderer.parameters);

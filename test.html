@@ -72,7 +72,7 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
 </head>
 
 <body>
-    <section title="Loading">
+    <!--section title="Loading">
         <h3 class="text-03">Loading <span class="test-count">(4 tests)</span></h3>
         <include-template src="#test" id="data-never">
             <pre>✔ Default content</pre>
@@ -210,7 +210,7 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
         <include-template src="#item-list" id="test-list">
             Default
         </include-template>
-    </section>
+    </section-->
 
     <script type="module">
     import test        from "../fn/modules/test.js";
@@ -411,7 +411,7 @@ import TemplateRenderer from './modules/renderer-template.js';
 */
     import './module.js';
     import './include-template.js';
-
+/*
     const literal = document.getElementById('data-later');
     literal.data = { one: '✔ One', two: '✔ Two', three: '✔ Three' };
 
@@ -421,6 +421,53 @@ import TemplateRenderer from './modules/renderer-template.js';
     Object.assign(element.data, {
         items: [{ label: 'One' }, { label: 'Two' }]
     });
-
+*/
     </script>
+
+
+
+
+
+
+
+
+
+
+
+    <template id="track-li">
+        <li>
+            <a class="doctext-09" href="${ data.name }" download="${ data.name }" title="${ data.name }">${ data.name }</small></a>
+        </li>
+    </template>
+
+    <template id="tracks-list">
+        <ul class="tracks-list list">${ data.map(include('#track-li')) }</ul>
+    </template>
+
+    <template id="tracks">
+        ${ data.reduce((lists, file) => {
+            const last      = lists[lists.length - 1];
+            const extension = (/\.(\w+)$/.exec(file.name) || [])[1];
+
+            file.extension = extension;
+            file.date      = file.name.slice(0, 10);
+
+            if (!last || last[last.length - 1].date !== file.date) {
+                lists.push([file]);
+            }
+            else {
+                last.push(file);
+            }
+
+            return lists;
+        }, [])
+        .reverse()
+        .map(include('#tracks-list')) }
+    </template>
+
+    <section class="block @0-x1 @0-3x @1-6x @2-x2 @0-x-stretch">
+        <include-template src="#tracks" data="./test/tracks.json"></include-template>
+    </section>
+
+    <script type="module"></script>
 </body>

@@ -6,13 +6,14 @@ processing the literal content is more DOM content this renderer will insert
 that DOM after the text node.
 **/
 
-import include          from './library/include.js';
-import library          from './library.js';
-import toText           from './to-text.js';
-import Renderer         from './renderer.js';
-import removeNodes      from './remove-nodes.js';
-import TemplateRenderer from './renderer-template.js';
-import print            from './library/print.js';
+import include           from './library/include.js';
+import library           from './library.js';
+import toText            from './to-text.js';
+import Renderer          from './renderer.js';
+import removeNodes       from './remove-nodes.js';
+import TemplateRenderer  from './renderer-template.js';
+import { pathSeparator } from './constants.js';
+import print             from './library/print.js';
 
 const assign = Object.assign;
 
@@ -102,7 +103,7 @@ export default function DOMRenderer(source, consts, template, path, node, name, 
     Renderer.call(this, source, library, assign({}, parameters, {
         // If path is empty node is a direct child of a template, but if not
         // element should be set to this text node's parent
-        element: !/\./.test(path) ?
+        element: !path.includes(pathSeparator) ?
             parameters.element :
             node.parentNode,
 
