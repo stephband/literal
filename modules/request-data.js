@@ -41,28 +41,30 @@ requestData('./path/to/module#default("parameter")');
 ```
 **/
 
-import overload from '../../fn/modules/overload.js';
-import cache from '../../fn/modules/cache.js';
+import overload       from '../../fn/modules/overload.js';
+import cache          from '../../fn/modules/cache.js';
 import { requestGet } from '../../dom/modules/request.js';
+import { rewriteURL } from './urls.js';
 
 const rextension = /\.([\w-]+)(?:#|\?|$)/;
-const rfragment  = /#(\w+)(?:\(([^\)]*)\))?$/;
-const defaultexp = ['', 'default', ''];
-const empty = [];
+const empty      = [];
 
-export default overload((url) => (rextension.exec(url) || empty)[1], {
-    js: (url) => {
-        // Rewrite relative import URLs to be absolute, taking the page as their
-        // relative root
-        const absolute = url[0] === '.' ?
-            new URL(url, window.location) :
-            url ;
+const requestData = overload((url) => (rextension.exec(url.pathname) || empty)[1], {
+    js: cache((url) => {
+        // Get named import from hash
+        const name = url.hash.slice(1) || 'default';
 
-        // Otherwise use the export as data directly
-        return import(absolute).then((data) => data.default);
-    },
+        // Return promise of imported named module
+        return import(url).then((data) => data[name]);
+    }),
 
-    // Cache JSON requests in memory so that all requests to a given URL result
-    // in the same object.
-    default: cache((url) => requestGet(url))
+    default: cache(requestGet)
 });
+
+export default function(path) {
+    // Get rewritten URL
+    const url = rewriteURL(path);
+
+    // Return promise of data
+    return requestData(url);
+}

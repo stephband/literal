@@ -73,7 +73,13 @@ export default {
         datas.each((value) => {
             if (typeof value === 'string') {
                 if (rpath.test(value)) {
-                    requestData(value)
+                    // Wait a tick before requesting data. On initial page load
+                    // we have not yet had time to populate rewrite URLs because
+                    // custom element setup runs synchronously. Give us a tick
+                    // so we can do that.
+                    Promise
+                    .resolve(value)
+                    .then(requestData)
                     .then((data) => dataoutput.push(data))
                     .catch((e) => onerror(e, marker, privates));
 

@@ -169,6 +169,7 @@ export default function Renderer(source, scope, parameters, consts, message, fn)
         source ;
 
     this.parameters = parameters;
+    this.message    = message;
 
     // Parameters have at least length 2 because (data, DATA)
     this.params = parameters ?
@@ -229,7 +230,20 @@ assign(Renderer.prototype, {
         // literal the template. Todo: note that we are potentially leaving
         // observers live here, if any data is set during render we may trigger
         // a further render... not what we want. Do we need to pause observers?
-        const stats = this.literal.apply(this, this.getParameters());
+
+        let stats;
+        if (window.DEBUG) {
+            try {
+                stats = this.literal.apply(this, this.getParameters());
+            }
+            catch(e) {
+                e.message += " in " + this.template + " " + this.message;
+                throw e;
+            }
+        }
+        else {
+            stats = this.literal.apply(this, this.getParameters());
+        }
 
         // We may only collect synchronous gets – other templates may use
         // this data object and we don't want to include their gets by stopping

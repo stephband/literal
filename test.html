@@ -409,8 +409,13 @@ import TemplateRenderer from './modules/renderer-template.js';
     });
 
 */
-    import './module.js';
+    import { urls } from './module.js';
     import './include-template.js';
+
+    urls({
+        './my-arse-is-on-fire': './test/tracks.json'
+    });
+
 /*
     const literal = document.getElementById('data-later');
     literal.data = { one: '✔ One', two: '✔ Two', three: '✔ Three' };
@@ -466,7 +471,7 @@ import TemplateRenderer from './modules/renderer-template.js';
     </template>
 
     <section class="block @0-x1 @0-3x @1-6x @2-x2 @0-x-stretch">
-        <include-template src="#tracks" data="./test/tracks.json"></include-template>
+        <include-template src="#tracks" data="./my-arse-is-on-fire"></include-template>
     </section>
 
     <script type="module"></script>

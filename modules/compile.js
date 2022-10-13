@@ -1,8 +1,7 @@
 
-import compileFn from '../../fn/modules/compile.js';
-import { indent, line } from './constants.js';
-import { log } from './log.js';
-import truncate from './truncate.js';
+import compileFn  from '../../fn/modules/compile.js';
+import { indent } from './constants.js';
+import { log }    from './log.js';
 
 
 /**
@@ -11,7 +10,7 @@ Compiles a literal template to a function.
 **/
 
 // Store render functions against their source
-export const literals = {};
+export const compiled = {};
 
 // Last two params, info and element, are purely for debug messages
 export default function compile(source, scope, params, consts, message = '') {
@@ -23,34 +22,26 @@ export default function compile(source, scope, params, consts, message = '') {
     // Todo: factor in keys from scope to make this key truly unique to all
     // same instances of compiled function
     const key = code;
-    if (literals[key]) { return literals[key]; }
+    if (compiled[key]) { return compiled[key]; }
 
     if (window.DEBUG) {
         try {
             const t0 = window.performance.now();
-
-            literals[key] = compileFn(scope, params,
-                'try {' + code + '}' + line +
-                'catch(e) {' + line +
-                // Append info to error message
-                indent + 'e.message += " in " + this.template + " ' + message.replace(/"/g, '\\"') + '";' + line +
-                indent + 'throw e;' + line +
-                '}' + line
-            );
+            compiled[key] = compileFn(scope, params, code);
 
             const t1 = window.performance.now();
             compile.duration += (t1 - t0);
             compile.count    += 1;
             log('compile', (t1 - t0).toPrecision(3) + 'ms – ' + message, undefined, undefined, '#DDB523');
 
-            return literals[key];
+            return compiled[key];
         }
         catch(e) {
-            // Append info to error message
+            // Append debug message to error message
             e.message += ' ' + message;
             throw e;
         }
     }
 
-    return literals[key] = compileFn(scope, params, code);
+    return compiled[key] = compileFn(scope, params, code);
 }
