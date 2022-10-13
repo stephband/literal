@@ -10,51 +10,51 @@
         window.DEBUG = true;
     </script>
 
-    <template id="test-element-template">
-        <link rel="stylesheet" href="./test-element.css" />
+    <template id="defined-element-template">
+        <link rel="stylesheet" href="./test/defined-element.css" />
         <pre>${ data }</pre>
         <slot>Default content</slot>
         <pre>
-            attribute: ${ state.attribute }
-            boolean:   ${ state.boolean }
+            attribute: ${ prop.attribute }
+            boolean:   ${ prop.boolean }
         </pre>
     </template>
 
-    <template is="define-element" tag="defined-element" attribute="attribute" property="property" number="number" string="string" boolean="boolean" tokens="tokens" data="arse">
-        <link rel="stylesheet" href="./test-element.css" />
+    <template is="literal-element" tag="declared-element" attribute="attribute" property="property" number="number" string="string" boolean="boolean" tokens="tokens" data="arse">
+        <link rel="stylesheet" href="./test/declared-element.css" />
         <pre>${ data }</pre>
         <slot>Default content</slot>
 ${ element.property = 3, '' }
         <pre>
-            attribute: ${ typeof state.attribute }  - ${ state.attribute }
-            property:  ${ typeof state.property }  - ${ state.property }
-            boolean:   ${ typeof state.boolean } - ${ state.boolean }
-            number:    ${ typeof state.number }  - ${ state.number }
-            string:    ${ typeof state.string }  - ${ state.string }
-            tokens:    ${ typeof state.tokens }  - ${ state.tokens.tokens.join(' ') }
+            attribute: ${ typeof prop.attribute }  - ${ prop.attribute }
+            property:  ${ typeof prop.property }  - ${ prop.property }
+            boolean:   ${ typeof prop.boolean } - ${ prop.boolean }
+            number:    ${ typeof prop.number }  - ${ prop.number }
+            string:    ${ typeof prop.string }  - ${ prop.string }
+            tokens:    ${ typeof prop.tokens }  - ${ prop.tokens.tokens.join(' ') }
         </pre>
 
         ${ events('click', element).map((e) => e.type) }
 
-        <test-element data="./test/test-objects.json" attribute="attribute" boolean id="id">
+        <defined-element data="./test/test-objects.json" attribute="attribute" boolean id="id">
             Slotted content
-        </test-element>
+        </defined-element>
     </template>
 </head>
 
 <body>
     <section title="declared-element">
-        <h2>Declared element</h2>
-        <test-element data="./test/test-objects.json" attribute="attribute" boolean id="id">
+        <h2><code>element('defined-element', '#template-id', properties)</code></h2>
+        <defined-element data="./test/test-objects.json" attribute="attribute" boolean id="id">
             Slotted content
-        </test-element>
+        </defined-element>
     </section>
 
     <section title="defined-element">
-        <h2>Defined element</h2>
-        <defined-element data="./test/test-clock.js" attribute="bollocks" property="bollocks" number="4" string="things" boolean tokens="car bicycle">
+        <h2><code>&lt;template is="literal-element" tag="declared-element"&gt;</code></h2>
+        <declared-element data="./test/test-clock.js" attribute="bollocks" property="bollocks" number="4" string="things" boolean tokens="car bicycle">
             Slotted content
-        </defined-element>
+        </declared-element>
     </section>
 
     <script type="module">
@@ -69,7 +69,7 @@ ${ element.property = 3, '' }
     import element     from "./modules/element.js";
     import { State }   from "../dom/modules/element.js";
 
-    const TestElement = element('test-element', '#test-element-template', {
+    const TestElement = element('defined-element', '#defined-element-template', {
         attribute: {
             attribute: function(value) {
                 State(this).attribute = value;
@@ -87,6 +87,6 @@ ${ element.property = 3, '' }
         }
     });
 
-    import './define-element.js';
+    import './literal-element.js';
     </script>
 </body>

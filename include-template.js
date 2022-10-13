@@ -51,11 +51,46 @@ Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a
 
 **/
 
-import element    from '../dom/modules/element.js';
-import lifecycle  from './modules/lifecycle.js';
-import properties from './modules/properties.js';
+import element, { State as Internals } from '../dom/modules/element.js';
 
-export default element('include-template', lifecycle, properties);
+import lifecycle       from './modules/lifecycle.js';
+import properties      from './modules/properties.js';
+import getTemplate     from './modules/get-template.js';
+import requestTemplate from './modules/request-template.js';
 
 // Log registration to console
 window.console && window.console.log('%c<include-template>%c documentation: stephen.band/literal/', 'color: #3a8ab0; font-weight: 600;', 'color: #888888; font-weight: 400;');
+
+const assign = Object.assign;
+
+export default element('include-template', lifecycle, assign({
+    /**
+    src=""
+    Define a source template whose rendered content replaces this
+    `<include-template>`. This is a required attribute and must be in
+    the form of a fragment identifier pointing to a `template` element
+    in the DOM.
+    **/
+
+    src: {
+        attribute: function(value) {
+            const internal = Internals(this);
+
+            if (/^#/.test(value)) {
+                const template = getTemplate(value);
+                internal.templates.push(template);
+                return;
+            }
+
+            // Flag loading until we connect, at which point we add the
+            // loading attribute that may be used to indicate loading. Why
+            // wait? Because we are not in the DOM yet, and if we want a
+            // loading icon to transition in the transition must begin after
+            // we are already in the DOM.
+            this.loading = true;
+            requestTemplate(value).then((template) => {
+                internal.templates.push(template);
+            });
+        }
+    }
+}, properties));

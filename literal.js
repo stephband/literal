@@ -6,4 +6,4 @@ export { compiled }                   from './modules/compile.js';
 export { default as library }         from './modules/library.js';
 export { urls }                       from './modules/urls.js';
 export { default as TemplateInclude } from './include-template.js';
-export { default as ElementTemplate } from './define-element.js';
+export { default as ElementTemplate } from './literal-element.js';
