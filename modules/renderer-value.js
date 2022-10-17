@@ -2,11 +2,10 @@
 import overload      from '../../fn/modules/overload.js';
 import trigger       from '../../dom/modules/trigger.js';
 import config        from './config.js';
-import library       from './library.js';
+import library       from './library-dom.js';
 import Renderer      from './renderer.js';
 import composeString from './compose-string.js';
 import composeNumber from './compose-number.js';
-import truncate      from './truncate.js';
 
 const assign = Object.assign;
 

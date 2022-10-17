@@ -12,11 +12,8 @@ Defines a custom element.
 **/
 
 import element, { getInternals } from '../dom/modules/element.js';
-import defineElement  from './modules/element.js';
+import defineElement  from './modules/define-element.js';
 import defineProperty from './modules/define-property.js';
-
-// Log registration to console
-window.console && window.console.log('%c<literal-element>%c documentation: stephen.band/literal/', 'color: #3a8ab0; font-weight: 600;', 'color: #888888; font-weight: 400;');
 
 const ignore = {
     is:      true,

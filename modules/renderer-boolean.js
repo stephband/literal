@@ -1,5 +1,5 @@
 
-import library        from './library.js';
+import library        from './library-dom.js';
 import Renderer       from './renderer.js';
 import composeBoolean from './compose-boolean.js';
 import names          from './property-names.js';

@@ -12,7 +12,7 @@ import TemplateRenderer   from './renderer-template.js';
 
 const assign  = Object.assign;
 const entries = Object.entries;
-const rpath   = /^\/|\.|^https?:\/\//;
+const rpath   = /^\.*\/|^https?:\/\//;
 
 const onerror = window.DEBUG ?
     (e, element) => {
@@ -92,12 +92,16 @@ export default function Element(tag, src, props) {
 
             const renderer = new TemplateRenderer(template, {
                 element: this,
+                shadow: shadow,
                 prop: internal
             });
 
             internal.datas = Stream.of();
             internal.datas.reduce(resolveAndPushData, renderer);
             internal.loading = true;
+
+            // Hmmm
+            renderer.push(internal);
 
             shadow.append(renderer.content);
         },
