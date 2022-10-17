@@ -1,5 +1,5 @@
 
-import { State as Internals } from '../../dom/modules/element.js';
+import { getInternals as Internals } from '../../dom/modules/element.js';
 
 export default {
     /**

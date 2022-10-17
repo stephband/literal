@@ -11,7 +11,7 @@ Defines a custom element.
 ```
 **/
 
-import element, { State } from '../dom/modules/element.js';
+import element, { getInternals } from '../dom/modules/element.js';
 import defineElement      from './modules/element.js';
 import defineProperty     from './modules/define-property.js';
 
@@ -37,7 +37,7 @@ function assignProperty(properties, attribute) {
 
 export default element('<template is="literal-element">', {
     connect: function() {
-        const internal = State(this);
+        const internal = getInternals(this);
 
         if (!internal.tag) {
             throw new SyntaxError('<template is="literal-element"> must have attribute tag="name-of-element"');
@@ -55,7 +55,7 @@ export default element('<template is="literal-element">', {
         Defines the tag name of the custom element.
         **/
         attribute: function(value) {
-            const internal = State(this);
+            const internal = getInternals(this);
             internal.tag = value;
         }
     }

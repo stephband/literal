@@ -1,6 +1,6 @@
 
 
-import { State as Internals } from '../../dom/modules/element.js';
+import { getInternals as Internals } from '../../dom/modules/element.js';
 
 import Stream           from '../../fn/modules/stream.js';
 import print            from './library/print.js';

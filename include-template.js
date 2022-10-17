@@ -51,7 +51,7 @@ Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a
 
 **/
 
-import element, { State as Internals } from '../dom/modules/element.js';
+import element, { getInternals as Internals } from '../dom/modules/element.js';
 
 import lifecycle       from './modules/lifecycle.js';
 import properties      from './modules/properties.js';

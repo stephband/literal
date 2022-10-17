@@ -67,22 +67,22 @@ ${ element.property = 3, '' }
     <script type="module">
     import test        from "../fn/modules/test.js";
     import element     from "./modules/element.js";
-    import { State }   from "../dom/modules/element.js";
+    import { getInternals }   from "../dom/modules/element.js";
 
     const TestElement = element('defined-element', '#defined-element-template', {
         attribute: {
             attribute: function(value) {
-                State(this).attribute = value;
+                getInternals(this).attribute = value;
             }
         },
 
         property: {
             get: function() {
-                State(this).property.value;
+                getInternals(this).property.value;
             },
 
             set: function(value) {
-                State(this).property.push(value);
+                getInternals(this).property.push(value);
             }
         }
     });

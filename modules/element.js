@@ -2,7 +2,7 @@
 
 import overload           from '../../fn/modules/overload.js';
 import Stream             from '../../fn/modules/stream.js';
-import element, { State as Internals } from '../../dom/modules/element.js';
+import element, { getInternals as Internals } from '../../dom/modules/element.js';
 import lifecycle          from './lifecycle.js';
 import globalProperties   from './properties.js';
 import getTemplate        from './get-template.js';
