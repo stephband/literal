@@ -11,9 +11,12 @@ Defines a custom element.
 ```
 **/
 
-import element, { State } from '../dom/modules/element.js';
+import element, { getInternals } from '../dom/modules/element.js';
 import defineElement  from './modules/element.js';
 import defineProperty from './modules/define-property.js';
+
+// Log registration to console
+window.console && window.console.log('%c<literal-element>%c documentation: stephen.band/literal/', 'color: #3a8ab0; font-weight: 600;', 'color: #888888; font-weight: 400;');
 
 const ignore = {
     is:      true,
@@ -34,9 +37,9 @@ function assignProperty(properties, attribute) {
 
 export default element('<template is="element-template">', {
     connect: function() {
-        const state = State(this);
+        const internal = getInternals(this);
 
-        if (!state.tag) {
+        if (!internal.tag) {
             throw new SyntaxError('<template is="element-template"> must have an attribute tag="name-of-element".');
         }
 
@@ -44,7 +47,7 @@ export default element('<template is="element-template">', {
             .filter(isDefineableAttribute)
             .reduce(assignProperty, {}) ;
 
-        defineElement(state.tag, this, properties);
+        defineElement(internal.tag, this, properties);
     }
 }, {
     tag: {
@@ -52,8 +55,8 @@ export default element('<template is="element-template">', {
         Defines the tag name of the custom element.
         **/
         attribute: function(value) {
-            const state = State(this);
-            state.tag = value;
+            const internal = getInternals(this);
+            internal.tag = value;
         }
     }
 });

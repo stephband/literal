@@ -1,5 +1,7 @@
 
-import Privates         from '../../fn/modules/privates.js';
+
+import { getInternals as Internals } from '../../dom/modules/element.js';
+
 import Stream           from '../../fn/modules/stream.js';
 import print            from './library/print.js';
 import requestData      from './request-data.js';
@@ -8,11 +10,6 @@ import TemplateRenderer from './renderer-template.js';
 const rpath = /^\/|\.|^https?:\/\//;
 
 /* Lifecycle */
-
-/**
-'slide-active'
-Emitted by a slide when it is brought into scroll-snap alignment.
-**/
 
 function parseData(value) {
     try { return JSON.parse(value);  }
@@ -26,23 +23,23 @@ function resolveData(value) {
 }
 
 function addLoading(element) {
-    const privates = Privates(element);
+    const internal = Internals(element);
 
-    if (!privates.loading) {
-        privates.loading = true;
+    if (!internal.loading) {
+        internal.loading = true;
         //element.setAttribute('loading', '');
     }
 }
 
 function removeLoading(element) {
-    const privates = Privates(element);
+    const internal = Internals(element);
 
-    if (privates.loading) {
-        privates.loading = false;
+    if (internal.loading) {
+        internal.loading = false;
 
-        if (privates.frame) {
-            cancelAnimationFrame(privates.frame);
-            privates.frame = null;
+        if (internal.frame) {
+            cancelAnimationFrame(internal.frame);
+            internal.frame = null;
         }
         else {
             element.removeAttribute('loading');
@@ -63,7 +60,7 @@ const onerror = window.DEBUG ?
 
 export default {
     construct: function() {
-        const privates   = Privates(this);
+        const privates   = Internals(this);
         const datas      = privates.datas      = Stream.of();
         const dataoutput = privates.dataoutput = Stream.of();
         const templates  = privates.templates  = Stream.of();
@@ -126,14 +123,14 @@ export default {
     },
 
     connect: function(shadow) {
-        const privates = Privates(this);
+        const internal = Internals(this);
 
         // DOM nonsense. If we are loading at connect add the loading attribute
         // after a couple of frames to allowing time for styled transitions to
         // initialise.
-        (privates.loading && (privates.frame = requestAnimationFrame(() =>
-            (privates.loading && (privates.frame = requestAnimationFrame(() =>
-                (privates.loading && this.setAttribute('loading', ''))
+        (internal.loading && (internal.frame = requestAnimationFrame(() =>
+            (internal.loading && (internal.frame = requestAnimationFrame(() =>
+                (internal.loading && this.setAttribute('loading', ''))
             )))
         )));
     }

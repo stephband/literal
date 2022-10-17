@@ -13,7 +13,7 @@ message.
     ${ print(this, data) }
 </template>
 
-<include-template src="#debug" data="./package.json"></include-template>
+<template-include src="#debug" data="./package.json"></template-include>
 ```
 
 Renders as:
@@ -22,7 +22,7 @@ Renders as:
     ${ print(this, data) }
 </template>
 
-<include-template src="#debug" data="./package.json"></include-template>
+<template-include src="#debug" data="./package.json"></template-include>
 
 <!--
 Messages should be styled with the print stylesheet:

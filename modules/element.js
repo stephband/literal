@@ -2,7 +2,9 @@
 
 import overload           from '../../fn/modules/overload.js';
 import Stream             from '../../fn/modules/stream.js';
-import element, { State } from '../../dom/modules/element.js';
+import element, { getInternals as Internals } from '../../dom/modules/element.js';
+import lifecycle          from './lifecycle.js';
+import globalProperties   from './properties.js';
 import getTemplate        from './get-template.js';
 //import requestTemplate    from '../request-template.js';
 import requestData        from './request-data.js';
@@ -43,45 +45,34 @@ const resolveAndPushData = overload((renderer, value) => typeof value, {
     }
 });
 
-function assignProperties(state, [name, definition]) {
+function assignProperties(internal, [name, definition]) {
     // Todo: do we need to set up streams here? Really?
-    return state;
-}
-
-function connect() {
-    const state = State(this);
-
-    // DOM nonsense. If we are loading at connect add the loading attribute
-    // after a couple of frames to allowing time for styled transitions to
-    // initialise.
-    (state.loading && (state.frame = requestAnimationFrame(() =>
-        (state.loading && (state.frame = requestAnimationFrame(() =>
-            (state.loading && this.setAttribute('loading', ''))
-        )))
-    )));
+    return internal;
 }
 
 function load() {
-    const state = State(this);
+    const internal = Internals(this);
 
-    if (state.loading) {
-        if (state.frame) {
-            cancelAnimationFrame(state.frame);
-            state.frame = null;
+    if (internal.loading) {
+        if (internal.frame) {
+            cancelAnimationFrame(internal.frame);
+            internal.frame = null;
         }
         else {
             this.removeAttribute('loading');
         }
 
-        state.loading = false;
+        internal.loading = false;
     }
 }
 
-export default function Element(tag, src, properties) {
-    return element(tag, {
+export default function Element(tag, src, props) {
+    const properties = assign({}, props, globalProperties);
+
+    return element(tag, assign({}, lifecycle, {
         construct: function(shadow) {
-            const state = State(this);
-            entries(properties).reduce(assignProperties, state);
+            const internal = Internals(this);
+            entries(props).reduce(assignProperties, internal);
 
             if (typeof src === 'string' && !/^#/.test(src)) {
                 // Flag loading until we connect, at which point we add the
@@ -101,55 +92,18 @@ export default function Element(tag, src, properties) {
 
             const renderer = new TemplateRenderer(template, {
                 element: this,
-                state: state
+                prop: internal
             });
 
-            state.data = Stream.of();
-            state.data.reduce(resolveAndPushData, renderer);
-            state.loading = true;
+            internal.datas = Stream.of();
+            internal.datas.reduce(resolveAndPushData, renderer);
+            internal.loading = true;
 
             shadow.append(renderer.content);
         },
 
-        connect: connect,
-
         load: load
-    },
+    }),
 
-    assign(properties, {
-        data: {
-            attribute: function(value) {
-                this.data = value;
-            },
-
-            get: function() {
-                const state = State(this);
-                return state.renderer ?
-                    state.renderer.data :
-                    null ;
-            },
-
-            set: function(value) {
-                const state = State(this);
-                state.data.push(value);
-            }
-        },
-
-        loading: {
-            /**
-            loading=""
-            Read-only (pseudo-read-only) boolean attribute indicating status of
-            `src` and `data` requests.
-            **/
-
-            /**
-            .loading
-            Read-only boolean indicating status of `src` and `data` requests.
-            **/
-
-            get: function() {
-                return State(this).loading;
-            }
-        }
-    }));
+    properties);
 }

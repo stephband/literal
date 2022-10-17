@@ -13,9 +13,6 @@ export function urls(object) {
 }
 
 export function rewriteURL(path) {
-
-console.log(path, map);
-
     // Rewrite relative import URLs to be absolute, taking the page as their
     // relative root (if we don't do this import() assumes the location of
     // the script as relative root).

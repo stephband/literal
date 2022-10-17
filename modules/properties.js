@@ -1,33 +1,54 @@
 
-import Privates        from '../../fn/modules/privates.js';
-import getTemplate     from '../modules/get-template.js';
-import requestTemplate from './request-template.js';
-
-/* Properties */
+import { getInternals as Internals } from '../../dom/modules/element.js';
 
 export default {
     /**
     data=""
-    Defines a JSON file or JS module containing data to be rendered. If a data
-    attribute is not defined and empty object is used.
-
-    To get data from a JSON file specify a path to JSON:
+    A path to a JSON file or JS module exporting data to be rendered.
 
     ```html
-    <include-template src="#greetings" data="./package.json"></include-template>
+    <template-include src="#template" data="./data.json"></template-include>
+    <template-include src="#template" data="./module.js"></template-include>
     ```
 
-    Or import the default export of a JS module:
+    Named exports are supported via the path hash:
 
     ```html
-    <include-template src="#greetings" data="./modules/literal.js"></include-template>
+    <template-include src="#template" data="./module.js#namedExport"></template-include>
     ```
 
-    Or import a named export of JS module:
+    Paths may be rewritten. This helps when JS modules are bundled into a single
+    module for production.
+
+    ```
+    import { urls } from './literal.js';
+
+    urls({
+        './path/to/module.js': './path/to/production/bundle.js#namedExport'
+    });
+    ```
+
+    The `data` attribute also accepts raw JSON:
 
     ```html
-    <include-template src="#greetings" data="./modules/literal.js#name"></include-template>
+    <template-include src="#template" data='{"property": "value"}'></template-include>
     ```
+    **/
+
+    /**
+    .data
+
+    The `data` property may be set with a path to a JSON file or JS module, or a
+    raw JSON string and behaves the same way as the `data` attribute. In
+    addition it accepts a JS object or array.
+
+    Getting the `data` property returns the data object currently being
+    rendered. Note that if a path was set, this object is not available
+    immediately, as the data must first be fetched.
+
+    Technically, the returned data object is a _proxy_ of the object that has
+    been set. Mutations to the data object are detected by the proxy and the
+    DOM is rendered accordingly.
     **/
 
     data: {
@@ -36,63 +57,33 @@ export default {
         },
 
         get: function() {
-            const privates = Privates(this);
-            return privates.renderer ?
-                privates.renderer.data :
+            const internal = Internals(this);
+            return internal.renderer ?
+                internal.renderer.data :
                 null ;
         },
 
         set: function(value) {
-            const privates = Privates(this);
-            privates.datas.push(value);
-        }
-    },
-
-    loading: {
-        /**
-        loading=""
-        Read-only (pseudo-read-only) boolean attribute indicating status of
-        `src` and `data` requests.
-        **/
-
-        /**
-        .loading
-        Read-only boolean indicating status of `src` and `data` requests.
-        **/
-
-        get: function() {
-            const privates = Privates(this);
-            return privates.loading;
+            const internal = Internals(this);
+            internal.datas.push(value);
         }
     },
 
     /**
-    src=""
-    Define a source template whose rendered content replaces this
-    `<include-template>`. This is a required attribute and must be in
-    the form of a fragment identifier pointing to a `template` element
-    in the DOM.
+    loading=""
+    Read-only (pseudo-read-only) boolean attribute indicating status of
+    `src` and `data` requests.
     **/
 
-    src: {
-        attribute: function(value) {
-            const privates = Privates(this);
+    /**
+    .loading
+    Read-only boolean indicating status of `src` and `data` requests.
+    **/
 
-            if (/^#/.test(value)) {
-                const template = getTemplate(value);
-                privates.templates.push(template);
-                return;
-            }
-
-            // Flag loading until we connect, at which point we add the
-            // loading attribute that may be used to indicate loading. Why
-            // wait? Because we are not in the DOM yet, and if we want a
-            // loading icon to transition in the transition must begin after
-            // we are already in the DOM.
-            this.loading = true;
-            requestTemplate(value).then((template) => {
-                privates.templates.push(template);
-            });
+    loading: {
+        get: function() {
+            const internal = Internals(this);
+            return internal.loading;
         }
     }
 };

@@ -1,0 +1,92 @@
+<head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Stephen" />
+    <meta name="description" content="Documentation for Literal. Literal puts JS into your HTML. Literal defines a custom include element that parses and renders templates written as JS Literals, in a small library under 15kB minified and gzipped." />
+    <meta name="viewport" content="width=device-width" />
+
+    <!--link rel="stylesheet" href="./element.css" /-->
+
+    <script>
+        window.DEBUG = true;
+    </script>
+
+    <template id="defined-element-template">
+        <link rel="stylesheet" href="./test/defined-element.css" />
+        <pre>${ data }</pre>
+        <slot>Default content</slot>
+        <pre>
+            attribute: ${ prop.attribute }
+            boolean:   ${ prop.boolean }
+        </pre>
+    </template>
+
+    <template is="literal-element" tag="declared-element" attribute="attribute" property="property" number="number" string="string" boolean="boolean" tokens="tokens" data="arse">
+        <link rel="stylesheet" href="./test/declared-element.css" />
+        <pre>${ data }</pre>
+        <slot>Default content</slot>
+${ element.property = 3, '' }
+        <pre>
+            attribute: ${ typeof prop.attribute }  - ${ prop.attribute }
+            property:  ${ typeof prop.property }  - ${ prop.property }
+            boolean:   ${ typeof prop.boolean } - ${ prop.boolean }
+            number:    ${ typeof prop.number }  - ${ prop.number }
+            string:    ${ typeof prop.string }  - ${ prop.string }
+            tokens:    ${ typeof prop.tokens }  - ${ prop.tokens.tokens.join(' ') }
+        </pre>
+
+        ${ events('click', element).map((e) => e.type) }
+
+        <defined-element data="./test/test-objects.json" attribute="attribute" boolean id="id">
+            Slotted content
+        </defined-element>
+    </template>
+</head>
+
+<body>
+    <section title="declared-element">
+        <h2><code>element('defined-element', '#template-id', properties)</code></h2>
+        <defined-element data="./test/test-objects.json" attribute="attribute" boolean id="id">
+            Slotted content
+        </defined-element>
+    </section>
+
+    <section title="defined-element">
+        <h2><code>&lt;template is="literal-element" tag="declared-element"&gt;</code></h2>
+        <declared-element data="./test/test-clock.js" attribute="bollocks" property="bollocks" number="4" string="things" boolean tokens="car bicycle">
+            Slotted content
+        </declared-element>
+    </section>
+
+    <script type="module">
+    import { library } from "./module.js";
+    import events from "../dom/modules/events.js";
+    const assign = Object.assign;
+    assign(library, { events });
+    </script>
+
+    <script type="module">
+    import test        from "../fn/modules/test.js";
+    import element     from "./modules/element.js";
+    import { getInternals }   from "../dom/modules/element.js";
+
+    const TestElement = element('defined-element', '#defined-element-template', {
+        attribute: {
+            attribute: function(value) {
+                getInternals(this).attribute = value;
+            }
+        },
+
+        property: {
+            get: function() {
+                getInternals(this).property.value;
+            },
+
+            set: function(value) {
+                getInternals(this).property.push(value);
+            }
+        }
+    });
+
+    import './literal-element.js';
+    </script>
+</body>

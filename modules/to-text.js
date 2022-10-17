@@ -21,7 +21,7 @@ before being rendered.
             <th><code>${ undefined }</code></th>
             <td>
                 <template id="value-undefined">${ undefined }</template>
-                <include-template src="#value-undefined"></include-template>
+                <template-include src="#value-undefined"></template-include>
             </td>
         </tr>
         <tr>
@@ -29,7 +29,7 @@ before being rendered.
             <th><code>${ null }</code></th>
             <td>
                 <template id="value-null">${ null }</template>
-                <include-template src="#value-null"></include-template>
+                <template-include src="#value-null"></template-include>
             </td>
         </tr>
         <tr>
@@ -37,7 +37,7 @@ before being rendered.
             <th><code>${ NaN }</code></th>
             <td>
                 <template id="value-nan">${ NaN }</template>
-                <include-template src="#value-nan"></include-template>
+                <template-include src="#value-nan"></template-include>
             </td>
         </tr>
         <tr>
@@ -45,7 +45,7 @@ before being rendered.
             <th><code>${ 'Hello' }</code></th>
             <td>
                 <template id="value-string">${ 'Hello' }</template>
-                <include-template src="#value-string"></include-template>
+                <template-include src="#value-string"></template-include>
             </td>
         </tr>
         <tr>
@@ -53,7 +53,7 @@ before being rendered.
             <th><code>${ 100.3 }</code></th>
             <td>
                 <template id="value-number">${ 100.3 }</template>
-                <include-template src="#value-number"></include-template>
+                <template-include src="#value-number"></template-include>
             </td>
         </tr>
         <tr>
@@ -61,7 +61,7 @@ before being rendered.
             <th><code>${ Infinity }, ${ -Infinity }</code></th>
             <td>
                 <template id="value-infinity">${ Infinity }, ${ -Infinity }</template>
-                <include-template src="#value-infinity"></include-template>
+                <template-include src="#value-infinity"></template-include>
             </td>
         </tr>
         <tr>
@@ -69,7 +69,7 @@ before being rendered.
             <th><code>${ function name(param) {} }</code></th>
             <td>
                 <template id="value-function">${ function name(param) {} }</template>
-                <include-template src="#value-function"></include-template>
+                <template-include src="#value-function"></template-include>
             </td>
         </tr>
         <tr>
@@ -77,7 +77,7 @@ before being rendered.
             <th><code>${ (param) => {} }</code></th>
             <td>
                 <template id="value-arrow">${ (param) => {} }</template>
-                <include-template src="#value-arrow"></include-template>
+                <template-include src="#value-arrow"></template-include>
             </td>
         </tr>
         <tr>
@@ -85,7 +85,7 @@ before being rendered.
             <th><code>${ /^regexp/ }</code></th>
             <td>
                 <template id="value-regexp">${ /^regexp/ }</template>
-                <include-template src="#value-regexp"></include-template>
+                <template-include src="#value-regexp"></template-include>
             </td>
         </tr>
         <tr>
@@ -93,7 +93,7 @@ before being rendered.
             <th><code>${ Symbol('name') }</code></th>
             <td>
                 <template id="value-symbol">${ Symbol('name') }</template>
-                <include-template src="#value-symbol"></include-template>
+                <template-include src="#value-symbol"></template-include>
             </td>
         </tr>
         <tr>
@@ -101,7 +101,7 @@ before being rendered.
             <th><code>${ [0, 1, 2, 3] }</code></th>
             <td>
                 <template id="value-array">${ [0, 1, 2, 3] }</template>
-                <include-template src="#value-array"></include-template>
+                <template-include src="#value-array"></template-include>
             </td>
         </tr>
         <tr>
@@ -109,7 +109,7 @@ before being rendered.
             <th><code>${ { property: 'value' } }</code></th>
             <td>
                 <template id="value-object">${ { property: 'value' } }</template>
-                <include-template src="#value-object"></include-template>
+                <template-include src="#value-object"></template-include>
             </td>
         </tr>
         <tr>
@@ -117,7 +117,7 @@ before being rendered.
             <th><code>${ document.createTextNode('Text') }</code></th>
             <td>
                 <template id="value-node">${ document.createTextNode('Text') }</template>
-                <include-template src="#value-node"></include-template>
+                <template-include src="#value-node"></template-include>
             </td>
         </tr>
     </tbody>
