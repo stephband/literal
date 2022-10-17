@@ -56,4 +56,4 @@ export default element('<template is="element-template">', {
             internal.tag = value;
         }
     }
-});
+}, null, 'documentation – stephen.band/literal/element-template/');

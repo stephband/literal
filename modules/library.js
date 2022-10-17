@@ -10,6 +10,7 @@ routing and value transformations.
 
 import id              from '../../fn/modules/id.js';
 import by              from '../../fn/modules/by.js';
+import { clamp }       from '../../fn/modules/clamp.js';
 //import capture         from '../../fn/modules/capture.js';
 import equals          from '../../fn/modules/equals.js';
 import matches         from '../../fn/modules/matches.js';
@@ -52,6 +53,8 @@ const library = {
     Alias of `Math.ceil()`.
     **/
     ceil: Math.ceil,
+
+    clamp,
 
     /** define()
     Alias of `Object.defineProperties()`.
@@ -166,10 +169,12 @@ const library = {
     **/
     //rect,
 
-    /** round(n)
-    Alias of `Math.round()`;
+    /** round(n, value)
+    Round `value` to the nearest multiple of `n`.
     **/
-    round: Math.round,
+    round: function(n, value) {
+        return Math.round(value / n) * n;
+    },
 
     /**
     paramify(object)

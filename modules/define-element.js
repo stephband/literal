@@ -92,8 +92,9 @@ export default function Element(tag, src, props) {
 
             const renderer = new TemplateRenderer(template, {
                 element: this,
-                shadow: shadow,
-                prop: internal
+                host:    this,
+                shadow:  shadow,
+                prop:    internal
             });
 
             internal.datas = Stream.of();
@@ -109,5 +110,9 @@ export default function Element(tag, src, props) {
         load: load
     }),
 
-    properties);
+    properties,
+
+    null,
+
+    'defined by element-template');
 }
