@@ -1,9 +1,9 @@
 /**
-<template is="define-element">
+<template is="element-template">
 Defines a custom element.
 
 ```
-<template is="define-element" tag="cool-element" awesome="boolean">
+<template is="element-template" tag="cool-element" awesome="boolean">
     ...
 </template>
 
@@ -24,7 +24,7 @@ const ignore = {
 
 function isDefineableAttribute(attribute) {
     return !ignore[attribute.localName];
-    //console.error('<template is="define-element"> Not permitted to define property ' + attribute.localName + '="' + attribute.value + '"');
+    //console.error('<template is="element-template"> Not permitted to define property ' + attribute.localName + '="' + attribute.value + '"');
 }
 
 function assignProperty(properties, attribute) {
@@ -32,12 +32,12 @@ function assignProperty(properties, attribute) {
     return properties;
 }
 
-export default element('<template is="define-element">', {
+export default element('<template is="element-template">', {
     connect: function() {
         const state = State(this);
 
         if (!state.tag) {
-            throw new SyntaxError('<template is="define-element"> must have an attribute tag="name-of-element".');
+            throw new SyntaxError('<template is="element-template"> must have an attribute tag="name-of-element".');
         }
 
         const properties = Array.from(this.attributes)
