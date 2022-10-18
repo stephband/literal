@@ -6,7 +6,6 @@ import element, { getInternals as Internals } from '../../dom/modules/element.js
 import lifecycle          from './lifecycle.js';
 import globalProperties   from './properties.js';
 import getTemplate        from './get-template.js';
-//import requestTemplate    from '../request-template.js';
 import requestData        from './request-data.js';
 import TemplateRenderer   from './renderer-template.js';
 
@@ -76,14 +75,14 @@ export default function Element(tag, src, props) {
 
             if (typeof src === 'string' && !/^#/.test(src)) {
                 // Flag loading until we connect, at which point we add the
-                            // loading attribute that may be used to indicate loading. Why
-                            // wait? Because we are not in the DOM yet, and if we want a
-                            // loading icon to transition in the transition must begin after
-                            // we are already in the DOM.
-                //            this.loading = true;
-                //            requestTemplate(value).then((template) => {
-                //                privates.templates.push(template);
-                //            });
+                // loading attribute that may be used to indicate loading. Why
+                // wait? Because we are not in the DOM yet, and if we want a
+                // loading icon to transition in the transition must begin after
+                // we are already in the DOM.
+                // this.loading = true;
+                // requestTemplate(value).then((template) => {
+                //     privates.templates.push(template);
+                // });
             }
 
             const template = typeof src === 'string' ?
@@ -101,9 +100,8 @@ export default function Element(tag, src, props) {
             internal.datas.reduce(resolveAndPushData, renderer);
             internal.loading = true;
 
-            // Hmmm
+            // Hmmm?
             renderer.push(internal);
-
             shadow.append(renderer.content);
         },
 
