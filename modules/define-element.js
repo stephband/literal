@@ -112,5 +112,5 @@ export default function Element(tag, src, props) {
 
     null,
 
-    'defined by element-template');
+    'defined in element-template');
 }
