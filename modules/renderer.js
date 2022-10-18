@@ -14,7 +14,6 @@ const assign = Object.assign;
 const keys   = Object.keys;
 const values = Object.values;
 
-let id = 0;
 
 // Observers
 
@@ -160,8 +159,6 @@ a consumer stream.
 **/
 
 export default function Renderer(source, scope, parameters, consts, message, fn) {
-    if (window.DEBUG) { this.id = ++id; }
-
     this.literal = typeof source === 'string' ?
         // data will be the observer proxy of DATA, which we set in .update()
         compile(source, scope, 'data, DATA' + (parameters ? ', ' + keys(parameters).join(', ') : ''), consts, message) :

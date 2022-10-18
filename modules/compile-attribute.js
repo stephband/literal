@@ -56,10 +56,8 @@ export default function compileAttribute(renderers, attribute, template, path, p
     if (!isLiteral(source)) { return; }
 
     const debug = window.DEBUG && ''
-        //+ path + ', '
         + '<'
         + attribute.ownerElement.tagName.toLowerCase() + ' '
-        //+ attribute.localName + '="…'
         + attribute.localName + '="' + truncate(32, source)
         + '">';
 

@@ -9,7 +9,7 @@ let cued;
 function render(renderers) {
     var t0, mutations;
 
-    if (window.DEBUG) {
+    if (window.DEBUG && window.DEBUG.literal !== false) {
         t0 = window.performance.now() / 1000;
         mutations = 0;
         group('update',
@@ -31,7 +31,7 @@ function render(renderers) {
         }
     }
 
-    if (window.DEBUG) {
+    if (window.DEBUG && window.DEBUG.literal !== false) {
         const t1              = window.performance.now() / 1000;
 
         log('render',
