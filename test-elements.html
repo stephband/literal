@@ -20,7 +20,7 @@
         </pre>
     </template>
 
-    <template is="literal-element" tag="declared-element" attribute="attribute" property="property" number="number" string="string" boolean="boolean" tokens="tokens" data="arse">
+    <template is="element-template" tag="declared-element" attribute="attribute" property="property" number="number" string="string" boolean="boolean" tokens="tokens" data="arse">
         <link rel="stylesheet" href="./test/declared-element.css" />
         <pre>${ data }</pre>
         <slot>Default content</slot>
@@ -51,7 +51,7 @@ ${ element.property = 3, '' }
     </section>
 
     <section title="defined-element">
-        <h2><code>&lt;template is="literal-element" tag="declared-element"&gt;</code></h2>
+        <h2><code>&lt;template is="element-template" tag="declared-element"&gt;</code></h2>
         <declared-element data="./test/test-clock.js" attribute="bollocks" property="bollocks" number="4" string="things" boolean tokens="car bicycle">
             Slotted content
         </declared-element>
@@ -87,6 +87,6 @@ ${ element.property = 3, '' }
         }
     });
 
-    import './literal-element.js';
+    import './element-template.js';
     </script>
 </body>

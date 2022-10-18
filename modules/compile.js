@@ -38,7 +38,7 @@ export default function compile(source, scope, params, consts, message = '') {
         }
         catch(e) {
             // Append debug message to error message
-            e.message += ' ' + message;
+            e.message += ' in ' + message;
             throw e;
         }
     }

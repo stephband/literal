@@ -133,5 +133,11 @@ export default {
                 (internal.loading && this.setAttribute('loading', ''))
             )))
         )));
+    },
+
+    load: function(shadow) {
+        const internal = Internals(this);
+        internal.loading = false;
+        this.removeAttribute('loading');
     }
 };

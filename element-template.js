@@ -1,9 +1,9 @@
 /**
-<template is="literal-element">
+<template is="element-template">
 Defines a custom element.
 
 ```
-<template is="literal-element" tag="cool-element" awesome="boolean">
+<template is="element-template" tag="cool-element" awesome="boolean">
     ...
 </template>
 
@@ -12,13 +12,10 @@ Defines a custom element.
 **/
 
 import element, { getInternals } from '../dom/modules/element.js';
-import defineElement      from './modules/element.js';
-import defineProperty     from './modules/define-property.js';
+import defineElement  from './modules/define-element.js';
+import defineProperty from './modules/define-property.js';
 
-// Log registration to console
-window.console && window.console.log('%c<literal-element>%c documentation: stephen.band/literal/', 'color: #3a8ab0; font-weight: 600;', 'color: #888888; font-weight: 400;');
-
-const ignored = {
+const ignore = {
     is:      true,
     tag:     true,
     data:    true,
@@ -26,8 +23,8 @@ const ignored = {
 };
 
 function isDefineableAttribute(attribute) {
-    return !ignored[attribute.localName];
-    //console.error('<template is="literal-element"> Not permitted to define property ' + attribute.localName + '="' + attribute.value + '"');
+    return !ignore[attribute.localName];
+    //console.error('<template is="element-template"> Not permitted to define property ' + attribute.localName + '="' + attribute.value + '"');
 }
 
 function assignProperty(properties, attribute) {
@@ -35,12 +32,12 @@ function assignProperty(properties, attribute) {
     return properties;
 }
 
-export default element('<template is="literal-element">', {
+export default element('<template is="element-template">', {
     connect: function() {
         const internal = getInternals(this);
 
         if (!internal.tag) {
-            throw new SyntaxError('<template is="literal-element"> must have attribute tag="name-of-element"');
+            throw new SyntaxError('<template is="element-template"> must have an attribute tag="name-of-element".');
         }
 
         const properties = Array.from(this.attributes)
@@ -59,4 +56,4 @@ export default element('<template is="literal-element">', {
             internal.tag = value;
         }
     }
-});
+}, null, 'documentation – stephen.band/literal/element-template/');

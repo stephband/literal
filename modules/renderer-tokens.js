@@ -1,6 +1,6 @@
 
 import overload from '../../fn/modules/overload.js';
-import library  from './library.js';
+import library  from './library-dom.js';
 import Renderer from './renderer.js';
 import toText   from './to-text.js';
 

@@ -5,5 +5,5 @@ export { default as Renderer }        from './modules/renderer-template.js';
 export { compiled }                   from './modules/compile.js';
 export { default as library }         from './modules/library.js';
 export { urls }                       from './modules/urls.js';
-export { default as TemplateInclude } from './include-template.js';
-export { default as ElementTemplate } from './literal-element.js';
+export { default as TemplateInclude } from './template-include.js';
+export { default as ElementTemplate } from './element-template.js';

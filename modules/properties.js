@@ -7,14 +7,14 @@ export default {
     A path to a JSON file or JS module exporting data to be rendered.
 
     ```html
-    <include-template src="#template" data="./data.json"></include-template>
-    <include-template src="#template" data="./module.js"></include-template>
+    <template-include src="#template" data="./data.json"></template-include>
+    <template-include src="#template" data="./module.js"></template-include>
     ```
 
     Named exports are supported via the path hash:
 
     ```html
-    <include-template src="#template" data="./module.js#namedExport"></include-template>
+    <template-include src="#template" data="./module.js#namedExport"></template-include>
     ```
 
     Paths may be rewritten. This helps when JS modules are bundled into a single
@@ -31,7 +31,7 @@ export default {
     The `data` attribute also accepts raw JSON:
 
     ```html
-    <include-template src="#template" data='{"property": "value"}'></include-template>
+    <template-include src="#template" data='{"property": "value"}'></template-include>
     ```
     **/
 

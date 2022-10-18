@@ -1,0 +1,92 @@
+<head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Stephen" />
+    <meta name="description" content="Documentation for Literal. Literal puts JS into your HTML. Literal defines a custom include element that parses and renders templates written as JS Literals, in a small library under 15kB minified and gzipped." />
+    <meta name="viewport" content="width=device-width" />
+
+    <!--link rel="stylesheet" href="./element.css" /-->
+
+    <script>
+        window.DEBUG = true;
+    </script>
+
+    <template id="test-element-template">
+        <link rel="stylesheet" href="./test-element.css" />
+        <pre>${ data }</pre>
+        <slot>Default content</slot>
+        <pre>
+            attribute: ${ state.attribute }
+            boolean:   ${ state.boolean }
+        </pre>
+    </template>
+
+    <template is="element-template" tag="defined-element" attribute="attribute" property="property" number="number" string="string" boolean="boolean" tokens="tokens" data="arse">
+        <link rel="stylesheet" href="./test-element.css" />
+        <pre>${ data }</pre>
+        <slot>Default content</slot>
+${ element.property = 3, '' }
+        <pre>
+            attribute: ${ typeof state.attribute }  - ${ state.attribute }
+            property:  ${ typeof state.property }  - ${ state.property }
+            boolean:   ${ typeof state.boolean } - ${ state.boolean }
+            number:    ${ typeof state.number }  - ${ state.number }
+            string:    ${ typeof state.string }  - ${ state.string }
+            tokens:    ${ typeof state.tokens }  - ${ state.tokens.tokens.join(' ') }
+        </pre>
+
+        ${ events('click', element).map((e) => e.type) }
+
+        <test-element data="./test/test-objects.json" attribute="attribute" boolean id="id">
+            Slotted content
+        </test-element>
+    </template>
+</head>
+
+<body>
+    <section title="declared-element">
+        <h2>Declared element</h2>
+        <test-element data="./test/test-objects.json" attribute="attribute" boolean id="id">
+            Slotted content
+        </test-element>
+    </section>
+
+    <section title="defined-element">
+        <h2>Defined element</h2>
+        <defined-element data="./test/test-clock.js" attribute="bollocks" property="bollocks" number="4" string="things" boolean tokens="car bicycle">
+            Slotted content
+        </defined-element>
+    </section>
+
+    <script type="module">
+    import { library } from "./module.js";
+    import events from "../dom/modules/events.js";
+    const assign = Object.assign;
+    assign(library, { events });
+    </script>
+
+    <script type="module">
+    import test        from "../fn/modules/test.js";
+    import element     from "./modules/element.js";
+    import { State }   from "../dom/modules/element.js";
+
+    const TestElement = element('test-element', '#test-element-template', {
+        attribute: {
+            attribute: function(value) {
+                State(this).attribute = value;
+            }
+        },
+
+        property: {
+            get: function() {
+                State(this).property.value;
+            },
+
+            set: function(value) {
+                State(this).property.push(value);
+            }
+        }
+    });
+
+    import './element-template.js';
+    </script>
+</body>

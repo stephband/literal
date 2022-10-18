@@ -24,7 +24,7 @@ renderer
 ```
 **/
 
-import Stream       from '../../fn/modules/stream/stream.js';
+import Stream            from '../../fn/modules/stream/stream.js';
 import { Observer }      from '../../fn/observer/observer.js';
 import identify          from '../../dom/modules/identify.js';
 import isTextNode        from '../../dom/modules/is-text-node.js';

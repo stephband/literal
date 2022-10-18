@@ -7,7 +7,7 @@ that DOM after the text node.
 **/
 
 import include           from './library/include.js';
-import library           from './library.js';
+import library           from './library-dom.js';
 import toText            from './to-text.js';
 import Renderer          from './renderer.js';
 import removeNodes       from './remove-nodes.js';

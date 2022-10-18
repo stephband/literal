@@ -10,6 +10,7 @@ routing and value transformations.
 
 import id              from '../../fn/modules/id.js';
 import by              from '../../fn/modules/by.js';
+import { clamp }       from '../../fn/modules/clamp.js';
 //import capture         from '../../fn/modules/capture.js';
 import equals          from '../../fn/modules/equals.js';
 import matches         from '../../fn/modules/matches.js';
@@ -17,9 +18,9 @@ import nothing         from '../../fn/modules/nothing.js';
 import get             from '../../fn/modules/get-path.js';
 import noop            from '../../fn/modules/noop.js';
 import slugify         from '../../fn/modules/slugify.js';
+import sum             from '../../fn/modules/sum.js';
 import last            from '../../fn/modules/last.js';
 import overload        from '../../fn/modules/overload.js';
-import { px, em, rem, vw, vh } from '../../dom/modules/parse-length.js';
 import { Observer, notify }    from '../../fn/observer/observer.js';
 import observe         from '../../fn/observer/observe.js';
 import Stream          from '../../fn/modules/stream.js';
@@ -52,6 +53,8 @@ const library = {
     Alias of `Math.ceil()`.
     **/
     ceil: Math.ceil,
+
+    clamp,
 
     /** define()
     Alias of `Object.defineProperties()`.
@@ -166,10 +169,12 @@ const library = {
     **/
     //rect,
 
-    /** round(n)
-    Alias of `Math.round()`;
+    /** round(n, value)
+    Round `value` to the nearest multiple of `n`.
     **/
-    round: Math.round,
+    round: function(n, value) {
+        return Math.round(value / n) * n;
+    },
 
     /**
     paramify(object)
@@ -189,6 +194,11 @@ const library = {
     **/
     Stream,
 
+    /** sum(b, a)
+    Returns the sum of two values.
+    **/
+    sum,
+
     /**
     translate()
     **/
@@ -199,13 +209,7 @@ const library = {
     /** values()
     Alias of `Object.values()`.
     **/
-    values: Object.values,
-
-    px,
-    em,
-    rem,
-    vw,
-    vh
+    values: Object.values
 };
 
 export default library;
