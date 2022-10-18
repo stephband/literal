@@ -16,7 +16,7 @@ const colors = {
 
 let grouped = false;
 
-export const log = window.DEBUG ?
+export const log = (window.DEBUG && window.DEBUG.literal !== false) ?
     function log($1, $2, $3 = '', $4 = '', color = colors.green) {
         console.log((false ? '%c      %c' : '%cLiteral %c') + $1 + ' %c' + $2 + ' %c' + $3 + ' %c' + $4,
             'color: ' + (colors.grey) + '; font-weight: 300;',
