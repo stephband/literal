@@ -15,23 +15,23 @@
         <pre>${ data }</pre>
         <slot>Default content</slot>
         <pre>
-            attribute: ${ prop.attribute }
-            boolean:   ${ prop.boolean }
+            attribute: ${ data.attribute }
+            boolean:   ${ data.boolean }
         </pre>
     </template>
 
-    <template is="element-template" tag="declared-element" attribute="attribute" property="property" number="number" string="string" boolean="boolean" tokens="tokens" data="arse">
+    <template is="element-template" tag="declared-element" attribute="attribute" property="property" number="number" string="string" boolean="boolean" tokens="tokens" data="import">
         <link rel="stylesheet" href="./test/declared-element.css" />
-        <pre>${ data }</pre>
+        <pre>${ data.data }</pre>
         <slot>Default content</slot>
 ${ element.property = 3, '' }
         <pre>
-            attribute: ${ typeof prop.attribute }  - ${ prop.attribute }
-            property:  ${ typeof prop.property }  - ${ prop.property }
-            boolean:   ${ typeof prop.boolean } - ${ prop.boolean }
-            number:    ${ typeof prop.number }  - ${ prop.number }
-            string:    ${ typeof prop.string }  - ${ prop.string }
-            tokens:    ${ typeof prop.tokens }  - ${ prop.tokens.tokens.join(' ') }
+            attribute: ${ typeof data.attribute }  - ${ data.attribute }
+            property:  ${ typeof data.property }  - ${ data.property }
+            boolean:   ${ typeof data.boolean } - ${ data.boolean }
+            number:    ${ typeof data.number }  - ${ data.number }
+            string:    ${ typeof data.string }  - ${ data.string }
+            tokens:    ${ typeof data.tokens }  - ${ data.tokens.join(' ') }
         </pre>
 
         ${ events('click', element).map((e) => e.type) }
@@ -43,14 +43,14 @@ ${ element.property = 3, '' }
 </head>
 
 <body>
-    <section title="declared-element">
+    <section title="defined-element">
         <h2><code>element('defined-element', '#template-id', properties)</code></h2>
         <defined-element data="./test/test-objects.json" attribute="attribute" boolean id="id">
             Slotted content
         </defined-element>
     </section>
 
-    <section title="defined-element">
+    <section title="declared-element">
         <h2><code>&lt;template is="element-template" tag="declared-element"&gt;</code></h2>
         <declared-element data="./test/test-clock.js" attribute="bollocks" property="bollocks" number="4" string="things" boolean tokens="car bicycle">
             Slotted content
@@ -65,24 +65,24 @@ ${ element.property = 3, '' }
     </script>
 
     <script type="module">
-    import test        from "../fn/modules/test.js";
-    import element     from "./modules/define-element.js";
-    import { getInternals }   from "../dom/modules/element.js";
+    import test             from "../fn/modules/test.js";
+    import defineElement    from "./modules/define-element.js";
+    import { getInternals } from "../dom/modules/element.js";
 
-    const TestElement = element('defined-element', '#defined-element-template', {
+    const TestElement = defineElement('defined-element', '#defined-element-template', {
         attribute: {
             attribute: function(value) {
-                getInternals(this).attribute = value;
+                getInternals(this).data.attribute = value;
             }
         },
 
         property: {
             get: function() {
-                getInternals(this).property.value;
+                getInternals(this).data.property.value;
             },
 
             set: function(value) {
-                getInternals(this).property.push(value);
+                getInternals(this).data.property.push(value);
             }
         }
     });

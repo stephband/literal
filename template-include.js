@@ -54,7 +54,7 @@ Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a
 import element, { getInternals as Internals } from '../dom/modules/element.js';
 
 import lifecycle       from './modules/lifecycle.js';
-import properties      from './modules/properties.js';
+import properties, { addLoading, removeLoading } from './modules/properties.js';
 import getTemplate     from './modules/get-template.js';
 import requestTemplate from './modules/request-template.js';
 
@@ -64,6 +64,73 @@ window.console && window.console.log('%c<template-include>%c documentation: step
 const assign = Object.assign;
 
 export default element('template-include', lifecycle, assign({
+    /**
+    data=""
+    A path to a JSON file or JS module exporting data to be rendered.
+
+    ```html
+    <template-include src="#template" data="./data.json"></template-include>
+    <template-include src="#template" data="./module.js"></template-include>
+    ```
+
+    Named exports are supported via the path hash:
+
+    ```html
+    <template-include src="#template" data="./module.js#namedExport"></template-include>
+    ```
+
+    Paths may be rewritten. This helps when JS modules are bundled into a single
+    module for production.
+
+    ```
+    import { urls } from './literal.js';
+
+    urls({
+        './path/to/module.js': './path/to/production/bundle.js#namedExport'
+    });
+    ```
+
+    The `data` attribute also accepts raw JSON:
+
+    ```html
+    <template-include src="#template" data='{"property": "value"}'></template-include>
+    ```
+    **/
+
+    /**
+    .data
+
+    The `data` property may be set with a path to a JSON file or JS module, or a
+    raw JSON string and behaves the same way as the `data` attribute. In
+    addition it accepts a JS object or array.
+
+    Getting the `data` property returns the data object currently being
+    rendered. Note that if a path was set, this object is not available
+    immediately, as the data must first be fetched.
+
+    Technically, the returned data object is a _proxy_ of the object that has
+    been set. Mutations to the data object are detected by the proxy and the
+    DOM is rendered accordingly.
+    **/
+
+    data: {
+        attribute: function(value) {
+            this.data = value;
+        },
+
+        get: function() {
+            const internal = Internals(this);
+            return internal.renderer ?
+                internal.renderer.data :
+                null ;
+        },
+
+        set: function(value) {
+            const internal = Internals(this);
+            internal.datas.push(value);
+        }
+    },
+
     /**
     src=""
     Define a source template whose rendered content replaces this
@@ -87,9 +154,10 @@ export default element('template-include', lifecycle, assign({
             // wait? Because we are not in the DOM yet, and if we want a
             // loading icon to transition in the transition must begin after
             // we are already in the DOM.
-            this.loading = true;
+            addLoading(this);
             requestTemplate(value).then((template) => {
                 internal.templates.push(template);
+                removeLoading(this);
             });
         }
     }

@@ -18,7 +18,6 @@ import defineProperty from './modules/define-property.js';
 const ignore = {
     is:      true,
     tag:     true,
-    data:    true,
     loading: true
 };
 
@@ -44,7 +43,7 @@ export default element('<template is="element-template">', {
             .filter(isDefineableAttribute)
             .reduce(assignProperty, {}) ;
 
-        defineElement(internal.tag, this, properties);
+        defineElement(internal.tag, this, properties, 'defined by element-template');
     }
 }, {
     tag: {
