@@ -97,7 +97,7 @@ function cloneRenderer(renderer) {
     const node = getDescendant(renderer.path, this.content);
 
     //source, consts, template, path, node, name, message, parameters
-    const clone = new renderer.constructor(renderer.literal, '', renderer.template, renderer.path, node, renderer.name, '', renderer.parameters);
+    const clone = new renderer.constructor(renderer.literal, '', renderer.template, renderer.path, node, renderer.name, '', this.parameters);
 
     // Stop clone when template renderer stops
     this.done(clone);
@@ -105,15 +105,15 @@ function cloneRenderer(renderer) {
 }
 
 export default function TemplateRenderer(template, parameters) {
-    // TemplateRenderer may be called with a string id or a template element
     const id = identify(template) ;
 
     this.template   = template;
     this.parameters = parameters;
 
-    // If the template is already compiled and cached, clone it
+    // If the template is already compiled and cached...
     const renderer = cache[id];
 
+    // clone it
     if (renderer) {
         this.content   = renderer.template.content ?
             renderer.template.content.cloneNode(true) :
@@ -148,16 +148,15 @@ export default function TemplateRenderer(template, parameters) {
         this.content = this.template.cloneNode(true) ;
     }
 
-    this.first    = this.content.childNodes[0];
-    this.last     = this.content.childNodes[this.content.childNodes.length - 1];
+    this.first = this.content.childNodes[0];
+    this.last  = this.content.childNodes[this.content.childNodes.length - 1];
 
     // Get template constants from dataset keys, where `data-name` becomes
     // available as `name` inside the template
-    const consts = keys(this.template.dataset).join(', ');
-    // renderers, node, path, consts, element
-    // Use a space after the id in path
+    const consts = keys(template.dataset).join(', ');
+
     // compileNode(renderers, node, template, path, parameters, consts)
-    this.contents = compileNode([], this.content, '#' + this.template.id, '', parameters, consts);
+    this.contents = compileNode([], this.content, '#' + template.id, '', parameters, consts);
 
     // Stop child when template renderer stops
     this.contents.forEach((renderer) => this.done(renderer));

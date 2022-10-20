@@ -1,0 +1,114 @@
+<head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Stephen" />
+    <meta name="description" content="Documentation for Literal. Literal puts JS into your HTML. Literal defines a custom include element that parses and renders templates written as JS Literals, in a small library under 15kB minified and gzipped." />
+    <meta name="viewport" content="width=device-width" />
+
+    <!--link rel="stylesheet" href="./element.css" /-->
+
+    <script>
+        window.DEBUG = { literal: false };
+    </script>
+
+    <template is="element-template" tag="test-element" attribute="attribute" number="number" string="string" boolean="boolean" tokens="tokens" import="import">
+        <!-- Test loading of 2 stylesheets -->
+        <link rel="stylesheet" href="./test/defined-element.css" />
+        <link rel="stylesheet" href="./test/declared-element.css" />
+
+        <!-- Test for unique host, element, shadow -->
+        ${ expect(host.id) }
+        ${ expect(element.id) }
+        ${ expect(shadow) }
+
+        <!-- Test for execution of code where default content is replaced -->
+        <slot id="slot">
+            Default content
+            ${ expect(host.id) }
+            ${ expect(element.id) }
+            ${ expect(shadow) }
+        </slot>
+
+        <!-- Test for unique host, element, shadow in attribute renderer -->
+        <pre id="pre-${ this.id }" thing="
+            ${ expect(host.id) }
+            ${ expect(element.id) }
+            ${ expect(shadow) }
+        ">
+            string:  ${ expect(data.string),  data.string }
+            number:  ${ expect(data.number),  data.number }
+            boolean: ${ expect(data.boolean), data.boolean }
+            tokens:  ${ expect(data.tokens.sort()), data.tokens }
+            import:  ${ expect(data.import), data.import }
+        </pre>
+    </template>
+</head>
+
+<body>
+    <script type="module">
+    import nothing from "../fn/modules/nothing.js";
+    import test from "../fn/modules/test.js";
+    import library from "./modules/library-dom.js";
+
+    test('<template is="element-template">', [
+
+        // First element
+
+        'test-element-1',
+        'test-element-1',
+        {}, // shadow node
+
+        'test-element-1',
+        'slot',
+        {}, // shadow node
+
+        'string',
+        1,
+        true,
+        ['token-1', 'token-2'],
+        {},
+
+        'test-element-1',
+        'pre-4',
+        {}, // shadow node
+
+        // Second element
+
+        'test-element-2',
+        'test-element-2',
+        {}, // shadow node
+
+        'test-element-2',
+        'slot',
+        {}, // shadow node
+
+        '',
+        0,
+        false,
+        [],
+        null,
+
+        'test-element-2',
+        'pre-9',
+        {} // shadow node
+    ], function(expect, done) {
+        const element = document.getElementById('test-element');
+
+        // Add test functions to library
+        library.expect = expect;
+
+        setTimeout(done, 200);
+    });
+    </script>
+
+    <script type="module">
+    import './element-template.js';
+    </script>
+
+    <test-element string="string" number="1" boolean tokens="token-1 token-2" import="{}" id="test-element-1">
+        <p>Slotted content</p>
+    </test-element>
+
+    <test-element id="test-element-2">
+        <p>Slotted content</p>
+    </test-element>
+</body>

@@ -165,6 +165,7 @@ export default function Renderer(source, scope, parameters, consts, message, fn)
         // source is assumed to be the compiled function
         source ;
 
+    this.id         = ++Renderer.count;
     this.parameters = parameters;
     this.message    = message;
 
@@ -182,8 +183,6 @@ export default function Renderer(source, scope, parameters, consts, message, fn)
     };
 
     this.consume = fn;
-
-    ++Renderer.count;
 }
 
 assign(Renderer.prototype, {

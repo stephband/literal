@@ -19,8 +19,8 @@ export default function compile(source, scope, params, consts, message = '') {
         + indent + 'return this.compose`' + source + '`;\n';
 
     // Return cached fn
-    // Todo: factor in keys from scope to make this key truly unique to all
-    // same instances of compiled function
+    // Todo: factor in keys from scope and params to make this key truly
+    // unique to all same instances of compiled function
     const key = code;
     if (compiled[key]) { return compiled[key]; }
 

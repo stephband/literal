@@ -46,10 +46,12 @@ export default element('<template is="element-template">', {
         defineElement(internal.tag, this, properties, 'defined in element-template');
     }
 }, {
+
+    /** tag=""
+    Defines the tag name of the custom element.
+    **/
+
     tag: {
-        /** tag=""
-        Defines the tag name of the custom element.
-        **/
         attribute: function(value) {
             const internal = getInternals(this);
             internal.tag = value;

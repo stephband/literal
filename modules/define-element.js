@@ -37,13 +37,27 @@ export default function defineElement(tag, src, props, log = '') {
                 shadow:   shadow
             });
 
-            internals.data = Data({});
+            // Initialise data with plain object
+            internals.data = {};
             shadow.append(renderer.content);
             addLoading(this);
         },
 
         connect: function() {
-            const { renderer, data } = Internals(this);
+            const internals = Internals(this);
+            const { renderer, data } = internals;
+
+            // Give default value to properties not defined via attributes
+            let name;
+            for (name in props) {
+                if (!(name in data)) {
+                    data[name] = props[name].default;
+                }
+            }
+
+            // Reset internal data to its observer proxy so that changes to
+            // host attributes and properties trigger updates
+            internals.data = Data(data);
             renderer.push(data);
             setLoadingAsync(this);
         },
