@@ -20,7 +20,7 @@
         ${ expect(element.id) }
         ${ expect(shadow) }
 
-        <!-- Test for execution of code where default content is replaced -->
+        <!-- Test for execution of code whether default content is replaced or not -->
         <slot id="slot">
             Default content
             ${ expect(host.id) }
@@ -55,11 +55,11 @@
 
         'test-element-1',
         'test-element-1',
-        {}, // shadow node
+        {},      // shadow node
 
         'test-element-1',
         'slot',
-        {}, // shadow node
+        {},      // shadow node
 
         'string',
         1,
@@ -68,18 +68,18 @@
         {},
 
         'test-element-1',
-        'pre-4',
-        {}, // shadow node
+        'pre-4', // Number will change if tests added previously to this
+        {},      // shadow node
 
         // Second element
 
         'test-element-2',
         'test-element-2',
-        {}, // shadow node
+        {},      // shadow node
 
         'test-element-2',
         'slot',
-        {}, // shadow node
+        {},      // shadow node
 
         '',
         0,
@@ -88,8 +88,8 @@
         null,
 
         'test-element-2',
-        'pre-9',
-        {} // shadow node
+        'pre-9', // Number will change if tests added previously to this
+        {}       // shadow node
     ], function(expect, done) {
         const element = document.getElementById('test-element');
 
@@ -108,7 +108,5 @@
         <p>Slotted content</p>
     </test-element>
 
-    <test-element id="test-element-2">
-        <p>Slotted content</p>
-    </test-element>
+    <test-element id="test-element-2"></test-element>
 </body>
