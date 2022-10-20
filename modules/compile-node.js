@@ -42,9 +42,17 @@ function compileAttributes(renderers, node, template, path, parameters, consts) 
 }
 
 const compileElement = overload((renderers, node) => node.tagName.toLowerCase(), {
-    // Ignore SVG <defs>, which for our purposes we consider as inert like
-    // an HTML <message>
+    // Ignore SVG <defs>, which we consider as inert as an HTML <template>
     'defs': noop,
+
+    // Do not parse the inner DOM of scripts
+    'script': (renderers, node, template, path, parameters, consts) => {
+        compileAttributes(renderers, node, template, path, parameters, consts);
+        return renderers;
+    },
+
+    // Ignore templates
+    'template': noop,
 
     'default': (renderers, node, template, path, parameters, consts) => {
         // Children first means inner DOM to outer DOM
