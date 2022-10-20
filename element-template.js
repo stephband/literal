@@ -43,7 +43,7 @@ export default element('<template is="element-template">', {
             .filter(isDefineableAttribute)
             .reduce(assignProperty, {}) ;
 
-        defineElement(internal.tag, this, properties, 'defined in element-template');
+        defineElement(internal.tag, this, properties, 'defined by element-template');
     }
 }, {
     tag: {
