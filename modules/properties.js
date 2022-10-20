@@ -4,7 +4,7 @@ import { getInternals as Internals } from '../../dom/modules/element.js';
 export function addLoading(element) {
     const internals = Internals(element);
     internals.loading = (internals.loading || 0) + 1;
-    console.log(internals.loading, element);
+    //console.log(internals.loading, element);
 }
 
 export function removeLoading(element) {
@@ -16,18 +16,18 @@ export function removeLoading(element) {
 
     if (internals.loading === 1) {
         if (internals.frame) {
-            console.log('CANCEL', 't - ' + element.getAttribute('loading'));
+            //console.log('CANCEL', 't - ' + element.getAttribute('loading'));
             cancelAnimationFrame(internals.frame);
             internals.frame = null;
         }
         else {
-            console.log('REMOVE');
+            //console.log('REMOVE');
             element.removeAttribute('loading');
         }
     }
 
     --internals.loading;
-    console.log(internals.loading, element);
+    //console.log(internals.loading, element);
 }
 
 export function setLoadingAsync(element) {
