@@ -1,13 +1,4 @@
 
-/**
-Template functions
-
-The scope of literal templates contains a small library of functions. Some are
-simply JS built-ins aliased for brevity. Others provide template includes,
-routing and value transformations.
-
-**/
-
 import id              from '../../fn/modules/id.js';
 import by              from '../../fn/modules/by.js';
 import { clamp }       from '../../fn/modules/clamp.js';
@@ -33,20 +24,11 @@ const library = {
     **/
     assign: Object.assign,
 
-    /** by(fn, a, b)
-    Compares `fn(a)` against `fn(b)` and returns `-1`, `0` or `1`. Partially
-    applicable and intended for use in `array.sort()`. For example, to sort an
-    array of objects by their ids:
-
-    ```
-    array.sort(by(get('id')))
-    ```
-    **/
     by,
 
-    /**
+    /*
     capture()
-    **/
+    */
     //capture,
 
     /** ceil(n)
@@ -66,9 +48,6 @@ const library = {
     **/
     entries: Object.entries,
 
-    /** equals(a, b)
-    Compares `a` and `b` for deep equality and returns `true` or `false`.
-    **/
     equals,
 
     /** floor(n)
@@ -93,10 +72,6 @@ const library = {
     ```
     **/
     get,
-
-    /** id(object)
-    Returns `object`.
-    **/
     id,
 
     /** keys(object)
@@ -104,27 +79,9 @@ const library = {
     **/
     keys: Object.keys,
 
-    /** last()
-    Gets the last item from an array or array-like.
-    **/
     last,
-
-    /** matches(selector, object)
-    For filtering and pattern matching. Returns true where all the properties
-    of `selector` object are strictly equal to the same properties of `object`.
-    Note that `object` may have more properties than `selector`.
-    **/
     matches,
-
-    /** noop()
-    Return undefined.
-    **/
     noop,
-
-    /*
-    nothing
-    A frozen array/stream-like object representing no value.
-    */
     nothing,
 
     /** notify(path, object)
@@ -132,28 +89,6 @@ const library = {
     **/
     //notify,
 
-    /** observe(path, object)
-    Returns a stream of mutations to `path` in `object`. Consume mutations
-    with the stream's `.each()` method.
-
-    ```js
-    ${ observe('title', data).map(slugify) }
-    ```
-
-    Streams may be stopped with the method `.stop()`:
-
-    ```js
-    stream.stop();
-    ```
-
-    Renderers (which are exposed as `this` inside templates), have a `.done()`
-    method that calls a subscriber's `.stop()` method when the render is
-    stopped. This pattern observes `data.title` until the next render:
-
-    ```js
-    this.done(observe('title', data).each((title) => console.log(title)));
-    ```
-    **/
     observe,
 
     /* Data(object)
@@ -162,12 +97,8 @@ const library = {
     */
     Data: Observer,
 
-    /* overload(fn, object) */
     overload,
 
-    /** rect(node)
-    **/
-    //rect,
 
     /** round(n, value)
     Round `value` to the nearest multiple of `n`.
@@ -176,27 +107,13 @@ const library = {
         return Math.round(value / n) * n;
     },
 
-    /**
-    paramify(object)
-    Turns an object with enumerable properties into a (native) URL search
-    parameters object, rejecting undefined properties and flattening out
-    array values.
-    **/
     paramify,
-
-    /** slugify(string)
-    Returns the slug of `string`.
-    **/
     slugify,
 
     /** Stream(fn)
     Returns a stream of values.
     **/
     Stream,
-
-    /** sum(b, a)
-    Returns the sum of two values.
-    **/
     sum,
 
     /**

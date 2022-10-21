@@ -1,8 +1,9 @@
 
 /**
 paramify(object)
+
 Turns an object with enumerable properties into a native URL search
-parameters object, rejecting undefined properties and flattening out
+parameters object. Rejects undefined properties and flattens out
 array values.
 **/
 

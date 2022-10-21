@@ -1,0 +1,31 @@
+<nav>
+    <a class="nav-button button" href="/"></a>
+    <hr/>
+    <a class="nav-button button" href="/"><code>&lt;element-template&gt;</code></a>
+    <a class="nav-button button" href="/"><code>&lt;template-include&gt;</code></a>
+    <hr/>
+    <a class="nav-button button" href="/">Template functions</a>
+
+    ${ include('./nav-buttons.literal', (await comments(
+        '../modules/library.js',
+
+        '../../fn/modules/by.js',
+        '../../fn/modules/clamp.js',
+        '../../fn/modules/equals.js',
+        '../../fn/modules/id.js',
+        '../../fn/modules/last.js',
+        '../../fn/modules/matches.js',
+        '../../fn/modules/noop.js',
+        '../../fn/modules/nothing.js',
+        '../../fn/modules/overload.js',
+        '../../fn/modules/slugify.js',
+        //'../../fn/observer/observe.js',
+        '../../fn/modules/sum.js',
+
+        '../../dom/modules/delegate.js',
+        '../../dom/modules/events.js',
+        '../../dom/modules/trigger.js',
+        '../modules/library/paramify.js',
+        '../../dom/modules/parse-length.js'
+    )).sort(by(get('name')))) }
+</nav>
