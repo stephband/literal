@@ -58,6 +58,9 @@ export default function defineElement(tag, src, props, log = '') {
             // Reset internal data to its observer proxy so that changes to
             // host attributes and properties trigger updates
             internals.data = Data(data);
+
+            // We must render synchronously here else rendered 'slotchange'
+            // listeners miss the first slotchange
             renderer.push(data);
             setLoadingAsync(this);
         },

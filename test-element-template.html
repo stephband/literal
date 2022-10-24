@@ -41,12 +41,41 @@
             import:  ${ expect(data.import), data.import }
         </pre>
     </template>
+
+    <template id="item">
+        <li>${ data.textContent }</li>
+    </template>
+
+    <template is="element-template" tag="test-element-2">
+        <link rel="stylesheet" href="./test/defined-element.css" />
+        <link rel="stylesheet" href="./test/declared-element.css" />
+
+        <slot></slot>
+
+        <hr/>
+
+        <!-- Test if we can read slotchanges, query slotted content, and
+             render data about it -->
+        <ul>${
+            events('slotchange', shadow)
+            .map((e) => e.target.assignedNodes())
+            .map((nodes) => nodes.map(include('#item')))
+        }</ul>
+
+        ${
+            events('slotchange', shadow)
+            .each((e) => {
+                expect(element.id);
+                expect(shadow.querySelector('ul').children.length);
+            })
+        }
+    </template>
 </head>
 
 <body>
     <script type="module">
     import nothing from "../fn/modules/nothing.js";
-    import test from "../fn/modules/test.js";
+    import test    from "../fn/modules/test.js";
     import library from "./modules/library-dom.js";
 
     test('<template is="element-template">', [
@@ -89,7 +118,10 @@
 
         'test-element-2',
         'pre-9', // Number will change if tests added previously to this
-        {}       // shadow node
+        {},      // shadow node
+
+        'test-element-3',
+        5
     ], function(expect, done) {
         const element = document.getElementById('test-element');
 
@@ -109,4 +141,12 @@
     </test-element>
 
     <test-element id="test-element-2"></test-element>
+
+    <test-element-2 id="test-element-3">
+        Text node
+        <h4>Header element</h4>
+        Text node
+        <p>Paragraph element</p>
+        Text node
+    </test-element-2>
 </body>

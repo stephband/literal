@@ -74,9 +74,9 @@ function toValues(last, record) {
     }
 }
 
-function renderValue(renderer, values, n, object) {
+function renderValue(renderer, args, values, n, object, isRender = false) {
     if (object && typeof object === 'object') {
-        // Avoid having properties of object registered as observers
+        // Avoid having property gets registered as observers
         object = getTarget(object);
 
         // Is object a Promise?
@@ -87,7 +87,7 @@ function renderValue(renderer, values, n, object) {
                 // You can't stop a promises, but we can flag it to be ignored
                 if (object.stopped) { return; }
                 remove(promises, object);
-                return renderValue(renderer, values, n, value);
+                return renderValue(renderer, args, values, n, value, true);
             });
             promises.push(object);
             return;
@@ -97,7 +97,7 @@ function renderValue(renderer, values, n, object) {
         if (object.each) {
             const streams = renderer.streams || (renderer.streams = []);
             values[n] = '';
-            object.each((value) => renderValue(renderer, values, n, value));
+            object.each((value) => renderValue(renderer, args, values, n, value, true));
             streams.push(object);
             return;
         }
@@ -114,9 +114,9 @@ function renderValue(renderer, values, n, object) {
 
         // Is object an array?
         if (typeof object.length === 'number') {
-            let n = object.length;
-            while (n--) {
-                renderValue(renderer, object, n, object[n]);
+            let i = object.length;
+            while (i--) {
+                renderValue(renderer, args, object, i, object[i]);
             }
         }
     }
@@ -124,9 +124,9 @@ function renderValue(renderer, values, n, object) {
     values[n] = object;
 
     // If the isRender flag is set, send to render
-    if (renderer.status !== 'rendering') {
+    if (isRender) {
         // Todo: work out a way of cueing this render
-        renderer.render.apply(renderer, values);
+        renderer.render.apply(renderer, args);
     }
 }
 
@@ -220,7 +220,7 @@ assign(Renderer.prototype, {
         this.status = 'rendering';
 
         VALUES = {};
-        const records = data ? Gets(data) : nothing ;
+        const records = Gets(data) ;
         records.reduce(toValues);
 
         // literal the template. Todo: note that we are potentially leaving
@@ -258,7 +258,7 @@ assign(Renderer.prototype, {
         let n = 0;
 
         while (strings[++n] !== undefined) {
-            renderValue(this, arguments, n, arguments[n]);
+            renderValue(this, arguments, arguments, n, arguments[n]);
         }
 
         this.render.apply(this, arguments);
