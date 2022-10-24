@@ -4,7 +4,6 @@ import { getInternals as Internals } from '../../dom/modules/element.js';
 export function addLoading(element) {
     const internals = Internals(element);
     internals.loading = (internals.loading || 0) + 1;
-    //console.log(internals.loading, element);
 }
 
 export function removeLoading(element) {
@@ -27,7 +26,11 @@ export function removeLoading(element) {
     }
 
     --internals.loading;
-    //console.log(internals.loading, element);
+}
+
+export function setLoading(element) {
+    const internal = Internals(element);
+    internal.loading && element.setAttribute('loading', '');
 }
 
 export function setLoadingAsync(element) {
@@ -48,12 +51,12 @@ export default {
     /**
     loading=""
     Read-only (pseudo-read-only) boolean attribute indicating status of
-    `src` and `data` requests.
+    requested assets.
     **/
 
     /**
     .loading
-    Read-only boolean indicating status of `src` and `data` requests.
+    Read-only boolean indicating status of requested assets.
     **/
 
     loading: {
