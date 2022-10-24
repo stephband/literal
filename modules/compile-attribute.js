@@ -21,17 +21,36 @@ const compileBoolean = (attribute, template, path, source, parameters, consts, d
     new BooleanRenderer(source, consts, template, path, attribute.ownerElement, attribute.localName, debug, parameters);
 
 const compileAttributeByName = overload(get('localName'), {
-    'disabled': compileBoolean,
-    'hidden':   compileBoolean,
-    'required': compileBoolean,
+    async:          compileBoolean,
+    autofocus:      compileBoolean,
+    autoplay:       compileBoolean,
+    controls:       compileBoolean,
+    defer:          compileBoolean,
+    disabled:       compileBoolean,
+    formnovalidate: compileBoolean,
+    hidden:         compileBoolean,
+    ismap:          compileBoolean,
+    itemscope:      compileBoolean,
+    loop:           compileBoolean,
+    multiple:       compileBoolean,
+    muted:          compileBoolean,
+    nomodule:       compileBoolean,
+    novalidate:     compileBoolean,
+    open:           compileBoolean,
+    readonly:       compileBoolean,
+    required:       compileBoolean,
+    reversed:       compileBoolean,
+    selected:       compileBoolean,
+    // Default is a boolean attribute, but we cant use the key 'default' here
+    //default:        compileBoolean,
 
-    'checked': (attribute, template, path, source, parameters, consts, debug) =>
+    checked: (attribute, template, path, source, parameters, consts, debug) =>
         new CheckedRenderer(source, consts, template, path, attribute.ownerElement, null, debug, parameters),
 
-    'class': (attribute, template, path, source, parameters, consts, debug) =>
+    class: (attribute, template, path, source, parameters, consts, debug) =>
         new TokensRenderer(source, consts, template, path, attribute.ownerElement, 'class', debug, parameters),
 
-    'datetime': function compileDatetime(attribute, template, path, source, parameters, consts, debug) {
+    datetime: function compileDatetime(attribute, template, path, source, parameters, consts, debug) {
         if (window.DEBUG) { console.log('Todo: compile datetime attribute'); }
     },
 
@@ -44,11 +63,11 @@ const compileAttributeByName = overload(get('localName'), {
         return new DOMRenderer(decode(source), consts, template, path, node, 'innerHTML', debug, parameters);
     },
 
-    'value': (attribute, template, path, source, parameters, consts, debug) =>
+    value: (attribute, template, path, source, parameters, consts, debug) =>
         // source, consts, template, path, node, name, message, parameters
         new ValueRenderer(source, consts, template, path, attribute.ownerElement, null, debug, parameters),
 
-    'default': (attribute, template, path, source, parameters, consts, debug) =>
+    default: (attribute, template, path, source, parameters, consts, debug) =>
         // source, consts, template, path, node, name, message, parameters
         new AttributeRenderer(source, consts, template, path, attribute.ownerElement, attribute.localName, debug, parameters)
 });
