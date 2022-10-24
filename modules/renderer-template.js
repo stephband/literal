@@ -163,12 +163,12 @@ export default function TemplateRenderer(template, parameters) {
 }
 
 assign(TemplateRenderer.prototype, {
-    push: function(data) {
+    push: function(object) {
         if (this.status === 'stopped') {
             throw new Error('Renderer is stopped, cannot .push() data');
         }
 
-        data = Observer(data);
+        const data = Observer(object) || object;
         if (this.data === data) { return; }
 
         this.data = data;
@@ -180,7 +180,9 @@ assign(TemplateRenderer.prototype, {
         // children are appended to the DOM synchronously around line 230. And
         // perhaps this is for the best: why cue multiple renderers when you can
         // cue just this one, after all? Hmmm.
-        cue(this);
+        //cue(this);
+        // Nah lets not cue here ...
+        this.update();
     },
 
     update: function() {

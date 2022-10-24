@@ -26,7 +26,7 @@ function toRenderer(value) {
         value instanceof Node ? value :
         value instanceof TemplateRenderer ? value :
         toText(value) :
-        toText(value) ;
+    toText(value) ;
 }
 
 function pushContents(contents, object) {
@@ -41,6 +41,7 @@ function pushContents(contents, object) {
 }
 
 function composeDOM(contents, object) {
+    // Flatten nested arrays of renderables
     if (Array.isArray(object)) {
         return object.reduce(composeDOM, contents);
     }
@@ -65,34 +66,22 @@ function toContent(object) {
 
 function setContents(first, last, contents, state) {
     let count = 0;
-    const nodes = contents.map(toContent);
 
     // Remove existing nodes, leaving first and last alone
     if (first.nextSibling && last.previousSibling !== first) {
         count += removeNodes(first.nextSibling, last.previousSibling);
     }
 
-    // Set first text node
-    if (typeof contents[0] === 'string') {
-        count += setNodeValue(first, nodes.shift());
-    }
-    else {
-        count += setNodeValue(first, '');
-    }
+    // Set first text node, contents[0] is always a string
+    count += setNodeValue(first, contents[0]);
 
-    // Set last text node
-    if (typeof nodes[nodes.length - 1] === 'string') {
-        count += setNodeValue(last, nodes.pop());
-    }
-    else {
-        count += setNodeValue(last, '');
-    }
+    // Set last text node, contents[-1] is always a string
+    count += setNodeValue(last, contents[contents.length - 1]);
+
+    const nodes = contents.map(toContent).slice(1, contents.length - 1);
 
     if (nodes.length) {
         first.after.apply(first, nodes);
-        /*state === 'dom' && contents.forEach((renderer) =>
-            (typeof renderer === 'object' && renderer.connect && renderer.connect())
-        );*/
         count += contents.length;
     }
 
@@ -144,6 +133,8 @@ assign(DOMRenderer.prototype, Renderer.prototype, {
 
     render: function(strings) {
         let n = 0;
+
+        this.contents.length = 0;
         this.contents.push(strings[0]);
 
         while (strings[++n] !== undefined) {
