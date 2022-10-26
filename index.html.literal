@@ -17,11 +17,11 @@
         ${ include("../bolt/templates/header.literal", "./package.json") }
     </header>
 
-    ${ include('./templates/element.literal', (await comments(
+    ${ include('./includes/element.literal', (await comments(
         './element-template.js'
     ))) }
 
-    ${ include("./templates/nav.literal", "./package.json") }
+    ${ include("./includes/nav.literal", "./package.json") }
 
     <script type="module">
         import './module.js';

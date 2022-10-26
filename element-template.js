@@ -52,9 +52,9 @@ that must be loaded:
 </template>
 ```
 
-The `loading` attribute is a hook for styling to avoid a flash of unstyled
-content (which otherwise can happen between the time of element upgrade
-and the time the stylesheets finish loading and parsing).
+The `loading` attribute provides a hook for styling to avoid a flash of unstyled
+content (which can happen between the time of element upgrade and the time the
+stylesheets finish loading and parsing), or to show a loading indicator.
 
 ### Custom attributes
 

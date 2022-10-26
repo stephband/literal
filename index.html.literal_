@@ -67,23 +67,23 @@
         ${ include("../bolt/templates/header.literal", "./package.json") }
     </header>
 
-    ${ include("./templates/section.literal", await comments("./module.js")) }
-    ${ include("./templates/element.literal", await comments("./elements/template-include.js")) }
-    ${ include("./templates/section.literal", await comments("./modules/to-text.js")) }
-    ${ include("./templates/section.literal", await comments(
+    ${ include("./includes/section.literal", await comments("./module.js")) }
+    ${ include("./includes/element.literal", await comments("./elements/template-include.js")) }
+    ${ include("./includes/section.literal", await comments("./modules/to-text.js")) }
+    ${ include("./includes/section.literal", await comments(
         "./modules/library.js",
         "./library/location.js",
         "./library/template-include.js",
         "./library/include-html.js",
         "../dom/modules/parse-length.js"
     )) }
-    ${ include("./templates/section.literal", await comments("./library/print.js")) }
+    ${ include("./includes/section.literal", await comments("./library/print.js")) }
 
     <div class="@0-x3" style="grid-column-end: span 4;">
         <h2>Literal in JS</h2>
     </div>
 
-    ${ include("./templates/constructor.literal", await comments("./renderers/template-renderer.js")) }
+    ${ include("./includes/constructor.literal", await comments("./renderers/template-renderer.js")) }
 
     <script type="module">
         import './module.js';
