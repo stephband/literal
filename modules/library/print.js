@@ -1,28 +1,24 @@
 
 /**
-Template debugging
+print(context, data)
 
-Where `window.DEBUG` is truthy at the time Literal is loaded (or where Literal
-is built into a module with the environment variable `DEBUG` set to `true`),
-the function `print(object)` prints an object or objects to the DOM as a debug
-message.
+Where `window.DEBUG` was falsy at the time Literal is imported, `print()` does
+nothing.
+
+Prints an object or objects to the DOM as a debug message.
 
 ```html
-<template id="debug">
-    <!-- `this` is the renderer -->
-    ${ print(this, data) }
-</template>
-
-<template-include src="#debug" data="./package.json"></template-include>
+<template id="debug">${ print(data) }</template>
+<template-include src="#debug" data="../package.json"></template-include>
 ```
 
 Renders as:
 
 <template id="debug">
-    ${ print(this, data) }
+    ${ print(data) }
 </template>
 
-<template-include src="#debug" data="./package.json"></template-include>
+<template-include src="#debug" data="../../package.json"></template-include>
 
 <!--
 Messages should be styled with the print stylesheet:
@@ -31,7 +27,7 @@ Messages should be styled with the print stylesheet:
 @import "http://stephen.band/literal/modules/library/print.css";
 ```-->
 
-Where `window.DEBUG` is false, `print()` does nothing.
+
 **/
 
 import noop          from '../../../fn/modules/noop.js';
@@ -40,7 +36,7 @@ import { getTarget } from '../../../fn/observer/observer.js';
 function toHTML(object) {
     // Print different kinds of objects differently
     if (typeof object === 'object' && object.template) {
-        return '<strong>' + object.id + '</strong> #' + object.template + ' <small>&gt; ' + object.path.replace('.', ' &gt; ') + '</small> <strong class="literal-count">' + object.count + '</strong>';
+        return '<strong>' + object.id + '</strong> ' + object.template + ' <small>&gt; ' + object.path + '</small> <!--strong class="literal-count">' + object.count + '</strong-->';
     }
 
     if (typeof object === 'object' && object.message) {

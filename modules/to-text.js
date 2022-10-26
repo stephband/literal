@@ -2,17 +2,20 @@
 /**
 Template tags
 
-Literal template tags can contain any valid JavaScript expression. The renderer
-decides how to render the evaluated output of each tag based on its type and
-constructor. Where an expression evaluates to a promise, the promise resolves
-before being rendered.
+Template tags may contain any valid JavaScript expression. How their evaluated
+values are rendered into the DOM depends upon their type.
+
+Promises are resolved before they render, arrays are flattened and joined, and
+streams have their latest value continuously rendered. Literal flattens any
+combination of asynchronous values or collections. A _promise_ of a _stream_ of
+_arrays_ of _strings_ will render as concatted strings as they arrive.
 
 <table class="striped-table x-bleed">
     <thead>
         <tr>
             <th style="width:20%;">Type</th>
             <th>Expression</th>
-            <th style="width:30%;">Rendered as</th>
+            <th style="width:30%;">Renders as</th>
         </tr>
     </thead>
     <tbody>
@@ -21,7 +24,7 @@ before being rendered.
             <th><code>${ undefined }</code></th>
             <td>
                 <template id="value-undefined">${ undefined }</template>
-                <template-include src="#value-undefined"></template-include>
+                <template-include src="#value-undefined"data="{}"></template-include>
             </td>
         </tr>
         <tr>
@@ -29,7 +32,7 @@ before being rendered.
             <th><code>${ null }</code></th>
             <td>
                 <template id="value-null">${ null }</template>
-                <template-include src="#value-null"></template-include>
+                <template-include src="#value-null"data="{}"></template-include>
             </td>
         </tr>
         <tr>
@@ -37,7 +40,7 @@ before being rendered.
             <th><code>${ NaN }</code></th>
             <td>
                 <template id="value-nan">${ NaN }</template>
-                <template-include src="#value-nan"></template-include>
+                <template-include src="#value-nan"data="{}"></template-include>
             </td>
         </tr>
         <tr>
@@ -45,7 +48,7 @@ before being rendered.
             <th><code>${ 'Hello' }</code></th>
             <td>
                 <template id="value-string">${ 'Hello' }</template>
-                <template-include src="#value-string"></template-include>
+                <template-include src="#value-string"data="{}"></template-include>
             </td>
         </tr>
         <tr>
@@ -53,7 +56,7 @@ before being rendered.
             <th><code>${ 100.3 }</code></th>
             <td>
                 <template id="value-number">${ 100.3 }</template>
-                <template-include src="#value-number"></template-include>
+                <template-include src="#value-number"data="{}"></template-include>
             </td>
         </tr>
         <tr>
@@ -61,7 +64,7 @@ before being rendered.
             <th><code>${ Infinity }, ${ -Infinity }</code></th>
             <td>
                 <template id="value-infinity">${ Infinity }, ${ -Infinity }</template>
-                <template-include src="#value-infinity"></template-include>
+                <template-include src="#value-infinity"data="{}"></template-include>
             </td>
         </tr>
         <tr>
@@ -69,7 +72,7 @@ before being rendered.
             <th><code>${ function name(param) {} }</code></th>
             <td>
                 <template id="value-function">${ function name(param) {} }</template>
-                <template-include src="#value-function"></template-include>
+                <template-include src="#value-function"data="{}"></template-include>
             </td>
         </tr>
         <tr>
@@ -77,7 +80,7 @@ before being rendered.
             <th><code>${ (param) => {} }</code></th>
             <td>
                 <template id="value-arrow">${ (param) => {} }</template>
-                <template-include src="#value-arrow"></template-include>
+                <template-include src="#value-arrow"data="{}"></template-include>
             </td>
         </tr>
         <tr>
@@ -85,7 +88,7 @@ before being rendered.
             <th><code>${ /^regexp/ }</code></th>
             <td>
                 <template id="value-regexp">${ /^regexp/ }</template>
-                <template-include src="#value-regexp"></template-include>
+                <template-include src="#value-regexp"data="{}"></template-include>
             </td>
         </tr>
         <tr>
@@ -93,7 +96,7 @@ before being rendered.
             <th><code>${ Symbol('name') }</code></th>
             <td>
                 <template id="value-symbol">${ Symbol('name') }</template>
-                <template-include src="#value-symbol"></template-include>
+                <template-include src="#value-symbol"data="{}"></template-include>
             </td>
         </tr>
         <tr>
@@ -101,7 +104,7 @@ before being rendered.
             <th><code>${ [0, 1, 2, 3] }</code></th>
             <td>
                 <template id="value-array">${ [0, 1, 2, 3] }</template>
-                <template-include src="#value-array"></template-include>
+                <template-include src="#value-array"data="{}"></template-include>
             </td>
         </tr>
         <tr>
@@ -109,7 +112,7 @@ before being rendered.
             <th><code>${ { property: 'value' } }</code></th>
             <td>
                 <template id="value-object">${ { property: 'value' } }</template>
-                <template-include src="#value-object"></template-include>
+                <template-include src="#value-object"data="{}"></template-include>
             </td>
         </tr>
         <tr>
@@ -117,7 +120,24 @@ before being rendered.
             <th><code>${ document.createTextNode('Text') }</code></th>
             <td>
                 <template id="value-node">${ document.createTextNode('Text') }</template>
-                <template-include src="#value-node"></template-include>
+                <template-include src="#value-node"data="{}"></template-include>
+            </td>
+        </tr>
+        <tr>
+            <th>Promise</th>
+            <th><code>${ Promise.resolve('promise') }</code></th>
+            <td>
+                <template id="value-promise">${ Promise.resolve('promise') }</template>
+                <template-include src="#value-promise"data="{}"></template-include>
+            </td>
+        </tr>
+        <tr>
+            <th>Stream</th>
+            <th><code>${ events('pointermove', body)<br/>
+            &nbsp;&nbsp;.map((e) => e.pageX.toFixed(1)) }</code></th>
+            <td>
+                <template id="value-stream">${ events('pointermove', body).map((e) => e.pageX.toFixed(1)) }</template>
+                <template-include src="#value-stream"data="{}"></template-include>
             </td>
         </tr>
     </tbody>

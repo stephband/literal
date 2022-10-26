@@ -10,7 +10,7 @@
         window.DEBUG = { literal: false };
     </script>
 
-    <template is="element-template" tag="test-element" attribute="attribute" number="number" string="string" boolean="boolean" tokens="tokens" import="import">
+    <template is="element-template" tag="test-element" attribute="attribute" number="number" string="string" boolean="boolean" tokens="tokens" source="source">
         <!-- Test loading of 2 stylesheets -->
         <link rel="stylesheet" href="./test/defined-element.css" />
         <link rel="stylesheet" href="./test/declared-element.css" />
@@ -136,7 +136,7 @@
     import './element-template.js';
     </script>
 
-    <test-element string="string" number="1" boolean tokens="token-1 token-2" import="{}" id="test-element-1">
+    <test-element string="string" number="1" boolean tokens="token-1 token-2" source="{}" id="test-element-1">
         <p>Slotted content</p>
     </test-element>
 

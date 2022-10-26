@@ -76,7 +76,11 @@ export default {
         })
         .each((state) => {
             const { template, data } = state;
-            const renderer = privates.renderer = new TemplateRenderer(template, { element: marker.parentElement });
+            const renderer = privates.renderer = new TemplateRenderer(template, {
+                body: document.body,
+                element: marker.parentElement,
+                root: document.documentElement
+            });
 
             renderer.push(data);
             marker.replaceWith(renderer.content);

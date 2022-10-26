@@ -4,7 +4,6 @@
     "archive/",
     "deno/",
     "libs/",
-    "modules/",
-    "templates/"
+    "modules/"
   ]
 }

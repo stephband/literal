@@ -9,6 +9,11 @@ import TemplateRenderer     from './renderer-template.js';
 const assign  = Object.assign;
 
 /**
+body
+An alias of `document.body`.
+**/
+
+/**
 element
 The element enclosing the current template tag.
 **/
@@ -47,8 +52,10 @@ export default function defineElement(tag, src, props, log = '') {
                 src;
 
             const renderer = internals.renderer = new TemplateRenderer(template, {
+                body:     document.body,
                 element:  this,
                 host:     this,
+                root:     document.documentElement,
                 shadow:   shadow
             });
 

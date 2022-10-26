@@ -102,7 +102,7 @@ export default function DOMRenderer(source, consts, template, path, node, name, 
             (data) => include(url, data, parameters)
         ),
 
-        print: print
+        print: (...args) => print(this, ...args)
     }), consts, message);
 
     this.template = template;

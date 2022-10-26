@@ -182,684 +182,133 @@ of the <code>data</code> object inside the template. Here we define a boolean at
 </div>
 
 
-    <!--hr/>
-
-    <a class="nav-button button" href="/"><code>&lt;template-include&gt;</code></a>
-
-    $ { include('./templates/nav-buttons.literal', (await comments(
-        './modules/properties.js',
-        './template-include.js'
-    ))
-    .filter((doc) => doc.type === 'attribute')
-    .sort(by(get('name')))) }
-
-    <hr/-->
-
-    <section class="block @0-x1 @0-3x @1-x3 @1-4x @2-x3 @0-x-stretch">
-        <h2 id="library">Scope library</h2>
-
-        <h3 class="doctext-03">Objects</h3>
-
-        
-
-<div class="selector-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="selector-data">
-<h3 class="selector-docs-text-05 docs-text-05">
-    <a href="#selector-data">
-        <code class=" language-css"> data</code>
-    </a>
-</h3>
-
-<p>An object for storing state of the template.</p>
-
-</div>
-
-
-
-<div class="selector-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="selector-element">
-<h3 class="selector-docs-text-05 docs-text-05">
-    <a href="#selector-element">
-        <code class=" language-css"> element</code>
-    </a>
-</h3>
-
-<p>The element enclosing the current template tag.</p>
-
-</div>
-
-
-
-<div class="selector-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="selector-host">
-<h3 class="selector-docs-text-05 docs-text-05">
-    <a href="#selector-host">
-        <code class=" language-css"> host</code>
-    </a>
-</h3>
-
-<p>The custom element.</p>
-
-</div>
-
-
-
-<div class="selector-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="selector-nothing">
-<h3 class="selector-docs-text-05 docs-text-05">
-    <a href="#selector-nothing">
-        <code class=" language-css"> nothing</code>
-    </a>
-</h3>
-
-<p>A frozen array-like and stream-like object that contains no value.</p>
-
-</div>
-
-
-
-<div class="selector-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="selector-shadow">
-<h3 class="selector-docs-text-05 docs-text-05">
-    <a href="#selector-shadow">
-        <code class=" language-css"> shadow</code>
-    </a>
-</h3>
-
-<p>The custom element’s shadow root.</p>
-
-</div>
-
-
-
-        <br/>
-
-        <h3 class="doctext-03">Functions</h3>
-
-        
-
-<div class="constructor-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="constructor-stream">
-<h3 class="constructor-docs-text-05 docs-text-05">
-    <a href="#constructor-stream">
-        <code class=" language-js">Stream(<span class="param">fn</span>)</code>
-    </a>
-</h3>
-
-<p>Returns a stream of values.</p>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-assign">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-assign">
-        <code class=" language-js">assign(<span class="param">a</span>, <span class="param">b</span>, <span class="param">…</span>)</code>
-    </a>
-</h3>
-
-<p>Alias of <code>Object.assign()</code>.</p>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-by">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-by">
-        <code class=" language-js">by(<span class="param">fn</span>, <span class="param">a</span>, <span class="param">b</span>)</code>
-    </a>
-</h3>
-
-<p>For sorting arrays. Compares <code>fn(a)</code> against <code>fn(b)</code> and returns <code>-1</code>, <code>0</code> or
-<code>1</code>. Partially applicable. To sort an array of objects by their ids:</p>
-<pre><code>array<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token function">by</span><span class="token punctuation">(</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'id'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre>
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-ceil">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-ceil">
-        <code class=" language-js">ceil(<span class="param">n</span>)</code>
-    </a>
-</h3>
-
-<p>Alias of <code>Math.ceil()</code>.</p>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-clamp">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-clamp">
-        <code class=" language-js">clamp(<span class="param">min</span>, <span class="param">max</span>, <span class="param">n</span>)</code>
-    </a>
-</h3>
-
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-define">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-define">
-        <code class=" language-js">define(<span class="param"></span>)</code>
-    </a>
-</h3>
-
-<p>Alias of <code>Object.defineProperties()</code>.</p>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-delegate">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-delegate">
-        <code class=" language-js">delegate(<span class="param">map</span>)</code>
-    </a>
-</h3>
-
-<p>Takes an object map of functions keyed to selectors, and returns a function that
-handles event objects, delegating them to the first function whose selector 
-matches the event target. Functions are passed the target node and the event 
-object, plus any other arguments passed to the handler.</p>
-<pre><code><span class="token function">delegate</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-    <span class="token string">'button'</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">button<span class="token punctuation">,</span> event</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span></code></pre>
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-entries">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-entries">
-        <code class=" language-js">entries(<span class="param">object</span>)</code>
-    </a>
-</h3>
-
-<p>Alias of <code>Object.entries()</code>.</p>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-equals">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-equals">
-        <code class=" language-js">equals(<span class="param">a</span>, <span class="param">b</span>)</code>
-    </a>
-</h3>
-
-<p>Compares <code>a</code> and <code>b</code> for deep equality and returns <code>true</code> where they are equal,
-otherwise false.</p>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-events">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-events">
-        <code class=" language-js">events(<span class="param">type</span>, <span class="param">node</span>)</code>
-    </a>
-</h3>
-
-<p>Returns a mappable stream of events heard on <code>node</code>:</p>
-<pre><code class="language-js"><span class="token keyword">var</span> stream <span class="token operator">=</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> document<span class="token punctuation">.</span>body<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'target'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">node</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token comment">// Do something with nodes</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-<p>Stopping the stream removes the event listeners:</p>
-<pre><code class="language-js">stream<span class="token punctuation">.</span><span class="token function">stop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-<p>The first parameter may also be an options object, which must have a <code>type</code>
-property. The <code>select: &#39;...&#39;</code> property allows for delegation of an event from
-the selected target. Other properties, eg. <code>passive: true</code> are passed to
-addEventListener options.</p>
-<pre><code class="language-js"><span class="token keyword">var</span> stream <span class="token operator">=</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'scroll'</span><span class="token punctuation">,</span> passive<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> select<span class="token operator">:</span> <span class="token string">''</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> document<span class="token punctuation">.</span>body<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-floor">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-floor">
-        <code class=" language-js">floor(<span class="param">n</span>)</code>
-    </a>
-</h3>
-
-<p>Alias of <code>Math.floor()</code>.</p>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-get">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-get">
-        <code class=" language-js">get(<span class="param">path</span>, <span class="param">object</span>)</code>
-    </a>
-</h3>
-
-<p>Gets the value of <code>path</code> in <code>object</code>, where <code>path</code> is a string in JS
-dot-notation. Where a path does not lead to a value, returns <code>undefined</code>:</p>
-<pre><code><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'path.to.value'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span>       <span class="token comment">// undefined</span></code></pre><p>Numbers are accepted as path components:</p>
-<pre><code><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'array.0'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
-    array<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'first'</span><span class="token punctuation">,</span> <span class="token string">'second'</span><span class="token punctuation">]</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span>                             <span class="token comment">// 'first'</span></code></pre>
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-id">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-id">
-        <code class=" language-js">id(<span class="param">value</span>)</code>
-    </a>
-</h3>
-
-<p>Returns <code>value</code>.</p>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-keys">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-keys">
-        <code class=" language-js">keys(<span class="param">object</span>)</code>
-    </a>
-</h3>
-
-<p>Alias of <code>Object.keys()</code>.</p>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-last">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-last">
-        <code class=" language-js">last(<span class="param">array</span>)</code>
-    </a>
-</h3>
-
-<p>Returns the last value in an array.</p>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-matches">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-matches">
-        <code class=" language-js">matches(<span class="param">selector</span>, <span class="param">object</span>)</code>
-    </a>
-</h3>
-
-<p>For filtering and pattern matching. Returns true where all the properties
-of <code>selector</code> object are strictly equal to the same properties of <code>object</code>.
-Note that <code>object</code> may have more properties than <code>selector</code>.</p>
-<pre><code><span class="token keyword">const</span> vegetarian <span class="token operator">=</span> menu<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token function">matches</span><span class="token punctuation">(</span><span class="token punctuation">{</span> vegetable<span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-noop">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-noop">
-        <code class=" language-js">noop(<span class="param"></span>)</code>
-    </a>
-</h3>
-
-<p>Does nothing, returns undefined.</p>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-notify">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-notify">
-        <code class=" language-js">notify(<span class="param">path</span>, <span class="param">object</span>)</code>
-    </a>
-</h3>
-
-<p>Force observer to register a mutation at <code>path</code> of <code>object</code>.</p>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-overload">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-overload">
-        <code class=" language-js">overload(<span class="param">fn</span>, <span class="param">map</span>)</code>
-    </a>
-</h3>
-
-<p>For function overloading. Takes a <code>fn</code> that returns a string key, and a <code>map</code>
-object of functions stored against keys. Returns a function that calls the
-function at the key generated by calling <code>fn()</code> with all arguments.</p>
-<p>Where a key is not in <code>map</code> but <code>map</code> contains the property <code>&#39;default&#39;</code>,
-that default function is called. Where there is no default function an error
-is thrown.</p>
-<pre><code><span class="token keyword">var</span> handleEvent <span class="token operator">=</span> <span class="token function">overload</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> e<span class="token punctuation">.</span>type<span class="token punctuation">,</span> <span class="token punctuation">{</span>
-    <span class="token function-variable function">click</span><span class="token operator">:</span>   <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><span class="token operator">...</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token function-variable function">input</span><span class="token operator">:</span>   <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><span class="token operator">...</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token function-variable function">default</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><span class="token operator">...</span><span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-paramify">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-paramify">
-        <code class=" language-js">paramify(<span class="param">object</span>)</code>
-    </a>
-</h3>
-
-<p>Turns an object with enumerable properties into a native URL search
-parameters object. Rejects undefined properties and flattens out
-array values.</p>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-round">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-round">
-        <code class=" language-js">round(<span class="param">n</span>, <span class="param">value</span>)</code>
-    </a>
-</h3>
-
-<p>Round <code>value</code> to the nearest multiple of <code>n</code>.</p>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-slugify">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-slugify">
-        <code class=" language-js">slugify(<span class="param">string</span>)</code>
-    </a>
-</h3>
-
-<p>Replaces any series of non-word characters with a <code>&#39;-&#39;</code> and lowercases the rest.</p>
-<pre><code class="language-js">    <span class="token function">slugify</span><span class="token punctuation">(</span><span class="token string">'Party on #mydudes!'</span><span class="token punctuation">)</span> <span class="token comment">// 'party-on-mydudes'</span></code></pre>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-sum">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-sum">
-        <code class=" language-js">sum(<span class="param">a</span>, <span class="param">b</span>)</code>
-    </a>
-</h3>
-
-<p>Returns the sum of <code>b + a</code>.</p>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-trigger">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-trigger">
-        <code class=" language-js">trigger(<span class="param">type</span>, <span class="param">node</span>)</code>
-    </a>
-</h3>
-
-<p>Triggers event of <code>type</code> on <code>node</code>. Returns <code>false</code> if the event default was
-prevented, otherwise <code>true</code>.</p>
-<pre><code><span class="token function">trigger</span><span class="token punctuation">(</span><span class="token string">'activate'</span><span class="token punctuation">,</span> node<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre><p>Alternatively the first argument may be an object with a <code>type</code> property, and
-optionally <code>details</code>, which must be an object, and <code>bubbles</code>, <code>cancelable</code> and
-<code>composed</code>, which determine the behaviour of the event.</p>
-<pre><code><span class="token function">trigger</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-    type<span class="token operator">:</span>       <span class="token string">'activate'</span><span class="token punctuation">,</span>
-    detail<span class="token operator">:</span>     <span class="token punctuation">{</span><span class="token operator">...</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
-    bubbles<span class="token operator">:</span>    <span class="token boolean">true</span><span class="token punctuation">,</span>
-    cancelable<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
-    composed<span class="token operator">:</span>   <span class="token boolean">false</span>
-<span class="token punctuation">}</span><span class="token punctuation">,</span> node<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-values">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-values">
-        <code class=" language-js">values(<span class="param"></span>)</code>
-    </a>
-</h3>
-
-<p>Alias of <code>Object.values()</code>.</p>
-
-</div>
-
-
-
-        
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-px">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-px">
-        <code class=" language-js">px(<span class="param">value</span>)</code>
-    </a>
-</h3>
-
-<p>Takes a number in pixels or a string of the form <code>&#39;10px&#39;</code>, <code>&#39;10em&#39;</code>, <code>&#39;10rem&#39;</code>,
-<code>&#39;100vw&#39;</code>, <code>&#39;100vh&#39;</code>, <code>&#39;100vmin&#39;</code> or <code>&#39;100vmax&#39;</code>, and returns a numeric value
-in pixels.</p>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-em">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-em">
-        <code class=" language-js">em(<span class="param">value</span>)</code>
-    </a>
-</h3>
-
-<p>Takes numeric value in px, or CSS length of the form <code>&#39;10px&#39;</code>, and returns
-a numeric value in <code>em</code>, eg. <code>0.625</code>. Depends on the user defined browser
-<code>font-size</code>.</p>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-rem">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-rem">
-        <code class=" language-js">rem(<span class="param">value</span>)</code>
-    </a>
-</h3>
-
-<p>Takes numeric value in px, or CSS length of the form <code>&#39;10px&#39;</code>, and returns
-a numeric value in <code>rem</code>, eg. <code>0.625</code>. Depends on the <code>font-size</code> of the
-documentElement.</p>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-vw">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-vw">
-        <code class=" language-js">vw(<span class="param">value</span>)</code>
-    </a>
-</h3>
-
-<p>Takes number in pixels or CSS length of the form <code>&#39;10em&#39;</code> and returns a
-numeric value in <code>vw</code>, eg. <code>120</code>. Depends on the width of the viewport at
-render time.</p>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-vh">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-vh">
-        <code class=" language-js">vh(<span class="param">value</span>)</code>
-    </a>
-</h3>
-
-<p>Takes number in pixels or CSS length of the form <code>&#39;10em&#39;</code> and returns a
-numeric value in <code>vh</code>, eg. <code>120</code>. Depends on the height of the viewport at
-render time.</p>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-vmin">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-vmin">
-        <code class=" language-js">vmin(<span class="param">value</span>)</code>
-    </a>
-</h3>
-
-<p>Takes number in pixels or CSS length of the form <code>&#39;10em&#39;</code> and returns a
-numeric value in <code>vmin</code>, eg. <code>120</code>. Depends on the minimum dimension of the
-viewport at render time.</p>
-
-</div>
-
-
-
-<div class="function-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="function-vmax">
-<h3 class="function-docs-text-05 docs-text-05">
-    <a href="#function-vmax">
-        <code class=" language-js">vmax(<span class="param">value</span>)</code>
-    </a>
-</h3>
-
-<p>Takes number in pixels or CSS length of the form <code>&#39;10em&#39;</code> and returns a
-numeric value in <code>vmax</code>, eg. <code>120</code>. Depends on the maximum dimension of the
-viewport at render time.</p>
-
-</div>
-
-
-    </section>
-
     <nav>
-    <a class="nav-button button" href="#template-is-element-template"><code>&lt;element-template&gt;</code></a>
+    <h4>Elements</h4>
+
+    <a class="nav-button button" href="/#template-is-element-template"><code>&lt;element-template&gt;</code></a>
+    <a class="nav-button button" href="/#">Declare an element</a>
+    <a class="nav-button button" href="/#">Declare an attribute</a>
 
     
 
-    <a class="nav-button button block" href="#attribute-src"><code>src</code></a>
+    <a class="nav-button button block" href="../#attribute-src"><code>src</code></a>
 
-    <a class="nav-button button block" href="#attribute-tag"><code>tag</code></a>
-
-
-
-    <hr/>
-
-    <a class="nav-button button" href="/"><code>&lt;template-include&gt;</code></a>
-
-    
-
-    <a class="nav-button button block" href="#attribute-data"><code>data</code></a>
-
-    <a class="nav-button button block" href="#attribute-loading"><code>loading</code></a>
-
-    <a class="nav-button button block" href="#attribute-src"><code>src</code></a>
-
-
-
-    <hr/>
-
-    <a class="nav-button button block" href="/"><code>data</code></a>
-    <a class="nav-button button block" href="/"><code>element</code></a>
-    <a class="nav-button button block" href="/"><code>host</code></a>
-    <a class="nav-button button block" href="/"><code>shadow</code></a>
-    
-
-    <a class="nav-button button block" href="#selector-nothing"><code> nothing</code></a>
+    <a class="nav-button button block" href="../#attribute-tag"><code>tag</code></a>
 
 
 
     <br/>
 
-    
-
-    <a class="nav-button button block" href="#constructor-stream"><code>Stream</code></a>
-
-    <a class="nav-button button block" href="#function-assign"><code>assign</code></a>
-
-    <a class="nav-button button block" href="#function-by"><code>by</code></a>
-
-    <a class="nav-button button block" href="#function-ceil"><code>ceil</code></a>
-
-    <a class="nav-button button block" href="#function-clamp"><code>clamp</code></a>
-
-    <a class="nav-button button block" href="#function-define"><code>define</code></a>
-
-    <a class="nav-button button block" href="#function-delegate"><code>delegate</code></a>
-
-    <a class="nav-button button block" href="#function-entries"><code>entries</code></a>
-
-    <a class="nav-button button block" href="#function-equals"><code>equals</code></a>
-
-    <a class="nav-button button block" href="#function-events"><code>events</code></a>
-
-    <a class="nav-button button block" href="#function-floor"><code>floor</code></a>
-
-    <a class="nav-button button block" href="#function-get"><code>get</code></a>
-
-    <a class="nav-button button block" href="#function-id"><code>id</code></a>
-
-    <a class="nav-button button block" href="#function-keys"><code>keys</code></a>
-
-    <a class="nav-button button block" href="#function-last"><code>last</code></a>
-
-    <a class="nav-button button block" href="#function-matches"><code>matches</code></a>
-
-    <a class="nav-button button block" href="#function-noop"><code>noop</code></a>
-
-    <a class="nav-button button block" href="#function-notify"><code>notify</code></a>
-
-    <a class="nav-button button block" href="#function-overload"><code>overload</code></a>
-
-    <a class="nav-button button block" href="#function-paramify"><code>paramify</code></a>
-
-    <a class="nav-button button block" href="#function-round"><code>round</code></a>
-
-    <a class="nav-button button block" href="#function-slugify"><code>slugify</code></a>
-
-    <a class="nav-button button block" href="#function-sum"><code>sum</code></a>
-
-    <a class="nav-button button block" href="#function-trigger"><code>trigger</code></a>
-
-    <a class="nav-button button block" href="#function-values"><code>values</code></a>
-
-
+    <a class="nav-button button" href="/"><code>&lt;template-include&gt;</code></a>
 
     
 
-    <a class="nav-button button block" href="#function-px"><code>px</code></a>
+    <a class="nav-button button block" href="../#attribute-data"><code>data</code></a>
 
-    <a class="nav-button button block" href="#function-em"><code>em</code></a>
+    <a class="nav-button button block" href="../#attribute-loading"><code>loading</code></a>
 
-    <a class="nav-button button block" href="#function-rem"><code>rem</code></a>
+    <a class="nav-button button block" href="../#attribute-src"><code>src</code></a>
 
-    <a class="nav-button button block" href="#function-vw"><code>vw</code></a>
 
-    <a class="nav-button button block" href="#function-vh"><code>vh</code></a>
 
-    <a class="nav-button button block" href="#function-vmin"><code>vmin</code></a>
+    <hr/>
 
-    <a class="nav-button button block" href="#function-vmax"><code>vmax</code></a>
+    <h4>Template tags</h4>
+    <a class="nav-button button" href="./templates">Evaluation table</a>
+
+    <h4>Template objects</h4>
+
+    
+
+    <a class="nav-button button block" href="./#selector-data"><code> data</code></a>
+
+    <a class="nav-button button block" href="./#selector-body"><code> body</code></a>
+
+    <a class="nav-button button block" href="./#selector-element"><code> element</code></a>
+
+    <a class="nav-button button block" href="./#selector-host"><code> host</code></a>
+
+    <a class="nav-button button block" href="./#selector-shadow"><code> shadow</code></a>
+
+    <a class="nav-button button block" href="./#selector-nothing"><code> nothing</code></a>
+
+
+
+    <h4>Template functions</h4>
+
+    
+
+    <a class="nav-button button block" href="./#constructor-stream"><code>Stream</code></a>
+
+    <a class="nav-button button block" href="./#function-assign"><code>assign</code></a>
+
+    <a class="nav-button button block" href="./#function-by"><code>by</code></a>
+
+    <a class="nav-button button block" href="./#function-ceil"><code>ceil</code></a>
+
+    <a class="nav-button button block" href="./#function-clamp"><code>clamp</code></a>
+
+    <a class="nav-button button block" href="./#function-define"><code>define</code></a>
+
+    <a class="nav-button button block" href="./#function-delegate"><code>delegate</code></a>
+
+    <a class="nav-button button block" href="./#function-entries"><code>entries</code></a>
+
+    <a class="nav-button button block" href="./#function-equals"><code>equals</code></a>
+
+    <a class="nav-button button block" href="./#function-events"><code>events</code></a>
+
+    <a class="nav-button button block" href="./#function-floor"><code>floor</code></a>
+
+    <a class="nav-button button block" href="./#function-get"><code>get</code></a>
+
+    <a class="nav-button button block" href="./#function-id"><code>id</code></a>
+
+    <a class="nav-button button block" href="./#function-include"><code>include</code></a>
+
+    <a class="nav-button button block" href="./#function-keys"><code>keys</code></a>
+
+    <a class="nav-button button block" href="./#function-last"><code>last</code></a>
+
+    <a class="nav-button button block" href="./#function-matches"><code>matches</code></a>
+
+    <a class="nav-button button block" href="./#function-noop"><code>noop</code></a>
+
+    <a class="nav-button button block" href="./#function-notify"><code>notify</code></a>
+
+    <a class="nav-button button block" href="./#function-overload"><code>overload</code></a>
+
+    <a class="nav-button button block" href="./#function-paramify"><code>paramify</code></a>
+
+    <a class="nav-button button block" href="./#function-print"><code>print</code></a>
+
+    <a class="nav-button button block" href="./#function-round"><code>round</code></a>
+
+    <a class="nav-button button block" href="./#function-slugify"><code>slugify</code></a>
+
+    <a class="nav-button button block" href="./#function-sum"><code>sum</code></a>
+
+    <a class="nav-button button block" href="./#function-trigger"><code>trigger</code></a>
+
+    <a class="nav-button button block" href="./#function-values"><code>values</code></a>
+
+
+
+    
+
+    <a class="nav-button button block" href="./#function-px"><code>px</code></a>
+
+    <a class="nav-button button block" href="./#function-em"><code>em</code></a>
+
+    <a class="nav-button button block" href="./#function-rem"><code>rem</code></a>
+
+    <a class="nav-button button block" href="./#function-vw"><code>vw</code></a>
+
+    <a class="nav-button button block" href="./#function-vh"><code>vh</code></a>
+
+    <a class="nav-button button block" href="./#function-vmin"><code>vmin</code></a>
+
+    <a class="nav-button button block" href="./#function-vmax"><code>vmax</code></a>
 
 
 </nav>

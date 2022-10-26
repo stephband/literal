@@ -1,7 +1,24 @@
 
 /**
 include(src, data)
-Includes another template, passing an object to use as `data`.
+
+Includes a template identified by `src`, passing in an object to render in that
+template as `data`. Most often, `src` will be a reference to the id of another
+template in the DOM.
+
+```html
+<div>
+    <h2>The thing</h2>
+    ${ include('#another-template', data.thing) }
+</div>
+```
+
+The `include` function is partially applicable, making it suitable to use for
+mapping over an array to return an array of rendered templates.
+
+```html
+<ul>${ data.array.map(include('#li')) }</ul>
+```
 **/
 
 import { getTarget }    from '../../../fn/observer/observer.js';
