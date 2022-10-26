@@ -1,5 +1,7 @@
 
+@import '../bolt/documentation/prism-cruncher.css';
 @import '../bolt/documentation.css';
+@import '../bolt/debug.css';
 
 .block > pre + .bubble {
     top: auto;
@@ -15,3 +17,35 @@
     opacity: 1 !important;
     visibility: visible !important;
 }
+
+
+@media (min-width: 50em) {
+    .docs-grid > nav {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 28.57142857%;
+        height: 100vh;
+        padding-left: calc(0.5 * var(--x-gap));
+        padding-right: calc(0.5 * var(--x-gap));
+        overflow: auto;
+        overscroll-behavior: contain;
+    }
+}
+
+@media (min-width: 70em) {
+    .docs-grid > nav {
+        width: 22.22222222%;
+    }
+}
+
+.nav-button {
+    --height:       1.125em;
+    --line-height:  1.4em;
+    --border-width: 0px;
+
+    padding-left: 0;
+    padding-right: 0;
+    text-align: left;
+}
+

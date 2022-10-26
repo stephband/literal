@@ -1,7 +1,7 @@
 
 /**
 include(src, data)
-Includes another template. Not available inside attributes.
+Includes another template, passing an object to use as `data`.
 **/
 
 import { getTarget }    from '../../../fn/observer/observer.js';

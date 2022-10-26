@@ -1,14 +1,39 @@
 <nav>
-    <a class="nav-button button" href="/"></a>
+    <a class="nav-button button" href="#template-is-element-template"><code>&lt;element-template&gt;</code></a>
+
+    ${ include('./nav-buttons.literal', (await comments(
+        '../element-template.js'
+    ))
+    .filter((doc) => doc.type === 'attribute')
+    .sort(by(get('name')))) }
+
     <hr/>
-    <a class="nav-button button" href="/"><code>&lt;element-template&gt;</code></a>
+
     <a class="nav-button button" href="/"><code>&lt;template-include&gt;</code></a>
+
+    ${ include('./nav-buttons.literal', (await comments(
+        '../modules/properties.js',
+        '../template-include.js'
+    ))
+    .filter((doc) => doc.type === 'attribute')
+    .sort(by(get('name')))) }
+
     <hr/>
-    <a class="nav-button button" href="/">Template functions</a>
+
+    <a class="nav-button button block" href="/"><code>data</code></a>
+    <a class="nav-button button block" href="/"><code>element</code></a>
+    <a class="nav-button button block" href="/"><code>host</code></a>
+    <a class="nav-button button block" href="/"><code>shadow</code></a>
+    ${ include('./nav-buttons.literal', (await comments(
+        '../../fn/modules/nothing.js',
+    ))
+    //.filter((doc) => doc.type === 'var')
+    .sort(by(get('name')))) }
+
+    <br/>
 
     ${ include('./nav-buttons.literal', (await comments(
         '../modules/library.js',
-
         '../../fn/modules/by.js',
         '../../fn/modules/clamp.js',
         '../../fn/modules/equals.js',
@@ -19,13 +44,19 @@
         '../../fn/modules/nothing.js',
         '../../fn/modules/overload.js',
         '../../fn/modules/slugify.js',
-        //'../../fn/observer/observe.js',
         '../../fn/modules/sum.js',
-
+        //'../../fn/observer/observe.js',
         '../../dom/modules/delegate.js',
         '../../dom/modules/events.js',
         '../../dom/modules/trigger.js',
-        '../modules/library/paramify.js',
+        '../modules/library-dom.js',
+        '../modules/library/paramify.js'
+    ))
+    .filter((doc) => (doc.type === 'function' || doc.type === 'constructor'))
+    .sort(by(get('name')))) }
+
+    ${ include('./nav-buttons.literal', (await comments(
         '../../dom/modules/parse-length.js'
-    )).sort(by(get('name')))) }
+    ))
+    .filter((doc) => (doc.type === 'function' || doc.type === 'constructor'))) }
 </nav>

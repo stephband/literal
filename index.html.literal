@@ -8,9 +8,8 @@
         window.DEBUG = true;
     </script>
 
-    <link rel="stylesheet" href="documentation.css" />
-    <link rel="stylesheet" href="module.css" />
-    ${ include("../bolt/templates/style.html") }
+    <link rel="stylesheet" href="./documentation.css" />
+    <link rel="stylesheet" href="./template-include.css" />
 </head>
 
 <body class="docs-grid @0-grid @0-3x-grid @1-6x-grid @2-9x-grid">
@@ -18,7 +17,71 @@
         ${ include("../bolt/templates/header.literal", "./package.json") }
     </header>
 
-    <main></main>
+    ${ include('./templates/element.literal', (await comments(
+        './element-template.js'
+    ))) }
+
+    <!--hr/>
+
+    <a class="nav-button button" href="/"><code>&lt;template-include&gt;</code></a>
+
+    $ { include('./templates/nav-buttons.literal', (await comments(
+        './modules/properties.js',
+        './template-include.js'
+    ))
+    .filter((doc) => doc.type === 'attribute')
+    .sort(by(get('name')))) }
+
+    <hr/-->
+
+    <section class="block @0-x1 @0-3x @1-x3 @1-4x @2-x3 @0-x-stretch">
+        <h2 id="library">Scope library</h2>
+
+        <h3 class="doctext-03">Objects</h3>
+
+        ${ (await comments(
+            './modules/renderer.js',
+            './modules/define-element.js',
+            '../fn/modules/nothing.js',
+        ))
+        .filter((doc) => (doc.type === 'selector'))
+        .sort(by(get('name')))
+        .map((doc) => include('./templates/entry.literal', doc)) }
+
+        <br/>
+
+        <h3 class="doctext-03">Functions</h3>
+
+        ${ (await comments(
+            './modules/library.js',
+            '../fn/modules/by.js',
+            '../fn/modules/clamp.js',
+            '../fn/modules/equals.js',
+            '../fn/modules/id.js',
+            '../fn/modules/last.js',
+            '../fn/modules/matches.js',
+            '../fn/modules/noop.js',
+            '../fn/modules/nothing.js',
+            '../fn/modules/overload.js',
+            '../fn/modules/slugify.js',
+            '../fn/modules/sum.js',
+            //'../../fn/observer/observe.js',
+            '../dom/modules/delegate.js',
+            '../dom/modules/events.js',
+            '../dom/modules/trigger.js',
+            './modules/library-dom.js',
+            './modules/library/paramify.js'
+        ))
+        .filter((doc) => (doc.type === 'function' || doc.type === 'constructor'))
+        .sort(by(get('name')))
+        .map((doc) => include('./templates/entry.literal', doc)) }
+
+        ${ (await comments(
+            '../dom/modules/parse-length.js'
+        ))
+        .filter((doc) => (doc.type === 'function' || doc.type === 'constructor'))
+        .map((doc) => include('./templates/entry.literal', doc)) }
+    </section>
 
     ${ include("./templates/nav.literal", "./package.json") }
 

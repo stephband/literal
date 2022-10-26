@@ -19,17 +19,13 @@ import Stream          from '../../fn/modules/stream.js';
 import paramify        from './library/paramify.js';
 
 const library = {
-    /** assign(a, b, ...)
+    /**
+    assign(a, b, ...)
     Alias of `Object.assign()`.
     **/
     assign: Object.assign,
 
     by,
-
-    /*
-    capture()
-    */
-    //capture,
 
     /** ceil(n)
     Alias of `Math.ceil()`.
@@ -116,9 +112,9 @@ const library = {
     Stream,
     sum,
 
-    /**
+    /*
     translate()
-    **/
+    */
     translate: function(key) {
         return window.translations && window.translations[key] || key;
     },

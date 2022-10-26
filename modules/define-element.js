@@ -8,6 +8,21 @@ import TemplateRenderer     from './renderer-template.js';
 
 const assign  = Object.assign;
 
+/**
+element
+The element enclosing the current template tag.
+**/
+
+/**
+host
+The custom element.
+**/
+
+/**
+shadow
+The custom element's shadow root.
+**/
+
 export default function defineElement(tag, src, props, log = '') {
     const properties = assign({}, props, globalProperties);
 

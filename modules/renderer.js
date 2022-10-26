@@ -1,5 +1,4 @@
 
-import nothing              from '../../fn/modules/nothing.js';
 import { remove }           from '../../fn/modules/remove.js';
 import Stream, { isStream } from '../../fn/modules/stream/stream.js';
 import observe              from '../../fn/observer/observe.js';
@@ -14,6 +13,10 @@ const assign = Object.assign;
 const keys   = Object.keys;
 const values = Object.values;
 
+/**
+data
+An object for storing state of the template.
+**/
 
 // Observers
 

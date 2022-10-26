@@ -96,7 +96,7 @@ export default overload((name, type) => type, {
         default: nothing
     }),
 
-    import: (name) => ({
+    source: (name) => ({
         attribute: function(value) { this[name] = value; },
         get:       function() { return Internals(this).renderer.data[name]; },
         set:       function(value) { resolveAndAssign(name, this, value); },
