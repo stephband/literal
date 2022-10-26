@@ -5,7 +5,7 @@ import { log }    from './log.js';
 
 
 /**
-compile(scope, params, source, id, info, element)
+compile(source, scope, params, consts, message)
 Compiles a literal template to a function.
 **/
 

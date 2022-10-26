@@ -35,7 +35,7 @@ function compileAttributes(renderers, node, template, path, parameters, consts) 
     // Attributes may be removed during parsing so copy the list before looping
     const attributes = Array.from(node.attributes);
     var n = -1, attribute;
-    // Todo: order attributes so that min, max, value come last?
+
     while (attribute = attributes[++n]) {
         compileAttribute(renderers, attribute, template, path, parameters, consts);
     }

@@ -2,7 +2,7 @@
 import { Observer as Data } from '../../fn/observer/observer.js';
 import element, { getInternals as Internals } from '../../dom/modules/element.js';
 import lifecycle            from './lifecycle.js';
-import globalProperties, { addLoading, removeLoading, setLoadingAsync } from './properties.js';
+import globalProperties, { addLoading, removeLoading, setLoading } from './properties.js';
 import getTemplate          from './get-template.js';
 import TemplateRenderer     from './renderer-template.js';
 
@@ -54,6 +54,9 @@ export default function defineElement(tag, src, props, log = '') {
 
             // Initialise data with plain object
             internals.data = {};
+
+            // Put raw template content into the host, so templated stylesheets
+            // start loading (or do they?)
             shadow.append(renderer.content);
             addLoading(this);
         },
@@ -62,7 +65,7 @@ export default function defineElement(tag, src, props, log = '') {
             const internals = Internals(this);
             const { renderer, data } = internals;
 
-            // Give default value to properties not defined via attributes
+            // Give default value to properties not initialised via attributes
             let name;
             for (name in props) {
                 if (!(name in data)) {
@@ -70,18 +73,25 @@ export default function defineElement(tag, src, props, log = '') {
                 }
             }
 
-            // Reset internal data to its observer proxy so that changes to
-            // host attributes and properties trigger updates
+            // Set loading attribute
+            if (internals.loading) {
+                setLoading(this);
+                data.loading = true;
+            }
+
+            // Set internal data to its observer proxy so that changes to host
+            // attributes, which mutate data, now trigger template updates
             internals.data = Data(data);
 
             // We must render synchronously here else rendered 'slotchange'
             // listeners miss the first slotchange
             renderer.push(data);
-            setLoadingAsync(this);
         },
 
         load: function() {
+            const internals = Internals(this);
             removeLoading(this);
+            internals.data.loading = false;
         }
     }),
 
