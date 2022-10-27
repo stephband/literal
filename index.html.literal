@@ -28,7 +28,7 @@
     ${ include("./includes/nav.literal", "./package.json") }
 
     <script type="module">
-        import './module.js';
+        import './element-template.js';
         import './documentation.js';
     </script>
 </body>

@@ -1,48 +1,89 @@
 /**
 <template is="element-template">
 
-### Define a literal element
+Element templates are the quickest way to define custom elements. Its content
+defines the shadow DOM, and its attributes define the attributes and properties
+of the new element.
 
-This element template defines a `<useless-button>` element, a button that
-disables itself when clicked:
+Usual concerns about the custom element construct/connect/disconnect lifecycle
+are abstracted away, leaving you to focus on defining what the element _does_
+using JavaScript literal expressions. We'll start with an example.
+
+### Define a custom element
+
+Let's build a simple DOM clock.
 
 ```html
-<template is="element-template" tag="useless-button">
-    <button type="button" disabled="${ data.disabled }">
-        <slot></slot>
-        ${ events('click', element).each((e) => data.disabled = true) }
-    </button>
+<template is="element-template" tag="dom-clock">
+    <time>${
+        setTimeout(() => data.time = window.performance.now(), 1000 - window.performance.now() % 1000),
+        Math.round(data.time / 1000)
+    }</time>
 </template>
 ```
 
-Now that is pretty useless, but it does demonstrate how element templates are
-rendered. First, the `tag` attribute defines the name of the custom element.
-Second, the content of the template defines the custom element's shadow DOM.
-Third, template tags are rendered in a scope that makes several objects
-available. This template refers to:
-
-- `data` – an initially empty object used to store state
-- `events()` – a helper function that returns a stream of DOM events
-- `element` – a reference to the element the template tag is inside
-
-When the click handler sets `data.disabled = true`, the button's boolean
-`disabled` property is enabled.
-
-This custom element can now be used in HTML:
+The `tag` attribute defines the tag name `<dom-clock>`. The literal expression
+starts a timeout that updates `data.time` at the end of the current second and
+returns the rounded value of `data.time`. We can see the result with the HTML
 
 ```html
-<useless-button>Click me</useless-button>
+Current time: <dom-clock></dom-clock>
 ```
 
-A list of functions and objects available to templates can be found in the
-[scope library](#library). You are not forced to use the library: template tags
-may contain any valid JavaScript expression, and the library can be customised
-with your own functions.
+<template is="element-template" tag="dom-clock">
+    <time>${
+        setTimeout(() => data.time = performance.now(), 1000 - performance.now() % 1000),
+        Math.round(data.time / 1000)
+    }</time>
+</template>
+
+Current time: <dom-clock></dom-clock>
+
+This demonstrates a feature of Literal templates: a `data` object exists in
+every template's scope. It is used to store state.
+
+Changes to `data` are tracked. When `data.time` is set by the timer at the end
+of the current second, the change is detected, the expression is reevaluated, a
+new timer is set, and the new value of `data.time` is rendered.
+
+Template scope contains a number of other [constants](./templates/#library),
+and a small library of [helper functions](./templates/#library). The library is
+extensible – you can [add your own functions](./templates/#library).
+
+<!--
+### Define a customised built-in
+
+Let's take the `<dom-clock>` above. Instead of having it wrap a `<time>` in its
+shadow DOM, let's make the custom element itself an instance of `<time>`:
+
+```html
+<template is="element-template" tag="time is dom-time">${
+    setTimeout(() => data.time = window.performance.now(), 1000 - window.performance.now() % 1000),
+    Math.round(data.time / 1000)
+}</template>
+```
+
+This defines a so-called customised built-in:
+
+```html
+Current time: <time is="dom-time"><time>
+```
+
+<template is="element-template" tag="time is dom-time">${
+    setTimeout(() => data.time = window.performance.now(), 1000 - window.performance.now() % 1000),
+    Math.round(data.time / 1000)
+}</template>
+
+Current time: <time is="dom-time"><time>
+
+Unfortunately Safari does not support customised built-ins.
+-->
+
 
 ### The `loading` attribute
 
 Custom elements defined by `element-template` have a read-only boolean `loading`
-attribute. This is enabled where the shadow DOM contains assets – stylesheets –
+attribute. This is enabled when the shadow DOM contains assets – stylesheets –
 that must be loaded:
 
 ```html
@@ -58,31 +99,39 @@ stylesheets finish loading and parsing), or to show a loading indicator.
 
 ### Custom attributes
 
-Other attributes may be defined by type on `element-template`. These attributes
-become attributes and properties of the custom element, as well as properties
-of the `data` object inside the template. Here we define a boolean attribute
-`nifty`, and use it inside the shadow template:
+Other attributes and properties are defined by attributes on the
+`element-template` in the form `name="type"`, where possible types are:
+
+- `boolean` – a boolean attribute and property
+- `number`  – a string attribute, numerical property
+- `source`  – a URL of a file or module, resolving to an object property
+- `string`  – a string attribute and property
+- `tokens`  – a tokens attribute, TokenList property, and an array property of `data`
+
+Let's define a boolean attribute `nifty` on a new custom element:
 
 ```html
 <template is="element-template" tag="my-paragraph" nifty="boolean">
-    <p>This paragraph is ${ data.nifty ? 'pretty nifty' : 'a bit dull' }</p>
+    <p>This paragraph is ${ data.nifty ? 'pretty nifty' : 'a bit pants' }.</p>
 </template>
 ```
 
-Which is authored as any other boolean attribute:
+Which is authored:
 
 ```html
-<my-paragraph nifty></my-paragraph>
+<a-paragraph nifty></a-paragraph>
 ```
 
-Possible types are:
+<template is="element-template" tag="a-paragraph" nifty="boolean">
+    <p>This paragraph is ${ data.nifty ? 'pretty nifty' : 'a bit pants' }.</p>
+</template>
 
-- `boolean` – a boolean attribute and property
-- `number` – a string attribute, numerical property
-- `source` – a URL of a file or module, resolving to an object property
-- `string` – a string attribute and property
-- `tokens` – a tokens attribute, TokenList property, and an array property of `data`
+<a-paragraph nifty></a-paragraph>
 
+Click on an instruction to see what happens when the property `nifty` is changed:
+
+<button type="button" style="padding: 0; border: 0; display: block; line-height: inherit; min-height: 0;" onclick="document.querySelector('a-paragraph').nifty = false">`paragraph.nifty = false`</button>
+<button type="button" style="padding: 0; border: 0; display: block; line-height: inherit; min-height: 0;" onclick="document.querySelector('a-paragraph').nifty = true">`paragraph.nifty = true`</button>
 
 **/
 
