@@ -21,6 +21,10 @@
         './element-template.js'
     ))) }
 
+    ${ include('./includes/element.literal', (await comments(
+        './template-include.js'
+    ))) }
+
     ${ include("./includes/nav.literal", "./package.json") }
 
     <script type="module">

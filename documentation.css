@@ -24,10 +24,11 @@
         position: fixed;
         left: 0;
         top: 0;
-        width: 28.57142857%;
+        width: 14.28571429%;
         height: 100vh;
         padding-left: calc(0.5 * var(--x-gap));
         padding-right: calc(0.5 * var(--x-gap));
+        text-align: right;
         overflow: auto;
         overscroll-behavior: contain;
     }
@@ -35,7 +36,7 @@
 
 @media (min-width: 70em) {
     .docs-grid > nav {
-        width: 22.22222222%;
+        width: 11.11111111%;
     }
 }
 
@@ -46,6 +47,6 @@
 
     padding-left: 0;
     padding-right: 0;
-    text-align: left;
+    text-align: right;
 }
 
