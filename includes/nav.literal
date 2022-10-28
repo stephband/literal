@@ -34,7 +34,7 @@
     <h4>Template Tags</h4>
     <a class="nav-button button block" href="../templates/">Evaluation table</a>
 
-    <h4>Template variables</h4>
+    <h4>Template constants</h4>
     ${ include('./nav-buttons.literal', {
         docs: (await comments(
             '../modules/renderer.js',

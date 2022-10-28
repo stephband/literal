@@ -71,7 +71,7 @@ using JavaScript literal expressions. We’ll start with an example.</p>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
 <p>The <code>tag</code> attribute defines the tag name <code>&lt;dom-clock&gt;</code>. The literal expression
 starts a timeout that updates <code>data.time</code> at the end of the current second and
-returns the rounded value of <code>data.time</code>. We can see the result with the HTML</p>
+returns the rounded value of <code>data.time</code>. We can see the result with the HTML:</p>
 <pre><code class="language-html">Current time: <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dom-clock</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dom-clock</span><span class="token punctuation">></span></span></code></pre>
 <template is="element-template" tag="dom-clock">
     <time>${
@@ -81,8 +81,7 @@ returns the rounded value of <code>data.time</code>. We can see the result with 
 </template>
 
 <p>Current time: <dom-clock></dom-clock></p>
-<p>This demonstrates a feature of Literal templates: a <code>data</code> object exists in
-every template’s scope. It is used to store state.</p>
+<p>A <code>data</code> object exists in every template’s scope. It is used to store state.</p>
 <p>Changes to <code>data</code> are tracked. When <code>data.time</code> is set by the timer at the end
 of the current second, the change is detected, the expression is reevaluated, a
 new timer is set, and the new value of <code>data.time</code> is rendered.</p>
@@ -127,9 +126,9 @@ that must be loaded:</p>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>link</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>path/to/stylesheet.css<span class="token punctuation">"</span></span> <span class="token attr-name">rel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>stylesheet<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
     ...
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
-<p>The <code>loading</code> attribute provides a hook for styling to avoid a flash of unstyled
-content (which can happen between the time of element upgrade and the time the
-stylesheets finish loading and parsing), or to show a loading indicator.</p>
+<p>The <code>loading</code> attribute provides a hook to avoid a flash of unstyled content
+(which can happen between the time of element upgrade and the time the
+stylesheets finish loading) or to provide a loading indicator.</p>
 <h3 id="custom-attributes">Custom attributes</h3>
 <p>Other attributes and properties are defined by attributes on the
 <code>element-template</code> in the form <code>name=&quot;type&quot;</code>, where possible types are:</p>
@@ -141,7 +140,7 @@ stylesheets finish loading and parsing), or to show a loading indicator.</p>
 <li><code>tokens</code>  – a tokens attribute, TokenList property, and an array property of <code>data</code></li>
 </ul>
 <p>Let’s define a boolean attribute <code>nifty</code> on a new custom element:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>element-template<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>my-paragraph<span class="token punctuation">"</span></span> <span class="token attr-name">nifty</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>boolean<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>element-template<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>a-paragraph<span class="token punctuation">"</span></span> <span class="token attr-name">nifty</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>boolean<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>This paragraph is ${ data.nifty ? 'pretty nifty' : 'a bit pants' }.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
 <p>Which is authored:</p>
@@ -391,7 +390,7 @@ DOM is rendered accordingly.</p>
     <h4>Template Tags</h4>
     <a class="nav-button button block" href="./templates">Evaluation table</a>
 
-    <h4>Template variables</h4>
+    <h4>Template constants</h4>
     
 
     <a class="nav-button button block" href="./templates#selector-data"><code> data</code></a>

@@ -24,7 +24,7 @@ Let's build a simple DOM clock.
 
 The `tag` attribute defines the tag name `<dom-clock>`. The literal expression
 starts a timeout that updates `data.time` at the end of the current second and
-returns the rounded value of `data.time`. We can see the result with the HTML
+returns the rounded value of `data.time`. We can see the result with the HTML:
 
 ```html
 Current time: <dom-clock></dom-clock>
@@ -39,8 +39,7 @@ Current time: <dom-clock></dom-clock>
 
 Current time: <dom-clock></dom-clock>
 
-This demonstrates a feature of Literal templates: a `data` object exists in
-every template's scope. It is used to store state.
+A `data` object exists in every template's scope. It is used to store state.
 
 Changes to `data` are tracked. When `data.time` is set by the timer at the end
 of the current second, the change is detected, the expression is reevaluated, a
@@ -93,9 +92,9 @@ that must be loaded:
 </template>
 ```
 
-The `loading` attribute provides a hook for styling to avoid a flash of unstyled
-content (which can happen between the time of element upgrade and the time the
-stylesheets finish loading and parsing), or to show a loading indicator.
+The `loading` attribute provides a hook to avoid a flash of unstyled content
+(which can happen between the time of element upgrade and the time the
+stylesheets finish loading) or to provide a loading indicator.
 
 ### Custom attributes
 
@@ -111,7 +110,7 @@ Other attributes and properties are defined by attributes on the
 Let's define a boolean attribute `nifty` on a new custom element:
 
 ```html
-<template is="element-template" tag="my-paragraph" nifty="boolean">
+<template is="element-template" tag="a-paragraph" nifty="boolean">
     <p>This paragraph is ${ data.nifty ? 'pretty nifty' : 'a bit pants' }.</p>
 </template>
 ```
