@@ -17,15 +17,7 @@
         ${ include("../bolt/templates/header.literal", "./package.json") }
     </header>
 
-    ${ include('./includes/element.literal', (await comments(
-        './element-template.js'
-    ))) }
-
-    ${ include('./includes/element.literal', (await comments(
-        './template-include.js'
-    ))) }
-
-    ${ include("./includes/nav.literal", "./package.json") }
+    ${ include("./docs/includes/nav.literal", "./package.json") }
 
     <script type="module">
         import './element-template.js';

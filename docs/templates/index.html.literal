@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    ${ include("../../bolt/templates/head.literal", "../package.json") }
+    ${ include("../../../bolt/templates/head.literal", "../../package.json") }
 
     <script title="debug">
         window.DEBUG = true;
     </script>
 
-    <link rel="stylesheet" href="../documentation.css" />
-    <link rel="stylesheet" href="../template-include.css" />
+    <link rel="stylesheet" href="../../documentation.css" />
+    <link rel="stylesheet" href="../../template-include.css" />
 </head>
 
 <body class="docs-grid @0-grid @0-3x-grid @1-6x-grid @2-9x-grid">
@@ -18,7 +18,7 @@
     </header>
 
     ${ include('../includes/section.literal', (await comments(
-        '../modules/to-text.js'
+        '../../modules/to-text.js'
     ))) }
 
     <section class="block @0-x1 @0-3x @1-x3 @1-4x @2-x3 @0-x-stretch">
@@ -30,9 +30,9 @@
         trigger incremental parts of the template to rerender.</p>
 
         ${ (await comments(
-            '../modules/renderer.js',
-            '../modules/define-element.js',
-            '../../fn/modules/nothing.js',
+            '../../modules/renderer.js',
+            '../../modules/define-element.js',
+            '../../../fn/modules/nothing.js',
         ))
         .filter((doc) => (doc.type === 'selector'))
         //.sort(by(get('name')))
@@ -49,33 +49,33 @@
         and <a href="#function-overload">overload</a> functions.</p>
 
         ${ (await comments(
-            '../modules/library.js',
-            '../../fn/modules/by.js',
-            '../../fn/modules/clamp.js',
-            '../../fn/modules/equals.js',
-            '../../fn/modules/id.js',
-            '../../fn/modules/last.js',
-            '../../fn/modules/matches.js',
-            '../../fn/modules/noop.js',
-            '../../fn/modules/nothing.js',
-            '../../fn/modules/overload.js',
-            '../../fn/modules/slugify.js',
-            '../../fn/modules/sum.js',
+            '../../modules/library.js',
+            '../../../fn/modules/by.js',
+            '../../../fn/modules/clamp.js',
+            '../../../fn/modules/equals.js',
+            '../../../fn/modules/id.js',
+            '../../../fn/modules/last.js',
+            '../../../fn/modules/matches.js',
+            '../../../fn/modules/noop.js',
+            '../../../fn/modules/nothing.js',
+            '../../../fn/modules/overload.js',
+            '../../../fn/modules/slugify.js',
+            '../../../fn/modules/sum.js',
             //'../../fn/observer/observe.js',
-            '../../dom/modules/delegate.js',
-            '../../dom/modules/events.js',
-            '../../dom/modules/trigger.js',
-            '../modules/library-dom.js',
-            '../modules/library/include.js',
-            '../modules/library/paramify.js',
-            '../modules/library/print.js'
+            '../../../dom/modules/delegate.js',
+            '../../../dom/modules/events.js',
+            '../../../dom/modules/trigger.js',
+            '../../modules/library-dom.js',
+            '../../modules/library/include.js',
+            '../../modules/library/paramify.js',
+            '../../modules/library/print.js'
         ))
         .filter((doc) => (doc.type === 'function' || doc.type === 'constructor'))
         .sort(by(get('name')))
         .map((doc) => include('../includes/entry.literal', doc)) }
 
         ${ (await comments(
-            '../../dom/modules/parse-length.js'
+            '../../../dom/modules/parse-length.js'
         ))
         .filter((doc) => (doc.type === 'function' || doc.type === 'constructor'))
         .map((doc) => include('../includes/entry.literal', doc)) }
@@ -86,11 +86,11 @@
         This must be done before templates are compiled and cached.</p>
     </section>
 
-    ${ include("../includes/nav.literal", "../package.json") }
+    ${ include("../includes/nav.literal", "../../package.json") }
 
     <script type="module">
-        import '../module.js';
-        import '../template-include.js';
-        import '../documentation.js';
+        import '../../module.js';
+        import '../../template-include.js';
+        import '../../documentation.js';
     </script>
 </body>

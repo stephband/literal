@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    ${ include("../../../bolt/templates/head.literal", "../../package.json") }
+
+    <script title="debug">
+        window.DEBUG = true;
+    </script>
+
+    <link rel="stylesheet" href="../../documentation.css" />
+    <link rel="stylesheet" href="../../template-include.css" />
+</head>
+
+<body class="docs-grid @0-grid @0-3x-grid @1-6x-grid @2-9x-grid">
+    <header class="@0-x3" style="grid-column-end: span 4;">
+        <h1 class="docs-text-01">Literal <span class="docs-text-06">0.6.2</span></h1>
+    </header>
+
+    ${ include('../includes/element.literal', (await comments(
+        '../../template-include.js'
+    ))) }
+
+    ${ include("../includes/nav.literal", "../../package.json") }
+
+    <script type="module">
+        import '../../template-include.js';
+        import '../../documentation.js';
+    </script>
+</body>

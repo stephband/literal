@@ -25,6 +25,6 @@ const parseParam = capture(/^\s*(?:([\w]+|…)|(\.\.\.))\s*(?:(,)|\))|^\s*\)/, {
 });
 
 export function parseParams(string) {
-    console.log(1, string);
+    //console.log(1, string);
     return parseParam([], string);
 }

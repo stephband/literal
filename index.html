@@ -5,14 +5,14 @@
 <head>
     <meta charset="utf-8" />
 <meta name="author" content="Stephen" />
-<meta name="description" content="Documentation for Literal. Literal enhances HTML templates with literal strings, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
+<meta name="description" content="Documentation for Literal. Literal enhances HTML templates with JS literal template tags, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
 <meta name="viewport" content="width=device-width" />
 
 
 <meta name="twitter:card" content="summary">
 <meta name="twitter:site" content="@stephband">
 <meta property="og:title" content="Literal" />
-<meta property="og:description" content="Literal enhances HTML templates with literal strings, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
+<meta property="og:description" content="Literal enhances HTML templates with JS literal template tags, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
 <meta property="og:image" content="undefined" />
 <meta property="og:url" content="https://stephen.band/literal" />
 
@@ -43,7 +43,7 @@
     <header class="@0-x3" style="grid-column-end: span 4;">
         
 <h1 class="docs-text-01">Literal <span class="docs-text-06">0.6.4</span></h1>
-<p class="docs-text-08">Literal enhances HTML templates with literal strings, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped.</p>
+<p class="docs-text-08">Literal enhances HTML templates with JS literal template tags, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped.</p>
 <ul class="link-index index">
     <li><strong>repo:</strong> <a href="https://github.com/stephband/literal.git">github.com/stephband/literal.git</a></li>
     <li><strong>bugs:</strong> <a href="https://github.com/stephband/literal/issues/">github.com/stephband/literal/issues/</a></li>
@@ -51,436 +51,130 @@
 
     </header>
 
-    
-<div class="@0-x1 @0-3x @1-x3 @1-4x @2-x3 @0-x-stretch">
-    
-    <h2 class="doctext-02" id="template-is-element-template"><code>&lt;template is="element-template"&gt;</code></h2>
-    <p>Element templates are the quickest way to define custom elements. Its content
-defines the shadow DOM, and its attributes define the attributes and properties
-of the new element.</p>
-<p>Usual concerns about the custom element construct/connect/disconnect lifecycle
-are abstracted away, leaving you to focus on defining what the element <em>does</em>
-using JavaScript literal expressions. We’ll start with an example.</p>
-<h3 id="define-a-custom-element">Define a custom element</h3>
-<p>Let’s build a simple DOM clock.</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>element-template<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>dom-clock<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>time</span><span class="token punctuation">></span></span>${
-        setTimeout(() => data.time = window.performance.now(), 1000 - window.performance.now() % 1000),
-        Math.round(data.time / 1000)
-    }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>time</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
-<p>The <code>tag</code> attribute defines the tag name <code>&lt;dom-clock&gt;</code>. The literal expression
-starts a timeout that updates <code>data.time</code> at the end of the current second and
-returns the rounded value of <code>data.time</code>. We can see the result with the HTML:</p>
-<pre><code class="language-html">Current time: <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dom-clock</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dom-clock</span><span class="token punctuation">></span></span></code></pre>
-<template is="element-template" tag="dom-clock">
-    <time>${
-        setTimeout(() => data.time = performance.now(), 1000 - performance.now() % 1000),
-        Math.round(data.time / 1000)
-    }</time>
-</template>
-
-<p>Current time: <dom-clock></dom-clock></p>
-<p>A <code>data</code> object exists in every template’s scope. It is used to store state.</p>
-<p>Changes to <code>data</code> are tracked. When <code>data.time</code> is set by the timer at the end
-of the current second, the change is detected, the expression is reevaluated, a
-new timer is set, and the new value of <code>data.time</code> is rendered.</p>
-<p>Template scope contains a number of other <a href="./includes/templates#library">constants</a>,
-and a small library of <a href="./includes/templates#library">helper functions</a>. The library is
-extensible – you can <a href="./includes/templates#library">add your own functions</a>.</p>
-<!--
-### Define a customised built-in
-
-Let's take the `<dom-clock>` above. Instead of having it wrap a `<time>` in its
-shadow DOM, let's make the custom element itself an instance of `<time>`:
-
-```html
-<template is="element-template" tag="time is dom-time">${
-    setTimeout(() => data.time = window.performance.now(), 1000 - window.performance.now() % 1000),
-    Math.round(data.time / 1000)
-}</template>
-```
-
-This defines a so-called customised built-in:
-
-```html
-Current time: <time is="dom-time"><time>
-```
-
-<template is="element-template" tag="time is dom-time">${
-    setTimeout(() => data.time = window.performance.now(), 1000 - window.performance.now() % 1000),
-    Math.round(data.time / 1000)
-}</template>
-
-Current time: <time is="dom-time"><time>
-
-Unfortunately Safari does not support customised built-ins.
--->
-
-
-<h3 id="the-loading-attribute">The <code>loading</code> attribute</h3>
-<p>Custom elements defined by <code>element-template</code> have a read-only boolean <code>loading</code>
-attribute. This is enabled when the shadow DOM contains assets – stylesheets –
-that must be loaded:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>element-template<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>my-element<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>link</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>path/to/stylesheet.css<span class="token punctuation">"</span></span> <span class="token attr-name">rel</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>stylesheet<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
-    ...
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
-<p>The <code>loading</code> attribute provides a hook to avoid a flash of unstyled content
-(which can happen between the time of element upgrade and the time the
-stylesheets finish loading) or to provide a loading indicator.</p>
-<h3 id="custom-attributes">Custom attributes</h3>
-<p>Other attributes and properties are defined by attributes on the
-<code>element-template</code> in the form <code>name=&quot;type&quot;</code>, where possible types are:</p>
-<ul>
-<li><code>boolean</code> – a boolean attribute and property</li>
-<li><code>number</code>  – a string attribute, numerical property</li>
-<li><code>source</code>  – a URL of a file or module, resolving to an object property</li>
-<li><code>string</code>  – a string attribute and property</li>
-<li><code>tokens</code>  – a tokens attribute, TokenList property, and an array property of <code>data</code></li>
-</ul>
-<p>Let’s define a boolean attribute <code>nifty</code> on a new custom element:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>element-template<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>a-paragraph<span class="token punctuation">"</span></span> <span class="token attr-name">nifty</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>boolean<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>This paragraph is ${ data.nifty ? 'pretty nifty' : 'a bit pants' }.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
-<p>Which is authored:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a-paragraph</span> <span class="token attr-name">nifty</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a-paragraph</span><span class="token punctuation">></span></span></code></pre>
-<template is="element-template" tag="a-paragraph" nifty="boolean">
-    <p>This paragraph is ${ data.nifty ? 'pretty nifty' : 'a bit pants' }.</p>
-</template>
-
-<p><a-paragraph nifty></a-paragraph></p>
-<p>Click on an instruction to see what happens when the property <code>nifty</code> is changed:</p>
-<p><button type="button" style="padding: 0; border: 0; display: block; line-height: inherit; min-height: 0;" onclick="document.querySelector('a-paragraph').nifty = false"><code>paragraph.nifty = false</code></button>
-<button type="button" style="padding: 0; border: 0; display: block; line-height: inherit; min-height: 0;" onclick="document.querySelector('a-paragraph').nifty = true"><code>paragraph.nifty = true</code></button></p>
-
-    
-</div>
-
-<!--form class="@0-x1 @0-3x @1-x1 @1-2x @2-x1 @2-3x x-stretch y-start">
-    <template is="element-template" tag="dom-clock">
-    <time>${
-        setTimeout(() => data.time = window.performance.now(), 1000 - window.performance.now() % 1000),
-        Math.round(data.time / 1000)
-    }</time>
-</template>
-    <input hidden class="button" type="submit" />
-</form-->
-
-<div class="@0-x1 @0-3x @1-x3 @1-2x @2-x3 @2-3x @0-x-stretch @0-y-start">
-    
-    <h3 class="doctext-03">Attributes</h3>
-    
-<div class="attribute-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="attribute-src">
-<h3 class="attribute-docs-text-05 docs-text-05">
-    <a href="#attribute-src">
-        <code class="token language-html">src <span class="default">="<em>url</em>"</span></code>
-    </a>
-</h3>
-
-<p>Not yet implemented.</p>
-
-</div>
-
- 
-<div class="attribute-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="attribute-tag">
-<h3 class="attribute-docs-text-05 docs-text-05">
-    <a href="#attribute-tag">
-        <code class="token language-html">tag <span class="default">="<em>element-name</em>"</span></code>
-    </a>
-</h3>
-
-<p>Defines the name of the custom element.</p>
-
-</div>
-
- 
-
-    
-    
-    
-
-    
-    
-    
-
-    
-    
-    
-
-    
-    
-    
-</div>
-
-<div class="@-x1 @0-3x @1-x5 @1-2x @2-x6 @2-3x @0-x-stretch @0-y-start">
-    
-    
-    
-
-    
-    
-    
-</div>
-
-
-    
-<div class="@0-x1 @0-3x @1-x3 @1-4x @2-x3 @0-x-stretch">
-    
-    <h2 class="doctext-02" id="template-include"><code>&lt;template-include&gt;</code></h2>
-    <p>A <code>template-include</code> may be placed pretty much anywhere in your HTML, enabling
-the insertion of chunks of dynamic, JS-rendered DOM wherever you like in a
-document.</p>
-<p>A <code>template-include</code> finds a source template identified by its <code>src</code> attribute,
-fetches JSON or imports a module referred to by its <code>data</code> attribute, renders
-attributes and text found to contain literal tags, then replaces itself with
-the rendered result.</p>
-<p>A <code>template-include</code> may contain fallback content, in case any of that fails.</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>greetings<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    Hello ${ data.name }.
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
-
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#greetings<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/users/1.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    Fallback content.
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template-include</span><span class="token punctuation">></span></span></code></pre>
-<p>Multiple <code>data-</code> attributes may be declared, their values become properties of
-the <code>data</code> object inside the template:</p>
-<pre><code><span class="token operator">&lt;</span>template<span class="token operator">-</span>include src<span class="token operator">=</span><span class="token string">"#add-to-collections-thumb"</span> data<span class="token operator">-</span>pk<span class="token operator">=</span><span class="token string">"34"</span> <span class="token operator">...</span> <span class="token operator">></span><span class="token operator">&lt;</span><span class="token operator">/</span>template<span class="token operator">-</span>include<span class="token operator">></span></code></pre><p>Or a single <code>data</code> attribute can be used to pass JSON to use as the <code>data</code>
-object inside the template:</p>
-<pre><code><span class="token operator">&lt;</span>template<span class="token operator">-</span>include src<span class="token operator">=</span><span class="token string">"#add-to-collections-thumb"</span> data<span class="token operator">=</span><span class="token string">'{"pk":34, ... }'</span><span class="token operator">></span><span class="token operator">&lt;</span><span class="token operator">/</span>template<span class="token operator">-</span>include<span class="token operator">></span></code></pre><p>Both <code>data</code> and <code>data-</code> attributes also accept URLs. A URL is used to fetch a
-.json file…</p>
-<pre><code><span class="token operator">&lt;</span>template<span class="token operator">-</span>include src<span class="token operator">=</span><span class="token string">"#greetings"</span> data<span class="token operator">=</span><span class="token string">"/users/1.json"</span><span class="token operator">></span><span class="token operator">&lt;</span><span class="token operator">/</span>template<span class="token operator">-</span>include<span class="token operator">></span></code></pre><p>…or import the default export of a .js module:</p>
-<pre><code><span class="token operator">&lt;</span>template<span class="token operator">-</span>include src<span class="token operator">=</span><span class="token string">"#greetings"</span> data<span class="token operator">=</span><span class="token string">"/user-module.js"</span><span class="token operator">></span><span class="token operator">&lt;</span><span class="token operator">/</span>template<span class="token operator">-</span>include<span class="token operator">></span></code></pre>
-    
-</div>
-
-<!--form class="@0-x1 @0-3x @1-x1 @1-2x @2-x1 @2-3x x-stretch y-start">
-    <template id="greetings">
-    Hello ${ data.name }.
-</template>
-
-<template-include src="#greetings" data="/users/1.json">
-    Fallback content.
-</template-include>
-    <input hidden class="button" type="submit" />
-</form-->
-
-<div class="@0-x1 @0-3x @1-x3 @1-2x @2-x3 @2-3x @0-x-stretch @0-y-start">
-    
-    <h3 class="doctext-03">Attributes</h3>
-    
-<div class="attribute-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="attribute-data">
-<h3 class="attribute-docs-text-05 docs-text-05">
-    <a href="#attribute-data">
-        <code class="token language-html">data</code>
-    </a>
-</h3>
-
-<p>A path to a JSON file or JS module exporting data to be rendered.</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./data.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template-include</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./module.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template-include</span><span class="token punctuation">></span></span></code></pre>
-<p>Named exports are supported via the path hash:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./module.js#namedExport<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template-include</span><span class="token punctuation">></span></span></code></pre>
-<p>Paths may be rewritten. This helps when JS modules are bundled into a single
-module for production.</p>
-<pre><code><span class="token keyword">import</span> <span class="token punctuation">{</span> urls <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../bolt/templates/literal.js'</span><span class="token punctuation">;</span>
-
-<span class="token function">urls</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-    <span class="token string">'../bolt/templates/path/to/module.js'</span><span class="token operator">:</span> <span class="token string">'../bolt/templates/path/to/production/bundle.js#namedExport'</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre><p>The <code>data</code> attribute also accepts raw JSON:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>{<span class="token punctuation">"</span>property<span class="token punctuation">"</span>: <span class="token punctuation">"</span>value<span class="token punctuation">"</span>}<span class="token punctuation">'</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template-include</span><span class="token punctuation">></span></span></code></pre>
-
-</div>
-
- 
-<div class="attribute-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="attribute-src-1">
-<h3 class="attribute-docs-text-05 docs-text-05">
-    <a href="#attribute-src-1">
-        <code class="token language-html">src</code>
-    </a>
-</h3>
-
-<p>Define a source template whose rendered content replaces this
-<code>&lt;template-include&gt;</code>. This is a required attribute and must be in
-the form of a fragment identifier pointing to a <code>template</code> element
-in the DOM.</p>
-
-</div>
-
- 
-
-    
-    
-    
-
-    
-    <h3 class="doctext-03">Properties</h3>
-    
-<div class="property-doc-toggle-block doc-toggle-block toggle-block block" data-toggleable id="property|selector-data">
-<h3 class="property-docs-text-05 docs-text-05">
-    <a href="#property|selector-data">
-        <code class="property language-js">.data</code>
-    </a>
-</h3>
-
-<p>The <code>data</code> property may be set with a path to a JSON file or JS module, or a
-raw JSON string and behaves the same way as the <code>data</code> attribute. In
-addition it accepts a JS object or array.</p>
-<p>Getting the <code>data</code> property returns the data object currently being
-rendered. Note that if a path was set, this object is not available
-immediately, as the data must first be fetched.</p>
-<p>Technically, the returned data object is a <em>proxy</em> of the object that has
-been set. Mutations to the data object are detected by the proxy and the
-DOM is rendered accordingly.</p>
-
-</div>
-
- 
-
-    
-    
-    
-
-    
-    
-    
-</div>
-
-<div class="@-x1 @0-3x @1-x5 @1-2x @2-x6 @2-3x @0-x-stretch @0-y-start">
-    
-    
-    
-
-    
-    
-    
-</div>
-
-
     <nav>
+    <a class="nav-button button block" href="./"><code>Literal</code></a>
+
     <h4>Declare a custom element</h4>
-    <a class="nav-button button block" href="../#template-is-element-template"><code>&lt;element-template&gt;</code></a>
-    <a class="nav-button button block" href="../#">Declare an element</a>
-    <a class="nav-button button block" href="../#">Declare an attribute</a>
+    <a class="nav-button button block" href="./docs/element-template"><code>&lt;element-template&gt;</code></a>
 
     
 
-    <a class="nav-button button block" href="../#attribute-src"><code>src</code></a>
+    <a class="nav-button button block" href="./#attribute-src"><code>src</code></a>
 
-    <a class="nav-button button block" href="../#attribute-tag"><code>tag</code></a>
+    <a class="nav-button button block" href="./#attribute-tag"><code>tag</code></a>
 
 
 
     <h4>Include a template</h4>
-    <a class="nav-button button block" href="/"><code>&lt;template-include&gt;</code></a>
+    <a class="nav-button button block" href="./docs/template-include"><code>&lt;template-include&gt;</code></a>
 
     
 
-    <a class="nav-button button block" href="../#attribute-data"><code>data</code></a>
+    <a class="nav-button button block" href="./#attribute-data"><code>data</code></a>
 
-    <a class="nav-button button block" href="../#attribute-loading"><code>loading</code></a>
+    <a class="nav-button button block" href="./#attribute-loading"><code>loading</code></a>
 
-    <a class="nav-button button block" href="../#attribute-src"><code>src</code></a>
+    <a class="nav-button button block" href="./#attribute-src"><code>src</code></a>
 
 
 
     <h4>Templates</h4>
-    <a class="nav-button button block" href="./templates">Writing templates</a>
+    <a class="nav-button button block" href="./docs/templates">Writing templates</a>
 
     <h4>Template Tags</h4>
-    <a class="nav-button button block" href="./templates">Evaluation table</a>
+    <a class="nav-button button block" href="./docs/templates">Evaluation table</a>
 
     <h4>Template constants</h4>
     
 
-    <a class="nav-button button block" href="./templates#selector-data"><code> data</code></a>
+    <a class="nav-button button block" href="./docs/templates#selector-data"><code> data</code></a>
 
-    <a class="nav-button button block" href="./templates#selector-body"><code> body</code></a>
+    <a class="nav-button button block" href="./docs/templates#selector-body"><code> body</code></a>
 
-    <a class="nav-button button block" href="./templates#selector-element"><code> element</code></a>
+    <a class="nav-button button block" href="./docs/templates#selector-element"><code> element</code></a>
 
-    <a class="nav-button button block" href="./templates#selector-host"><code> host</code></a>
+    <a class="nav-button button block" href="./docs/templates#selector-host"><code> host</code></a>
 
-    <a class="nav-button button block" href="./templates#selector-shadow"><code> shadow</code></a>
+    <a class="nav-button button block" href="./docs/templates#selector-shadow"><code> shadow</code></a>
 
-    <a class="nav-button button block" href="./templates#selector-nothing"><code> nothing</code></a>
+    <a class="nav-button button block" href="./docs/templates#selector-nothing"><code> nothing</code></a>
 
 
 
     <h4>Template functions</h4>
     
 
-    <a class="nav-button button block" href="./templates#constructor-stream"><code>Stream</code></a>
+    <a class="nav-button button block" href="./docs/templates#constructor-stream"><code>Stream</code></a>
 
-    <a class="nav-button button block" href="./templates#function-assign"><code>assign</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-assign"><code>assign</code></a>
 
-    <a class="nav-button button block" href="./templates#function-by"><code>by</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-by"><code>by</code></a>
 
-    <a class="nav-button button block" href="./templates#function-ceil"><code>ceil</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-ceil"><code>ceil</code></a>
 
-    <a class="nav-button button block" href="./templates#function-clamp"><code>clamp</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-clamp"><code>clamp</code></a>
 
-    <a class="nav-button button block" href="./templates#function-define"><code>define</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-define"><code>define</code></a>
 
-    <a class="nav-button button block" href="./templates#function-delegate"><code>delegate</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-delegate"><code>delegate</code></a>
 
-    <a class="nav-button button block" href="./templates#function-entries"><code>entries</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-entries"><code>entries</code></a>
 
-    <a class="nav-button button block" href="./templates#function-equals"><code>equals</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-equals"><code>equals</code></a>
 
-    <a class="nav-button button block" href="./templates#function-events"><code>events</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-events"><code>events</code></a>
 
-    <a class="nav-button button block" href="./templates#function-floor"><code>floor</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-floor"><code>floor</code></a>
 
-    <a class="nav-button button block" href="./templates#function-get"><code>get</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-get"><code>get</code></a>
 
-    <a class="nav-button button block" href="./templates#function-id"><code>id</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-id"><code>id</code></a>
 
-    <a class="nav-button button block" href="./templates#function-include"><code>include</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-include"><code>include</code></a>
 
-    <a class="nav-button button block" href="./templates#function-keys"><code>keys</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-keys"><code>keys</code></a>
 
-    <a class="nav-button button block" href="./templates#function-last"><code>last</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-last"><code>last</code></a>
 
-    <a class="nav-button button block" href="./templates#function-matches"><code>matches</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-matches"><code>matches</code></a>
 
-    <a class="nav-button button block" href="./templates#function-noop"><code>noop</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-noop"><code>noop</code></a>
 
-    <a class="nav-button button block" href="./templates#function-notify"><code>notify</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-notify"><code>notify</code></a>
 
-    <a class="nav-button button block" href="./templates#function-overload"><code>overload</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-overload"><code>overload</code></a>
 
-    <a class="nav-button button block" href="./templates#function-paramify"><code>paramify</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-paramify"><code>paramify</code></a>
 
-    <a class="nav-button button block" href="./templates#function-print"><code>print</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-print"><code>print</code></a>
 
-    <a class="nav-button button block" href="./templates#function-round"><code>round</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-round"><code>round</code></a>
 
-    <a class="nav-button button block" href="./templates#function-slugify"><code>slugify</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-slugify"><code>slugify</code></a>
 
-    <a class="nav-button button block" href="./templates#function-sum"><code>sum</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-sum"><code>sum</code></a>
 
-    <a class="nav-button button block" href="./templates#function-trigger"><code>trigger</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-trigger"><code>trigger</code></a>
 
-    <a class="nav-button button block" href="./templates#function-values"><code>values</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-values"><code>values</code></a>
 
 
 
     
 
-    <a class="nav-button button block" href="./templates#function-px"><code>px</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-px"><code>px</code></a>
 
-    <a class="nav-button button block" href="./templates#function-em"><code>em</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-em"><code>em</code></a>
 
-    <a class="nav-button button block" href="./templates#function-rem"><code>rem</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-rem"><code>rem</code></a>
 
-    <a class="nav-button button block" href="./templates#function-vw"><code>vw</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-vw"><code>vw</code></a>
 
-    <a class="nav-button button block" href="./templates#function-vh"><code>vh</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-vh"><code>vh</code></a>
 
-    <a class="nav-button button block" href="./templates#function-vmin"><code>vmin</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-vmin"><code>vmin</code></a>
 
-    <a class="nav-button button block" href="./templates#function-vmax"><code>vmax</code></a>
+    <a class="nav-button button block" href="./docs/templates#function-vmax"><code>vmax</code></a>
 
 
 </nav>

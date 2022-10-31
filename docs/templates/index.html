@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<!-- Literal template "/Users/stephband/Sites/literal/templates/index.html.literal" -->
+<!-- Literal template "/Users/stephband/Sites/literal/docs/templates/index.html.literal" -->
 
 <html lang="en">
 <head>
     <meta charset="utf-8" />
 <meta name="author" content="Stephen" />
-<meta name="description" content="Documentation for Literal. Literal enhances HTML templates with literal strings, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
+<meta name="description" content="Documentation for Literal. Literal enhances HTML templates with JS literal template tags, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
 <meta name="viewport" content="width=device-width" />
 
 
 <meta name="twitter:card" content="summary">
 <meta name="twitter:site" content="@stephband">
 <meta property="og:title" content="Literal" />
-<meta property="og:description" content="Literal enhances HTML templates with literal strings, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
+<meta property="og:description" content="Literal enhances HTML templates with JS literal template tags, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
 <meta property="og:image" content="undefined" />
 <meta property="og:url" content="https://stephen.band/literal" />
 
@@ -35,8 +35,8 @@
         window.DEBUG = true;
     </script>
 
-    <link rel="stylesheet" href="../documentation.css" />
-    <link rel="stylesheet" href="../template-include.css" />
+    <link rel="stylesheet" href="../../documentation.css" />
+    <link rel="stylesheet" href="../../template-include.css" />
 </head>
 
 <body class="docs-grid @0-grid @0-3x-grid @1-6x-grid @2-9x-grid">
@@ -627,7 +627,7 @@ nothing.</p>
     ${ print(data) }
 </template>
 
-<p><template-include src="#debug" data="../package.json"></template-include></p>
+<p><template-include src="#debug" data="../../package.json"></template-include></p>
 <!--
 Messages should be styled with the print stylesheet:
 
@@ -831,29 +831,29 @@ viewport at render time.</p>
     </section>
 
     <nav>
+    <a class="nav-button button block" href="../.."><code>Literal</code></a>
+
     <h4>Declare a custom element</h4>
-    <a class="nav-button button block" href="../#template-is-element-template"><code>&lt;element-template&gt;</code></a>
-    <a class="nav-button button block" href="../#">Declare an element</a>
-    <a class="nav-button button block" href="../#">Declare an attribute</a>
+    <a class="nav-button button block" href="../element-template"><code>&lt;element-template&gt;</code></a>
 
     
 
-    <a class="nav-button button block" href="../#attribute-src"><code>src</code></a>
+    <a class="nav-button button block" href="../..#attribute-src"><code>src</code></a>
 
-    <a class="nav-button button block" href="../#attribute-tag"><code>tag</code></a>
+    <a class="nav-button button block" href="../..#attribute-tag"><code>tag</code></a>
 
 
 
     <h4>Include a template</h4>
-    <a class="nav-button button block" href="/"><code>&lt;template-include&gt;</code></a>
+    <a class="nav-button button block" href="../template-include"><code>&lt;template-include&gt;</code></a>
 
     
 
-    <a class="nav-button button block" href="../#attribute-data"><code>data</code></a>
+    <a class="nav-button button block" href="../..#attribute-data"><code>data</code></a>
 
-    <a class="nav-button button block" href="../#attribute-loading"><code>loading</code></a>
+    <a class="nav-button button block" href="../..#attribute-loading"><code>loading</code></a>
 
-    <a class="nav-button button block" href="../#attribute-src"><code>src</code></a>
+    <a class="nav-button button block" href="../..#attribute-src"><code>src</code></a>
 
 
 
@@ -960,8 +960,8 @@ viewport at render time.</p>
 
 
     <script type="module">
-        import '../module.js';
-        import '../template-include.js';
-        import '../documentation.js';
+        import '../../module.js';
+        import '../../template-include.js';
+        import '../../documentation.js';
     </script>
 </body>

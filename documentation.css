@@ -24,7 +24,7 @@
         position: fixed;
         left: 0;
         top: 0;
-        width: 14.28571429%;
+        width: calc(33.333333333% + 0.5 * var(--x-gap));
         height: 100vh;
         padding-left: calc(0.5 * var(--x-gap));
         padding-right: calc(0.5 * var(--x-gap));
@@ -36,7 +36,7 @@
 
 @media (min-width: 70em) {
     .docs-grid > nav {
-        width: 11.11111111%;
+        width: calc(22.22222222% + 0.5 * var(--x-gap));
     }
 }
 

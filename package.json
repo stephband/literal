@@ -1,7 +1,7 @@
 {
   "title": "Literal",
   "name": "literal",
-  "description": "Literal enhances HTML templates with literal strings, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped.",
+  "description": "Literal enhances HTML templates with JS literal template tags, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped.",
   "version": "0.6.4",
   "author": {
     "name": "Stephen",
