@@ -69,7 +69,7 @@ ${ element.property = 3, '' }
     import defineElement    from "./modules/define-element.js";
     import { getInternals } from "../dom/modules/element.js";
 
-    const TestElement = defineElement('defined-element', '#defined-element-template', {
+    const TestElement = defineElement('defined-element', '#defined-element-template', {}, {
         attribute: {
             attribute: function(value) {
                 getInternals(this).data.attribute = value;

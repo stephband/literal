@@ -1,12 +1,13 @@
 
 import { Observer as Data } from '../../fn/observer/observer.js';
 import element, { getInternals as Internals } from '../../dom/modules/element.js';
-import lifecycle            from './lifecycle.js';
 import globalProperties, { addLoading, removeLoading, setLoading } from './properties.js';
-import getTemplate          from './get-template.js';
-import TemplateRenderer     from './renderer-template.js';
+import defineProperty   from './define-property.js';
+import getTemplate      from './get-template.js';
+import TemplateRenderer from './renderer-template.js';
 
 const assign  = Object.assign;
+const entries = Object.entries;
 
 /**
 body
@@ -28,10 +29,19 @@ shadow
 The custom element's shadow root.
 **/
 
-export default function defineElement(tag, src, props, log = '') {
-    const properties = assign({}, props, globalProperties);
+function assignProperty(properties, entry) {
+    // Turn descriptor types into descriptor objects where necessary
+    properties[entry[0]] = defineProperty(entry[0], entry[1]);
+    return properties;
+}
 
-    return element(tag, assign({}, lifecycle, {
+export default function defineElement(tag, src, lifecycle = {}, props, log = '') {
+    // Assemble properties
+    const properties = props ?
+        assign(entries(props).reduce(assignProperty, {}), globalProperties) :
+        globalProperties ;
+
+    return element(tag, assign({}, {
         construct: function(shadow) {
             const internals = Internals(this);
 
@@ -66,9 +76,11 @@ export default function defineElement(tag, src, props, log = '') {
             // start loading (or do they?)
             shadow.append(renderer.content);
             addLoading(this);
+
+            lifecycle.construct && lifecycle.construct.call(this, shadow, internals);
         },
 
-        connect: function() {
+        connect: function(shadow) {
             const internals = Internals(this);
             const { renderer, data } = internals;
 
@@ -93,12 +105,16 @@ export default function defineElement(tag, src, props, log = '') {
             // We must render synchronously here else rendered 'slotchange'
             // listeners miss the first slotchange
             renderer.push(data);
+
+            lifecycle.connect && lifecycle.connect.call(this, shadow, internals);
         },
 
-        load: function() {
+        load: function(shadow) {
             const internals = Internals(this);
             removeLoading(this);
             internals.data.loading = false;
+
+            lifecycle.load && lifecycle.load.call(this, shadow, internals);
         }
     }),
 

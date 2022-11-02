@@ -136,7 +136,6 @@ Click on an instruction to see what happens when the property `nifty` is changed
 
 import element, { getInternals } from '../dom/modules/element.js';
 import defineElement  from './modules/define-element.js';
-import defineProperty from './modules/define-property.js';
 
 const ignore = {
     is:      true,
@@ -150,7 +149,10 @@ function isDefineableAttribute(attribute) {
 }
 
 function assignProperty(properties, attribute) {
-    properties[attribute.localName] = defineProperty(attribute.localName, attribute.value);
+    if (isDefineableAttribute(attribute)) {
+        properties[attribute.localName] = attribute.value;
+    }
+
     return properties;
 }
 
@@ -162,11 +164,12 @@ export default element('<template is="element-template">', {
             throw new SyntaxError('<template is="element-template"> must have an attribute tag="name-of-element".');
         }
 
-        const properties = Array.from(this.attributes)
-            .filter(isDefineableAttribute)
+        const properties = Array
+            .from(this.attributes)
             .reduce(assignProperty, {}) ;
 
-        defineElement(internal.tag, this, properties, 'defined by element-template');
+        // tag, template, lifecycle, properties, log
+        defineElement(internal.tag, this, {}, properties);
     }
 }, {
 
