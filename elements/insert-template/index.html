@@ -58,7 +58,7 @@ parse as numbers, strings, booleans, JSON, or as URLs.</p>
 <pre>hello</pre>
 
 <p>A <code>data-</code> attribute that parses as a URL makes a request. The request imports
-JS modules or fetches JSON.</p>
+a JS module or fetches JSON:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>insert-template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../data/dom-clock.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>pre</span><span class="token punctuation">></span></span>${ data.time.toFixed(0) }s<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>pre</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
@@ -207,6 +207,15 @@ DOM is rendered accordingly.</p>
     <a class="nav-button button block" href="../..#attribute-src"><code>src</code></a>
 
     <a class="nav-button button block" href="../..#attribute-tag"><code>tag</code></a>
+
+
+
+    <h4>Insert a template</h4>
+    <a class="nav-button button block" href="../../docs/template-include"><code>&lt;insert-template&gt;</code></a>
+
+    
+
+    <a class="nav-button button block" href="../..#attribute-data"><code>data</code></a>
 
 
 
