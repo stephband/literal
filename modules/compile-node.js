@@ -56,8 +56,9 @@ const compileElement = overload((renderers, node) => node.tagName.toLowerCase(),
 
     'default': (renderers, node, template, path, parameters, consts) => {
         // Children first means inner DOM to outer DOM
-        compileChildren(renderers, node, template, path, assign({}, parameters, { element: node }), consts);
         compileAttributes(renderers, node, template, path, parameters, consts);
+        compileChildren(renderers, node, template, path, assign({}, parameters, { element: node }), consts);
+
         return renderers;
     }
 });

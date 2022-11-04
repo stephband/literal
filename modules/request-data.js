@@ -41,6 +41,7 @@ requestData('./path/to/module#default("parameter")');
 ```
 **/
 
+import get            from '../../fn/modules/get.js';
 import overload       from '../../fn/modules/overload.js';
 import cache          from '../../fn/modules/cache.js';
 import { requestGet } from '../../dom/modules/request.js';
@@ -55,7 +56,7 @@ const requestData = overload((url) => (rextension.exec(url.pathname) || empty)[1
         const name = url.hash.slice(1) || 'default';
 
         // Return promise of imported named module
-        return import(url).then((data) => data[name]);
+        return import(url).then(get(name));
     }),
 
     default: cache(requestGet)
