@@ -69,7 +69,7 @@ JS module and used to rotate an SVG:
     <p>You loaded this <b>${ round(data.time) + 's' }</b> ago.</p>
 </template>
 
-<template-include src="#clock" data="./data/dom-clock.js">
+<template-include src="#clock" data="./data/clock.js">
     <p>You loaded this.</p>
 </template-include>
 ```
@@ -84,7 +84,7 @@ And the result is:
     <p>You loaded this <b>${ round(data.time) + 's' }</b> ago.</p>
 </template>
 
-<template-include src="#clock" data="./data/dom-clock.js">
+<template-include src="#clock" data="./data/clock.js">
     <p>You loaded this.</p>
 </template-include>
 **/

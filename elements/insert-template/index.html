@@ -39,83 +39,100 @@
 </head>
 
 <body class="docs-grid @0-grid @0-3x-grid @1-6x-grid @2-9x-grid">
-    <header class="@0-x3" style="grid-column-end: span 4;">
-        <h1 class="docs-text-01">Literal <span class="docs-text-06">0.6.2</span></h1>
-    </header>
+    
 
-    
-<div class="@0-x1 @0-3x @1-x3 @1-4x @2-x3 @0-x-stretch">
-    
-    <h2 class="doctext-02" id="template-is-insert-template"><code>&lt;template is="insert-template"&gt;</code></h2>
-    <p>An <code>insert-template</code> is replaced by its own rendered content. Where JS fails
-it is left inert and unrendered.</p>
-<p>The constant <code>data</code> inside the template is an object. Where <code>insert-template</code>
-has <code>data-</code> attributes <code>data</code> is populated with their parsed values. Values
-parse as numbers, strings, booleans, JSON, or as URLs.</p>
+<header class="@0-x1 @0-3x @1-x3 @1-4x @2-x3 @0-x-stretch">
+    <h1 class="docs-text-01" id="template-is-insert-template"><code>&lt;template is="insert-template"&gt;</code></h1>
+</header>
+
+<section class="@0-x1 @0-3x @1-x3 @1-4x @2-x3 @0-x-stretch">
+    <p>An <code>insert-template</code> is replaced by its own rendered content.</p>
+<p>The constant <code>data</code> inside the template is an object populated with the parsed
+values of the template’s <code>data-</code> attributes.</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>insert-template<span class="token punctuation">"</span></span> <span class="token attr-name">data-text</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>hello<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>pre</span><span class="token punctuation">></span></span>${ data.text }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>pre</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
-<pre>hello</pre>
+<div class="example">
+    <pre>hello</pre>
+</div>
 
-<p>A <code>data-</code> attribute that parses as a URL makes a request. The request imports
-a JS module or fetches JSON:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>insert-template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../data/dom-clock.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>pre</span><span class="token punctuation">></span></span>${ data.time.toFixed(0) }s<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>pre</span><span class="token punctuation">></span></span>
+<p>Values parse as numbers, strings, booleans, JSON, or as URLs. A <code>data-</code>
+attribute that parses as a URL makes a request that imports a JS module or
+fetches JSON:</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>insert-template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../data/clock.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>pre</span><span class="token punctuation">></span></span>${ data.time.toFixed(0) + 's' }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>pre</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
-<template is="insert-template" data="../../data/dom-clock.js">
-    <pre>${ data.time.toFixed(0) }s</pre>
-</template>
+<div class="example">
+    <template is="insert-template" data="../../data/clock.js">
+        <pre>${ data.time.toFixed(0) + 's' }</pre>
+    </template>
+</div>
 
+<p>The <code>insert-template</code> element is designed to make it easy to enhance static
+content with dynamic content, as it can be placed anywhere in your HTML. Where
+JS fails it is left inert and unrendered.</p>
 <h2 id="enhancing-content">Enhancing content</h2>
-<p><code>&lt;template is=&quot;insert-template&quot;&gt;</code> is designed to make enhancing static content
-with dynamic content easy. Let’s consider a ‘favourites’ button. The server
-gives us a link to the <code>/favourites/</code> page:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/favourites/<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>fav-icon<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    Favourites
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span></code></pre>
-<a href="/favourites/" class="fav-icon">
-    Favourites
-</a>
+<p>Let’s consider a classic  ‘favourites’ button. The static version is a link to
+the <code>/favourites/</code> page represented by an icon:</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/favourites/<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>fav-icon<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Favourites<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span></code></pre>
+<div class="example">
+    <a href="/favourites/" class="fav-icon">
+        Favourites
+    </a>
+</div>
 
-<p>We want to enhance that button with a badge that displays a count of our
-favourites, a count that dynamically updates as we add and remove favourites:</p>
+<p>We want to enhance that link with a badge that displays a count of our
+favourites, so we use an <code>insert-template</code> to render a <code>&lt;span&gt;</code> containing the
+count inside the link:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/favourites/<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>fav-icon<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     Favourites
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>insert-template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../data/favourites.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
         <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>badge<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>${ data.count }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span></code></pre>
-<a href="/favourites/" class="fav-icon">
-    Favourites
-    <template is="insert-template" data="../../data/favourites.js">
-        <span class="badge">${ data.count }</span>
-    </template>
-</a>
+<div class="example">
+    <a href="/favourites/" class="fav-icon">
+        Favourites
+        <template is="insert-template" data="../../data/favourites.js">
+            <span class="badge">${ data.count }</span>
+        </template>
+    </a>
+</div>
 
-<p>To see the count badge update we now need some things to favourite:</p>
+<p>This count comes from the module at <code>../data/favourites.js</code>. That module also
+has a <code>toggle()</code> method that we may use to add or remove ids from a list of
+favourites, enabling us to write a favourite button:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>insert-template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../data/favourites.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${ data.ids.includes(<span class="token punctuation">'</span>a<span class="token punctuation">'</span>) ? <span class="token punctuation">'</span>fav<span class="token punctuation">'</span> : <span class="token punctuation">'</span>not-fav<span class="token punctuation">'</span> }<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-        A
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        ${ data.ids.includes('a') ? 'Remove from favourites' : 'Add to favourites' }
         ${ events('click', element).each((e) => data.toggle('a')) }
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
-<template is="insert-template" data="../../data/favourites.js">
-    <button type="button" class="${ data.ids.includes('a') ? 'fav' : 'not-fav' }">
-        A
-        ${ events('click', element).each((e) => data.toggle('a')) }
-    </button>
-</template>
-
-
-    
+<div class="example">
+    <template is="insert-template" data="../../data/favourites.js">
+        <button type="button" class="${ data.ids.includes('a') ? 'fav' : 'not-fav' }">
+            ${ data.ids.includes('a') ? 'Remove from favourites' : 'Add to favourites' }
+            ${ events('click', element).each((e) => data.toggle('a')) }
+        </button>
+    </template>
 </div>
 
-<!--form class="@0-x1 @0-3x @1-x1 @1-2x @2-x1 @2-3x x-stretch y-start">
-    <template is="insert-template" data-text="hello">
-    <pre>${ data.text }</pre>
-</template>
-    <input hidden class="button" type="submit" />
-</form-->
+<p>Note how the badge in the favourites link is updated when this is clicked.</p>
+<h2 id="importing-production-modules">Importing production modules</h2>
+<p>URLs to modules may be rewritten, which is useful if you are bundling modules
+for production. Rather than having to rewrite the HTML with new data URLs,
+Literal provides an <code>urls</code> map:</p>
+<pre><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> urls <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../../module.js'</span><span class="token punctuation">;</span>
+
+<span class="token function">assign</span><span class="token punctuation">(</span>urls<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    <span class="token comment">// Map the default export of favourites.js to the export</span>
+    <span class="token comment">// named 'favourites' of bundle.js...</span>
+    <span class="token string">'../../data/favourites.js'</span><span class="token operator">:</span> <span class="token string">'../../build/bundle.js#favourites'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+
+</section>
+
 
 <div class="@0-x1 @0-3x @1-x3 @1-2x @2-x3 @2-3x @0-x-stretch @0-y-start">
     
@@ -199,7 +216,7 @@ DOM is rendered accordingly.</p>
     <nav>
     <a class="nav-button button block" href="../.."><code>Literal</code></a>
 
-    <h4>Declare a custom element</h4>
+    <h4>Elements</h4>
     <a class="nav-button button block" href="../../docs/element-template"><code>&lt;element-template&gt;</code></a>
 
     
@@ -210,8 +227,7 @@ DOM is rendered accordingly.</p>
 
 
 
-    <h4>Insert a template</h4>
-    <a class="nav-button button block" href="../../docs/template-include"><code>&lt;insert-template&gt;</code></a>
+    <a class="nav-button button block" href="./"><code>&lt;insert-template&gt;</code></a>
 
     
 
@@ -219,7 +235,6 @@ DOM is rendered accordingly.</p>
 
 
 
-    <h4>Include a template</h4>
     <a class="nav-button button block" href="../../docs/template-include"><code>&lt;template-include&gt;</code></a>
 
     
@@ -233,9 +248,6 @@ DOM is rendered accordingly.</p>
 
 
     <h4>Templates</h4>
-    <a class="nav-button button block" href="../../docs/templates">Writing templates</a>
-
-    <h4>Template Tags</h4>
     <a class="nav-button button block" href="../../docs/templates">Evaluation table</a>
 
     <h4>Template constants</h4>

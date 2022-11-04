@@ -1,6 +1,3 @@
-//import { Data } from '../module.js';
-
-const favourites = [];
 
 export default {
     ids:   [],
@@ -11,15 +8,12 @@ export default {
 
         if (i !== -1) {
             ids.splice(i, 1);
-        }
-        else {
-            ids.push(id);
+            this.count = this.ids.length;
+            return false;
         }
 
-        // We must mutate the Data() proxy of `this` so that literal templates
-        // can detect the mutation. However, if this is being called from the
-        // template `this` is already the data proxy...
+        ids.push(id);
         this.count = this.ids.length;
-        console.log('Favourites', this.count);
+        return true;
     }
 };

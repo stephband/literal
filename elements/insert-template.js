@@ -1,12 +1,10 @@
 /**
 <template is="insert-template">
 
-An `insert-template` is replaced by its own rendered content. Where JS fails
-it is left inert and unrendered.
+An `insert-template` is replaced by its own rendered content.
 
-The constant `data` inside the template is an object. Where `insert-template`
-has `data-` attributes `data` is populated with their parsed values. Values
-parse as numbers, strings, booleans, JSON, or as URLs.
+The constant `data` inside the template is an object populated with the parsed
+values of the template's `data-` attributes.
 
 ```html
 <template is="insert-template" data-text="hello">
@@ -14,39 +12,48 @@ parse as numbers, strings, booleans, JSON, or as URLs.
 </template>
 ```
 
-<pre>hello</pre>
+<div class="example">
+    <pre>hello</pre>
+</div>
 
-A `data-` attribute that parses as a URL makes a request. The request imports
-a JS module or fetches JSON:
+Values parse as numbers, strings, booleans, JSON, or as URLs. A `data-`
+attribute that parses as a URL makes a request that imports a JS module or
+fetches JSON:
 
 ```html
-<template is="insert-template" data="../data/dom-clock.js">
-    <pre>${ data.time.toFixed(0) }s</pre>
+<template is="insert-template" data="../data/clock.js">
+    <pre>${ data.time.toFixed(0) + 's' }</pre>
 </template>
 ```
 
-<template is="insert-template" data="../data/dom-clock.js">
-    <pre>${ data.time.toFixed(0) }s</pre>
-</template>
+<div class="example">
+    <template is="insert-template" data="../data/clock.js">
+        <pre>${ data.time.toFixed(0) + 's' }</pre>
+    </template>
+</div>
+
+The `insert-template` element is designed to make it easy to enhance static
+content with dynamic content, as it can be placed anywhere in your HTML. Where
+JS fails it is left inert and unrendered.
 
 ## Enhancing content
 
-`<template is="insert-template">` is designed to make enhancing static content
-with dynamic content easy. Let's consider a 'favourites' button. The server
-gives us a link to the `/favourites/` page:
+Let's consider a classic  'favourites' button. The static version is a link to
+the `/favourites/` page represented by an icon:
 
 ```html
-<a href="/favourites/" class="fav-icon">
-    Favourites
-</a>
+<a href="/favourites/" class="fav-icon">Favourites</a>
 ```
 
-<a href="/favourites/" class="fav-icon">
-    Favourites
-</a>
+<div class="example">
+    <a href="/favourites/" class="fav-icon">
+        Favourites
+    </a>
+</div>
 
-We want to enhance that button with a badge that displays a count of our
-favourites, a count that dynamically updates as we add and remove favourites:
+We want to enhance that link with a badge that displays a count of our
+favourites, so we use an `insert-template` to render a `<span>` containing the
+count inside the link:
 
 ```html
 <a href="/favourites/" class="fav-icon">
@@ -57,30 +64,55 @@ favourites, a count that dynamically updates as we add and remove favourites:
 </a>
 ```
 
-<a href="/favourites/" class="fav-icon">
-    Favourites
-    <template is="insert-template" data="../data/favourites.js">
-        <span class="badge">${ data.count }</span>
-    </template>
-</a>
+<div class="example">
+    <a href="/favourites/" class="fav-icon">
+        Favourites
+        <template is="insert-template" data="../data/favourites.js">
+            <span class="badge">${ data.count }</span>
+        </template>
+    </a>
+</div>
 
-To see the count badge update we now need some things to favourite:
+This count comes from the module at `../data/favourites.js`. That module also
+has a `toggle()` method that we may use to add or remove ids from a list of
+favourites, enabling us to write a favourite button:
 
 ```html
 <template is="insert-template" data="../data/favourites.js">
-    <button type="button" class="${ data.ids.includes('a') ? 'fav' : 'not-fav' }">
-        A
+    <button type="button">
+        ${ data.ids.includes('a') ? 'Remove from favourites' : 'Add to favourites' }
         ${ events('click', element).each((e) => data.toggle('a')) }
     </button>
 </template>
 ```
 
-<template is="insert-template" data="../data/favourites.js">
-    <button type="button" class="${ data.ids.includes('a') ? 'fav' : 'not-fav' }">
-        A
-        ${ events('click', element).each((e) => data.toggle('a')) }
-    </button>
-</template>
+<div class="example">
+    <template is="insert-template" data="../data/favourites.js">
+        <button type="button" class="${ data.ids.includes('a') ? 'fav' : 'not-fav' }">
+            ${ data.ids.includes('a') ? 'Remove from favourites' : 'Add to favourites' }
+            ${ events('click', element).each((e) => data.toggle('a')) }
+        </button>
+    </template>
+</div>
+
+Note how the badge in the favourites link is updated when this is clicked.
+
+## Importing production modules
+
+URLs to modules may be rewritten, which is useful if you are bundling modules
+for production. Rather than having to rewrite the HTML with new data URLs,
+Literal provides an `urls` map:
+
+```js
+import { urls } from '../module.js';
+
+assign(urls, {
+    // Map the default export of favourites.js to the export
+    // named 'favourites' of bundle.js...
+    '../data/favourites.js': '../build/bundle.js#favourites'
+});
+
+```
 
 **/
 
