@@ -1,8 +1,8 @@
 /**
 <template is="literal-insert">
 
-A `literal-insert` may be placed anywhere in your HTML, and is designed to
-mix dynamic content into static content in the particular locations where it is
+A `literal-insert` may be placed anywhere in your HTML, and is designed to make
+it easy to mix dynamic content into static content in just those locations where
 needed.
 
 A `literal-insert` is replaced by its own rendered content.

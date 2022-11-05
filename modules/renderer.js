@@ -87,7 +87,7 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
             const promises = renderer.promises || (renderer.promises = []);
             values[n] = '';
             object.then((value) => {
-                // You can't stop a promises, but we can flag it to be ignored
+                // You can't stop a promise, but we can flag it to be ignored
                 if (object.stopped) { return; }
                 remove(promises, object);
                 return renderValue(renderer, args, values, n, value, true);
