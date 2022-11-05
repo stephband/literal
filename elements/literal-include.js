@@ -1,82 +1,82 @@
 /**
-<template-include>
+<literal-include>
 
-A `template-include` may be placed pretty much anywhere in your HTML, enabling
+A `literal-include` may be placed pretty much anywhere in your HTML, enabling
 the insertion of chunks of dynamic, JS-rendered DOM wherever you like in a
 document.
 
-A `template-include` finds a source template identified by its `src` attribute,
+A `literal-include` finds a source template identified by its `src` attribute,
 fetches JSON or imports a module referred to by its `data` attribute, renders
 attributes and text found to contain literal tags, then replaces itself with
 the rendered result.
 
-A `template-include` may contain fallback content, in case any of that fails.
+A `literal-include` may contain fallback content, in case any of that fails.
 
 ```html
 <template id="greetings">
     Hello ${ data.name }.
 </template>
 
-<template-include src="#greetings" data="/users/1.json">
+<literal-include src="#greetings" data="/users/1.json">
     Fallback content.
-</template-include>
+</literal-include>
 ```
 
 Multiple `data-` attributes may be declared, their values become properties of
 the `data` object inside the template:
 
 ```
-<template-include src="#add-to-collections-thumb" data-pk="34" ... ></template-include>
+<literal-include src="#add-to-collections-thumb" data-pk="34" ... ></literal-include>
 ```
 
 Or a single `data` attribute can be used to pass JSON to use as the `data`
 object inside the template:
 
 ```
-<template-include src="#add-to-collections-thumb" data='{"pk":34, ... }'></template-include>
+<literal-include src="#add-to-collections-thumb" data='{"pk":34, ... }'></literal-include>
 ```
 
 Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a
 .json file...
 
 ```
-<template-include src="#greetings" data="/users/1.json"></template-include>
+<literal-include src="#greetings" data="/users/1.json"></literal-include>
 ```
 
 ...or import the default export of a .js module:
 
 ```
-<template-include src="#greetings" data="/user-module.js"></template-include>
+<literal-include src="#greetings" data="/user-module.js"></literal-include>
 ```
 
 **/
 
-import element, { getInternals as Internals } from '../dom/modules/element.js';
+import element, { getInternals as Internals } from '../../dom/modules/element.js';
 
-import lifecycle       from './modules/lifecycle.js';
-import properties, { addLoading, removeLoading } from './modules/properties.js';
-import getTemplate     from './modules/get-template.js';
-import requestTemplate from './modules/request-template.js';
+import lifecycle       from '../modules/lifecycle.js';
+import properties, { addLoading, removeLoading } from '../modules/properties.js';
+import getTemplate     from '../modules/get-template.js';
+import requestTemplate from '../modules/request-template.js';
 
 // Log registration to console
-window.console && window.console.log('%c<template-include>%c documentation: stephen.band/literal/', 'color: #3a8ab0; font-weight: 600;', 'color: #888888; font-weight: 400;');
+window.console && window.console.log('%c<literal-include>%c documentation: stephen.band/literal/', 'color: #3a8ab0; font-weight: 600;', 'color: #888888; font-weight: 400;');
 
 const assign = Object.assign;
 
-export default element('template-include', lifecycle, assign({
+export default element('literal-include', lifecycle, assign({
     /**
     data=""
     A path to a JSON file or JS module exporting data to be rendered.
 
     ```html
-    <template-include src="#template" data="./data.json"></template-include>
-    <template-include src="#template" data="./module.js"></template-include>
+    <literal-include src="#template" data="./data.json"></literal-include>
+    <literal-include src="#template" data="./module.js"></literal-include>
     ```
 
     Named exports are supported via the path hash:
 
     ```html
-    <template-include src="#template" data="./module.js#namedExport"></template-include>
+    <literal-include src="#template" data="./module.js#namedExport"></literal-include>
     ```
 
     Paths may be rewritten. This helps when JS modules are bundled into a single
@@ -93,7 +93,7 @@ export default element('template-include', lifecycle, assign({
     The `data` attribute also accepts raw JSON:
 
     ```html
-    <template-include src="#template" data='{"property": "value"}'></template-include>
+    <literal-include src="#template" data='{"property": "value"}'></literal-include>
     ```
     **/
 
@@ -134,7 +134,7 @@ export default element('template-include', lifecycle, assign({
     /**
     src=""
     Define a source template whose rendered content replaces this
-    `<template-include>`. This is a required attribute and must be in
+    `<literal-include>`. This is a required attribute and must be in
     the form of a fragment identifier pointing to a `template` element
     in the DOM.
     **/

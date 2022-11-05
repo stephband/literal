@@ -16,20 +16,20 @@
 /* Literal include */
 
 include-html,
-template-include {
+literal-include {
     display: contents;
     position: relative;
 }
 
 include-html::after,
-template-include::after {
+literal-include::after {
     content: '';
     opacity: 0;
     transition: opacity 0.6s linear 0.3s;
 }
 
 include-html[loading]::after,
-template-include[loading]::after {
+literal-include[loading]::after {
     content: '';
     position: absolute;
     left: 50%;

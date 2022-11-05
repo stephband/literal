@@ -9,7 +9,7 @@
     </script>
 
     <link rel="stylesheet" href="./documentation.css" />
-    <link rel="stylesheet" href="./template-include.css" />
+    <link rel="stylesheet" href="./literal-include.css" />
 </head>
 
 <body class="docs-grid @0-grid @0-3x-grid @1-6x-grid @2-9x-grid">
@@ -20,7 +20,7 @@
     ${ include("./docs/includes/nav.literal", "./package.json") }
 
     <script type="module">
-        import './element-template.js';
+        import './literal-element.js';
         import './documentation.js';
     </script>
 </body>

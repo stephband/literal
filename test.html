@@ -4,7 +4,7 @@
     <meta name="description" content="Documentation for Literal. Literal puts JS into your HTML. Literal defines a custom include element that parses and renders templates written as JS Literals, in a small library under 15kB minified and gzipped." />
     <meta name="viewport" content="width=device-width" />
 
-    <link rel="stylesheet" href="./template-include.css" />
+    <link rel="stylesheet" href="./literal-include.css" />
 
     <script>
         window.DEBUG = true;
@@ -74,14 +74,14 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
 <body>
     <!--section title="Loading">
         <h3 class="text-03">Loading <span class="test-count">(4 tests)</span></h3>
-        <template-include src="#test" id="data-never">
+        <literal-include src="#test" id="data-never">
             <pre>✔ Default content</pre>
-        </template-include>
-        <template-include src="#test" data="./test/test.json"></template-include>
-        <template-include src="#test" data-one="One" data-two="Two" data-three="Three"></template-include>
-        <template-include src="#test" data-one="./test/test.json" data-two="./test/test.json"></template-include>
-        <template-include src="#test" data="./test/test-bad.json"></template-include>
-        <template-include src="#test" id="data-later"></template-include>
+        </literal-include>
+        <literal-include src="#test" data="./test/test.json"></literal-include>
+        <literal-include src="#test" data-one="One" data-two="Two" data-three="Three"></literal-include>
+        <literal-include src="#test" data-one="./test/test.json" data-two="./test/test.json"></literal-include>
+        <literal-include src="#test" data="./test/test-bad.json"></literal-include>
+        <literal-include src="#test" id="data-later"></literal-include>
     </section>
 
     <section title="Values">
@@ -125,7 +125,7 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
             <input type="number" value="  ${ 5 } " />
         </template>
 
-        <template-include src="#values-template" data='{ "a": 4 }'></template-include>
+        <literal-include src="#values-template" data='{ "a": 4 }'></literal-include>
 
         <hr/>
     </section>
@@ -137,11 +137,11 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
             <p>Time since load: ${ parseInt(data.time, 10) }</p>
         </template>
 
-        <template-include src="#clock-template" data="./test/test-clock.js"></template-include>
+        <literal-include src="#clock-template" data="./test/test-clock.js"></literal-include>
 
         <hr/>
 
-        <template-include src="#clock-template" data="./test/test-clock.js"></template-include>
+        <literal-include src="#clock-template" data="./test/test-clock.js"></literal-include>
 
         <hr/>
 
@@ -157,7 +157,7 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
             ${ include(parseInt(data.time, 10) % 2 === 0 ? '#even-template' : '#odd-template', data) }
         </template>
 
-        <template-include src="#evenodd-template" data="./test/test-clock.js"></template-include>
+        <literal-include src="#evenodd-template" data="./test/test-clock.js"></literal-include>
 
         <hr/>
 
@@ -201,15 +201,15 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
             </select>
         </template>
 
-        <template-include src="#numbers-template" data="./test/test-clock.js"></template-include>
+        <literal-include src="#numbers-template" data="./test/test-clock.js"></literal-include>
 
         <hr/>
     </section>
 
     <section title="Loops">
-        <template-include src="#item-list" id="test-list">
+        <literal-include src="#item-list" id="test-list">
             Default
-        </template-include>
+        </literal-include>
     </section-->
 
     <script type="module">
@@ -410,7 +410,7 @@ import TemplateRenderer from './modules/renderer-template.js';
 
 */
     import { urls } from './module.js';
-    import './template-include.js';
+    import './literal-include.js';
 
     urls({
         './my-arse-is-on-fire': './test/tracks.json'
@@ -471,7 +471,7 @@ import TemplateRenderer from './modules/renderer-template.js';
     </template>
 
     <section class="block @0-x1 @0-3x @1-6x @2-x2 @0-x-stretch">
-        <template-include src="#tracks" data="./my-arse-is-on-fire"></template-include>
+        <literal-include src="#tracks" data="./my-arse-is-on-fire"></literal-include>
     </section>
 
     <script type="module"></script>

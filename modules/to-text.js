@@ -24,7 +24,7 @@ _arrays_ of _strings_ will render as concatted strings as they arrive.
             <th><code>${ undefined }</code></th>
             <td>
                 <template id="value-undefined">${ undefined }</template>
-                <template-include src="#value-undefined"data="{}"></template-include>
+                <literal-include src="#value-undefined"data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -32,7 +32,7 @@ _arrays_ of _strings_ will render as concatted strings as they arrive.
             <th><code>${ null }</code></th>
             <td>
                 <template id="value-null">${ null }</template>
-                <template-include src="#value-null"data="{}"></template-include>
+                <literal-include src="#value-null"data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -40,7 +40,7 @@ _arrays_ of _strings_ will render as concatted strings as they arrive.
             <th><code>${ NaN }</code></th>
             <td>
                 <template id="value-nan">${ NaN }</template>
-                <template-include src="#value-nan"data="{}"></template-include>
+                <literal-include src="#value-nan"data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -48,7 +48,7 @@ _arrays_ of _strings_ will render as concatted strings as they arrive.
             <th><code>${ 'Hello' }</code></th>
             <td>
                 <template id="value-string">${ 'Hello' }</template>
-                <template-include src="#value-string"data="{}"></template-include>
+                <literal-include src="#value-string"data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -56,7 +56,7 @@ _arrays_ of _strings_ will render as concatted strings as they arrive.
             <th><code>${ 100.3 }</code></th>
             <td>
                 <template id="value-number">${ 100.3 }</template>
-                <template-include src="#value-number"data="{}"></template-include>
+                <literal-include src="#value-number"data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -64,7 +64,7 @@ _arrays_ of _strings_ will render as concatted strings as they arrive.
             <th><code>${ Infinity }, ${ -Infinity }</code></th>
             <td>
                 <template id="value-infinity">${ Infinity }, ${ -Infinity }</template>
-                <template-include src="#value-infinity"data="{}"></template-include>
+                <literal-include src="#value-infinity"data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -72,7 +72,7 @@ _arrays_ of _strings_ will render as concatted strings as they arrive.
             <th><code>${ function name(param) {} }</code></th>
             <td>
                 <template id="value-function">${ function name(param) {} }</template>
-                <template-include src="#value-function"data="{}"></template-include>
+                <literal-include src="#value-function"data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -80,7 +80,7 @@ _arrays_ of _strings_ will render as concatted strings as they arrive.
             <th><code>${ (param) => {} }</code></th>
             <td>
                 <template id="value-arrow">${ (param) => {} }</template>
-                <template-include src="#value-arrow"data="{}"></template-include>
+                <literal-include src="#value-arrow"data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -88,7 +88,7 @@ _arrays_ of _strings_ will render as concatted strings as they arrive.
             <th><code>${ /^regexp/ }</code></th>
             <td>
                 <template id="value-regexp">${ /^regexp/ }</template>
-                <template-include src="#value-regexp"data="{}"></template-include>
+                <literal-include src="#value-regexp"data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -96,7 +96,7 @@ _arrays_ of _strings_ will render as concatted strings as they arrive.
             <th><code>${ Symbol('name') }</code></th>
             <td>
                 <template id="value-symbol">${ Symbol('name') }</template>
-                <template-include src="#value-symbol"data="{}"></template-include>
+                <literal-include src="#value-symbol"data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -104,7 +104,7 @@ _arrays_ of _strings_ will render as concatted strings as they arrive.
             <th><code>${ [0, 1, 2, 3] }</code></th>
             <td>
                 <template id="value-array">${ [0, 1, 2, 3] }</template>
-                <template-include src="#value-array"data="{}"></template-include>
+                <literal-include src="#value-array"data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -112,7 +112,7 @@ _arrays_ of _strings_ will render as concatted strings as they arrive.
             <th><code>${ { property: 'value' } }</code></th>
             <td>
                 <template id="value-object">${ { property: 'value' } }</template>
-                <template-include src="#value-object"data="{}"></template-include>
+                <literal-include src="#value-object"data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -120,7 +120,7 @@ _arrays_ of _strings_ will render as concatted strings as they arrive.
             <th><code>${ document.createTextNode('Text') }</code></th>
             <td>
                 <template id="value-node">${ document.createTextNode('Text') }</template>
-                <template-include src="#value-node"data="{}"></template-include>
+                <literal-include src="#value-node"data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -128,7 +128,7 @@ _arrays_ of _strings_ will render as concatted strings as they arrive.
             <th><code>${ Promise.resolve('promise') }</code></th>
             <td>
                 <template id="value-promise">${ Promise.resolve('promise') }</template>
-                <template-include src="#value-promise"data="{}"></template-include>
+                <literal-include src="#value-promise"data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -137,7 +137,7 @@ _arrays_ of _strings_ will render as concatted strings as they arrive.
             &nbsp;&nbsp;.map((e) => e.pageX.toFixed(1)) }</code></th>
             <td>
                 <template id="value-stream">${ events('pointermove', body).map((e) => e.pageX.toFixed(1)) }</template>
-                <template-include src="#value-stream"data="{}"></template-include>
+                <literal-include src="#value-stream"data="{}"></literal-include>
             </td>
         </tr>
     </tbody>

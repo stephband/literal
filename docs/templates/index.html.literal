@@ -9,7 +9,7 @@
     </script>
 
     <link rel="stylesheet" href="../../documentation.css" />
-    <link rel="stylesheet" href="../../template-include.css" />
+    <link rel="stylesheet" href="../../literal-include.css" />
 </head>
 
 <body class="docs-grid @0-grid @0-3x-grid @1-6x-grid @2-9x-grid">
@@ -90,7 +90,7 @@
 
     <script type="module">
         import '../../module.js';
-        import '../../template-include.js';
+        import '../../literal-include.js';
         import '../../documentation.js';
     </script>
 </body>

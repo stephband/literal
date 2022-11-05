@@ -1,26 +1,51 @@
 /**
-<template is="element-template">
+<template is="literal-element">
 
-Element templates are the quickest way to define custom elements. Its content
-defines the shadow DOM, and its attributes define the attributes and properties
-of the new element.
+A `literal-element` is a template that defines a custom element purely in HTML.
+The content of a `literal-element` defines the shadow DOM, and its attributes
+define the tag name, attributes and properties of the custom element.
 
-Usual concerns about the custom element construct/connect/disconnect lifecycle
-are abstracted away, leaving you to focus on defining what the element _does_
-using JavaScript literal expressions. We'll start with an example.
+Typically, elements are defined in the `<head>`:
+
+```html
+<template is="literal-element" tag="tag-name">
+    <slot></slot>
+</template>
+```
+
+<template is="literal-element" tag="tag-name">
+    <slot></slot>
+</template>
+
+then used in the `<body>`:
+
+```html
+<tag-name>Slotted content</tag-name>
+```
+
+<div class="example">
+    <tag-name>Slotted content</tag-name>
+</div>
 
 ### Define a custom element
 
 Let's build a simple DOM clock.
 
 ```html
-<template is="element-template" tag="dom-clock">
+<template is="literal-element" tag="dom-clock">
     <time>${
         setTimeout(() => data.time = window.performance.now(), 1000 - window.performance.now() % 1000),
         Math.round(data.time / 1000)
     }</time>
 </template>
 ```
+
+<template is="literal-element" tag="dom-clock">
+    <time>${
+        setTimeout(() => data.time = performance.now(), 1000 - performance.now() % 1000),
+        Math.round(data.time / 1000) + 's'
+    }</time>
+</template>
 
 The `tag` attribute defines the tag name `<dom-clock>`. The literal expression
 starts a timeout that updates `data.time` at the end of the current second and
@@ -30,14 +55,9 @@ returns the rounded value of `data.time`. We can see the result with the HTML:
 Current time: <dom-clock></dom-clock>
 ```
 
-<template is="element-template" tag="dom-clock">
-    <time>${
-        setTimeout(() => data.time = performance.now(), 1000 - performance.now() % 1000),
-        Math.round(data.time / 1000)
-    }</time>
-</template>
-
+<div class="example">
 Current time: <dom-clock></dom-clock>
+</div>
 
 A `data` object exists in every template's scope. It is used to store state.
 
@@ -56,7 +76,7 @@ Let's take the `<dom-clock>` above. Instead of having it wrap a `<time>` in its
 shadow DOM, let's make the custom element itself an instance of `<time>`:
 
 ```html
-<template is="element-template" tag="time is dom-time">${
+<template is="literal-element" tag="time is dom-time">${
     setTimeout(() => data.time = window.performance.now(), 1000 - window.performance.now() % 1000),
     Math.round(data.time / 1000)
 }</template>
@@ -68,7 +88,7 @@ This defines a so-called customised built-in:
 Current time: <time is="dom-time"><time>
 ```
 
-<template is="element-template" tag="time is dom-time">${
+<template is="literal-element" tag="time is dom-time">${
     setTimeout(() => data.time = window.performance.now(), 1000 - window.performance.now() % 1000),
     Math.round(data.time / 1000)
 }</template>
@@ -81,12 +101,12 @@ Unfortunately Safari does not support customised built-ins.
 
 ### The `loading` attribute
 
-Custom elements defined by `element-template` have a read-only boolean `loading`
+Custom elements defined by `literal-element` have a read-only boolean `loading`
 attribute. This is enabled when the shadow DOM contains assets – stylesheets –
 that must be loaded:
 
 ```html
-<template is="element-template" tag="my-element">
+<template is="literal-element" tag="my-element">
     <link href="path/to/stylesheet.css" rel="stylesheet" />
     ...
 </template>
@@ -99,7 +119,7 @@ stylesheets finish loading) or to provide a loading indicator.
 ### Custom attributes
 
 Other attributes and properties are defined by attributes on the
-`element-template` in the form `name="type"`, where possible types are:
+`literal-element` in the form `name="type"`, where possible types are:
 
 - `boolean` – a boolean attribute and property
 - `number`  – a string attribute, numerical property
@@ -110,7 +130,7 @@ Other attributes and properties are defined by attributes on the
 Let's define a boolean attribute `nifty` on a new custom element:
 
 ```html
-<template is="element-template" tag="a-paragraph" nifty="boolean">
+<template is="literal-element" tag="a-paragraph" nifty="boolean">
     <p>This paragraph is ${ data.nifty ? 'pretty nifty' : 'a bit pants' }.</p>
 </template>
 ```
@@ -121,7 +141,7 @@ Which is authored:
 <a-paragraph nifty></a-paragraph>
 ```
 
-<template is="element-template" tag="a-paragraph" nifty="boolean">
+<template is="literal-element" tag="a-paragraph" nifty="boolean">
     <p>This paragraph is ${ data.nifty ? 'pretty nifty' : 'a bit pants' }.</p>
 </template>
 
@@ -134,8 +154,8 @@ Click on an instruction to see what happens when the property `nifty` is changed
 
 **/
 
-import element, { getInternals } from '../dom/modules/element.js';
-import defineElement  from './modules/define-element.js';
+import element, { getInternals } from '../../dom/modules/element.js';
+import defineElement  from '../modules/define-element.js';
 
 const ignore = {
     is:      true,
@@ -145,7 +165,7 @@ const ignore = {
 
 function isDefineableAttribute(attribute) {
     return !ignore[attribute.localName];
-    //console.error('<template is="element-template"> Not permitted to define property ' + attribute.localName + '="' + attribute.value + '"');
+    //console.error('<template is="literal-element"> Not permitted to define property ' + attribute.localName + '="' + attribute.value + '"');
 }
 
 function assignProperty(properties, attribute) {
@@ -156,12 +176,12 @@ function assignProperty(properties, attribute) {
     return properties;
 }
 
-export default element('<template is="element-template">', {
+export default element('<template is="literal-element">', {
     connect: function() {
         const internal = getInternals(this);
 
         if (!internal.tag) {
-            throw new SyntaxError('<template is="element-template"> must have an attribute tag="name-of-element".');
+            throw new SyntaxError('<template is="literal-element"> must have an attribute tag="name-of-element".');
         }
 
         const properties = Array

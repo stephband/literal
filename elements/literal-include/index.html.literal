@@ -9,17 +9,18 @@
     </script>
 
     <link rel="stylesheet" href="../../documentation.css" />
+    <link rel="stylesheet" href="../literal-include.css" />
 </head>
 
 <body class="docs-grid @0-grid @0-3x-grid @1-6x-grid @2-9x-grid">
     ${ include('../../docs/includes/page.literal', (await comments(
-        '../insert-template.js'
+        '../literal-include.js'
     ))) }
 
     ${ include("../../docs/includes/nav.literal", "../../package.json") }
 
     <script type="module">
-        import '../insert-template.js';
+        import '../literal-include.js';
         import '../../documentation.js';
     </script>
 </body>
