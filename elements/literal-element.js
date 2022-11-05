@@ -27,6 +27,46 @@ then used in the `<body>`:
     <tag-name>Slotted content</tag-name>
 </div>
 
+### Attributes
+
+Attributes on the template define attributes on the custom element by type. The
+value of these are exposed inside the template as properties of `data`:
+
+```html
+<template is="literal-element" tag="say-what" nifty="boolean">
+    <p>This element is ${ data.nifty ? 'pretty nifty' : 'a bit pants' }.</p>
+</template>
+```
+
+<template is="literal-element" tag="say-what" nifty="boolean">
+    <p>This element is ${ data.nifty ? 'pretty nifty' : 'a bit pants' }.</p>
+</template>
+
+Which is authored:
+
+```html
+<say-what nifty></say-what>
+```
+
+<div class="example">
+    <say-what nifty></say-what>
+</div>
+
+Change the property `.nifty` to rerender the shadow DOM:
+
+<button type="button" style="padding: 0; border: 0; display: block; line-height: inherit; min-height: 0;" onclick="document.querySelector('say-what').nifty = false">`element.nifty = false`</button>
+<button type="button" style="padding: 0; border: 0; display: block; line-height: inherit; min-height: 0;" onclick="document.querySelector('say-what').nifty = true">`element.nifty = true`</button>
+
+Possible types are:
+
+- `boolean` – a boolean attribute, boolean property
+- `number`  – a string attribute, number property
+- `url`     – a URL of a file or module, resolving to an object
+- `string`  – a string attribute, string property
+- `tokens`  – a tokens attribute, TokenList property
+
+
+<!--
 ### Define a custom element
 
 Let's build a simple DOM clock.
@@ -115,42 +155,6 @@ that must be loaded:
 The `loading` attribute provides a hook to avoid a flash of unstyled content
 (which can happen between the time of element upgrade and the time the
 stylesheets finish loading) or to provide a loading indicator.
-
-### Custom attributes
-
-Other attributes and properties are defined by attributes on the
-`literal-element` in the form `name="type"`, where possible types are:
-
-- `boolean` – a boolean attribute and property
-- `number`  – a string attribute, numerical property
-- `source`  – a URL of a file or module, resolving to an object property
-- `string`  – a string attribute and property
-- `tokens`  – a tokens attribute, TokenList property, and an array property of `data`
-
-Let's define a boolean attribute `nifty` on a new custom element:
-
-```html
-<template is="literal-element" tag="a-paragraph" nifty="boolean">
-    <p>This paragraph is ${ data.nifty ? 'pretty nifty' : 'a bit pants' }.</p>
-</template>
-```
-
-Which is authored:
-
-```html
-<a-paragraph nifty></a-paragraph>
-```
-
-<template is="literal-element" tag="a-paragraph" nifty="boolean">
-    <p>This paragraph is ${ data.nifty ? 'pretty nifty' : 'a bit pants' }.</p>
-</template>
-
-<a-paragraph nifty></a-paragraph>
-
-Click on an instruction to see what happens when the property `nifty` is changed:
-
-<button type="button" style="padding: 0; border: 0; display: block; line-height: inherit; min-height: 0;" onclick="document.querySelector('a-paragraph').nifty = false">`paragraph.nifty = false`</button>
-<button type="button" style="padding: 0; border: 0; display: block; line-height: inherit; min-height: 0;" onclick="document.querySelector('a-paragraph').nifty = true">`paragraph.nifty = true`</button>
 
 **/
 

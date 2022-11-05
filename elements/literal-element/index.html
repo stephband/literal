@@ -63,14 +63,47 @@ define the tag name, attributes and properties of the custom element.</p>
     <tag-name>Slotted content</tag-name>
 </div>
 
-<h3 id="define-a-custom-element">Define a custom element</h3>
-<p>Let’s build a simple DOM clock.</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>dom-clock<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>time</span><span class="token punctuation">></span></span>${
+<h3 id="attributes">Attributes</h3>
+<p>Attributes on the template define attributes on the custom element by type. The
+value of these are exposed inside the template as properties of <code>data</code>:</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>say-what<span class="token punctuation">"</span></span> <span class="token attr-name">nifty</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>boolean<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>This element is ${ data.nifty ? 'pretty nifty' : 'a bit pants' }.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
+<template is="literal-element" tag="say-what" nifty="boolean">
+    <p>This element is ${ data.nifty ? 'pretty nifty' : 'a bit pants' }.</p>
+</template>
+
+<p>Which is authored:</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>say-what</span> <span class="token attr-name">nifty</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>say-what</span><span class="token punctuation">></span></span></code></pre>
+<div class="example">
+    <say-what nifty></say-what>
+</div>
+
+<p>Change the property <code>.nifty</code> to rerender the shadow DOM:</p>
+<p><button type="button" style="padding: 0; border: 0; display: block; line-height: inherit; min-height: 0;" onclick="document.querySelector('say-what').nifty = false"><code>element.nifty = false</code></button>
+<button type="button" style="padding: 0; border: 0; display: block; line-height: inherit; min-height: 0;" onclick="document.querySelector('say-what').nifty = true"><code>element.nifty = true</code></button></p>
+<p>Possible types are:</p>
+<ul>
+<li><code>boolean</code> – a boolean attribute, boolean property</li>
+<li><code>number</code>  – a string attribute, number property</li>
+<li><code>url</code>     – a URL of a file or module, resolving to an object</li>
+<li><code>string</code>  – a string attribute, string property</li>
+<li><code>tokens</code>  – a tokens attribute, TokenList property</li>
+</ul>
+<!--
+### Define a custom element
+
+Let's build a simple DOM clock.
+
+```html
+<template is="literal-element" tag="dom-clock">
+    <time>${
         setTimeout(() => data.time = window.performance.now(), 1000 - window.performance.now() % 1000),
         Math.round(data.time / 1000)
-    }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>time</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
+    }</time>
+</template>
+```
+
 <template is="literal-element" tag="dom-clock">
     <time>${
         setTimeout(() => data.time = performance.now(), 1000 - performance.now() % 1000),
@@ -78,21 +111,28 @@ define the tag name, attributes and properties of the custom element.</p>
     }</time>
 </template>
 
-<p>The <code>tag</code> attribute defines the tag name <code>&lt;dom-clock&gt;</code>. The literal expression
-starts a timeout that updates <code>data.time</code> at the end of the current second and
-returns the rounded value of <code>data.time</code>. We can see the result with the HTML:</p>
-<pre><code class="language-html">Current time: <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dom-clock</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dom-clock</span><span class="token punctuation">></span></span></code></pre>
+The `tag` attribute defines the tag name `<dom-clock>`. The literal expression
+starts a timeout that updates `data.time` at the end of the current second and
+returns the rounded value of `data.time`. We can see the result with the HTML:
+
+```html
+Current time: <dom-clock></dom-clock>
+```
+
 <div class="example">
 Current time: <dom-clock></dom-clock>
 </div>
 
-<p>A <code>data</code> object exists in every template’s scope. It is used to store state.</p>
-<p>Changes to <code>data</code> are tracked. When <code>data.time</code> is set by the timer at the end
+A `data` object exists in every template's scope. It is used to store state.
+
+Changes to `data` are tracked. When `data.time` is set by the timer at the end
 of the current second, the change is detected, the expression is reevaluated, a
-new timer is set, and the new value of <code>data.time</code> is rendered.</p>
-<p>Template scope contains a number of other <a href="../../docs/templates#library">constants</a>,
-and a small library of <a href="../../docs/templates#library">helper functions</a>. The library is
-extensible – you can <a href="../../docs/templates#library">add your own functions</a>.</p>
+new timer is set, and the new value of `data.time` is rendered.
+
+Template scope contains a number of other [constants](./templates/#library),
+and a small library of [helper functions](./templates/#library). The library is
+extensible – you can [add your own functions](./templates/#library).
+
 <!--
 ### Define a customised built-in
 
@@ -134,30 +174,6 @@ that must be loaded:</p>
 <p>The <code>loading</code> attribute provides a hook to avoid a flash of unstyled content
 (which can happen between the time of element upgrade and the time the
 stylesheets finish loading) or to provide a loading indicator.</p>
-<h3 id="custom-attributes">Custom attributes</h3>
-<p>Other attributes and properties are defined by attributes on the
-<code>literal-element</code> in the form <code>name=&quot;type&quot;</code>, where possible types are:</p>
-<ul>
-<li><code>boolean</code> – a boolean attribute and property</li>
-<li><code>number</code>  – a string attribute, numerical property</li>
-<li><code>source</code>  – a URL of a file or module, resolving to an object property</li>
-<li><code>string</code>  – a string attribute and property</li>
-<li><code>tokens</code>  – a tokens attribute, TokenList property, and an array property of <code>data</code></li>
-</ul>
-<p>Let’s define a boolean attribute <code>nifty</code> on a new custom element:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>a-paragraph<span class="token punctuation">"</span></span> <span class="token attr-name">nifty</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>boolean<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>This paragraph is ${ data.nifty ? 'pretty nifty' : 'a bit pants' }.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
-<p>Which is authored:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a-paragraph</span> <span class="token attr-name">nifty</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a-paragraph</span><span class="token punctuation">></span></span></code></pre>
-<template is="literal-element" tag="a-paragraph" nifty="boolean">
-    <p>This paragraph is ${ data.nifty ? 'pretty nifty' : 'a bit pants' }.</p>
-</template>
-
-<p><a-paragraph nifty></a-paragraph></p>
-<p>Click on an instruction to see what happens when the property <code>nifty</code> is changed:</p>
-<p><button type="button" style="padding: 0; border: 0; display: block; line-height: inherit; min-height: 0;" onclick="document.querySelector('a-paragraph').nifty = false"><code>paragraph.nifty = false</code></button>
-<button type="button" style="padding: 0; border: 0; display: block; line-height: inherit; min-height: 0;" onclick="document.querySelector('a-paragraph').nifty = true"><code>paragraph.nifty = true</code></button></p>
 
 </section>
 
