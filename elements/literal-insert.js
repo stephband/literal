@@ -18,11 +18,11 @@ A `literal-insert` is replaced by its own rendered content.
 </div>
 
 The template's `data` constant may be set by the `data` attribute, which may
-contain JSON or a URL. A `data` attribute that parses as a URL makes a request
-to import a JavaScript module or to fetch JSON:
+contain JSON or a URL. A `data` attribute that parses as a URL imports a
+JavaScript module or fetches JSON:
 
 ```html
-<template is="literal-insert" data="../data/clock.js">
+<template is="literal-insert" data="/data/clock.js">
     <pre>${ data.time.toFixed(0) + 's' }</pre>
 </template>
 ```

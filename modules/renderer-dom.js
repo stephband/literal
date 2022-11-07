@@ -30,8 +30,10 @@ function toRenderer(value) {
 }
 
 function pushContents(contents, object) {
-    if (typeof object === 'string' && typeof contents[contents.length] === 'string') {
-        contents[contents.length] += object;
+    const last = contents[contents.length];
+
+    if (typeof object === 'string' && typeof last === 'string') {
+        contents[contents.length] = last + object;
     }
     else {
         contents.push(object);
@@ -96,10 +98,10 @@ export default function DOMRenderer(source, consts, template, path, node, name, 
             parameters.element :
             node.parentNode,
 
-        include: (url, data) => (data ?
-            // Do we must update element here? No, right?
-            include(url, data, parameters) :
-            (data) => include(url, data, parameters)
+        include: (url, data) => (data === undefined ?
+            // Partial application if called with url only
+            (data) => include(url, data, parameters) :
+            include(url, data, parameters)
         ),
 
         print: (...args) => print(this, ...args)
@@ -135,7 +137,7 @@ assign(DOMRenderer.prototype, Renderer.prototype, {
         let n = 0;
 
         this.contents.length = 0;
-        this.contents.push(strings[0]);
+        this.contents.push(strings[n]);
 
         while (strings[++n] !== undefined) {
             composeDOM(this.contents, arguments[n]);

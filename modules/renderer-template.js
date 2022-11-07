@@ -25,7 +25,7 @@ renderer
 **/
 
 import Stream            from '../../fn/modules/stream/stream.js';
-import { Observer }      from '../../fn/observer/observer.js';
+import { Observer as Data } from '../../fn/observer/observer.js';
 import identify          from '../../dom/modules/identify.js';
 import isTextNode        from '../../dom/modules/is-text-node.js';
 import compileNode       from './compile-node.js';
@@ -168,9 +168,10 @@ assign(TemplateRenderer.prototype, {
             throw new Error('Renderer is stopped, cannot .push() data');
         }
 
-        const data = Observer(object) || object;
-        if (this.data === data) { return; }
+        const data = Data(object) || object;
 
+        // Dedup
+        if (this.data === data) { return; }
         this.data = data;
 
         // Do we actually need to cue? I mean, the push on each child renderer
