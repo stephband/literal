@@ -24,6 +24,7 @@ import { red, yellow }     from './log.js';
 
 const assign      = Object.assign;
 const toExtension = exec(/\.[\w\d.]+$/, get(0));
+const rabsolute   = /^https?:\/\//;
 
 
 /**
@@ -74,13 +75,28 @@ const imports = overload((source, target, url) => toExtension(url), {
         .then(JSON.parse);
     },
 
-    'undefined': (source, target, url) => {
-        throw new TypeError('File extension required by imports("' + url + '")');
-    },
+    'undefined': overload((source, target, url) => rabsolute.test(url), {
+        // Is absolute URL
+        true: (source, target, url) => fetch(url)
+            .then((response) => response.text())
+            .then(JSON.parse),
+
+        // Is local file
+        default: (source, target, url) => {
+            // Source dir relative to current working directory
+            const sourcedir = path.dirname(source);
+            // Resource path relative to current working directory
+            const resource  = path.join(sourcedir, url);
+
+            return Deno.readFile(resource)
+            .then((array) => decoder.decode(array))
+            .then(JSON.parse);
+        }
+    }),
 
     default: (source, target, url) => {
         throw new TypeError('File extension ".'
-            + toExtension(url) 
+            + toExtension(url)
             + '" not supported by imports("' + url + '")'
         );
     }
@@ -89,7 +105,7 @@ const imports = overload((source, target, url) => toExtension(url), {
 
 /**
 include(url, data)
-Includes a template from `url`, rendering it with properties of `data` 
+Includes a template from `url`, rendering it with properties of `data`
 as in-scope variables.
 **/
 
@@ -110,7 +126,7 @@ const resolveScope = overload(toType, {
 function extractBody(html) {
     const pre = /<body[^>]*>/.exec(html);
     if (!pre) { return html; }
-    const post = /<\/body\s*>/.exec(html);    
+    const post = /<\/body\s*>/.exec(html);
     return html.slice(pre.index + pre[0].length, post.index);
 }
 
@@ -195,7 +211,7 @@ const renderInclude = overload((source, target, file) => toExtension(file), {
 function include(source, target, url, scope) {
     // Get absolute OS file path
     const file = getAbsoluteFile(source, url);
-    
+
     /*
     console.log('====== include(url, scope) ======',
         '\ntarget: ' + target,
