@@ -1,5 +1,6 @@
 
 import { Observer as Data } from '../../fn/observer/observer.js';
+import create           from '../../dom/modules/create.js';
 import element, { getInternals as Internals } from '../../dom/modules/element.js';
 import globalProperties, { addLoading, removeLoading, setLoading } from './properties.js';
 import defineProperty   from './define-property.js';
@@ -8,6 +9,13 @@ import TemplateRenderer from './renderer-template.js';
 
 const assign  = Object.assign;
 const entries = Object.entries;
+
+const baseStyle = `
+    :host([loading]),
+    :host([loading]) > * {
+        transition: none !important;
+    }
+`;
 
 /**
 body
@@ -43,6 +51,7 @@ export default function defineElement(tag, src, lifecycle = {}, props, log = '')
 
     return element(tag, assign({}, {
         construct: function(shadow) {
+            const style     = create('style', baseStyle);
             const internals = Internals(this);
 
             if (typeof src === 'string' && !/^#/.test(src)) {
@@ -74,7 +83,7 @@ export default function defineElement(tag, src, lifecycle = {}, props, log = '')
 
             // Put raw template content into the host, so templated stylesheets
             // start loading (or do they?)
-            shadow.append(renderer.content);
+            shadow.append(style, renderer.content);
             addLoading(this);
 
             lifecycle.construct && lifecycle.construct.call(this, shadow, internals);
