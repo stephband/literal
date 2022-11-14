@@ -4,8 +4,8 @@ const map     = {};
 
 function toMap(urls, [path1, path2]) {
     const url = new URL(path1, window.location);
-    urls[url] = new URL(path2, window.location);
-    return urls;
+    map[url] = new URL(path2, window.location);
+    return map;
 }
 
 export function urls(object) {

@@ -203,7 +203,9 @@ export default element('<template is="literal-element">', {
             .reduce(assignProperty, {}) ;
 
         internals.module
-        .then((parameters) => defineElement(internals.tag, this, {}, properties, parameters))
+        .then((parameters) =>
+            defineElement(internals.tag, this, {}, properties, parameters)
+        );
     }
 }, {
 
@@ -225,7 +227,7 @@ export default element('<template is="literal-element">', {
 
     scope: {
         attribute: function(value) {
-            this.module = value;
+            this.scope = value;
         },
 
         get: function() {
@@ -235,10 +237,13 @@ export default element('<template is="literal-element">', {
 
         set: function(value) {
             const internals = getInternals(this);
-            const url       = rewriteURL(value);
 
-            internals.module = import(url)
-                .catch((e) => console.error(e));
+            // Let flow run for a tick before importing, so that there is time
+            // for url rewrites to be populated. I don't like this much...
+            //internals.module = resolved
+            //    .then(() => import(rewriteURL(value)))
+            internals.module = import(rewriteURL(value))
+                .catch((e) => console.error(e)) ;
         }
     }
 }, null, 'documentation – stephen.band/literal/');
