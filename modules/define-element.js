@@ -43,7 +43,7 @@ function assignProperty(properties, entry) {
     return properties;
 }
 
-export default function defineElement(tag, src, lifecycle = {}, props, log = '') {
+export default function defineElement(tag, src, lifecycle = {}, props, parameters = {}, log = '') {
     // Assemble properties
     const properties = props ?
         assign(entries(props).reduce(assignProperty, {}), globalProperties) :
@@ -70,13 +70,13 @@ export default function defineElement(tag, src, lifecycle = {}, props, log = '')
                 getTemplate(src) :
                 src;
 
-            const renderer = internals.renderer = new TemplateRenderer(template, {
+            const renderer = internals.renderer = new TemplateRenderer(template, assign({}, parameters, {
                 body:     document.body,
                 element:  this,
                 host:     this,
                 root:     document.documentElement,
                 shadow:   shadow
-            });
+            }));
 
             // Initialise data with plain object
             internals.data = {};

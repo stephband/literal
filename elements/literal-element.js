@@ -159,13 +159,17 @@ stylesheets finish loading) or to provide a loading indicator.
 **/
 
 import element, { getInternals } from '../../dom/modules/element.js';
+import { rewriteURL } from '../modules/urls.js';
 import defineElement  from '../modules/define-element.js';
 
 const ignore = {
     is:      true,
     tag:     true,
+    scope:   true,
     loading: true
 };
+
+const resolved = Promise.resolve();
 
 function isDefineableAttribute(attribute) {
     return !ignore[attribute.localName];
@@ -180,11 +184,17 @@ function assignProperty(properties, attribute) {
     return properties;
 }
 
-export default element('<template is="literal-element">', {
-    connect: function() {
-        const internal = getInternals(this);
 
-        if (!internal.tag) {
+export default element('<template is="literal-element">', {
+    construct: function() {
+        const internals = getInternals(this);
+        internals.module = resolved;
+    },
+
+    connect: function() {
+        const internals = getInternals(this);
+
+        if (!internals.tag) {
             throw new SyntaxError('<template is="literal-element"> must have an attribute tag="name-of-element".');
         }
 
@@ -192,14 +202,10 @@ export default element('<template is="literal-element">', {
             .from(this.attributes)
             .reduce(assignProperty, {}) ;
 
-        // tag, template, lifecycle, properties, log
-        defineElement(internal.tag, this, {}, properties);
+        internals.module
+        .then((parameters) => defineElement(internals.tag, this, {}, properties, parameters))
     }
 }, {
-
-    /** src="url"
-    Not yet implemented.
-    **/
 
     /** tag="element-name"
     Defines the name of the custom element.
@@ -209,6 +215,30 @@ export default element('<template is="literal-element">', {
         attribute: function(value) {
             const internal = getInternals(this);
             internal.tag = value;
+        }
+    },
+
+    /** scope="element-name"
+    Optional JavaScript module whose exports are made available in the template
+    scope.
+    **/
+
+    scope: {
+        attribute: function(value) {
+            this.module = value;
+        },
+
+        get: function() {
+            const internals = getInternals(this);
+            return internals.scope ;
+        },
+
+        set: function(value) {
+            const internals = getInternals(this);
+            const url       = rewriteURL(value);
+
+            internals.module = import(url)
+                .catch((e) => console.error(e));
         }
     }
 }, null, 'documentation – stephen.band/literal/');
