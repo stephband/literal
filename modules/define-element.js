@@ -1,11 +1,12 @@
 
+import cache                from '../../fn/modules/cache.js';
 import { Observer as Data } from '../../fn/observer/observer.js';
-import create           from '../../dom/modules/create.js';
+import create               from '../../dom/modules/create.js';
 import element, { getInternals as Internals } from '../../dom/modules/element.js';
 import globalProperties, { setLoading } from './properties.js';
-import defineProperty   from './define-property.js';
-import getTemplate      from './get-template.js';
-import TemplateRenderer from './renderer-template.js';
+import defineProperty       from './define-property.js';
+import getTemplate          from './get-template.js';
+import TemplateRenderer     from './renderer-template.js';
 
 const assign  = Object.assign;
 const entries = Object.entries;
@@ -43,7 +44,7 @@ function assignProperty(properties, entry) {
     return properties;
 }
 
-function requestStylesheet(url) {
+const requestStylesheet = cache(function requestStylesheet(url) {
     return new Promise((resolve, reject) => {
         const link = create('link', { rel: 'preload', as: 'style', href: url });
         link.onload = () => resolve(new URL(url, location));
@@ -52,7 +53,7 @@ function requestStylesheet(url) {
         // Links only load if they are placed in the document
         document.head.append(link);
     });
-}
+});
 
 export default function defineElement(tag, src, lifecycle = {}, props, parameters = {}, stylesheets = []) {
     // Assemble properties
@@ -143,6 +144,9 @@ export default function defineElement(tag, src, lifecycle = {}, props, parameter
 
             lifecycle.connect && lifecycle.connect.call(this, shadow, internals);
         }
-    }, properties, null, '\n  ' + stylesheets.map((url) => url.pathname).join('\n  ')))
+    }, properties, null, window.DEBUG ?
+        ('\n  ' + stylesheets.map((url) => url.pathname).join('\n  ')) :
+        ''
+    ))
     .catch((e) => console.error(e));
 }
