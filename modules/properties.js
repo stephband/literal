@@ -61,8 +61,8 @@ export default {
 
     loading: {
         get: function() {
-            const internal = Internals(this);
-            return !!internal.loading;
+            const internals = Internals(this);
+            return !!internals.loading;
         }
     }
 };

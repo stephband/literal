@@ -43,34 +43,60 @@ function assignProperty(properties, entry) {
     return properties;
 }
 
-export default function defineElement(tag, src, lifecycle = {}, props, parameters = {}, log = '') {
+function requestStylesheet(url) {
+    return new Promise((resolve, reject) => {
+        const link = create('link', { rel: 'preload', as: 'style', href: url });
+        link.onload = resolve;
+        link.onerror = reject;
+
+        // Links only load if they are placed in the document
+        document.head.append(link);
+    });
+}
+
+export default function defineElement(tag, src, lifecycle = {}, props, parameters = {}, stylesheets = []) {
     // Assemble properties
     const properties = props ?
         assign(entries(props).reduce(assignProperty, {}), globalProperties) :
         globalProperties ;
 
-    return element(tag, assign({}, {
+    if (typeof src === 'string' && !/^#/.test(src)) {
+        // Flag loading until we connect, at which point we add the
+        // loading attribute that may be used to indicate loading. Why
+        // wait? Because we are not in the DOM yet, and if we want a
+        // loading icon to transition in the transition must begin after
+        // we are already in the DOM.
+        // this.loading = true;
+        // requestTemplate(value).then((template) => {
+        //     privates.templates.push(template);
+        // });
+        console.error('TODO: Support external templates');
+        return;
+    }
+
+    const template = typeof src === 'string' ?
+        getTemplate(src) :
+        src;
+
+    // List of load requests that must complete before element is declared
+    const requests = [template, parameters];
+
+    // Populate requests with stylesheets passed in
+    stylesheets
+        .forEach((url) => requests.push(requestStylesheet(url)));
+
+    // Extend requests with stylesheets found inside the template
+    template.content
+        .querySelectorAll('link[rel="stylesheet"]')
+        .forEach((link) => requests.push(requestStylesheet(link.href)));
+
+    return Promise
+    .all(requests)
+    .then(([template, parameters, ...stylesheets]) => element(tag, {
         construct: function(shadow) {
             const style     = create('style', baseStyle);
             const internals = Internals(this);
-
-            if (typeof src === 'string' && !/^#/.test(src)) {
-                // Flag loading until we connect, at which point we add the
-                // loading attribute that may be used to indicate loading. Why
-                // wait? Because we are not in the DOM yet, and if we want a
-                // loading icon to transition in the transition must begin after
-                // we are already in the DOM.
-                // this.loading = true;
-                // requestTemplate(value).then((template) => {
-                //     privates.templates.push(template);
-                // });
-            }
-
-            const template = typeof src === 'string' ?
-                getTemplate(src) :
-                src;
-
-            const renderer = internals.renderer = new TemplateRenderer(template, assign({}, parameters, {
+            const renderer  = internals.renderer = new TemplateRenderer(template, assign({}, parameters, {
                 body:     document.body,
                 element:  this,
                 host:     this,
@@ -84,7 +110,7 @@ export default function defineElement(tag, src, lifecycle = {}, props, parameter
             // Put raw template content into the host, so templated stylesheets
             // start loading (or do they?)
             shadow.append(style, renderer.content);
-            addLoading(this);
+            //addLoading(this);
 
             lifecycle.construct && lifecycle.construct.call(this, shadow, internals);
         },
@@ -116,16 +142,7 @@ export default function defineElement(tag, src, lifecycle = {}, props, parameter
             renderer.push(data);
 
             lifecycle.connect && lifecycle.connect.call(this, shadow, internals);
-        },
-
-        load: function(shadow) {
-            const internals = Internals(this);
-            removeLoading(this);
-            internals.data.loading = false;
-
-            lifecycle.load && lifecycle.load.call(this, shadow, internals);
         }
-    }),
-
-    properties, null, log);
+    }, properties, null, '\n' + stylesheets.map((e) => (new URL(e.target.href)).pathname).join('\n')))
+    .catch((e) => console.error(e));
 }

@@ -158,15 +158,18 @@ stylesheets finish loading) or to provide a loading indicator.
 
 **/
 
+import create         from '../../dom/modules/create.js';
 import element, { getInternals } from '../../dom/modules/element.js';
 import { rewriteURL } from '../modules/urls.js';
 import defineElement  from '../modules/define-element.js';
 
 const ignore = {
-    is:      true,
-    tag:     true,
-    scope:   true,
-    loading: true
+    is:          true,
+    tag:         true,
+    scope:       true,
+    stylesheets: true,
+    attributes:  true,
+    loading:     true
 };
 
 const resolved = Promise.resolve();
@@ -184,13 +187,7 @@ function assignProperty(properties, attribute) {
     return properties;
 }
 
-
 export default element('<template is="literal-element">', {
-    construct: function() {
-        const internals = getInternals(this);
-        internals.module = resolved;
-    },
-
     connect: function() {
         const internals = getInternals(this);
 
@@ -202,10 +199,7 @@ export default element('<template is="literal-element">', {
             .from(this.attributes)
             .reduce(assignProperty, {}) ;
 
-        internals.module
-        .then((parameters) =>
-            defineElement(internals.tag, this, {}, properties, parameters)
-        );
+        defineElement(internals.tag, this, {}, properties, internals.parameters, internals.stylesheets);
     }
 }, {
 
@@ -242,8 +236,20 @@ export default element('<template is="literal-element">', {
             // for url rewrites to be populated. I don't like this much...
             //internals.module = resolved
             //    .then(() => import(rewriteURL(value)))
-            internals.module = import(rewriteURL(value))
+            internals.parameters = import(rewriteURL(value))
                 .catch((e) => console.error(e)) ;
+        }
+    },
+
+    /** stylesheets="url"
+    A list of stylesheets urls. They are loaded before the element is defined,
+    preventing a flash of unstyled content.
+    **/
+
+    stylesheets: {
+        attribute: function(value) {
+            const internals = getInternals(this);
+            internals.stylesheets = value.split(/\s+/);
         }
     }
 }, null, 'documentation – stephen.band/literal/');
