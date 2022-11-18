@@ -44,16 +44,24 @@ function assignProperty(properties, entry) {
     return properties;
 }
 
-const requestStylesheet = cache(function requestStylesheet(url) {
-    return new Promise((resolve, reject) => {
-        const link = create('link', { rel: 'preload', as: 'style', href: url });
-        link.onload = () => resolve(new URL(url, location));
-        link.onerror = reject;
+/*
+requestStylesheet(url)
+Generate a promise of <link rel="preload"> load state for each stylesheet URL.
+*/
 
-        // Links only load if they are placed in the document
-        document.head.append(link);
+const requestStylesheet = cache((url) => new Promise((resolve, reject) => {
+    const link = create('link', {
+        rel: 'preload',
+        as: 'style',
+        href: url
     });
-});
+
+    link.onload = () => resolve(new URL(url, location));
+    link.onerror = reject;
+
+    // Links only load if they are placed in the document
+    document.head.append(link);
+}));
 
 export default function defineElement(tag, src, lifecycle = {}, props, parameters = {}, stylesheets = []) {
     // Assemble properties
