@@ -2,7 +2,7 @@
 import { Observer as Data } from '../../fn/observer/observer.js';
 import create           from '../../dom/modules/create.js';
 import element, { getInternals as Internals } from '../../dom/modules/element.js';
-import globalProperties, { addLoading, removeLoading, setLoading } from './properties.js';
+import globalProperties, { setLoading } from './properties.js';
 import defineProperty   from './define-property.js';
 import getTemplate      from './get-template.js';
 import TemplateRenderer from './renderer-template.js';
@@ -46,7 +46,7 @@ function assignProperty(properties, entry) {
 function requestStylesheet(url) {
     return new Promise((resolve, reject) => {
         const link = create('link', { rel: 'preload', as: 'style', href: url });
-        link.onload = resolve;
+        link.onload = () => resolve(new URL(url, location));
         link.onerror = reject;
 
         // Links only load if they are placed in the document
@@ -143,6 +143,6 @@ export default function defineElement(tag, src, lifecycle = {}, props, parameter
 
             lifecycle.connect && lifecycle.connect.call(this, shadow, internals);
         }
-    }, properties, null, '\n' + stylesheets.map((e) => (new URL(e.target.href)).pathname).join('\n')))
+    }, properties, null, '\n' + stylesheets.map((url) => url.pathname).join('\n')))
     .catch((e) => console.error(e));
 }
