@@ -143,6 +143,6 @@ export default function defineElement(tag, src, lifecycle = {}, props, parameter
 
             lifecycle.connect && lifecycle.connect.call(this, shadow, internals);
         }
-    }, properties, null, '\n' + stylesheets.map((url) => url.pathname).join('\n')))
+    }, properties, null, '\n  ' + stylesheets.map((url) => url.pathname).join('\n  ')))
     .catch((e) => console.error(e));
 }
