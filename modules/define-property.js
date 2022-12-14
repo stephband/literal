@@ -13,21 +13,20 @@ const rpath   = /^\.*\/|^https?:\/\//;
 const resolveAndAssign = overload((name, element, value) => typeof value, {
     string: function(name, element, value) {
         const internals = Internals(element);
-        const data      = internals.data;
 
         if (rpath.test(value)) {
             addLoading(element);
 
             requestData(value)
-            .then((object) => data[name] = object)
+            .then((object) => internals.data[name] = object)
             .catch((error) => console.error(error))
             .finally(() => removeLoading(element));
         }
         else {
-            data[name] = JSON.parse(value);
+            internals.data[name] = JSON.parse(value);
         }
 
-        return data;
+        return internals.data;
     },
 
     default: function(name, element, value) {
@@ -99,7 +98,7 @@ export default overload((name, descriptor) => typeof descriptor, {
             default: nothing
         }),
 
-        source: (name) => ({
+        import: (name) => ({
             attribute: function(value) { this[name] = value; },
             get:       function() { return Internals(this).renderer.data[name]; },
             set:       function(value) { resolveAndAssign(name, this, value); },
