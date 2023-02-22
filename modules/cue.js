@@ -67,9 +67,9 @@ export function cue(renderer) {
         cued = promise.then(render);
     }
 
-    if (renderers.indexOf(renderer) !== -1) {
-        console.trace('RENDERER ALREADY IN CUE', 'This is probably not good');
-    }
+    // if (renderers.indexOf(renderer) !== -1) {
+    //     console.trace('RENDERER ALREADY IN CUE', 'This is probably not good');
+    // }
 
     renderers.push(renderer);
     renderer.status = 'cued';
