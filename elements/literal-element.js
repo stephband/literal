@@ -218,13 +218,9 @@ export default element('<template is="literal-element">', {
             throw new SyntaxError('<template is="literal-element"> must have an attribute tag="name-of-element".');
         }
 
-console.log(internals.attributes);
-
         const attributes = internals.attributes ?
             internals.attributes.reduce(assignProperty, {}) :
             nothing ;
-
-console.log(attributes);
 
         if (internals.src) {
             internals.src.then((lifecycle) => {
