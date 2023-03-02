@@ -167,6 +167,7 @@ const ignore = {
     is:          true,
     tag:         true,
     scope:       true,
+    src:         true,
     stylesheets: true,
     attributes:  true,
     loading:     true
@@ -199,7 +200,14 @@ export default element('<template is="literal-element">', {
             .from(this.attributes)
             .reduce(assignProperty, {}) ;
 
-        defineElement(internals.tag, this, {}, properties, internals.parameters, internals.stylesheets);
+        if (internals.src) {
+            internals.src.then((lifecycle) => {
+                defineElement(internals.tag, this, lifecycle, properties, internals.parameters, internals.stylesheets);
+            });
+        }
+        else {
+            defineElement(internals.tag, this, {}, properties, internals.parameters, internals.stylesheets);
+        }
     }
 }, {
 
@@ -211,6 +219,26 @@ export default element('<template is="literal-element">', {
         attribute: function(value) {
             const internal = getInternals(this);
             internal.tag = value;
+        }
+    },
+
+    /** src="url"
+    Defines a JS module used as the element's lifecycle.
+    **/
+
+    src: {
+        attribute: function(value) {
+            const internal = getInternals(this);
+            const name     = value.replace(/[^#].#/, '') || 'default';
+
+            internal.src = import(rewriteURL(value))
+                .catch((e) => {
+                    throw new Error('<' + internal.tag + '> not defined, failed to fetch src "' + value + '"');
+                })
+                .then((module) => module[name])
+                .catch((e) => {
+                    throw new Error('<' + internal.tag + '> not defined, src module "' + value + '" has no "' + name + '" export');
+                });
         }
     },
 

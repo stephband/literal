@@ -44,7 +44,7 @@
     <h4>Templates</h4>
     <a class="nav-button button block" href="../templates/">Evaluation table</a>
 
-    <h4>Template constants</h4>
+    <h4>Template scope</h4>
     ${ include('./nav-buttons.literal', {
         docs: (await comments(
             '../../modules/renderer.js',
@@ -58,7 +58,6 @@
         path: '../templates/'
     }) }
 
-    <h4>Template functions</h4>
     ${ include('./nav-buttons.literal', {
         docs: (await comments(
             '../../modules/library.js',

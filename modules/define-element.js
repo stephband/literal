@@ -88,11 +88,10 @@ export default function defineElement(tag, src, lifecycle = {}, props, parameter
         src;
 
     // List of load requests that must complete before element is declared
-    const requests = [template, parameters];
+    const requests = [lifecycle, template, parameters];
 
     // Populate requests with stylesheets passed in
-    stylesheets
-        .forEach((url) => requests.push(requestStylesheet(url)));
+    stylesheets.forEach((url) => requests.push(requestStylesheet(url)));
 
     // Extend requests with stylesheets found inside the template
     template.content
@@ -101,7 +100,7 @@ export default function defineElement(tag, src, lifecycle = {}, props, parameter
 
     return Promise
     .all(requests)
-    .then(([template, parameters, ...stylesheets]) => element(tag, {
+    .then(([lifecycle, template, parameters, ...stylesheets]) => element(tag, {
         construct: function(shadow) {
             const style     = create('style', baseStyle);
             const internals = Internals(this);
