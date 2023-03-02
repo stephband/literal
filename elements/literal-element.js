@@ -29,20 +29,20 @@ then used in the `<body>`:
 
 ### Attributes
 
-Attributes on the template define attributes on the custom element by type. The
-value of these are exposed inside the template as properties of `data`:
+Attribute name/type pairs in `attributes` define attributes on the custom
+element. The value of these are exposed inside the template as properties of `data`:
 
 ```html
-<template is="literal-element" tag="say-what" nifty="boolean">
+<template is="literal-element" tag="say-what" attributes="nifty:boolean">
     <p>This element is ${ data.nifty ? 'pretty nifty' : 'a bit pants' }.</p>
 </template>
 ```
 
-<template is="literal-element" tag="say-what" nifty="boolean">
+<template is="literal-element" tag="say-what" attributes="nifty:boolean">
     <p>This element is ${ data.nifty ? 'pretty nifty' : 'a bit pants' }.</p>
 </template>
 
-Which is authored:
+Which is authored as:
 
 ```html
 <say-what nifty></say-what>
@@ -158,6 +158,10 @@ stylesheets finish loading) or to provide a loading indicator.
 
 **/
 
+
+import capture        from '../../fn/modules/capture.js';
+import last           from '../../fn/modules/last.js';
+import nothing        from '../../fn/modules/nothing.js';
 import create         from '../../dom/modules/create.js';
 import element, { getInternals } from '../../dom/modules/element.js';
 import { rewriteURL } from '../modules/urls.js';
@@ -165,28 +169,46 @@ import defineElement  from '../modules/define-element.js';
 
 const ignore = {
     is:          true,
-    tag:         true,
-    scope:       true,
-    src:         true,
-    stylesheets: true,
-    attributes:  true,
     loading:     true
 };
 
 const resolved = Promise.resolve();
 
 function isDefineableAttribute(attribute) {
-    return !ignore[attribute.localName];
+    return !ignore[attribute.name];
     //console.error('<template is="literal-element"> Not permitted to define property ' + attribute.localName + '="' + attribute.value + '"');
 }
 
 function assignProperty(properties, attribute) {
     if (isDefineableAttribute(attribute)) {
-        properties[attribute.localName] = attribute.value;
+        properties[attribute.name] = attribute.value;
     }
 
     return properties;
 }
+
+//                                1              2
+const parseNameValues = capture(/^([\w-]+)(?:\s*:\s*(\w+))?\s*;?\s*/, {
+    // Attribute name
+    1: (namevalues, captures) => {
+        namevalues.push({
+            name: captures[1]
+        });
+        return namevalues;
+    },
+
+    2: (namevalues, captures) => {
+        const namevalue = last(namevalues);
+        namevalue.value = captures[2];
+        return namevalues;
+    },
+
+    done: (namevalues, captures) => {
+        return captures[0].length < captures.input.length ?
+            parseNameValues(namevalues, captures) :
+            namevalues ;
+    }
+});
 
 export default element('<template is="literal-element">', {
     connect: function() {
@@ -196,17 +218,21 @@ export default element('<template is="literal-element">', {
             throw new SyntaxError('<template is="literal-element"> must have an attribute tag="name-of-element".');
         }
 
-        const properties = Array
-            .from(this.attributes)
-            .reduce(assignProperty, {}) ;
+console.log(internals.attributes);
+
+        const attributes = internals.attributes ?
+            internals.attributes.reduce(assignProperty, {}) :
+            nothing ;
+
+console.log(attributes);
 
         if (internals.src) {
             internals.src.then((lifecycle) => {
-                defineElement(internals.tag, this, lifecycle, properties, internals.parameters, internals.stylesheets);
+                defineElement(internals.tag, this, lifecycle, attributes, internals.parameters, internals.stylesheets);
             });
         }
         else {
-            defineElement(internals.tag, this, {}, properties, internals.parameters, internals.stylesheets);
+            defineElement(internals.tag, this, {}, attributes, internals.parameters, internals.stylesheets);
         }
     }
 }, {
@@ -219,6 +245,13 @@ export default element('<template is="literal-element">', {
         attribute: function(value) {
             const internal = getInternals(this);
             internal.tag = value;
+        }
+    },
+
+    attributes: {
+        attribute: function(value) {
+            const internal = getInternals(this);
+            internal.attributes = parseNameValues([], value);
         }
     },
 
