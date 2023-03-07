@@ -160,6 +160,7 @@ stylesheets finish loading) or to provide a loading indicator.
 
 
 import capture        from '../../fn/modules/capture.js';
+import get            from '../../fn/modules/get.js';
 import last           from '../../fn/modules/last.js';
 import nothing        from '../../fn/modules/nothing.js';
 import create         from '../../dom/modules/create.js';
@@ -171,6 +172,8 @@ const ignore = {
     is:          true,
     loading:     true
 };
+
+const rhashsplit = /^[^#]*#(.*$)/;
 
 const resolved = Promise.resolve();
 
@@ -223,9 +226,9 @@ export default element('<template is="literal-element">', {
             nothing ;
 
         if (internals.src) {
-            internals.src.then((lifecycle) => {
-                defineElement(internals.tag, this, lifecycle, attributes, internals.parameters, internals.stylesheets);
-            });
+            internals.src.then((lifecycle) =>
+                defineElement(internals.tag, this, lifecycle, attributes, internals.parameters, internals.stylesheets)
+            );
         }
         else {
             defineElement(internals.tag, this, {}, attributes, internals.parameters, internals.stylesheets);
@@ -258,15 +261,16 @@ export default element('<template is="literal-element">', {
     src: {
         attribute: function(value) {
             const internal = getInternals(this);
-            const name     = value.replace(/[^#].#/, '') || 'default';
+            const split    = rhashsplit.exec(value);
+            const name     = split && split[1] ? split[1] : 'default' ;
 
             internal.src = import(rewriteURL(value))
                 .catch((e) => {
-                    throw new Error('<' + internal.tag + '> not defined, failed to fetch src "' + value + '"');
+                    throw new Error('<' + internal.tag + '> not defined, failed to fetch src "' + value + '" ' + e.message);
                 })
-                .then((module) => module[name])
+                .then(get(name))
                 .catch((e) => {
-                    throw new Error('<' + internal.tag + '> not defined, src module "' + value + '" has no "' + name + '" export');
+                    throw new Error('<' + internal.tag + '> not defined, src module "' + value + '" has no "' + name + '" export ' + e.message);
                 });
         }
     },

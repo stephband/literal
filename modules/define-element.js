@@ -113,14 +113,14 @@ export default function defineElement(tag, src, lifecycle = {}, props, parameter
             }));
 
             // Initialise data with plain object
-            internals.data = {};
+            const data = internals.data = {};
 
             // Put raw template content into the host, so templated stylesheets
             // start loading (or do they?)
             shadow.append(style, renderer.content);
             //addLoading(this);
 
-            lifecycle.construct && lifecycle.construct.call(this, shadow, internals);
+            lifecycle.construct && lifecycle.construct.call(this, shadow, Data(data), internals);
         },
 
         connect: function(shadow) {
@@ -149,7 +149,7 @@ export default function defineElement(tag, src, lifecycle = {}, props, parameter
             // listeners miss the first slotchange
             renderer.push(data);
 
-            lifecycle.connect && lifecycle.connect.call(this, shadow, internals);
+            lifecycle.connect && lifecycle.connect.call(this, shadow, Data(data), internals);
         }
     }, properties, null, window.DEBUG ?
         ('\n  ' + stylesheets.map((url) => url.pathname).join('\n  ')) :
