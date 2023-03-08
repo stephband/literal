@@ -10,6 +10,8 @@ import TemplateRenderer     from './renderer-template.js';
 
 const assign  = Object.assign;
 const entries = Object.entries;
+const keys    = Object.keys;
+
 
 const baseStyle = `
     :host([loading]),
@@ -63,7 +65,7 @@ const requestStylesheet = cache((url) => new Promise((resolve, reject) => {
     document.head.append(link);
 }));
 
-export default function defineElement(tag, src, lifecycle = {}, props, parameters = {}, stylesheets = []) {
+export default function defineElement(tag, src, lifecycle = {}, props, scope = {}, stylesheets = []) {
     // Assemble properties
     const properties = props ?
         assign(entries(props).reduce(assignProperty, {}), globalProperties) :
@@ -88,7 +90,7 @@ export default function defineElement(tag, src, lifecycle = {}, props, parameter
         src;
 
     // List of load requests that must complete before element is declared
-    const requests = [lifecycle, template, parameters];
+    const requests = [lifecycle, template, scope];
 
     // Populate requests with stylesheets passed in
     stylesheets.forEach((url) => requests.push(requestStylesheet(url)));
@@ -100,11 +102,11 @@ export default function defineElement(tag, src, lifecycle = {}, props, parameter
 
     return Promise
     .all(requests)
-    .then(([lifecycle, template, parameters, ...stylesheets]) => element(tag, {
+    .then(([lifecycle, template, scope, ...stylesheets]) => element(tag, {
         construct: function(shadow) {
             const style     = create('style', baseStyle);
             const internals = Internals(this);
-            const renderer  = internals.renderer = new TemplateRenderer(template, assign({}, parameters, {
+            const renderer  = internals.renderer = new TemplateRenderer(template, assign({}, scope, {
                 body:     document.body,
                 element:  this,
                 host:     this,
@@ -151,9 +153,9 @@ export default function defineElement(tag, src, lifecycle = {}, props, parameter
 
             lifecycle.connect && lifecycle.connect.call(this, shadow, Data(data), internals);
         }
-    }, properties, null, window.DEBUG ?
-        ('\n  ' + stylesheets.map((url) => url.pathname).join('\n  ')) :
-        ''
-    ))
+    }, properties, null, window.DEBUG ? (
+        ('\n  Stylesheets\n    ' + stylesheets.map((url) => url.pathname).join('\n    ')) +
+        (keys(scope).length ? '\n  Imports\n    ' + keys(scope).join(', ') : '')
+    ) : ''))
     .catch((e) => console.error(e));
 }

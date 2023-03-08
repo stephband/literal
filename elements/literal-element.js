@@ -168,6 +168,7 @@ import element, { getInternals } from '../../dom/modules/element.js';
 import { rewriteURL } from '../modules/urls.js';
 import defineElement  from '../modules/define-element.js';
 
+const assign = Object.assign;
 const ignore = {
     is:          true,
     loading:     true
@@ -226,12 +227,14 @@ export default element('<template is="literal-element">', {
             nothing ;
 
         if (internals.src) {
-            internals.src.then((lifecycle) =>
-                defineElement(internals.tag, this, lifecycle, attributes, internals.parameters, internals.stylesheets)
-            );
+            internals.src.then((module) => {
+                const scope = assign({}, module);
+                delete scope.default;
+                defineElement(internals.tag, this, module.default || {}, attributes, scope, internals.stylesheets)
+            });
         }
         else {
-            defineElement(internals.tag, this, {}, attributes, internals.parameters, internals.stylesheets);
+            defineElement(internals.tag, this, {}, attributes, {}, internals.stylesheets);
         }
     }
 }, {
@@ -255,50 +258,17 @@ export default element('<template is="literal-element">', {
     },
 
     /** src="url"
-    Defines a JS module used as the element's lifecycle.
+    Fetches a JS module whose default export is the elment's lifecycle and any
+    named exports are included in the element's template scope.
     **/
 
     src: {
         attribute: function(value) {
             const internal = getInternals(this);
-            const split    = rhashsplit.exec(value);
-            const name     = split && split[1] ? split[1] : 'default' ;
 
-            internal.src = import(rewriteURL(value))
-                .catch((e) => {
-                    throw new Error('<' + internal.tag + '> not defined, failed to fetch src "' + value + '" ' + e.message);
-                })
-                .then(get(name))
-                .catch((e) => {
-                    throw new Error('<' + internal.tag + '> not defined, src module "' + value + '" has no "' + name + '" export ' + e.message);
-                });
-        }
-    },
-
-    /** scope="element-name"
-    Optional JavaScript module whose exports are made available in the template
-    scope.
-    **/
-
-    scope: {
-        attribute: function(value) {
-            this.scope = value;
-        },
-
-        get: function() {
-            const internals = getInternals(this);
-            return internals.scope ;
-        },
-
-        set: function(value) {
-            const internals = getInternals(this);
-
-            // Let flow run for a tick before importing, so that there is time
-            // for url rewrites to be populated. I don't like this much...
-            //internals.module = resolved
-            //    .then(() => import(rewriteURL(value)))
-            internals.parameters = import(rewriteURL(value))
-                .catch((e) => console.error(e)) ;
+            internal.src = import(rewriteURL(value)).catch((e) => {
+                throw new Error('<' + internal.tag + '> not defined, failed to fetch src "' + value + '" ' + e.message);
+            });
         }
     },
 
