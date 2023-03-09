@@ -82,7 +82,8 @@ assign(TokensRenderer.prototype, Renderer.prototype, {
             .map(toText)
             .join(' ')
             .trim()
-            .split(/\s+/);
+            .split(/\s+/)
+            .filter((string) => !!string);
 
         this.mutations = updateTokens(this.list, this.tokens, tokens, mutations);
         this.tokens    = tokens;
