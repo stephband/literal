@@ -1,0 +1,28 @@
+
+${ data.type === 'text' ? `
+### ${ data.name }
+${ data.body }
+` : `
+#### \`${
+    data.type === 'element'     ? '&lt;' :
+    data.type === 'method'      ? '.' :
+    data.type === 'part'        ? '::part(' :
+    data.type === 'property'    ? '.' :
+    data.type === 'string'      ? '"' :
+    data.type === 'var'         ? '--' :
+    ''
+}${ data.name }${
+    data.type === 'attribute' && data.defaultValue ? ` ="_${ data.defaultValue }_"` :
+    data.type === 'property'  && data.defaultValue ? ` =_${ data.defaultValue }_` :
+    data.type === 'constructor' ? '(' + data.params.join(', ') + ')' :
+    data.type === 'function'    ? '(' + data.params.join(', ') + ')' :
+    data.type === 'method'      ? '(' + data.params.join(', ') + ')' :
+    data.type === 'part'        ? ')' :
+    data.type === 'element'     ? '&gt;' :
+    data.type === 'string'      ? '"' :
+    ''
+}\`
+
+${ data.body }
+
+` }

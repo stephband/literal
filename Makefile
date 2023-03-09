@@ -7,6 +7,9 @@ DEBUG=
 literal:
 	deno run --allow-read --allow-env --allow-net --allow-write --allow-run --unstable ./deno/make-literal.js ./ debug
 
+comments:
+	deno run --allow-read --allow-env --allow-net --allow-write --allow-run --unstable ./deno/make-comments.js ./modules/ ./stuff/ ./docs/includes/page.literal debug
+
 modules:
 	rm -rf ./build
 	deno run --allow-read --allow-env --allow-net --allow-write --allow-run ../fn/deno/make-modules.js build module.js
