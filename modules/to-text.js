@@ -188,8 +188,8 @@ const toText = overload(toType, {
         // We do want keys of observer to be read so that changes will cause
         // updates. TODO: it may be better not to getTarget these things
         // before sending to toText() ? I mean, ${ DATA } wont be static like
-        // this !
-        'default': (object) => JSON.stringify(Observer(object), null, 2)
+        // this, and we can't use this module in Deno either!
+        'default': (object) => JSON.stringify(/*Observer(*/object/*)*/, null, 2)
     }),
 
     'default': JSON.stringify

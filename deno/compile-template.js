@@ -1,36 +1,35 @@
 
 import read    from './read.js';
 import compile from './compile.js';
+import include from './include.js';
 import library, { prependComment } from './library.js';
 import { rewriteURLs } from './url.js';
 
+
 /**
-compileTemplate(source, target, data)
+compileTemplate(src, target, data)
 **/
 
-export default function compileTemplate(source, target, debug) {
-    // Declare DEBUG in template scope
-    library.DEBUG = debug;
-
-    return read(source)
+export default (src, debug) => read(src)
     .then((template) => {
-        const include  = (url, data) => library.include(source, target, url, data);
-        const imports  = (url)       => library.imports(source, target, url);
-        const comments = (...urls)   => library.comments(source, target, ...urls);
         const renderer = {
-            source: source,
-            render: compile(library, 'data, include, imports, comments', template, source)
+            source: src,
+            render: compile(library, 'request, data, include, comments', template, src)
         };
 
-        return (data) => renderer
-            .render(data, include, imports, comments)
+        return (request, data) => renderer
+            .render(request, data,
+                // include(url, data)
+                (url, data) => include(src, url, request, data),
+                // comments(...urls)
+                (...urls)   => library.comments(src, request.url, ...urls)
+            )
             .then(library.DEBUG ?
-                (text) => prependComment(source, target, rewriteURLs(source, target, text)) :
-                (text) => rewriteURLs(source, target, text)
+                (text) => prependComment(src, request.url, rewriteURLs(src, request.url, text)) :
+                (text) => rewriteURLs(src, request.url, text)
             );
     })
     .catch((e) => {
-        e.message += ' in template ' + source.replace(Deno.cwd() + '/', '');
+        e.message += ' in template ' + src.replace(Deno.cwd() + '/', '');
         throw e;
     });
-}
