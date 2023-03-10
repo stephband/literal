@@ -14,13 +14,13 @@ export default (src, debug) => read(src)
     .then((template) => {
         const renderer = {
             source: src,
-            render: compile(library, 'request, data, include, comments', template, src)
+            render: compile(library, 'request, data, routeparams, include, comments', template, src)
         };
 
-        return (request, data) => renderer
-            .render(request, data,
+        return (request, data, routeparams) => renderer
+            .render(request, data, routeparams,
                 // include(url, data)
-                (url, data) => include(src, url, request, data),
+                (url, data) => include(src, url, request, data, routeparams),
                 // comments(...urls)
                 (...urls)   => library.comments(src, request.url, ...urls)
             )

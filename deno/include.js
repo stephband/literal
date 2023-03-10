@@ -28,15 +28,15 @@ const resolveScope = overload(toType, {
 });
 
 
-function renderInclude(source, file, request, data) {
+function renderInclude(source, file, request, data, routeparams) {
     return Promise.all([
         resolveScope(data, source),
         compileTemplate(file)
     ])
-    .then(([data, render]) => render(request, data));
+    .then(([data, render]) => render(request, data, routeparams));
 }
 
-export default function include(source, src, request, data) {
+export default function include(source, src, request, data, routeparams) {
     // Get absolute file path
     const file = getAbsolute(source, src);
 
@@ -50,7 +50,7 @@ export default function include(source, src, request, data) {
     );
     */
 
-    return renderInclude(source, file, request, data)
+    return renderInclude(source, file, request, data, routeparams)
     .catch((e) => {
         console.log(red + ' ' + yellow, e.constructor.name + ' in', source);
         console.log(red, e.message);
