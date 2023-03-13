@@ -13,8 +13,8 @@ compileTemplate(src, target, data)
 export default (src, debug) => read(src)
     .then((template) => {
         const renderer = {
-            source: src,
-            render: compile(library, 'request, data, routeparams, include, comments', template, src)
+            filepath: src,
+            render:   compile(library, 'request, data, routeparams, include, comments', template, src)
         };
 
         return (request, data, routeparams) => renderer
