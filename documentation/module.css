@@ -1,7 +1,7 @@
 
-@import '../bolt/documentation/prism-cruncher.css';
-@import '../bolt/documentation.css';
-@import '../bolt/debug.css';
+@import './classes/atoms.css';
+@import './classes/prism.css';
+@import './classes/doc.css';
 
 .block > pre + .bubble {
     top: auto;
@@ -105,3 +105,4 @@ pre + .example {
 [type="button"] {
     border-color: rgb(20,27,30);
 }
+

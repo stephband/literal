@@ -3,9 +3,8 @@ ${ data.type === 'text' ? `
 <h2 class="docs-text-02" id="${ slugify(data.name) }">${ data.name }</h2>
 ${ data.body }
 ` : `
-<div class="${ data.type }-doc-to ggle-block doc-tog gle-block tog gle-block block" data-tog gleable id="${ data.id }">
-<h3 class="${ data.type }-docs-text-05 docs-text-05">
-    <a href="#${ data.id }">
+<details-toggle class="${ data.type }-details-toggle" id="${ data.id }">
+    <h4 class="${ data.type }-docs-text-05 docs-text-05" slot="summary">
         <code class="${
             data.type === 'attribute' ? 'token' :
             data.type === 'property'  ? 'property' :
@@ -36,9 +35,8 @@ ${ data.body }
             data.type === 'string'      ? '"' :
             ''
         }</code>
-    </a>
-</h3>
+    </h4>
 
-${ data.body }
-</div>
+    ${ data.body }
+</details-toggle>
 ` }
