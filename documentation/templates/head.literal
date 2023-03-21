@@ -1,3 +1,5 @@
+${ include('../../templates/head.literal', data) }
+
 <script title="debug">
     window.DEBUG = true;
 </script>
