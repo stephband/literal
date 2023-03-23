@@ -147,7 +147,7 @@ _arrays_ of _strings_ will render as concatted strings as they arrive.
 import id       from '../../fn/modules/id.js';
 import overload from '../../fn/modules/overload.js';
 import toType   from '../../fn/modules/to-type.js';
-import { Observer } from '../../fn/observer/observer.js';
+//import { Observer } from '../../fn/observer/observer.js';
 
 // Matches the arguments list in the result of fn.toString()
 const rarrowents = /\s*(\([\w,\s]*\))/;
@@ -184,12 +184,7 @@ const toText = overload(toType, {
         'RegExp':  (object) => '/' + object.source + '/',
         'Stream':  () => '',
         'null':    () => '',
-
-        // We do want keys of observer to be read so that changes will cause
-        // updates. TODO: it may be better not to getTarget these things
-        // before sending to toText() ? I mean, ${ DATA } wont be static like
-        // this, and we can't use this module in Deno either!
-        'default': (object) => JSON.stringify(/*Observer(*/object/*)*/, null, 2)
+        'default': (object) => JSON.stringify(object, null, 2)
     }),
 
     'default': JSON.stringify

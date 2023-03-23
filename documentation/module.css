@@ -181,7 +181,7 @@ pre + .example {
 
 code {
     font-family: MartianMono, Menlo, Monaco, monospace !important;
-    font-variation-settings: 'wght' 520, 'wdth' 96;
+    font-variation-settings: 'wght' 480, 'wdth' 87.5;
     font-size: 0.8125em;
 }
 
@@ -432,3 +432,15 @@ small > p + p { margin-top: 0; }
 }
 
 
+
+/* Target examples like custom elements inside the text, but not any normal
+   elements. */
+.docs-block > :not(p, pre, h1, h2, h3, h4, h5, table),
+/* Target section titles */
+.docs-block > * + h2:not(class) {
+    margin-top: var(--y-gap);
+}
+
+.docs-block > h2:not(class) + p {
+    margin-top: 0.1em;
+}

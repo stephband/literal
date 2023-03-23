@@ -1,6 +1,8 @@
+<title>${ data.title }</title>
+
 <meta charset="utf-8" />
 <meta name="author" content="${ data.author ? data.author.name || data.author : '' }" />
-<meta name="description" content="Documentation for ${ data.title }. ${ data.description }" />
+<meta name="description" content="${ data.description }" />
 <meta name="viewport" content="width=device-width" />
 
 ${ data.author && data.author.twitter && (
@@ -12,8 +14,6 @@ ${ data.author && data.author.twitter && (
 <meta property="og:image" content="${ data.card && data.card.image }" />
 <meta property="og:url" content="${ data.homepage }" />
 `) }
-
-<title>${ data.title }</title>
 
 ${ data.favicons && data.favicons.map((favicon) => `
 <link rel="icon"${ favicon.type ? ` type="${ favicon.type }"` : '' } href="${ favicon.url }"${ favicon.sizes ? ` sizes="${ favicon.sizes }"` : '' }>`) }

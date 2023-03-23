@@ -80,46 +80,46 @@ function toValues(last, record) {
 function renderValue(renderer, args, values, n, object, isRender = false) {
     if (object && typeof object === 'object') {
         // Avoid having property gets registered as observers
-        object = getTarget(object);
+        const target = getTarget(object);
 
-        // Is object a Promise?
-        if (object.then) {
+        // Is target a Promise?
+        if (target.then) {
             const promises = renderer.promises || (renderer.promises = []);
             values[n] = '';
-            object.then((value) => {
+            target.then((value) => {
                 // You can't stop a promise, but we can flag it to be ignored
-                if (object.stopped) { return; }
-                remove(promises, object);
+                if (target.stopped) { return; }
+                remove(promises, target);
                 return renderValue(renderer, args, values, n, value, true);
             });
-            promises.push(object);
+            promises.push(target);
             return;
         }
 
-        // Is object a Stream?
-        if (object.each) {
+        // Is target a Stream?
+        if (target.each) {
             const streams = renderer.streams || (renderer.streams = []);
             values[n] = '';
-            object.each((value) => renderValue(renderer, args, values, n, value, true));
-            streams.push(object);
+            target.each((value) => renderValue(renderer, args, values, n, value, true));
+            streams.push(target);
             return;
         }
 
-        // Is object a Stream that is already consumed, and therefore does not
+        // Is target a Stream that is already consumed, and therefore does not
         // have .each()? We still want to stop it when the renderer is
         // destroyed, but we don't want to renderer anything.
-        if (isStream(object)) {
+        if (isStream(target)) {
             const streams = renderer.streams || (renderer.streams = []);
             values[n] = '';
-            streams.push(object);
+            streams.push(target);
             return;
         }
 
-        // Is object an array?
-        if (typeof object.length === 'number') {
-            let i = object.length;
+        // Is target an array?
+        if (typeof target.length === 'number') {
+            let i = target.length;
             while (i--) {
-                renderValue(renderer, args, object, i, object[i]);
+                renderValue(renderer, args, target, i, target[i]);
             }
         }
     }
