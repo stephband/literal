@@ -1,15 +1,9 @@
 
 ${ data.filter((doc) => doc.type === 'element').map((doc) => `
-<div class="x1 3x @1-x3 @1-4x @2-x3 x-stretch y-start docs-block block">
-    <h1 class="docs-text-01" id="${ slugify(doc.name) }"><span class="tag-brace">&lt;</span>${ doc.name }<span class="tag-brace">&gt;</span></h1>
+<div class="x1 4x @3-x2 x-stretch y-start documentation-block block">
+    <h1 id="${ slugify(doc.name) }"><span class="tag-brace">&lt;</span>${ doc.name }<span class="tag-brace">&gt;</span></h1>
     ${ doc.body }
 </div>
 `)}
-
-
-<!--form class="@0-x1 @0-3x @1-x1 @1-2x @2-x1 @2-3x x-stretch y-start">
-    $ { data[0].examples[0] }
-    <input hidden class="button" type="submit" />
-</form-->
 
 ${ include('./api.literal', data) }

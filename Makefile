@@ -1,7 +1,7 @@
 DEBUG=
 
 # Tell make to ignore existing folders and allow overwriting existing files
-.PHONY: modules literal
+.PHONY: modules literal comments documentation
 
 # Must format with tabs not spaces
 literal:
@@ -16,3 +16,8 @@ modules:
 	deno run --allow-read --allow-env --allow-net --allow-write --allow-run ../fn/deno/make-modules.js build literal-include.js literal-include.css
 	deno run --allow-read --allow-env --allow-net --allow-write --allow-run ../fn/deno/make-modules.js build literal-element.js
 	deno run --allow-read --allow-env --allow-net --allow-write --allow-run ../fn/deno/make-modules.js build literal.js literal.css
+
+documentation:
+	rm -rf ./documentation/build
+	deno run --allow-read --allow-env --allow-net --allow-write --allow-run ../fn/deno/make-modules.js documentation/build documentation/module.js documentation/module.css
+	deno run --allow-read --allow-env --allow-net --allow-write --allow-run ../fn/deno/make-modules.js documentation/build/details-toggle-shadow.css ../details-toggle/shadow.css

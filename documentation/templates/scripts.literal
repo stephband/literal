@@ -1,3 +1,1 @@
-<script type="module">
-import '../module.js';
-</script>
+<script type="module" src="https://stephen.band/literal/documentation/build/module.js"></script>

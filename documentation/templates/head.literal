@@ -2,6 +2,8 @@ ${ include('../../templates/head.literal', data) }
 
 <script title="debug">
     window.DEBUG = true;
+    window.detailsToggleStylesheet = 'https://stephen.band/literal/documentation/build/details-toggle-shadow.css';
 </script>
 
-<link rel="stylesheet" href="../module.css">
+<link rel="stylesheet" href="https://stephen.band/literal/documentation/build/module.css">
+<link rel="preload" href="https://stephen.band/literal/documentation/build/details-toggle-shadow.css">

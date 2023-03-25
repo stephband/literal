@@ -1,0 +1,12 @@
+
+:root    { --aqua: #026f63; }
+.aqua-fg { color: #026f63; }
+.aqua-bg { background-color: #026f63; }
+
+:root    { --blue: #46789a; }
+.blue-fg { color: #46789a; }
+.blue-bg { background-color: #46789a; }
+
+:root    { --navy: #005177; }
+.navy-fg { color: #005177; }
+.navy-bg { background-color: #005177; }

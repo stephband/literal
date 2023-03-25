@@ -1,0 +1,6 @@
+body.grid {
+    padding-top:    var(--y-gap);
+    padding-bottom: calc(2 * var(--y-gap));
+    padding-left:   var(--x-gap);
+    padding-right:  var(--x-gap);
+}

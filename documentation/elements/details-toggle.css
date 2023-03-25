@@ -1,0 +1,9 @@
+
+details-toggle {
+    --bleed: var(--x-gap);
+    transition: margin-top 0.3s linear;
+}
+
+h3 + details-toggle, .text-03 + details-toggle { margin-top: 0.116666667em; }
+details-toggle + details-toggle { margin-top: 0.466666667em; }
+details-toggle[open] + details-toggle { margin-top: 2.8em; }

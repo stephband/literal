@@ -1,10 +1,10 @@
 
 ${ data.type === 'text' ? `
-<h2 class="docs-text-02" id="${ slugify(data.name) }">${ data.name }</h2>
+<h2 class="text-02" id="${ slugify(data.name) }">${ data.name }</h2>
 ${ data.body }
 ` : `
 <details-toggle class="${ data.type }-details-toggle" id="${ data.id }">
-    <h4 class="${ data.type }-docs-text-05 docs-text-05" slot="summary">
+    <h4 class="${ data.type }-text text-05" slot="summary">
         <code class="${
             data.type === 'attribute' ? 'token' :
             data.type === 'property'  ? 'property' :
@@ -25,8 +25,8 @@ ${ data.body }
             data.type === 'var'         ? '--' :
             ''
         }${ data.name }${
-            data.type === 'attribute' && data.defaultValue ? ` <span class="default">="<em>${ data.defaultValue }</em>"</span>` :
-            data.type === 'property'  && data.defaultValue ? ` <span class="default">=<em>${ data.defaultValue }</em></span>` :
+            data.type === 'attribute' && data.defaultValue ? ` <span class="default-text">="<em>${ data.defaultValue }</em>"</span>` :
+            data.type === 'property'  && data.defaultValue ? ` <span class="default-text">=<em>${ data.defaultValue }</em></span>` :
             data.type === 'constructor' ? '(<span class="param">' + data.params.join('</span>, <span class="param">') + '</span>)' :
             data.type === 'function'    ? '(<span class="param">' + data.params.join('</span>, <span class="param">') + '</span>)' :
             data.type === 'method'      ? '(<span class="param">' + data.params.join('</span>, <span class="param">') + '</span>)' :
