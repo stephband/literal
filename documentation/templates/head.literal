@@ -6,4 +6,4 @@ ${ include('../../templates/head.literal', data) }
 </script>
 
 <link rel="stylesheet" href="https://stephen.band/literal/documentation/build/module.css">
-<link rel="preload" href="https://stephen.band/literal/documentation/build/details-toggle-shadow.css">
+<link rel="preload" as="style" href="https://stephen.band/literal/documentation/build/details-toggle-shadow.css">
