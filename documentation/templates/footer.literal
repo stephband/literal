@@ -1,0 +1,17 @@
+<hr class="x1 4x @1-6x @2-7x @3-x2"/>
+
+<footer class="x1 4x @3-x2 footer-block block">
+    <small class="block">
+        <p class="text-10">
+        Built by <a href="https://stephen.band">Stephen Band</a> at
+        <a href="https://cruncher.ch"><img style="width: 1.366666667em; display: inline-block; vertical-align: bottom; margin-top: -0.1em; margin-bottom: -0.1em;" src="https://cruncher.ch/static/images/logo.svg" alt="The Cruncher logo"/> Cruncher</a>.
+        </p>
+
+        <p class="text-10">
+        This page is set in <a href="https://www.swisstypefaces.com/fonts/euclid/">Euclid</a>
+        and <a href="https://github.com/evilmartians/mono">Martian Mono</a>. Fonts
+        used for documentation not included as part of the open source license
+        covering the use of the <code>&lt;details-toggle&gt;</code> element.
+        </p>
+    </small>
+</footer>
