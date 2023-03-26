@@ -558,13 +558,13 @@ a.grid:focus {
 }
 
 .columns {
-    --x-gap: 1.4rem;
+    --x-gap: 2.1rem;
 }
 
 .\@1-columns {
     display: block !important;
     column-gap: var(--x-gap);
-    --x-gap: 1.4rem;
+    --x-gap: 2.1rem;
 }
 
 
@@ -580,7 +580,7 @@ a.grid:focus {
 .\@1-flex > li      { display: block; }
 
 .grid {
-    --x-gap: 1.4rem;
+    --x-gap: 2.1rem;
     --y-gap: 2.1rem;
 }
 
@@ -592,7 +592,7 @@ a.grid:focus {
     grid-auto-columns: minmax(0, 1fr);
     column-gap: var(--x-gap, 0);
     row-gap:    var(--y-gap, 0);
-    --x-gap: 1.4rem;
+    --x-gap: 2.1rem;
     --y-gap: 2.1rem;
 }
 
@@ -911,13 +911,13 @@ a.\@1-grid:focus {
 }
 
 .columns {
-    --x-gap: 1.4rem;
+    --x-gap: 2.1rem;
 }
 
 .\@2-columns {
     display: block !important;
     column-gap: var(--x-gap);
-    --x-gap: 1.4rem;
+    --x-gap: 2.1rem;
 }
 
 
@@ -934,7 +934,7 @@ a.\@1-grid:focus {
 .\@2-flex > li      { display: block; }
 
 .grid {
-    --x-gap: 1.4rem;
+    --x-gap: 2.1rem;
     --y-gap: 2.8rem;
 }
 
@@ -946,7 +946,7 @@ a.\@1-grid:focus {
     grid-auto-columns: minmax(0, 1fr);
     column-gap: var(--x-gap, 0);
     row-gap:    var(--y-gap, 0);
-    --x-gap: 1.4rem;
+    --x-gap: 2.1rem;
     --y-gap: 2.8rem;
 }
 
@@ -1268,13 +1268,13 @@ a.\@2-grid:focus {
 }
 
 .columns {
-    --x-gap: 1.4rem;
+    --x-gap: 2.1rem;
 }
 
 .\@3-columns {
     display: block !important;
     column-gap: var(--x-gap);
-    --x-gap: 1.4rem;
+    --x-gap: 2.1rem;
 }
 
 
@@ -1293,7 +1293,7 @@ a.\@2-grid:focus {
 .\@3-flex > li      { display: block; }
 
 .grid {
-    --x-gap: 1.4rem;
+    --x-gap: 2.1rem;
     --y-gap: 4.2rem;
 }
 
@@ -1305,7 +1305,7 @@ a.\@2-grid:focus {
     grid-auto-columns: minmax(0, 1fr);
     column-gap: var(--x-gap, 0);
     row-gap:    var(--y-gap, 0);
-    --x-gap: 1.4rem;
+    --x-gap: 2.1rem;
     --y-gap: 4.2rem;
 }
 
