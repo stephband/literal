@@ -2,41 +2,24 @@
 code.block,
 pre > code {
     display: block;
-    padding-left: 0.75rem;
-    padding-top: 0.5625rem;
-    padding-bottom: 0.5625rem;
-    padding-right: 0.75rem;
-    width: 100%;
-    /*color: white;*/
-    /*border-bottom-left-radius: 0;*/
-    /*margin-top: 0.75rem;*/
+    padding-left:   0.84em;
+    padding-top:    0.56em;
+    padding-bottom: 0.56em;
+    padding-right:  0.84em;
+    margin-left: -0.56em;
+    width: calc(100% + 0.84em + 0.84em);
+
     overflow: auto;
+
     box-shadow: inset -18px 4px 110px -20px rgba(0,0,0,0.1);
-    color: var(--color);
-    background-color: --var(black);
-}
-
-/* Code */
-
-pre > code,
-code.block {
-    border-radius: 0.375rem;
-    width: calc(100% + 0.75rem + 0.75rem);
-    margin-left: -0.75rem;
+    color: var(--code-fg);
+    background-color: var(--code-bg);
+    border-radius: 0.35em;
 }
 
 pre,
 code.block {
     white-space: pre;
-}
-
-.js.block + p,
-.html-code.block + p {
-    margin-top: 1.125rem;
-}
-
-pre > code .comment {
-    color: #75858c;
 }
 
 code {

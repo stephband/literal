@@ -1,7 +1,7 @@
 :root {
-    --code-fg: #b7d6e7;
-    --code-bg: #272a2b;
-    --code-bg: #141B1E;
+    --code-fg:   #b7d6e7;
+    --code-bg:   #272a2b;
+    --code-bg:   #141B1E;
 }
 
 /*code,
@@ -29,7 +29,7 @@ pre > code .keyword     { color: #63ACDD; }
 pre > code .rule        { color: #63ACDD; }
 pre > code .operator    { color: #63ACDD; }
 pre > code .number      { color: #FE267E; }
-pre > code .comment     { color: #485b68; }
+pre > code .comment     { color: #485b68; } /* #75858c */
 pre > code .string      { color: #B2CB3A; }
 pre > code .function    { color: #f5a623; }
 
