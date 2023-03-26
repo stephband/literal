@@ -1,0 +1,9 @@
+
+.footer-block a {
+    text-decoration: none;
+}
+
+.footer-block a:hover,
+.footer-block a:focus {
+    text-decoration: underline;
+}
