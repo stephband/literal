@@ -93,9 +93,9 @@ h1 + pre,      .text-01 + pre,
 h1 + ul,       .text-01 + ul,
 h1 + .text-08, .text-01 + .text-08 { margin-top: 2.1em; }
 
-pre + p, p + pre { margin-top: 1.4em; }
-small > p + p    { margin-top: 0; }
+pre + p, p + pre    { margin-top: 1.4em; }
 
+.text-10 + .text-10 { margin-top: 1.166666667em; }
 
 
 .text-06 code:not(.pill) {
