@@ -153,9 +153,16 @@ const parseDotted = capture(/^(\w[\w\d]*)(?:(\(\s*)|(\s*=\s*)|(\s*\n\s*)|(\s*))/
 const parseName = capture(/^(?:([\w-:]+)\s*=\s*|(?:([A-Z])|(\w))([\w\d]*)\s*\(\s*|([A-Z](?:[^\n]|,\s*)*))\s*/, {
     // name="value" name='value' name=value
     1: (data, captures) => {
-        data.type    = 'attribute';
-        data.name    = captures[1];
-        data.defaultValue = parseString(captures);
+        if (captures[1] === 'slot') {
+            data.type = 'slot';
+            data.name = parseString(captures);
+        }
+        else {
+            data.type    = 'attribute';
+            data.name    = captures[1];
+            data.defaultValue = parseString(captures);
+        }
+
         return data;
     },
 

@@ -3,7 +3,42 @@
 
 <html lang="en">
 <head>
-    undefined
+    <title>Literal</title>
+
+<meta charset="utf-8" />
+<meta name="author" content="Stephen" />
+<meta name="description" content="Literal enhances HTML templates with JS literal template tags, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
+<meta name="viewport" content="width=device-width" />
+
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@stephband">
+<meta property="og:title" content="Literal" />
+<meta property="og:description" content="Literal enhances HTML templates with JS literal template tags, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
+<meta property="og:image" content="undefined" />
+<meta property="og:url" content="https://stephen.band/literal" />
+
+
+
+
+<script title="load">
+    document.documentElement.className += ' js loading';
+    // window.addEventListener('DOMContentLoaded', () => document.documentElement.classList.remove('content-loading'));
+    // Wait for other load handlers to run first - Bolt does a few things on
+    // load (eg. targetable scrolls) and we want them to run before the loading
+    // class is removed
+    window.addEventListener('load', () => window.requestAnimationFrame(() => document.documentElement.classList.remove('loading')));
+</script>
+
+
+<script title="debug">
+    window.DEBUG = true;
+    window.detailsToggleStylesheet = 'https://stephen.band/literal/documentation/build/details-toggle/shadow.css';
+</script>
+
+<link rel="stylesheet" href="https://stephen.band/literal/documentation/build/module.css">
+<link rel="preload" as="style" href="https://stephen.band/literal/documentation/build/details-toggle/shadow.css">
+
 
     <script title="debug">
         window.DEBUG = true;
@@ -15,13 +50,153 @@
 
 <body class="docs-grid @0-grid @0-3x-grid @1-6x-grid @2-9x-grid">
     <header class="@0-x3" style="grid-column-end: span 4;">
-        undefined
+        
+<h1 class="docs-text-01">Literal <span class="docs-text-06">0.6.4</span></h1>
+<p class="docs-text-08">Literal enhances HTML templates with JS literal template tags, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped.</p>
+<ul class="link-index index">
+    <li><strong>repo:</strong> <a href="https://github.com/stephband/literal.git">github.com/stephband/literal.git</a></li>
+    <li><strong>bugs:</strong> <a href="https://github.com/stephband/literal/issues/">github.com/stephband/literal/issues/</a></li>
+</ul>
+
     </header>
 
-    undefined
+    <nav>
+    <a class="nav-button button block" href="./"><code>Literal</code></a>
+
+    <h4>Elements</h4>
+    <a class="nav-button button block" href="./elements/literal-element"><code>&lt;literal-element&gt;</code></a>
+
+    
+
+    <a class="nav-button button block" href="./#attribute-src"><code>src</code></a>
+
+    <a class="nav-button button block" href="./#attribute-stylesheets"><code>stylesheets</code></a>
+
+    <a class="nav-button button block" href="./#attribute-tag"><code>tag</code></a>
+
+
+
+    <a class="nav-button button block" href="./elements/literal-insert"><code>&lt;literal-insert&gt;</code></a>
+
+    
+
+    <a class="nav-button button block" href="./#attribute-data"><code>data</code></a>
+
+    <a class="nav-button button block" href="./#attribute-loading"><code>loading</code></a>
+
+
+
+    <a class="nav-button button block" href="./elements/literal-include"><code>&lt;literal-include&gt;</code></a>
+
+    
+
+    <a class="nav-button button block" href="./#attribute-data"><code>data</code></a>
+
+    <a class="nav-button button block" href="./#attribute-loading"><code>loading</code></a>
+
+    <a class="nav-button button block" href="./#attribute-src"><code>src</code></a>
+
+
+
+    <h4>Templates</h4>
+    <a class="nav-button button block" href="./documentation/templates">Evaluation table</a>
+
+    <h4>Template scope</h4>
+    
+
+    <a class="nav-button button block" href="./#selector-data"><code> data</code></a>
+
+    <a class="nav-button button block" href="./#selector-body"><code> body</code></a>
+
+    <a class="nav-button button block" href="./#selector-element"><code> element</code></a>
+
+    <a class="nav-button button block" href="./#selector-host"><code> host</code></a>
+
+    <a class="nav-button button block" href="./#selector-shadow"><code> shadow</code></a>
+
+    <a class="nav-button button block" href="./#selector-nothing"><code> nothing</code></a>
+
+
+
+    
+
+    <a class="nav-button button block" href="./#constructor-stream"><code>Stream</code></a>
+
+    <a class="nav-button button block" href="./#function-assign"><code>assign</code></a>
+
+    <a class="nav-button button block" href="./#function-by"><code>by</code></a>
+
+    <a class="nav-button button block" href="./#function-ceil"><code>ceil</code></a>
+
+    <a class="nav-button button block" href="./#function-clamp"><code>clamp</code></a>
+
+    <a class="nav-button button block" href="./#function-define"><code>define</code></a>
+
+    <a class="nav-button button block" href="./#function-delegate"><code>delegate</code></a>
+
+    <a class="nav-button button block" href="./#function-entries"><code>entries</code></a>
+
+    <a class="nav-button button block" href="./#function-equals"><code>equals</code></a>
+
+    <a class="nav-button button block" href="./#function-events"><code>events</code></a>
+
+    <a class="nav-button button block" href="./#function-floor"><code>floor</code></a>
+
+    <a class="nav-button button block" href="./#function-get"><code>get</code></a>
+
+    <a class="nav-button button block" href="./#function-id"><code>id</code></a>
+
+    <a class="nav-button button block" href="./#function-include"><code>include</code></a>
+
+    <a class="nav-button button block" href="./#function-keys"><code>keys</code></a>
+
+    <a class="nav-button button block" href="./#function-last"><code>last</code></a>
+
+    <a class="nav-button button block" href="./#function-matches"><code>matches</code></a>
+
+    <a class="nav-button button block" href="./#function-noop"><code>noop</code></a>
+
+    <a class="nav-button button block" href="./#function-notify"><code>notify</code></a>
+
+    <a class="nav-button button block" href="./#function-overload"><code>overload</code></a>
+
+    <a class="nav-button button block" href="./#function-paramify"><code>paramify</code></a>
+
+    <a class="nav-button button block" href="./#function-print"><code>print</code></a>
+
+    <a class="nav-button button block" href="./#function-round"><code>round</code></a>
+
+    <a class="nav-button button block" href="./#function-slugify"><code>slugify</code></a>
+
+    <a class="nav-button button block" href="./#function-sum"><code>sum</code></a>
+
+    <a class="nav-button button block" href="./#function-trigger"><code>trigger</code></a>
+
+    <a class="nav-button button block" href="./#function-values"><code>values</code></a>
+
+
+
+    
+
+    <a class="nav-button button block" href="./#function-px"><code>px</code></a>
+
+    <a class="nav-button button block" href="./#function-em"><code>em</code></a>
+
+    <a class="nav-button button block" href="./#function-rem"><code>rem</code></a>
+
+    <a class="nav-button button block" href="./#function-vw"><code>vw</code></a>
+
+    <a class="nav-button button block" href="./#function-vh"><code>vh</code></a>
+
+    <a class="nav-button button block" href="./#function-vmin"><code>vmin</code></a>
+
+    <a class="nav-button button block" href="./#function-vmax"><code>vmax</code></a>
+
+
+</nav>
+
 
     <script type="module">
         import './literal-element.js';
-        import './documentation.js';
     </script>
 </body>

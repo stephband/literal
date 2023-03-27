@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    ${ include("../../../bolt/templates/head.literal", "../../package.json") }
+    ${ include("../../documentation/templates/head.literal", "../../package.json") }
 
     <script title="debug">
         window.DEBUG = true;
@@ -11,15 +11,17 @@
     <link rel="stylesheet" href="../../documentation.css" />
 </head>
 
-<body class="docs-grid @0-grid @0-3x-grid @1-6x-grid @2-9x-grid">
-    ${ include('../../docs/includes/page.literal', (await comments(
+<body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
+    ${ include('../../documentation/templates/page.literal', (await comments(
         '../literal-element.js'
     ))) }
 
-    ${ include("../../docs/includes/nav.literal", "../../package.json") }
+    ${ include("../../documentation/templates/nav.literal", "../../package.json") }
+    ${ include('../../documentation/templates/credit.literal', '../../package.json') }
+    ${ include('../../documentation/templates/footer.literal', '../../package.json') }
+    ${ include('../../documentation/templates/scripts.literal', '../../package.json') }
 
     <script type="module">
         import '../literal-element.js';
-        import '../../documentation.js';
     </script>
 </body>

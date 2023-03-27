@@ -12,6 +12,7 @@ ${ data.body }
         } ${
             data.type === 'attribute' ? 'language-html' :
             data.type === 'element'   ? 'language-html' :
+            data.type === 'slot'      ? 'language-html' :
             data.type === 'part'      ? 'language-css' :
             data.type === 'selector'  ? 'language-css' :
             data.type === 'var'       ? 'language-css' :
@@ -23,6 +24,7 @@ ${ data.body }
             data.type === 'property'    ? '.' :
             data.type === 'string'      ? '"' :
             data.type === 'var'         ? '--' :
+            data.type === 'slot'        ? 'slot="' :
             ''
         }${ data.name }${
             data.type === 'attribute' && data.defaultValue ? ` <span class="default-text">="<em>${ data.defaultValue }</em>"</span>` :
@@ -32,6 +34,7 @@ ${ data.body }
             data.type === 'method'      ? '(<span class="param">' + data.params.join('</span>, <span class="param">') + '</span>)' :
             data.type === 'part'        ? ')' :
             data.type === 'element'     ? '&gt;' :
+            data.type === 'slot'        ? '"' :
             data.type === 'string'      ? '"' :
             ''
         }</code>

@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    ${ include("../bolt/templates/head.literal", "./package.json") }
+    ${ include("./documentation/templates/head.literal", "./package.json") }
 
     <script title="debug">
         window.DEBUG = true;
@@ -14,13 +14,12 @@
 
 <body class="docs-grid @0-grid @0-3x-grid @1-6x-grid @2-9x-grid">
     <header class="@0-x3" style="grid-column-end: span 4;">
-        ${ include("../bolt/templates/header.literal", "./package.json") }
+        ${ include("./documentation/templates/header.literal", "./package.json") }
     </header>
 
-    ${ include("./docs/includes/nav.literal", "./package.json") }
+    ${ include("./documentation/templates/nav.literal", "./package.json") }
 
     <script type="module">
         import './literal-element.js';
-        import './documentation.js';
     </script>
 </body>

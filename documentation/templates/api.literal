@@ -3,10 +3,6 @@
     ${ this.attributes.length ? '<h3>Attributes</h3>' : '' }
     ${ Promise.all(this.attributes.map((doc) => include("./entry.literal", doc))).then((array) => array.join('')) }
 
-    ${ this.slots = data.filter((doc) => doc.type === 'slot'), '' }
-    ${ this.slots.length ? '<h3>Slots</h3>' : '' }
-    ${ Promise.all(this.slots.map((doc) => include("./entry.literal", doc))).then((array) => array.join(''))  }
-
     ${ this.properties = data.filter((doc) => doc.type === 'property'), '' }
     ${ this.properties.length ? '<h3>Properties</h3>' : '' }
     ${ Promise.all(this.properties.map((doc) => include("./entry.literal", doc))).then((array) => array.join(''))  }
@@ -28,4 +24,8 @@
     ${ this.vars = data.filter((doc) => doc.type === 'var'), '' }
     ${ this.vars.length ? '<h3>Variables</h3>' : '' }
     ${ Promise.all(this.vars.map((doc) => include("./entry.literal", doc))).then((array) => array.join(''))  }
+
+    ${ this.slots = data.filter((doc) => doc.type === 'slot'), '' }
+    ${ this.slots.length ? '<h3>Slots</h3>' : '' }
+    ${ Promise.all(this.slots.map((doc) => include("./entry.literal", doc))).then((array) => array.join(''))  }
 </div>

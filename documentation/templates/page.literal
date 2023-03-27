@@ -2,11 +2,11 @@
 ${ data
 .slice(0, 1)
 .map((doc) => `
-<header class="@0-x1 @0-3x @1-x3 @1-4x @2-x3 @0-x-stretch">
+<header class="x1 4x @3-x2 x-stretch">
     <h1 class="docs-text-01" id="${ slugify(doc.name) }"><code>&lt;${ doc.name }&gt;</code></h1>
 </header>
 
-<section class="@0-x1 @0-3x @1-x3 @1-4x @2-x3 @0-x-stretch">
+<section class="x1 4x @3-x2 x-stretch y-start documentation-block block">
     ${ doc.body }
 </section>
 `) }
@@ -15,10 +15,6 @@ ${ data
     ${ this.attributes = data.filter((doc) => doc.type === 'attribute'), '' }
     ${ this.attributes.length ? '<h3 class="doctext-03">Attributes</h3>' : '' }
     ${ Promise.all(this.attributes.map((doc) => include("./entry.literal", doc))).then((array) => array.join('')) }
-
-    ${ this.slots = data.filter((doc) => doc.type === 'slot'), '' }
-    ${ this.slots.length ? '<h3 class="doctext-03">Slots</h3>' : '' }
-    ${ Promise.all(this.slots.map((doc) => include("./entry.literal", doc))).then((array) => array.join(''))  }
 
     ${ this.properties = data.filter((doc) => doc.type === 'property'), '' }
     ${ this.properties.length ? '<h3 class="doctext-03">Properties</h3>' : '' }
@@ -41,4 +37,9 @@ ${ data
     ${ this.vars = data.filter((doc) => doc.type === 'var'), '' }
     ${ this.vars.length ? '<h3 class="doctext-03">Variables</h3>' : '' }
     ${ Promise.all(this.vars.map((doc) => include("./entry.literal", doc))).then((array) => array.join(''))  }
+
+    ${ this.slots = data.filter((doc) => doc.type === 'slot'), '' }
+    ${ this.slots.length ? '<h3 class="doctext-03">Slots</h3>' : '' }
+    ${ Promise.all(this.slots.map((doc) => include("./entry.literal", doc))).then((array) => array.join(''))  }
 </div>
+

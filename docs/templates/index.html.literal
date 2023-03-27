@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    ${ include("../../../bolt/templates/head.literal", "../../package.json") }
+    ${ include("../../documentation/templates/head.literal", "../../package.json") }
 
     <script title="debug">
         window.DEBUG = true;
@@ -17,7 +17,7 @@
         <h1 class="docs-text-01">Literal <span class="docs-text-06">0.6.2</span></h1>
     </header>
 
-    ${ include('../includes/section.literal', (await comments(
+    ${ include('../../documentation/templates/section.literal', (await comments(
         '../../modules/to-text.js'
     ))) }
 
@@ -36,7 +36,7 @@
         ))
         .filter((doc) => (doc.type === 'selector'))
         //.sort(by(get('name')))
-        .map((doc) => include('../includes/entry.literal', doc)) }
+        .map((doc) => include('../../documentation/templates/entry.literal', doc)) }
 
         <br/>
 
@@ -72,13 +72,13 @@
         ))
         .filter((doc) => (doc.type === 'function' || doc.type === 'constructor'))
         .sort(by(get('name')))
-        .map((doc) => include('../includes/entry.literal', doc)) }
+        .map((doc) => include('../../documentation/templates/entry.literal', doc)) }
 
         ${ (await comments(
             '../../../dom/modules/parse-length.js'
         ))
         .filter((doc) => (doc.type === 'function' || doc.type === 'constructor'))
-        .map((doc) => include('../includes/entry.literal', doc)) }
+        .map((doc) => include('../../documentation/templates/entry.literal', doc)) }
 
         <h3>Adding functions to the template scope</h3>
 
@@ -86,11 +86,10 @@
         This must be done before templates are compiled and cached.</p>
     </section>
 
-    ${ include("../includes/nav.literal", "../../package.json") }
+    ${ include("../../documentation/templates/nav.literal", "../../package.json") }
 
     <script type="module">
         import '../../module.js';
         import '../../literal-include.js';
-        import '../../documentation.js';
     </script>
 </body>
