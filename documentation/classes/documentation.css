@@ -5,14 +5,20 @@
     align-items: stretch;
 }
 
+.documentation-flex > .button {
+    margin-top: auto;
+}
+
 /* Target examples like custom elements inside the text, but not any normal
    elements. */
+.documentation-flex > :not(p, pre, h1, h2, h3, h4, h5, table),
 .documentation-block > :not(p, pre, h1, h2, h3, h4, h5, table),
 /* Target section titles */
 .documentation-block > * + h2:not(class) {
     margin-top: var(--y-gap);
 }
 
+.documentation-flex > h2:not(class) + p {
 .documentation-block > h2:not(class) + p {
     margin-top: 0.1em;
 }
