@@ -1,3 +1,4 @@
+
 import { Observer as Data } from '../../fn/observer/observer.js';
 import arg                  from '../../fn/modules/arg.js';
 import nothing              from '../../fn/modules/nothing.js';
@@ -98,7 +99,7 @@ export default overload((name, descriptor) => typeof descriptor, {
             default: nothing
         }),
 
-        import: (name) => ({
+        src: (name) => ({
             attribute: function(value) { this[name] = value; },
             get:       function() { return Internals(this).renderer.data[name]; },
             set:       function(value) { resolveAndAssign(name, this, value); },
@@ -106,7 +107,11 @@ export default overload((name, descriptor) => typeof descriptor, {
         }),
 
         default: (name, type) => {
-            throw new SyntaxError('Cannot create custom property of type "' + type + '"');
+            if (type === 'url' || type === 'import') {
+                throw new SyntaxError('Attribute type "' + type + '" should be "src"');
+            }
+
+            throw new SyntaxError('Attribute type "' + type + '" not supported');
         }
     }),
 

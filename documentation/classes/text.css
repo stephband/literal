@@ -66,15 +66,6 @@ code {
 .text-11       { font-size: calc(0.6969697rem  + 0.13468013vw); line-height: 1.283333333em; font-weight: 400; }
 .text-12       { font-size: calc(0.63888889rem + 0.12345679vw); line-height: 1.4em;         font-weight: 400; }
 
-/*
-.docs-text-01, h1    { font-size: 14.5vw;                             line-height: 1em;       font-weight: 600; }
-.docs-text-02, h2    { font-size: calc(1.88337054rem + 0.34877232vw); line-height: 1.152em;   font-weight: 600; }
-.docs-text-03, h3    { font-size: calc(1.50669643rem + 0.27901786vw); line-height: 1.44em;    font-weight: 600; }
-.docs-text-04, h4    { font-size: calc(1.20535714rem + 0.22321429vw); line-height: 1.2em;     font-weight: 600; }
-.docs-text-05, h5    { font-size: calc(0.96428571rem + 0.17857143vw); line-height: 1.5em;     font-weight: 600; }
-.docs-text-08, body  { font-size: calc(0.96428571rem + 0.17857143vw); line-height: 1.5em;     font-weight: 400; }
-.docs-text-09        { font-size: calc(0.77142857rem + 0.14285714vw); line-height: 1.40625em; font-weight: 400; }
-*/
 
 h1 > .tag-brace, .text-01 > .tag-brace {
     vertical-align: -0.04em;

@@ -15,6 +15,8 @@ import overload        from '../../fn/modules/overload.js';
 import { Observer, notify }    from '../../fn/observer/observer.js';
 import observe         from '../../fn/observer/observe.js';
 import Stream          from '../../fn/modules/stream.js';
+import FrameStream     from '../../fn/modules/stream/frame-stream.js';
+import IntervalStream  from '../../fn/modules/stream/interval-stream.js';
 
 import paramify        from './library/paramify.js';
 
@@ -69,6 +71,12 @@ const library = {
     **/
     get,
     id,
+
+    time: function(duration) {
+        return typeof duration === 'frame' ?
+            new FrameStream() :
+            new IntervalStream(duration) ;
+    },
 
     /** keys(object)
     Alias of `Object.keys()`.

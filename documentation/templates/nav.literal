@@ -1,13 +1,12 @@
-<nav>
+<nav class="nav-block block">
     <a class="nav-button button block" href="../../"><code>Literal</code></a>
 
     <h4>Elements</h4>
-    <a class="nav-button button block" href="../../elements/literal-element/"><code>&lt;literal-element&gt;</code></a>
+    <a class="nav-button button block" href="../../elements/element-template/"><code>&lt;element-template&gt;</code></a>
 
     ${ include('./nav-buttons.literal', {
         docs: (await comments(
-
-            '../../elements/literal-element.js'
+            '../../element-template/module.js'
         ))
         .filter((doc) => doc.type === 'attribute')
         .sort(by(get('name'))),

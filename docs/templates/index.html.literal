@@ -9,7 +9,7 @@
 
 <body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
     <header class="@0-x3" style="grid-column-end: span 4;">
-        <h1 class="docs-text-01">Literal <span class="docs-text-06">0.6.2</span></h1>
+        <h1 class="text-01">Literal <span class="text-06">0.6.2</span></h1>
     </header>
 
     ${ include('../../documentation/templates/section.literal', (await comments(
@@ -17,7 +17,7 @@
     ))) }
 
     <section class="block @0-x1 @0-3x @1-x3 @1-4x @2-x3 @0-x-stretch">
-        <h2 class="docs-text-02">Template objects</h2>
+        <h2 class="text-02">Template objects</h2>
 
         <p>Templates are rendered in a scope that provides several useful
         objects. The most important object is the <code>data</code> object,
@@ -35,7 +35,7 @@
 
         <br/>
 
-        <h2 class="docs-text-02">Template functions</h2>
+        <h2 class="text-02">Template functions</h2>
 
         <p>Template scope also contains a library of functions. Some of these
         are simply standard JavaScript functions aliased for brevity. Others

@@ -10,7 +10,7 @@
         window.DEBUG = { literal: false };
     </script>
 
-    <template is="literal-element" tag="test-a" attribute="attribute" number="number" string="string" boolean="boolean" tokens="tokens" source="import">
+    <template is="element-template" tag="test-a" attribute="attribute" number="number" string="string" boolean="boolean" tokens="tokens" source="import">
         <!-- Test loading of 2 stylesheets -->
         <link rel="stylesheet" href="./test/defined-element.css" />
         <link rel="stylesheet" href="./test/declared-element.css" />
@@ -46,7 +46,7 @@
         <li>${ data.textContent }</li>
     </template>
 
-    <template is="literal-element" tag="test-b">
+    <template is="element-template" tag="test-b">
         <link rel="stylesheet" href="./test/defined-element.css" />
         <link rel="stylesheet" href="./test/declared-element.css" />
 
@@ -78,7 +78,7 @@
     import test    from "../fn/modules/test.js";
     import library from "./modules/library-dom.js";
 
-    test('<template is="literal-element">', [
+    test('<template is="element-template">', [
 
         // First element
 
@@ -133,7 +133,7 @@
     </script>
 
     <script type="module">
-    import './literal-element.js';
+    import './element-template/module.js';
     </script>
 
     <test-a string="string" number="1" boolean tokens="token-1 token-2" source="{}" id="test-element-1">

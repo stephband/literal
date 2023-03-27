@@ -13,3 +13,10 @@ body.grid {
 body > hr {
     margin-top: var(--y-gap);
 }
+
+body > nav {
+    position: fixed;
+    grid-column: auto;
+    grid-row: auto;
+    transform: translate3d(0 -100% 0);
+}

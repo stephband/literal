@@ -22,7 +22,7 @@
     margin-top: 0.1em;
 }
 
-.documentation-flex > * + .button {
+.documentation-flex > * + .button,
 .documentation-block > * + .button {
     margin-top: var(--y-gap);
 }
