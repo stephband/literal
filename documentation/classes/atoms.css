@@ -1240,13 +1240,13 @@ a.\@2-grid:focus {
 }
 
 
-/* .\@3-atom, 82.5em (1320px) */
+/* .\@3-atom, 80em (1280px) */
 
-@media screen and (max-width: 82.4375em) {
+@media screen and (max-width: 79.9375em) {
     .\@3-shown          { display: none !important; }
 }
 
-@media (min-width: 82.5em) {
+@media (min-width: 80em) {
     .\@3-hidden         { display: none !important; }
 /**
 .fixed
