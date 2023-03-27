@@ -2,7 +2,6 @@
 .documentation-flex {
     flex-direction: column;
     justify-content: start;
-    align-items: stretch;
 }
 
 .documentation-flex > .button {
