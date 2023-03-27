@@ -4,11 +4,6 @@
 <head>
     ${ include("./documentation/templates/head.literal", "./package.json") }
 
-    <script title="debug">
-        window.DEBUG = true;
-    </script>
-
-    <link rel="stylesheet" href="./documentation.css" />
     <link rel="stylesheet" href="./literal-include.css" />
 </head>
 
@@ -18,6 +13,9 @@
     </header>
 
     ${ include("./documentation/templates/nav.literal", "./package.json") }
+    ${ include('./documentation/templates/credit.literal', './package.json') }
+    ${ include('./documentation/templates/footer.literal', './package.json') }
+    ${ include('./documentation/templates/scripts.literal', './package.json') }
 
     <script type="module">
         import './literal-element.js';

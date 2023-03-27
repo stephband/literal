@@ -3,12 +3,6 @@
 <html lang="en">
 <head>
     ${ include("../../documentation/templates/head.literal", "../../package.json") }
-
-    <script title="debug">
-        window.DEBUG = true;
-    </script>
-
-    <link rel="stylesheet" href="../../documentation.css" />
 </head>
 
 <body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
