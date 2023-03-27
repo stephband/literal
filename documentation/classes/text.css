@@ -114,6 +114,7 @@ pre + p, p + pre    { margin-top: 1.4em; }
 
 @media (min-width: 48em) {
     .attribute-text { margin-left: 0; }
+    .method-text    { margin-left: -0.533333335em; }
     .property-text  { margin-left: -0.533333335em; }
     .string-text    { margin-left: -0.533333335em; }
     .part-text      { margin-left: -1.066666667em; }

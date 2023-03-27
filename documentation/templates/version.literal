@@ -1,1 +1,1 @@
-<span class="docs-text-10">${ data.version }</span>
+<span class="text-10">${ data.version }</span>
