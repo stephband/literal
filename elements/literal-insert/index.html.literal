@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="../../documentation.css" />
 </head>
 
-<body class="docs-grid @0-grid @0-3x-grid @1-6x-grid @2-9x-grid">
+<body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
     ${ include('../../documentation/templates/page.literal', (await comments(
         '../literal-insert.js'
     ))) }
