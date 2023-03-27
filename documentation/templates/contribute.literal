@@ -11,8 +11,8 @@
         </a>
     </p>
     <ul>
-        <li>Contribute to the repo: <a href="${ data.repository.url.replace(/\.git$/, '') }">${ data.repository.url.replace(/^https?\:\/\//, '').replace(/\.git$/, '') }</a></li>
-        <li>Report a problem: <a href="${ data.bugs.url }">${ data.bugs.url.replace(/^https?\:\/\//, '') }</a></li>
+        <li>Contribute to the repo: <a href="${ data.repository.url.replace(/\.git$/, '') }"><code>${ data.repository.url.replace(/^https?\:\/\//, '').replace(/\.git$/, '') }</code></a></li>
+        <li>Report a problem: <a href="${ data.bugs.url }"><code>${ data.bugs.url.replace(/^https?\:\/\//, '') }</code></a></li>
     </ul>
 </section>
 

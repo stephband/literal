@@ -1,0 +1,16 @@
+
+<hr class="x1 4x @3-x2 x-stretch" />
+
+<div class="x1 4x @3-x2 x-stretch y-start">
+    <p class="text-10">
+    Built by <a href="${ data.author.url }">${ data.author.name }</a> for
+    <a href="https://cruncher.ch"><img style="width: 1.366666667em; display: inline-block; vertical-align: bottom; margin-top: -0.1em; margin-bottom: -0.1em;" src="https://cruncher.ch/static/images/logo.svg" alt="Cruncher logo"/> Cruncher</a>.
+    </p>
+
+    <p class="text-10">
+    Documentation set in <a href="https://www.swisstypefaces.com/fonts/euclid/">Euclid</a>
+    and <a href="https://github.com/evilmartians/mono">Martian Mono</a>. Fonts
+    used for documentation not included as part of the license covering the
+    use of <code>${ data.title }</code>.
+    </p>
+</div>

@@ -31,8 +31,8 @@ pre > code {
     width: calc(100% + 0.84em + 0.84em);
 
     box-shadow: inset -18px 4px 110px -20px rgba(0,0,0,0.1);
-    color: var(--code-fg);
-    background-color: var(--code-bg);
+    color: var(--slate2);
+    background-color: var(--slate);
     border-radius: 0.35em;
 }
 
