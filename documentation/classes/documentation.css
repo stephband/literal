@@ -4,9 +4,9 @@
     justify-content: start;
 }
 
-.documentation-flex > .button {
+/*.documentation-flex > .button {
     margin-top: auto;
-}
+}*/
 
 /* Target examples like custom elements inside the text, but not any normal
    elements. */
@@ -17,7 +17,12 @@
     margin-top: var(--y-gap);
 }
 
-.documentation-flex > h2:not(class) + p {
+.documentation-flex > h2:not(class) + p,
 .documentation-block > h2:not(class) + p {
     margin-top: 0.1em;
+}
+
+.documentation-flex > * + .button {
+.documentation-block > * + .button {
+    margin-top: var(--y-gap);
 }
