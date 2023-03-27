@@ -23,7 +23,7 @@ pre > code .comment     { color: var(--slate0); } /* #75858c */
 pre > code .string      { color: var(--lime); }
 pre > code .function    { color: var(--orange); }
 
-pre > .language-html                            { color: var(--slate3); }
+pre > .language-html                            { color: var(--slate2); }
 pre > .language-html .tag                       { color: #fc6827; }
 pre > .language-html .tag > .punctuation        { color: #8B572A; }
 pre > .language-html .attr-name                 { color: var(--orange); }
