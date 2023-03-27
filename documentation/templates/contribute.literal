@@ -15,5 +15,3 @@
         <li>Report a problem: <a href="${ data.bugs.url }"><code>${ data.bugs.url.replace(/^https?\:\/\//, '') }</code></a></li>
     </ul>
 </section>
-
-

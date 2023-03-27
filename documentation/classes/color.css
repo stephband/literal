@@ -1,4 +1,6 @@
 
+/* Colours for dark background */
+
 :root      { --slate: #141B1E; }
 .slate-fg  { color: #141B1E; }
 .slate-bg  { background-color: #141B1E; }
@@ -42,6 +44,8 @@
 .sky-bg    { background-color: #63ACDD; }
 
 
+
+/* Colours for white background */
 
 :root      { --aqua: #026f63; }
 .aqua-fg   { color: #026f63; }
