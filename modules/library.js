@@ -99,8 +99,16 @@ const library = {
     If `duration` is a number, returns a stream of DOM timestamps at `duration`
     seconds apart.
 
+    ```js
+    ${ clock(1).map(floor) }
+    ```
+
     If `duration` is `"frame"`, returns a stream of DOM timestamps of animation
     frames.
+
+    ```js
+    ${ clock('frame').map((time) => time.toFixed(2)) }
+    ```
     **/
 
     clock: Stream.clock,

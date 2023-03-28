@@ -210,8 +210,10 @@ return <code>min</code>, and those higher than <code>max</code> return <code>max
 
     <p>If <code>duration</code> is a number, returns a stream of DOM timestamps at <code>duration</code>
 seconds apart.</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">clock</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>floor<span class="token punctuation">)</span> <span class="token punctuation">}</span></code></pre>
 <p>If <code>duration</code> is <code>&quot;frame&quot;</code>, returns a stream of DOM timestamps of animation
 frames.</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">clock</span><span class="token punctuation">(</span><span class="token string">'frame'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">time</span><span class="token punctuation">)</span> <span class="token operator">=></span> time<span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">}</span></code></pre>
 
 </details-toggle>
 
@@ -322,15 +324,12 @@ dot-notation. Where a path does not lead to a value, returns <code>undefined</co
     </h4>
 
     <p>Includes a template identified by <code>src</code>, passing in an object to render in that
-template as <code>data</code>. Most often, <code>src</code> will be a reference to the id of another
-template in the DOM.</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span>The thing<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span>
-    ${ include('#another-template', data.thing) }
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span></code></pre>
-<p>The <code>include</code> function is partially applicable, making it suitable to use for
-mapping over an array to return an array of rendered templates.</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span>${ data.array.map(include('#li')) }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span></code></pre>
+template as <code>data</code>. In production it is recommended that <code>src</code> is a fragment
+identifier referring to the id of a template already in the DOM:</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#another-template'</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span> <span class="token punctuation">}</span></code></pre>
+<p>The <code>include</code> function is partially applicable, making it easy to use for
+looping over an array to return an array of rendered templates:</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> data<span class="token punctuation">.</span>array<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#list-item'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">}</span></code></pre>
 
 </details-toggle>
 
@@ -947,9 +946,9 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
 </nav>
 
     
-<hr class="x1 4x @2-x2 x-stretch" />
+<hr class="x1 4x @1-x2 x-stretch" />
 
-<div class="x1 4x @2-x2 x-stretch y-start">
+<div class="x1 4x @1-x2 x-stretch y-start">
     <p class="text-10">
     Built by <a href="http://stephen.band/">Stephen Band</a> for
     <a href="https://cruncher.ch"><img style="width: 1.366666667em; display: inline-block; vertical-align: bottom; margin-top: -0.1em; margin-bottom: -0.1em;" src="https://cruncher.ch/static/images/logo.svg" alt="Cruncher logo"/> Cruncher</a>.

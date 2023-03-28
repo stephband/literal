@@ -10,7 +10,7 @@
 <body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
     ${ include('../documentation/templates/page.literal', (await comments('./module.js'))) }
 
-    <div class="x1 4x @2-x2 x-stretch y-start">
+    <div class="x1 4x @1-x2 x-stretch y-start">
         <h2>Literal templates</h2>
 
         <ul>

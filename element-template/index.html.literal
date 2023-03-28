@@ -16,7 +16,7 @@
         './modules/lifecycle.js'
     ))) }
 
-    <div class="x1 4x @2-x2 x-stretch y-start">
+    <div class="x1 4x @1-x2 x-stretch y-start">
         <h2>Literal templates</h2>
 
         <ul>

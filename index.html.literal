@@ -8,7 +8,7 @@
 </head>
 
 <body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
-    <header class="@0-x3" style="grid-column-end: span 4;">
+    <header class="x1 4x @1-x2 x-stretch">
         ${ include('./documentation/templates/header.literal', './package.json') }
     </header>
 

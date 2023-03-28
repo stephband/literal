@@ -12,10 +12,10 @@ comments:
 
 modules:
 	rm -rf ./build
-	deno run --allow-read --allow-env --allow-net --allow-write --allow-run ../fn/deno/make-modules.js build module.js
-	deno run --allow-read --allow-env --allow-net --allow-write --allow-run ../fn/deno/make-modules.js build literal-include/module.js literal-include/module.css
-	deno run --allow-read --allow-env --allow-net --allow-write --allow-run ../fn/deno/make-modules.js build element-template/module.js
-	deno run --allow-read --allow-env --allow-net --allow-write --allow-run ../fn/deno/make-modules.js build literal.js literal.css
+	#deno run --allow-read --allow-env --allow-net --allow-write --allow-run ../fn/deno/make-modules.js build
+	deno run --allow-read --allow-env --allow-net --allow-write --allow-run ../fn/deno/make-modules.js build module.js element-template/module.js literal-include/module.js literal-include/module.css
+	#deno run --allow-read --allow-env --allow-net --allow-write --allow-run ../fn/deno/make-modules.js build element-template/module.js
+	#deno run --allow-read --allow-env --allow-net --allow-write --allow-run ../fn/deno/make-modules.js build literal.js literal.css
 
 documentation:
 	rm -rf ./documentation/build
