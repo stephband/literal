@@ -4,7 +4,7 @@
 <head>
     ${ include("../documentation/templates/head.literal", "../package.json") }
 
-    <link rel="stylesheet" href="../literal-include.css" />
+    <link rel="stylesheet" href="../literal-include/module.css" />
 </head>
 
 <body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
@@ -29,7 +29,6 @@
         <hr/>
 
         ${ (await comments(
-            '../modules/library.js',
             '../../fn/modules/by.js',
             '../../fn/modules/clamp.js',
             '../../fn/modules/equals.js',
@@ -44,6 +43,7 @@
             //'../fn/observer/observe.js',
             '../../dom/modules/delegate.js',
             '../../dom/modules/trigger.js',
+            '../modules/library.js',
             '../modules/library-dom.js',
             '../modules/library/include.js',
             '../modules/library/paramify.js',
@@ -77,7 +77,6 @@
     ${ include('../documentation/templates/scripts.literal', '../package.json') }
 
     <script type="module">
-        import '../module.js';
-        import '../literal-include.js';
+        import '../literal-include/module.js';
     </script>
 </body>

@@ -51,25 +51,26 @@
 is required, declares the tag name of the new custom element, and the content of
 the template defines the shadow DOM:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>element-template<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>dom-clock<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>time</span><span class="token punctuation">></span></span>${ time(1) } seconds<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>time</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>time</span><span class="token punctuation">></span></span>${ clock(1).map(floor) } seconds<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>time</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
 <template is="element-template" tag="dom-clock" attributes="interval:number">
-    <time>${ time(data.interval) } seconds</time>
+    <time>${ clock(data.interval).map(floor) } seconds</time>
 </template>
 
-<p>Here the expression <code>${ time(1) }</code> is a stream of times that emits a new time
-every second (template scope contains a <a href="../documentation/templates/templates#library">small library of functions</a>
+<p>Here the expression <code>${ clock(1) }</code> is a stream of times that emits a new time
+every <code>1</code> second (template scope contains a <a href="../documentation/templates/templates#library">small library of functions</a>
 that help do this sort of thing). The declared element may now be written:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Current time: <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dom-clock</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dom-clock</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span></code></pre>
 <p>Current time: <dom-clock interval="1"></dom-clock></p>
 <p>Now for the sake of argument, let’s say we want to give <code>&lt;dom-clock&gt;</code> an
-<code>interval</code> attribute, available as a number inside the template scope:</p>
+<code>interval</code> attribute, and make it available as a number inside the template
+scope:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>element-template<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>dom-clock<span class="token punctuation">"</span></span> <span class="token attr-name">attributes</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>interval:number<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>time</span><span class="token punctuation">></span></span>${ time(data.interval) } seconds<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>time</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>time</span><span class="token punctuation">></span></span>${ clock(data.interval).map(floor) } seconds<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>time</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
 <p>That may now be authored:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Current time: <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dom-clock</span> <span class="token attr-name">interval</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>0.2<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dom-clock</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span></code></pre>
-<p>Current time: <dom-clock interval="0.2"></dom-clock></p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Current time: <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dom-clock</span> <span class="token attr-name">interval</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>3<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dom-clock</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span></code></pre>
+<p>Current time: <dom-clock interval="3"></dom-clock></p>
 
 <p>The new custom element may be made to load stylesheets before it is upgraded,
 preventing a flash of unstyled content, using the <code>stylesheets</code> attribute, and
@@ -230,8 +231,6 @@ preventing a flash of unstyled content.</p>
 
     
 
-    <a class="nav-button button block" href="./#constructor-stream"><code>Stream</code></a>
-
     <a class="nav-button button block" href="./#function-assign"><code>assign</code></a>
 
     <a class="nav-button button block" href="./#function-by"><code>by</code></a>
@@ -239,6 +238,8 @@ preventing a flash of unstyled content.</p>
     <a class="nav-button button block" href="./#function-ceil"><code>ceil</code></a>
 
     <a class="nav-button button block" href="./#function-clamp"><code>clamp</code></a>
+
+    <a class="nav-button button block" href="./#function-clock"><code>clock</code></a>
 
     <a class="nav-button button block" href="./#function-delegate"><code>delegate</code></a>
 
@@ -266,7 +267,7 @@ preventing a flash of unstyled content.</p>
 
     <a class="nav-button button block" href="./#function-noop"><code>noop</code></a>
 
-    <a class="nav-button button block" href="./#function-notify"><code>notify</code></a>
+    <a class="nav-button button block" href="./#function-observe"><code>observe</code></a>
 
     <a class="nav-button button block" href="./#function-overload"><code>overload</code></a>
 
@@ -281,6 +282,8 @@ preventing a flash of unstyled content.</p>
     <a class="nav-button button block" href="./#function-slugify"><code>slugify</code></a>
 
     <a class="nav-button button block" href="./#function-sum"><code>sum</code></a>
+
+    <a class="nav-button button block" href="./#function-translate"><code>translate</code></a>
 
     <a class="nav-button button block" href="./#function-trigger"><code>trigger</code></a>
 

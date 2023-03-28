@@ -7,16 +7,16 @@ the template defines the shadow DOM:
 
 ```html
 <template is="element-template" tag="dom-clock">
-    <time>${ time(1) } seconds</time>
+    <time>${ clock(1).map(floor) } seconds</time>
 </template>
 ```
 
 <template is="element-template" tag="dom-clock" attributes="interval:number">
-    <time>${ time(data.interval) } seconds</time>
+    <time>${ clock(data.interval).map(floor) } seconds</time>
 </template>
 
-Here the expression `${ time(1) }` is a stream of times that emits a new time
-every second (template scope contains a [small library of functions](./templates/#library)
+Here the expression `${ clock(1) }` is a stream of times that emits a new time
+every `1` second (template scope contains a [small library of functions](./templates/#library)
 that help do this sort of thing). The declared element may now be written:
 
 ```html
@@ -26,21 +26,22 @@ that help do this sort of thing). The declared element may now be written:
 Current time: <dom-clock interval="1"></dom-clock>
 
 Now for the sake of argument, let's say we want to give `<dom-clock>` an
-`interval` attribute, available as a number inside the template scope:
+`interval` attribute, and make it available as a number inside the template
+scope:
 
 ```html
 <template is="element-template" tag="dom-clock" attributes="interval:number">
-    <time>${ time(data.interval) } seconds</time>
+    <time>${ clock(data.interval).map(floor) } seconds</time>
 </template>
 ```
 
 That may now be authored:
 
 ```html
-<p>Current time: <dom-clock interval="0.2"></dom-clock></p>
+<p>Current time: <dom-clock interval="3"></dom-clock></p>
 ```
 
-<p>Current time: <dom-clock interval="0.2"></dom-clock></p>
+<p>Current time: <dom-clock interval="3"></dom-clock></p>
 
 The new custom element may be made to load stylesheets before it is upgraded,
 preventing a flash of unstyled content, using the `stylesheets` attribute, and

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Literal template "/Users/stephband/Sites/literal/elements/literal-insert/index.html.literal" -->
+<!-- Literal template "/Users/stephband/Sites/literal/literal-insert/index.html.literal" -->
 
 <html lang="en">
 <head>
@@ -36,7 +36,7 @@
     window.detailsToggleStylesheet = 'https://stephen.band/literal/documentation/build/details-toggle/shadow.css';
 </script>
 
-<link rel="stylesheet" href="../../documentation/module.css">
+<link rel="stylesheet" href="../documentation/module.css">
 <!--link rel="stylesheet" href="https://stephen.band/literal/documentation/build/module.css"-->
 <link rel="preload" as="style" href="https://stephen.band/literal/documentation/build/details-toggle/shadow.css">
 
@@ -45,7 +45,7 @@
         window.DEBUG = true;
     </script>
 
-    <link rel="stylesheet" href="../../documentation.css" />
+    <link rel="stylesheet" href="../documentation.css" />
 </head>
 
 <body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
@@ -74,7 +74,7 @@ JavaScript module or fetches JSON:</p>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>pre</span><span class="token punctuation">></span></span>${ data.time.toFixed(0) + 's' }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>pre</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
 <div class="example">
-    <template is="literal-insert" data="../../data/clock.js">
+    <template is="literal-insert" data="../documentation/data/clock.js">
         <pre>${ data.time.toFixed(0) + 's' }</pre>
     </template>
 </div>
@@ -97,7 +97,7 @@ JavaScript module or fetches JSON:</p>
 </template>
 
 <h3>Todo list</h3>
-<template is="literal-insert" data="../../data/todo.json">
+<template is="literal-insert" data="../documentation/data/todo.json">
     <ul>${ data.tasks.map(include('#todo-li')) }</ul>
 </template>
 </div>
@@ -128,7 +128,7 @@ count inside the link:</p>
 <div class="example">
     <a href="/favourites/" class="fav-icon">
         Favourites
-        <template is="literal-insert" data="../../data/favourites.js">
+        <template is="literal-insert" data="../documentation/data/favourites.js">
             <span class="badge">${ data.count }</span>
         </template>
     </a>
@@ -144,7 +144,7 @@ favourites, enabling us to write a favourite button:</p>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
 <div class="example">
-    <template is="literal-insert" data="../../data/favourites.js">
+    <template is="literal-insert" data="../documentation/data/favourites.js">
         <button type="button" class="${ data.ids.includes('a') ? 'fav' : 'not-fav' }">
             ${ data.ids.includes('a') ? 'Remove from favourites' : 'Add to favourites' }
             ${ events('click', element).each((e) => data.toggle('a')) }
@@ -157,12 +157,12 @@ favourites, enabling us to write a favourite button:</p>
 <p>URLs to modules may be rewritten, which is useful if you are bundling modules
 for production. Rather than having to rewrite the HTML with new data URLs,
 Literal provides an <code>urls</code> map:</p>
-<pre><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> urls <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../../module.js'</span><span class="token punctuation">;</span>
+<pre><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> urls <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../documentation/module.js'</span><span class="token punctuation">;</span>
 
 <span class="token function">assign</span><span class="token punctuation">(</span>urls<span class="token punctuation">,</span> <span class="token punctuation">{</span>
     <span class="token comment">// Map the default export of favourites.js to the export</span>
     <span class="token comment">// named 'favourites' of bundle.js...</span>
-    <span class="token string">'../../data/favourites.js'</span><span class="token operator">:</span> <span class="token string">'../../build/bundle.js#favourites'</span>
+    <span class="token string">'../documentation/data/favourites.js'</span><span class="token operator">:</span> <span class="token string">'../documentation/build/bundle.js#favourites'</span>
 <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 
@@ -186,10 +186,10 @@ Literal provides an <code>urls</code> map:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./module.js#namedExport<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
 <p>Paths may be rewritten. This helps when JS modules are bundled into a single
 module for production.</p>
-<pre><code><span class="token keyword">import</span> <span class="token punctuation">{</span> urls <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../../documentation/literal.js'</span><span class="token punctuation">;</span>
+<pre><code><span class="token keyword">import</span> <span class="token punctuation">{</span> urls <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../documentation/templates/literal.js'</span><span class="token punctuation">;</span>
 
 <span class="token function">urls</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-    <span class="token string">'../../documentation/path/to/module.js'</span><span class="token operator">:</span> <span class="token string">'../../documentation/path/to/production/bundle.js#namedExport'</span>
+    <span class="token string">'../documentation/templates/path/to/module.js'</span><span class="token operator">:</span> <span class="token string">'../documentation/templates/path/to/production/bundle.js#namedExport'</span>
 <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre><p>The <code>data</code> attribute also accepts raw JSON:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">'</span>{<span class="token punctuation">"</span>property<span class="token punctuation">"</span>: <span class="token punctuation">"</span>value<span class="token punctuation">"</span>}<span class="token punctuation">'</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
 
@@ -200,39 +200,39 @@ module for production.</p>
 
 
     <nav class="nav-block block">
-    <a class="nav-button button block" href="../.."><code>Literal</code></a>
+    <a class="nav-button button block" href=".."><code>Literal</code></a>
 
     <h4>Elements</h4>
-    <a class="nav-button button block" href="../element-template"><code>&lt;element-template&gt;</code></a>
+    <a class="nav-button button block" href="../elements/element-template"><code>&lt;element-template&gt;</code></a>
 
     
 
 
 
-    <a class="nav-button button block" href="./"><code>&lt;literal-insert&gt;</code></a>
+    <a class="nav-button button block" href="../elements/literal-insert"><code>&lt;literal-insert&gt;</code></a>
 
     
 
-    <a class="nav-button button block" href="../..#attribute-data"><code>data</code></a>
+    <a class="nav-button button block" href="..#attribute-data"><code>data</code></a>
 
-    <a class="nav-button button block" href="../..#attribute-loading"><code>loading</code></a>
+    <a class="nav-button button block" href="..#attribute-loading"><code>loading</code></a>
 
 
 
-    <a class="nav-button button block" href="../literal-include"><code>&lt;literal-include&gt;</code></a>
+    <a class="nav-button button block" href="../elements/literal-include"><code>&lt;literal-include&gt;</code></a>
 
     
 
-    <a class="nav-button button block" href="../..#attribute-data"><code>data</code></a>
+    <a class="nav-button button block" href="..#attribute-data"><code>data</code></a>
 
-    <a class="nav-button button block" href="../..#attribute-loading"><code>loading</code></a>
+    <a class="nav-button button block" href="..#attribute-loading"><code>loading</code></a>
 
-    <a class="nav-button button block" href="../..#attribute-src"><code>src</code></a>
+    <a class="nav-button button block" href="..#attribute-src"><code>src</code></a>
 
 
 
     <h4>Templates</h4>
-    <a class="nav-button button block" href="../../documentation/templates">Evaluation table</a>
+    <a class="nav-button button block" href="../documentation/templates">Evaluation table</a>
 
     <h4>Template scope</h4>
     
@@ -255,8 +255,6 @@ module for production.</p>
 
     
 
-    <a class="nav-button button block" href="./#constructor-stream"><code>Stream</code></a>
-
     <a class="nav-button button block" href="./#function-assign"><code>assign</code></a>
 
     <a class="nav-button button block" href="./#function-by"><code>by</code></a>
@@ -264,6 +262,8 @@ module for production.</p>
     <a class="nav-button button block" href="./#function-ceil"><code>ceil</code></a>
 
     <a class="nav-button button block" href="./#function-clamp"><code>clamp</code></a>
+
+    <a class="nav-button button block" href="./#function-clock"><code>clock</code></a>
 
     <a class="nav-button button block" href="./#function-delegate"><code>delegate</code></a>
 
@@ -291,7 +291,7 @@ module for production.</p>
 
     <a class="nav-button button block" href="./#function-noop"><code>noop</code></a>
 
-    <a class="nav-button button block" href="./#function-notify"><code>notify</code></a>
+    <a class="nav-button button block" href="./#function-observe"><code>observe</code></a>
 
     <a class="nav-button button block" href="./#function-overload"><code>overload</code></a>
 
@@ -306,6 +306,8 @@ module for production.</p>
     <a class="nav-button button block" href="./#function-slugify"><code>slugify</code></a>
 
     <a class="nav-button button block" href="./#function-sum"><code>sum</code></a>
+
+    <a class="nav-button button block" href="./#function-translate"><code>translate</code></a>
 
     <a class="nav-button button block" href="./#function-trigger"><code>trigger</code></a>
 
@@ -334,7 +336,6 @@ module for production.</p>
 
 
     <script type="module">
-        import '../literal-insert.js';
-        import '../../documentation.js';
+        import './module.js';
     </script>
 </body>

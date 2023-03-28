@@ -28,7 +28,7 @@ may evaluate to `undefined` or `null` and go unseen.
             <th><code>${ undefined }</code></th>
             <td>
                 <template id="value-undefined">${ undefined }</template>
-                <literal-include src="#value-undefined"></literal-include>
+                <literal-include src="#value-undefined" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -36,7 +36,7 @@ may evaluate to `undefined` or `null` and go unseen.
             <th><code>${ null }</code></th>
             <td>
                 <template id="value-null">${ null }</template>
-                <literal-include src="#value-null"></literal-include>
+                <literal-include src="#value-null" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -44,7 +44,7 @@ may evaluate to `undefined` or `null` and go unseen.
             <th><code>${ NaN }</code></th>
             <td>
                 <template id="value-nan">${ NaN }</template>
-                <literal-include src="#value-nan"></literal-include>
+                <literal-include src="#value-nan" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -52,7 +52,7 @@ may evaluate to `undefined` or `null` and go unseen.
             <th><code>${ 'Hello' }</code></th>
             <td>
                 <template id="value-string">${ 'Hello' }</template>
-                <literal-include src="#value-string"></literal-include>
+                <literal-include src="#value-string" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -60,7 +60,7 @@ may evaluate to `undefined` or `null` and go unseen.
             <th><code>${ true }, ${ false }</code></th>
             <td>
                 <template id="value-boolean">${ true }, ${ false }</template>
-                <literal-include src="#value-boolean"></literal-include>
+                <literal-include src="#value-boolean" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -68,7 +68,7 @@ may evaluate to `undefined` or `null` and go unseen.
             <th><code>${ 100.3 }</code></th>
             <td>
                 <template id="value-number">${ 100.3 }</template>
-                <literal-include src="#value-number"></literal-include>
+                <literal-include src="#value-number" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -76,7 +76,7 @@ may evaluate to `undefined` or `null` and go unseen.
             <th><code>${ Infinity }, ${ -Infinity }</code></th>
             <td>
                 <template id="value-infinity">${ Infinity }, ${ -Infinity }</template>
-                <literal-include src="#value-infinity"></literal-include>
+                <literal-include src="#value-infinity" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -84,7 +84,7 @@ may evaluate to `undefined` or `null` and go unseen.
             <th><code>${ function name(param) {} }</code></th>
             <td>
                 <template id="value-function">${ function name(param) {} }</template>
-                <literal-include src="#value-function"></literal-include>
+                <literal-include src="#value-function" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -92,7 +92,7 @@ may evaluate to `undefined` or `null` and go unseen.
             <th><code>${ (param) => {} }</code></th>
             <td>
                 <template id="value-arrow">${ (param) => {} }</template>
-                <literal-include src="#value-arrow"></literal-include>
+                <literal-include src="#value-arrow" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -100,7 +100,7 @@ may evaluate to `undefined` or `null` and go unseen.
             <th><code>${ /^regexp/ }</code></th>
             <td>
                 <template id="value-regexp">${ /^regexp/ }</template>
-                <literal-include src="#value-regexp"></literal-include>
+                <literal-include src="#value-regexp" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -108,7 +108,7 @@ may evaluate to `undefined` or `null` and go unseen.
             <th><code>${ Symbol('name') }</code></th>
             <td>
                 <template id="value-symbol">${ Symbol('name') }</template>
-                <literal-include src="#value-symbol"></literal-include>
+                <literal-include src="#value-symbol" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -116,7 +116,7 @@ may evaluate to `undefined` or `null` and go unseen.
             <th><code>${ [0, 1, 2, 3] }</code></th>
             <td>
                 <template id="value-array">${ [0, 1, 2, 3] }</template>
-                <literal-include src="#value-array"></literal-include>
+                <literal-include src="#value-array" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -124,7 +124,7 @@ may evaluate to `undefined` or `null` and go unseen.
             <th><code>${ { property: 'value' } }</code></th>
             <td>
                 <template id="value-object">${ { property: 'value' } }</template>
-                <literal-include src="#value-object"></literal-include>
+                <literal-include src="#value-object" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -132,7 +132,7 @@ may evaluate to `undefined` or `null` and go unseen.
             <th><code>${ document.createTextNode('Text') }</code></th>
             <td>
                 <template id="value-node">${ document.createTextNode('Text') }</template>
-                <literal-include src="#value-node"></literal-include>
+                <literal-include src="#value-node" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -140,7 +140,7 @@ may evaluate to `undefined` or `null` and go unseen.
             <th><code>${ Promise.resolve('promise') }</code></th>
             <td>
                 <template id="value-promise">${ Promise.resolve('promise') }</template>
-                <literal-include src="#value-promise"></literal-include>
+                <literal-include src="#value-promise" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -149,7 +149,7 @@ may evaluate to `undefined` or `null` and go unseen.
             &nbsp;&nbsp;.map((e) => e.pageX.toFixed(1)) }</code></th>
             <td>
                 <template id="value-stream">${ events('pointermove', body).map((e) => e.pageX.toFixed(1)) }</template>
-                <literal-include src="#value-stream"></literal-include>
+                <literal-include src="#value-stream" data="{}"></literal-include>
             </td>
         </tr>
     </tbody>

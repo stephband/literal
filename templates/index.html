@@ -41,7 +41,7 @@
 <link rel="preload" as="style" href="https://stephen.band/literal/documentation/build/details-toggle/shadow.css">
 
 
-    <link rel="stylesheet" href="../literal-include.css" />
+    <link rel="stylesheet" href="../literal-include/module.css" />
 </head>
 
 <body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
@@ -63,7 +63,7 @@ mappable stream of events:</p>
 <pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token string">'hashchange'</span><span class="token punctuation">,</span> window<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> location<span class="token punctuation">.</span>hash<span class="token punctuation">)</span> <span class="token punctuation">}</span></code></pre>
 <p>Templates can be composed with <code>include()</code> function:</p>
 <pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#some-other-template'</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span> <span class="token punctuation">}</span></code></pre>
-<p>Some functions are simply built-ins aliased for brevity. It is nicer to read
+<p>Some functions are simply built-ins, aliased for brevity. It is nicer to read
 <code>${ values(data) }</code> than <code>${ Object.values(data) }</code> within the constraints of a
 template.</p>
 
@@ -157,17 +157,6 @@ refers to the custom element’s shadow root.</p>
 
         
 
-<details-toggle class="constructor-details-toggle" id="constructor-stream-1">
-    <h4 class="constructor-text text-05" slot="summary">
-        <code class=" language-js">Stream(<span class="param">fn</span>)</code>
-    </h4>
-
-    <p>Returns a stream of values.</p>
-
-</details-toggle>
-
-
-
 <details-toggle class="function-details-toggle" id="function-assign-1">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">assign(<span class="param">a</span>, <span class="param">b</span>, <span class="param">…</span>)</code>
@@ -209,6 +198,20 @@ refers to the custom element’s shadow root.</p>
 
     <p>Clamps number <code>n</code> to the limits <code>min</code> to <code>max</code>. Values of <code>n</code> lower than <code>min</code>
 return <code>min</code>, and those higher than <code>max</code> return <code>max</code>.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-clock-1">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">clock(<span class="param">duration</span>)</code>
+    </h4>
+
+    <p>If <code>duration</code> is a number, returns a stream of DOM timestamps at <code>duration</code>
+seconds apart.</p>
+<p>If <code>duration</code> is <code>&quot;frame&quot;</code>, returns a stream of DOM timestamps of animation
+frames.</p>
 
 </details-toggle>
 
@@ -294,10 +297,10 @@ expressions are automatically stopped when their renderers are removed.</p>
 
     <p>Gets the value of <code>path</code> in <code>object</code>, where <code>path</code> is a string in JS
 dot-notation. Where a path does not lead to a value, returns <code>undefined</code>:</p>
-<pre><code><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'path.to.value'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span>       <span class="token comment">// undefined</span></code></pre><p>Numbers are accepted as path components:</p>
-<pre><code><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'array.0'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
-    array<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'first'</span><span class="token punctuation">,</span> <span class="token string">'second'</span><span class="token punctuation">]</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span>                             <span class="token comment">// 'first'</span></code></pre>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'path.to.value'</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span> <span class="token punctuation">}</span></code></pre>
+<p>Numbers are accepted as path components:</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'array.0'</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span> <span class="token punctuation">}</span></code></pre>
+
 </details-toggle>
 
 
@@ -379,12 +382,13 @@ Note that <code>object</code> may have more properties than <code>selector</code
 
 
 
-<details-toggle class="function-details-toggle" id="function-notify-1">
+<details-toggle class="function-details-toggle" id="function-observe-1">
     <h4 class="function-text text-05" slot="summary">
-        <code class=" language-js">notify(<span class="param">path</span>, <span class="param">object</span>)</code>
+        <code class=" language-js">observe(<span class="param">name</span>, <span class="param">object</span>)</code>
     </h4>
 
-    <p>Force observer to register a mutation at <code>path</code> of <code>object</code>.</p>
+    <p>Returns a stream of values of <code>object[name]</code> whenever property <code>name</code> is
+mutated.</p>
 
 </details-toggle>
 
@@ -432,13 +436,13 @@ array values.</p>
 nothing.</p>
 <p>Prints an object or objects to the DOM as a debug message.</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>debug<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>${ print(data) }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#debug<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-include</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#debug<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../../package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-include</span><span class="token punctuation">></span></span></code></pre>
 <p>Renders as:</p>
 <template id="debug">
     ${ print(data) }
 </template>
 
-<p><literal-include src="#debug" data="../documentation/package.json"></literal-include></p>
+<p><literal-include src="#debug" data="../package.json"></literal-include></p>
 <!--
 Messages should be styled with the print stylesheet:
 
@@ -500,6 +504,20 @@ otherwise it is sent as a request body.</p>
     </h4>
 
     <p>Returns the sum of <code>b + a</code>.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-translate-1">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">translate(<span class="param">key</span>)</code>
+    </h4>
+
+    <p>Looks up an alternative value stored by <code>key</code> in a <code>window.translations</code>
+object, if it exists. A super simple translation mechanism, but requires
+<code>window.translations</code> to be populated.</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">translate</span><span class="token punctuation">(</span><span class="token string">'Go to homepage'</span><span class="token punctuation">)</span> <span class="token punctuation">}</span></code></pre>
 
 </details-toggle>
 
@@ -662,7 +680,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
             <th><code>${ undefined }</code></th>
             <td>
                 <template id="value-undefined">${ undefined }</template>
-                <literal-include src="#value-undefined"></literal-include>
+                <literal-include src="#value-undefined" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -670,7 +688,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
             <th><code>${ null }</code></th>
             <td>
                 <template id="value-null">${ null }</template>
-                <literal-include src="#value-null"></literal-include>
+                <literal-include src="#value-null" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -678,7 +696,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
             <th><code>${ NaN }</code></th>
             <td>
                 <template id="value-nan">${ NaN }</template>
-                <literal-include src="#value-nan"></literal-include>
+                <literal-include src="#value-nan" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -686,7 +704,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
             <th><code>${ 'Hello' }</code></th>
             <td>
                 <template id="value-string">${ 'Hello' }</template>
-                <literal-include src="#value-string"></literal-include>
+                <literal-include src="#value-string" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -694,7 +712,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
             <th><code>${ true }, ${ false }</code></th>
             <td>
                 <template id="value-boolean">${ true }, ${ false }</template>
-                <literal-include src="#value-boolean"></literal-include>
+                <literal-include src="#value-boolean" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -702,7 +720,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
             <th><code>${ 100.3 }</code></th>
             <td>
                 <template id="value-number">${ 100.3 }</template>
-                <literal-include src="#value-number"></literal-include>
+                <literal-include src="#value-number" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -710,7 +728,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
             <th><code>${ Infinity }, ${ -Infinity }</code></th>
             <td>
                 <template id="value-infinity">${ Infinity }, ${ -Infinity }</template>
-                <literal-include src="#value-infinity"></literal-include>
+                <literal-include src="#value-infinity" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -718,7 +736,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
             <th><code>${ function name(param) {} }</code></th>
             <td>
                 <template id="value-function">${ function name(param) {} }</template>
-                <literal-include src="#value-function"></literal-include>
+                <literal-include src="#value-function" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -726,7 +744,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
             <th><code>${ (param) => {} }</code></th>
             <td>
                 <template id="value-arrow">${ (param) => {} }</template>
-                <literal-include src="#value-arrow"></literal-include>
+                <literal-include src="#value-arrow" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -734,7 +752,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
             <th><code>${ /^regexp/ }</code></th>
             <td>
                 <template id="value-regexp">${ /^regexp/ }</template>
-                <literal-include src="#value-regexp"></literal-include>
+                <literal-include src="#value-regexp" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -742,7 +760,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
             <th><code>${ Symbol('name') }</code></th>
             <td>
                 <template id="value-symbol">${ Symbol('name') }</template>
-                <literal-include src="#value-symbol"></literal-include>
+                <literal-include src="#value-symbol" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -750,7 +768,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
             <th><code>${ [0, 1, 2, 3] }</code></th>
             <td>
                 <template id="value-array">${ [0, 1, 2, 3] }</template>
-                <literal-include src="#value-array"></literal-include>
+                <literal-include src="#value-array" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -758,7 +776,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
             <th><code>${ { property: 'value' } }</code></th>
             <td>
                 <template id="value-object">${ { property: 'value' } }</template>
-                <literal-include src="#value-object"></literal-include>
+                <literal-include src="#value-object" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -766,7 +784,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
             <th><code>${ document.createTextNode('Text') }</code></th>
             <td>
                 <template id="value-node">${ document.createTextNode('Text') }</template>
-                <literal-include src="#value-node"></literal-include>
+                <literal-include src="#value-node" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -774,7 +792,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
             <th><code>${ Promise.resolve('promise') }</code></th>
             <td>
                 <template id="value-promise">${ Promise.resolve('promise') }</template>
-                <literal-include src="#value-promise"></literal-include>
+                <literal-include src="#value-promise" data="{}"></literal-include>
             </td>
         </tr>
         <tr>
@@ -783,7 +801,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
             &nbsp;&nbsp;.map((e) => e.pageX.toFixed(1)) }</code></th>
             <td>
                 <template id="value-stream">${ events('pointermove', body).map((e) => e.pageX.toFixed(1)) }</template>
-                <literal-include src="#value-stream"></literal-include>
+                <literal-include src="#value-stream" data="{}"></literal-include>
             </td>
         </tr>
     </tbody>
@@ -849,8 +867,6 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
 
     
 
-    <a class="nav-button button block" href="./#constructor-stream"><code>Stream</code></a>
-
     <a class="nav-button button block" href="./#function-assign"><code>assign</code></a>
 
     <a class="nav-button button block" href="./#function-by"><code>by</code></a>
@@ -858,6 +874,8 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
     <a class="nav-button button block" href="./#function-ceil"><code>ceil</code></a>
 
     <a class="nav-button button block" href="./#function-clamp"><code>clamp</code></a>
+
+    <a class="nav-button button block" href="./#function-clock"><code>clock</code></a>
 
     <a class="nav-button button block" href="./#function-delegate"><code>delegate</code></a>
 
@@ -885,7 +903,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
 
     <a class="nav-button button block" href="./#function-noop"><code>noop</code></a>
 
-    <a class="nav-button button block" href="./#function-notify"><code>notify</code></a>
+    <a class="nav-button button block" href="./#function-observe"><code>observe</code></a>
 
     <a class="nav-button button block" href="./#function-overload"><code>overload</code></a>
 
@@ -900,6 +918,8 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
     <a class="nav-button button block" href="./#function-slugify"><code>slugify</code></a>
 
     <a class="nav-button button block" href="./#function-sum"><code>sum</code></a>
+
+    <a class="nav-button button block" href="./#function-translate"><code>translate</code></a>
 
     <a class="nav-button button block" href="./#function-trigger"><code>trigger</code></a>
 
@@ -968,7 +988,6 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
 
 
     <script type="module">
-        import '../module.js';
-        import '../literal-include.js';
+        import '../literal-include/module.js';
     </script>
 </body>

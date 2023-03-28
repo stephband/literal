@@ -18,34 +18,34 @@ A `literal-include` may contain fallback content, in case any of that fails.
 </template>
 
 <literal-include src="#greetings" data="/users/1.json">
-    Fallback content.
+    Hello you!
 </literal-include>
 ```
 
 Multiple `data-` attributes may be declared, their values become properties of
 the `data` object inside the template:
 
-```
+```html
 <literal-include src="#add-to-collections-thumb" data-pk="34" ... ></literal-include>
 ```
 
 Or a single `data` attribute can be used to pass JSON to use as the `data`
 object inside the template:
 
-```
+```html
 <literal-include src="#add-to-collections-thumb" data='{"pk":34, ... }'></literal-include>
 ```
 
 Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a
 .json file...
 
-```
+```html
 <literal-include src="#greetings" data="/users/1.json"></literal-include>
 ```
 
 ...or import the default export of a .js module:
 
-```
+```html
 <literal-include src="#greetings" data="/user-module.js"></literal-include>
 ```
 
@@ -57,9 +57,6 @@ import lifecycle       from '../modules/lifecycle.js';
 import properties, { addLoading, removeLoading } from '../modules/properties.js';
 import getTemplate     from '../modules/get-template.js';
 import requestTemplate from '../modules/request-template.js';
-
-// Log registration to console
-window.console && window.console.log('%c<literal-include>%c documentation: stephen.band/literal/', 'color: #3a8ab0; font-weight: 600;', 'color: #888888; font-weight: 400;');
 
 const assign = Object.assign;
 

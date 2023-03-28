@@ -9,7 +9,7 @@ Prints an object or objects to the DOM as a debug message.
 
 ```html
 <template id="debug">${ print(data) }</template>
-<literal-include src="#debug" data="../package.json"></literal-include>
+<literal-include src="#debug" data="../../package.json"></literal-include>
 ```
 
 Renders as:
@@ -18,7 +18,7 @@ Renders as:
     ${ print(data) }
 </template>
 
-<literal-include src="#debug" data="../../package.json"></literal-include>
+<literal-include src="#debug" data="../../../package.json"></literal-include>
 
 <!--
 Messages should be styled with the print stylesheet:

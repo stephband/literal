@@ -19,7 +19,7 @@
     ${ include('./nav-buttons.literal', {
         docs: (await comments(
             '../../modules/properties.js',
-            '../../elements/literal-insert.js'
+            '../../literal-insert/module.js'
         ))
         .filter((doc) => doc.type === 'attribute')
         .sort(by(get('name'))),
@@ -32,7 +32,7 @@
     ${ include('./nav-buttons.literal', {
         docs: (await comments(
             '../../modules/properties.js',
-            '../../elements/literal-include.js'
+            '../../literal-include/module.js'
         ))
         .filter((doc) => doc.type === 'attribute')
         .sort(by(get('name'))),
