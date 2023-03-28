@@ -32,12 +32,14 @@ The element enclosing the current template tag.
 
 /**
 host
-The custom element.
+Where this literal template renders the shadow DOM of a custom element, `host`
+refers to the custom element.
 **/
 
 /**
 shadow
-The custom element's shadow root.
+Where this literal template renders the shadow DOM of a custom element, `shadow`
+refers to the custom element's shadow root.
 **/
 
 function assignProperty(properties, entry) {

@@ -5,5 +5,8 @@ details-toggle {
 }
 
 h3 + details-toggle, .text-03 + details-toggle { margin-top: 0.116666667em; }
+p + details-toggle { margin-top: 1.4em; }
+hr + details-toggle { margin-top: 1.4em; }
+details-toggle + hr { margin-top: 1.4em; }
 details-toggle + details-toggle { margin-top: 0.466666667em; }
 details-toggle[open] + details-toggle { margin-top: 2.1em; }

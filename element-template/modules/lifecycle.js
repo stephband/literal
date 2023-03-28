@@ -30,7 +30,7 @@ export default {
         const internals = getInternals(this);
 
         if (!internals.tag) {
-            throw new SyntaxError('<template is="element-template"> must have an attribute tag="name-of-element".');
+            throw new SyntaxError('<template is="element-template"> must have an attribute tag="name-of-element"');
         }
 
         const attributes = internals.attributes ?

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Literal template "/Users/stephband/Sites/literal/docs/templates/index.html.literal" -->
+<!-- Literal template "/Users/stephband/Sites/literal/templates/index.html.literal" -->
 
 <html lang="en">
 <head>
     <title>Literal</title>
 
 <meta charset="utf-8" />
-<meta name="author" content="Stephen" />
+<meta name="author" content="Stephen Band" />
 <meta name="description" content="Literal enhances HTML templates with JS literal template tags, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
 <meta name="viewport" content="width=device-width" />
 
@@ -36,183 +36,61 @@
     window.detailsToggleStylesheet = 'https://stephen.band/literal/documentation/build/details-toggle/shadow.css';
 </script>
 
-<link rel="stylesheet" href="https://stephen.band/literal/documentation/build/module.css">
+<link rel="stylesheet" href="../documentation/module.css">
+<!--link rel="stylesheet" href="https://stephen.band/literal/documentation/build/module.css"-->
 <link rel="preload" as="style" href="https://stephen.band/literal/documentation/build/details-toggle/shadow.css">
 
 
-    <link rel="stylesheet" href="../../literal-include.css" />
+    <link rel="stylesheet" href="../literal-include.css" />
 </head>
 
 <body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
-    <header class="@0-x3" style="grid-column-end: span 4;">
+    <header class="x1 4x @1-x2 x-stretch">
         <h1 class="text-01">Literal <span class="text-06">0.6.2</span></h1>
     </header>
 
-    
-<section class="block @0-x1 @0-3x @1-x3 @1-4x @2-x3 @0-x-stretch">
-    
+    <section class="x1 4x @1-x2 x-stretch" id="template-scope">
+        
 
-<h2 class="text-02" id="template-tags">Template tags</h2>
-<p>Template tags may contain any valid JavaScript expression. How their evaluated
-values are rendered into the DOM depends upon their type.</p>
-<p>Promises are resolved before they render, arrays are flattened and joined, and
-streams have their latest value continuously rendered. Literal flattens any
-combination of asynchronous values or collections. A <em>promise</em> of a <em>stream</em> of
-<em>arrays</em> of <em>strings</em> will render as concatted strings as they arrive.</p>
-<table class="striped-table x-bleed">
-    <thead>
-        <tr>
-            <th style="width:20%;">Type</th>
-            <th>Expression</th>
-            <th style="width:30%;">Renders as</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th>undefined</th>
-            <th><code>${ undefined }</code></th>
-            <td>
-                <template id="value-undefined">${ undefined }</template>
-                <literal-include src="#value-undefined"data="{}"></literal-include>
-            </td>
-        </tr>
-        <tr>
-            <th>null</th>
-            <th><code>${ null }</code></th>
-            <td>
-                <template id="value-null">${ null }</template>
-                <literal-include src="#value-null"data="{}"></literal-include>
-            </td>
-        </tr>
-        <tr>
-            <th>NaN</th>
-            <th><code>${ NaN }</code></th>
-            <td>
-                <template id="value-nan">${ NaN }</template>
-                <literal-include src="#value-nan"data="{}"></literal-include>
-            </td>
-        </tr>
-        <tr>
-            <th>String</th>
-            <th><code>${ 'Hello' }</code></th>
-            <td>
-                <template id="value-string">${ 'Hello' }</template>
-                <literal-include src="#value-string"data="{}"></literal-include>
-            </td>
-        </tr>
-        <tr>
-            <th>Number</th>
-            <th><code>${ 100.3 }</code></th>
-            <td>
-                <template id="value-number">${ 100.3 }</template>
-                <literal-include src="#value-number"data="{}"></literal-include>
-            </td>
-        </tr>
-        <tr>
-            <th>Infinity</th>
-            <th><code>${ Infinity }, ${ -Infinity }</code></th>
-            <td>
-                <template id="value-infinity">${ Infinity }, ${ -Infinity }</template>
-                <literal-include src="#value-infinity"data="{}"></literal-include>
-            </td>
-        </tr>
-        <tr>
-            <th>Function</th>
-            <th><code>${ function name(param) {} }</code></th>
-            <td>
-                <template id="value-function">${ function name(param) {} }</template>
-                <literal-include src="#value-function"data="{}"></literal-include>
-            </td>
-        </tr>
-        <tr>
-            <th>Arrow</th>
-            <th><code>${ (param) => {} }</code></th>
-            <td>
-                <template id="value-arrow">${ (param) => {} }</template>
-                <literal-include src="#value-arrow"data="{}"></literal-include>
-            </td>
-        </tr>
-        <tr>
-            <th>RegExp</th>
-            <th><code>${ /^regexp/ }</code></th>
-            <td>
-                <template id="value-regexp">${ /^regexp/ }</template>
-                <literal-include src="#value-regexp"data="{}"></literal-include>
-            </td>
-        </tr>
-        <tr>
-            <th>Symbol</th>
-            <th><code>${ Symbol('name') }</code></th>
-            <td>
-                <template id="value-symbol">${ Symbol('name') }</template>
-                <literal-include src="#value-symbol"data="{}"></literal-include>
-            </td>
-        </tr>
-        <tr>
-            <th>Array</th>
-            <th><code>${ [0, 1, 2, 3] }</code></th>
-            <td>
-                <template id="value-array">${ [0, 1, 2, 3] }</template>
-                <literal-include src="#value-array"data="{}"></literal-include>
-            </td>
-        </tr>
-        <tr>
-            <th>Object</th>
-            <th><code>${ { property: 'value' } }</code></th>
-            <td>
-                <template id="value-object">${ { property: 'value' } }</template>
-                <literal-include src="#value-object"data="{}"></literal-include>
-            </td>
-        </tr>
-        <tr>
-            <th>Node</th>
-            <th><code>${ document.createTextNode('Text') }</code></th>
-            <td>
-                <template id="value-node">${ document.createTextNode('Text') }</template>
-                <literal-include src="#value-node"data="{}"></literal-include>
-            </td>
-        </tr>
-        <tr>
-            <th>Promise</th>
-            <th><code>${ Promise.resolve('promise') }</code></th>
-            <td>
-                <template id="value-promise">${ Promise.resolve('promise') }</template>
-                <literal-include src="#value-promise"data="{}"></literal-include>
-            </td>
-        </tr>
-        <tr>
-            <th>Stream</th>
-            <th><code>${ events('pointermove', body)<br/>
-            &nbsp;&nbsp;.map((e) => e.pageX.toFixed(1)) }</code></th>
-            <td>
-                <template id="value-stream">${ events('pointermove', body).map((e) => e.pageX.toFixed(1)) }</template>
-                <literal-include src="#value-stream"data="{}"></literal-include>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<h2 class="text-02" id="template-scope">Template scope</h2>
+<p>Literal templates are rendered in a scope that provides some useful objects and
+functions in addition to JavaScript’s standard library.</p>
+<p>The <code>data</code> object contains data passed into the template. This object is special
+as the DOM is re-rendered in response to mutations.</p>
+<p>Expressions that return promises or streams also cause the DOM to be updated
+when new values are received. The <code>events()</code> function, for example, returns a
+mappable stream of events:</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token string">'hashchange'</span><span class="token punctuation">,</span> window<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> location<span class="token punctuation">.</span>hash<span class="token punctuation">)</span> <span class="token punctuation">}</span></code></pre>
+<p>Templates can be composed with <code>include()</code> function:</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#some-other-template'</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span> <span class="token punctuation">}</span></code></pre>
+<p>Some functions are simply built-ins aliased for brevity. It is nicer to read
+<code>${ values(data) }</code> than <code>${ Object.values(data) }</code> within the constraints of a
+template.</p>
 
 
 
-</section>
-
-
-    <section class="block @0-x1 @0-3x @1-x3 @1-4x @2-x3 @0-x-stretch">
-        <h2 class="text-02">Template objects</h2>
-
-        <p>Templates are rendered in a scope that provides several useful
-        objects. The most important object is the <code>data</code> object,
-        which contains data to render and is observed for mutations that
-        trigger incremental parts of the template to rerender.</p>
 
         
+
+<details-toggle class="selector-details-toggle" id="selector-this">
+    <h4 class="selector-text text-05" slot="summary">
+        <code class=" language-css"> this</code>
+    </h4>
+
+    <p>The current renderer. Normally this should not be touched, but it can be useful
+for debugging, or for storing values between one render and the next.</p>
+
+</details-toggle>
+
+
 
 <details-toggle class="selector-details-toggle" id="selector-data">
     <h4 class="selector-text text-05" slot="summary">
         <code class=" language-css"> data</code>
     </h4>
 
-    <p>An object for storing state of the template.</p>
+    <p>The main object passed into the template carrying data. This object is special.
+When it mutates, the DOM re-renders.</p>
 
 </details-toggle>
 
@@ -245,7 +123,8 @@ combination of asynchronous values or collections. A <em>promise</em> of a <em>s
         <code class=" language-css"> host</code>
     </h4>
 
-    <p>The custom element.</p>
+    <p>Where this literal template renders the shadow DOM of a custom element, <code>host</code>
+refers to the custom element.</p>
 
 </details-toggle>
 
@@ -256,7 +135,8 @@ combination of asynchronous values or collections. A <em>promise</em> of a <em>s
         <code class=" language-css"> shadow</code>
     </h4>
 
-    <p>The custom element’s shadow root.</p>
+    <p>Where this literal template renders the shadow DOM of a custom element, <code>shadow</code>
+refers to the custom element’s shadow root.</p>
 
 </details-toggle>
 
@@ -273,19 +153,11 @@ combination of asynchronous values or collections. A <em>promise</em> of a <em>s
 
 
 
-        <br/>
-
-        <h2 class="text-02">Template functions</h2>
-
-        <p>Template scope also contains a library of functions. Some of these
-        are simply standard JavaScript functions aliased for brevity. Others
-        provide ways to <a href="#function-include">include</a> templates,
-        create streams of data from DOM <a href="#function-events">events</a>,
-        and <a href="#function-overload">overload</a> functions.</p>
+        <hr/>
 
         
 
-<details-toggle class="constructor-details-toggle" id="constructor-stream">
+<details-toggle class="constructor-details-toggle" id="constructor-stream-1">
     <h4 class="constructor-text text-05" slot="summary">
         <code class=" language-js">Stream(<span class="param">fn</span>)</code>
     </h4>
@@ -296,7 +168,7 @@ combination of asynchronous values or collections. A <em>promise</em> of a <em>s
 
 
 
-<details-toggle class="function-details-toggle" id="function-assign">
+<details-toggle class="function-details-toggle" id="function-assign-1">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">assign(<span class="param">a</span>, <span class="param">b</span>, <span class="param">…</span>)</code>
     </h4>
@@ -319,7 +191,7 @@ combination of asynchronous values or collections. A <em>promise</em> of a <em>s
 
 
 
-<details-toggle class="function-details-toggle" id="function-ceil">
+<details-toggle class="function-details-toggle" id="function-ceil-1">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">ceil(<span class="param">n</span>)</code>
     </h4>
@@ -335,17 +207,8 @@ combination of asynchronous values or collections. A <em>promise</em> of a <em>s
         <code class=" language-js">clamp(<span class="param">min</span>, <span class="param">max</span>, <span class="param">n</span>)</code>
     </h4>
 
-    
-</details-toggle>
-
-
-
-<details-toggle class="function-details-toggle" id="function-define">
-    <h4 class="function-text text-05" slot="summary">
-        <code class=" language-js">define(<span class="param"></span>)</code>
-    </h4>
-
-    <p>Alias of <code>Object.defineProperties()</code>.</p>
+    <p>Clamps number <code>n</code> to the limits <code>min</code> to <code>max</code>. Values of <code>n</code> lower than <code>min</code>
+return <code>min</code>, and those higher than <code>max</code> return <code>max</code>.</p>
 
 </details-toggle>
 
@@ -367,7 +230,7 @@ object, plus any other arguments passed to the handler.</p>
 
 
 
-<details-toggle class="function-details-toggle" id="function-entries">
+<details-toggle class="function-details-toggle" id="function-entries-1">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">entries(<span class="param">object</span>)</code>
     </h4>
@@ -395,25 +258,25 @@ otherwise false.</p>
         <code class=" language-js">events(<span class="param">type</span>, <span class="param">node</span>)</code>
     </h4>
 
-    <p>Returns a mappable stream of events heard on <code>node</code>:</p>
-<pre><code class="language-js"><span class="token keyword">var</span> stream <span class="token operator">=</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> document<span class="token punctuation">.</span>body<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'target'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-<span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">node</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token comment">// Do something with nodes</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-<p>Stopping the stream removes the event listeners:</p>
-<pre><code class="language-js">stream<span class="token punctuation">.</span><span class="token function">stop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-<p>The first parameter may also be an options object, which must have a <code>type</code>
-property. The <code>select: &#39;...&#39;</code> property allows for delegation of an event from
-the selected target. Other properties, eg. <code>passive: true</code> are passed to
-addEventListener options.</p>
-<pre><code class="language-js"><span class="token keyword">var</span> stream <span class="token operator">=</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'scroll'</span><span class="token punctuation">,</span> passive<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> select<span class="token operator">:</span> <span class="token string">''</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> document<span class="token punctuation">.</span>body<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+    <p>Returns a mappable stream of events heard on <code>node</code>.</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> element<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>id<span class="token punctuation">)</span> <span class="token punctuation">}</span></code></pre>
+<p>The first parameter may also be an object with a <code>type</code> property. If the
+object has a <code>select</code> property that is a CSS selector, events are delegated
+from matching targets:</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'click'</span><span class="token punctuation">,</span> select<span class="token operator">:</span> <span class="token string">'[name="button"]'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> element<span class="token punctuation">)</span>
+   <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">)</span> <span class="token punctuation">}</span></code></pre>
+<p>Other properties are passed to addEventListener options, for passive and
+capture phase event binding:</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'scroll'</span><span class="token punctuation">,</span> passive<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> capture <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> window<span class="token punctuation">)</span>
+   <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> window<span class="token punctuation">.</span>scrollTop<span class="token punctuation">)</span> <span class="token punctuation">}</span></code></pre>
+<p>Stopping an event stream removes event listeners. Streams returned from
+expressions are automatically stopped when their renderers are removed.</p>
 
 </details-toggle>
 
 
 
-<details-toggle class="function-details-toggle" id="function-floor">
+<details-toggle class="function-details-toggle" id="function-floor-1">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">floor(<span class="param">n</span>)</code>
     </h4>
@@ -424,7 +287,7 @@ addEventListener options.</p>
 
 
 
-<details-toggle class="function-details-toggle" id="function-get">
+<details-toggle class="function-details-toggle" id="function-get-1">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">get(<span class="param">path</span>, <span class="param">object</span>)</code>
     </h4>
@@ -470,7 +333,7 @@ mapping over an array to return an array of rendered templates.</p>
 
 
 
-<details-toggle class="function-details-toggle" id="function-keys">
+<details-toggle class="function-details-toggle" id="function-keys-1">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">keys(<span class="param">object</span>)</code>
     </h4>
@@ -516,7 +379,7 @@ Note that <code>object</code> may have more properties than <code>selector</code
 
 
 
-<details-toggle class="function-details-toggle" id="function-notify">
+<details-toggle class="function-details-toggle" id="function-notify-1">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">notify(<span class="param">path</span>, <span class="param">object</span>)</code>
     </h4>
@@ -575,7 +438,7 @@ nothing.</p>
     ${ print(data) }
 </template>
 
-<p><literal-include src="#debug" data="../../package.json"></literal-include></p>
+<p><literal-include src="#debug" data="../documentation/package.json"></literal-include></p>
 <!--
 Messages should be styled with the print stylesheet:
 
@@ -589,7 +452,26 @@ Messages should be styled with the print stylesheet:
 
 
 
-<details-toggle class="function-details-toggle" id="function-round">
+<details-toggle class="function-details-toggle" id="function-request">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">request(<span class="param">method</span>, <span class="param">url</span>)</code>
+    </h4>
+
+    <p>Uses <code>fetch()</code> to send a request to <code>url</code>. Returns a promise.</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">request</span><span class="token punctuation">(</span>method<span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token operator">...</span><span class="token punctuation">)</span> <span class="token punctuation">}</span></code></pre>
+<p>To send data with the request:</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">request</span><span class="token punctuation">(</span>method<span class="token punctuation">,</span> url<span class="token punctuation">,</span> data<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token operator">...</span><span class="token punctuation">)</span> <span class="token punctuation">}</span></code></pre>
+<p>Where <code>type</code> is <code>&quot;GET&quot;</code>, <code>data</code> is serialised and appended to the URL,
+otherwise it is sent as a request body.</p>
+<p>A 4th parameter may be a content type string or a headers object
+(in which case it must have a <code>&#39;Content-Type&#39;</code> property).</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">request</span><span class="token punctuation">(</span>method<span class="token punctuation">,</span> url<span class="token punctuation">,</span> data<span class="token punctuation">,</span> headers<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token operator">...</span><span class="token punctuation">)</span> <span class="token punctuation">}</span></code></pre>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-round-1">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">round(<span class="param">n</span>, <span class="param">value</span>)</code>
     </h4>
@@ -644,7 +526,7 @@ optionally <code>detail</code>, which must be an object, and <code>bubbles</code
 
 
 
-<details-toggle class="function-details-toggle" id="function-values">
+<details-toggle class="function-details-toggle" id="function-values-1">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">values(<span class="param"></span>)</code>
     </h4>
@@ -748,49 +630,208 @@ viewport at render time.</p>
 
 
 
-        <h3>Adding functions to the template scope</h3>
+        <!--h3>Adding functions to the template scope</h3>
 
         <p>The scope is extensible. You may assign your own objects and functions.
-        This must be done before templates are compiled and cached.</p>
+        This must be done before templates are compiled and cached.</p-->
+    </section>
+
+    <section class="x1 4x @1-x2 x-stretch" id="template-expressions">
+        
+
+<h2 class="text-02" id="template-expressions">Template expressions</h2>
+<p>How evaluated expressions are rendered into the DOM depends upon their type.</p>
+<p>Promises are resolved before they render, arrays are flattened and joined
+without spaces or commas, and streams are re-rendered every time they emit a new
+value.</p>
+<p>Literal flattens nested collections – a <em>promise</em> of a <em>stream</em> of <em>arrays</em> of
+<em>strings</em> will render as a string as its values arrive.</p>
+<p>False-y values, other than <code>false</code> itself, don’t render at all, so expressions
+may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
+<table class="striped-table x-bleed">
+    <thead>
+        <tr>
+            <th style="width:20%;">Type</th>
+            <th>Expression</th>
+            <th style="width:30%;">Renders as</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>undefined</th>
+            <th><code>${ undefined }</code></th>
+            <td>
+                <template id="value-undefined">${ undefined }</template>
+                <literal-include src="#value-undefined"></literal-include>
+            </td>
+        </tr>
+        <tr>
+            <th>null</th>
+            <th><code>${ null }</code></th>
+            <td>
+                <template id="value-null">${ null }</template>
+                <literal-include src="#value-null"></literal-include>
+            </td>
+        </tr>
+        <tr>
+            <th>NaN</th>
+            <th><code>${ NaN }</code></th>
+            <td>
+                <template id="value-nan">${ NaN }</template>
+                <literal-include src="#value-nan"></literal-include>
+            </td>
+        </tr>
+        <tr>
+            <th>String</th>
+            <th><code>${ 'Hello' }</code></th>
+            <td>
+                <template id="value-string">${ 'Hello' }</template>
+                <literal-include src="#value-string"></literal-include>
+            </td>
+        </tr>
+        <tr>
+            <th>Boolean</th>
+            <th><code>${ true }, ${ false }</code></th>
+            <td>
+                <template id="value-boolean">${ true }, ${ false }</template>
+                <literal-include src="#value-boolean"></literal-include>
+            </td>
+        </tr>
+        <tr>
+            <th>Number</th>
+            <th><code>${ 100.3 }</code></th>
+            <td>
+                <template id="value-number">${ 100.3 }</template>
+                <literal-include src="#value-number"></literal-include>
+            </td>
+        </tr>
+        <tr>
+            <th>Infinity</th>
+            <th><code>${ Infinity }, ${ -Infinity }</code></th>
+            <td>
+                <template id="value-infinity">${ Infinity }, ${ -Infinity }</template>
+                <literal-include src="#value-infinity"></literal-include>
+            </td>
+        </tr>
+        <tr>
+            <th>Function</th>
+            <th><code>${ function name(param) {} }</code></th>
+            <td>
+                <template id="value-function">${ function name(param) {} }</template>
+                <literal-include src="#value-function"></literal-include>
+            </td>
+        </tr>
+        <tr>
+            <th>Arrow</th>
+            <th><code>${ (param) => {} }</code></th>
+            <td>
+                <template id="value-arrow">${ (param) => {} }</template>
+                <literal-include src="#value-arrow"></literal-include>
+            </td>
+        </tr>
+        <tr>
+            <th>RegExp</th>
+            <th><code>${ /^regexp/ }</code></th>
+            <td>
+                <template id="value-regexp">${ /^regexp/ }</template>
+                <literal-include src="#value-regexp"></literal-include>
+            </td>
+        </tr>
+        <tr>
+            <th>Symbol</th>
+            <th><code>${ Symbol('name') }</code></th>
+            <td>
+                <template id="value-symbol">${ Symbol('name') }</template>
+                <literal-include src="#value-symbol"></literal-include>
+            </td>
+        </tr>
+        <tr>
+            <th>Array</th>
+            <th><code>${ [0, 1, 2, 3] }</code></th>
+            <td>
+                <template id="value-array">${ [0, 1, 2, 3] }</template>
+                <literal-include src="#value-array"></literal-include>
+            </td>
+        </tr>
+        <tr>
+            <th>Object</th>
+            <th><code>${ { property: 'value' } }</code></th>
+            <td>
+                <template id="value-object">${ { property: 'value' } }</template>
+                <literal-include src="#value-object"></literal-include>
+            </td>
+        </tr>
+        <tr>
+            <th>Node</th>
+            <th><code>${ document.createTextNode('Text') }</code></th>
+            <td>
+                <template id="value-node">${ document.createTextNode('Text') }</template>
+                <literal-include src="#value-node"></literal-include>
+            </td>
+        </tr>
+        <tr>
+            <th>Promise</th>
+            <th><code>${ Promise.resolve('promise') }</code></th>
+            <td>
+                <template id="value-promise">${ Promise.resolve('promise') }</template>
+                <literal-include src="#value-promise"></literal-include>
+            </td>
+        </tr>
+        <tr>
+            <th>Stream</th>
+            <th><code>${ events('pointermove', body)<br/>
+            &nbsp;&nbsp;.map((e) => e.pageX.toFixed(1)) }</code></th>
+            <td>
+                <template id="value-stream">${ events('pointermove', body).map((e) => e.pageX.toFixed(1)) }</template>
+                <literal-include src="#value-stream"></literal-include>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+
     </section>
 
     <nav class="nav-block block">
-    <a class="nav-button button block" href="../.."><code>Literal</code></a>
+    <a class="nav-button button block" href=".."><code>Literal</code></a>
 
     <h4>Elements</h4>
-    <a class="nav-button button block" href="../../elements/element-template"><code>&lt;element-template&gt;</code></a>
+    <a class="nav-button button block" href="../elements/element-template"><code>&lt;element-template&gt;</code></a>
 
     
 
 
 
-    <a class="nav-button button block" href="../../elements/literal-insert"><code>&lt;literal-insert&gt;</code></a>
+    <a class="nav-button button block" href="../elements/literal-insert"><code>&lt;literal-insert&gt;</code></a>
 
     
 
-    <a class="nav-button button block" href="../..#attribute-data"><code>data</code></a>
+    <a class="nav-button button block" href="..#attribute-data"><code>data</code></a>
 
-    <a class="nav-button button block" href="../..#attribute-loading"><code>loading</code></a>
+    <a class="nav-button button block" href="..#attribute-loading"><code>loading</code></a>
 
 
 
-    <a class="nav-button button block" href="../../elements/literal-include"><code>&lt;literal-include&gt;</code></a>
+    <a class="nav-button button block" href="../elements/literal-include"><code>&lt;literal-include&gt;</code></a>
 
     
 
-    <a class="nav-button button block" href="../..#attribute-data"><code>data</code></a>
+    <a class="nav-button button block" href="..#attribute-data"><code>data</code></a>
 
-    <a class="nav-button button block" href="../..#attribute-loading"><code>loading</code></a>
+    <a class="nav-button button block" href="..#attribute-loading"><code>loading</code></a>
 
-    <a class="nav-button button block" href="../..#attribute-src"><code>src</code></a>
+    <a class="nav-button button block" href="..#attribute-src"><code>src</code></a>
 
 
 
     <h4>Templates</h4>
-    <a class="nav-button button block" href="../../documentation/templates">Evaluation table</a>
+    <a class="nav-button button block" href="../documentation/templates">Evaluation table</a>
 
     <h4>Template scope</h4>
     
+
+    <a class="nav-button button block" href="./#selector-this"><code> this</code></a>
 
     <a class="nav-button button block" href="./#selector-data"><code> data</code></a>
 
@@ -818,13 +859,13 @@ viewport at render time.</p>
 
     <a class="nav-button button block" href="./#function-clamp"><code>clamp</code></a>
 
-    <a class="nav-button button block" href="./#function-define"><code>define</code></a>
-
     <a class="nav-button button block" href="./#function-delegate"><code>delegate</code></a>
 
     <a class="nav-button button block" href="./#function-entries"><code>entries</code></a>
 
     <a class="nav-button button block" href="./#function-equals"><code>equals</code></a>
+
+    <a class="nav-button button block" href="./#function-events"><code>events</code></a>
 
     <a class="nav-button button block" href="./#function-events"><code>events</code></a>
 
@@ -851,6 +892,8 @@ viewport at render time.</p>
     <a class="nav-button button block" href="./#function-paramify"><code>paramify</code></a>
 
     <a class="nav-button button block" href="./#function-print"><code>print</code></a>
+
+    <a class="nav-button button block" href="./#function-request"><code>request</code></a>
 
     <a class="nav-button button block" href="./#function-round"><code>round</code></a>
 
@@ -884,11 +927,11 @@ viewport at render time.</p>
 </nav>
 
     
-<hr class="x1 4x @3-x2 x-stretch" />
+<hr class="x1 4x @2-x2 x-stretch" />
 
-<div class="x1 4x @3-x2 x-stretch y-start">
+<div class="x1 4x @2-x2 x-stretch y-start">
     <p class="text-10">
-    Built by <a href="http://stephen.band">Stephen</a> for
+    Built by <a href="http://stephen.band/">Stephen Band</a> for
     <a href="https://cruncher.ch"><img style="width: 1.366666667em; display: inline-block; vertical-align: bottom; margin-top: -0.1em; margin-bottom: -0.1em;" src="https://cruncher.ch/static/images/logo.svg" alt="Cruncher logo"/> Cruncher</a>.
     </p>
 
@@ -902,7 +945,7 @@ viewport at render time.</p>
 
     
 <footer class="x1 4x @1-6x @2-7x @3-9x 4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid grid footer">
-    <div class="x1 4x @1-2x @3-x2 x-stretch y-start">
+    <div class="x1 4x @1-2x @2-x2 x-stretch y-start">
         <h3>Elements</h3>
         <a class="block" href="https://stephen.band/slide-show/"><code class="lang-html">&lt;slide-show&gt;</code></a>
         <a class="block" href="https://stephen.band/details-toggle/"><code class="lang-html">&lt;details-toggle&gt;</code></a>
@@ -915,7 +958,7 @@ viewport at render time.</p>
         <a class="block" href="https://stephen.band/literal/element-template/"><code class="lang-html">&lt;element-template&gt;</code></a>
     </div>
 
-    <div class="x1 4x @1-2x @1-x3 @3-x4 x-stretch y-start">
+    <div class="x1 4x @1-2x @1-x3 @2-x4 x-stretch y-start">
         <h3>Tools</h3>
         <a class="block" href="https://stephen.band/font-size/">Font-size calculator</a>
     </div>
@@ -925,7 +968,7 @@ viewport at render time.</p>
 
 
     <script type="module">
-        import '../../module.js';
-        import '../../literal-include.js';
+        import '../module.js';
+        import '../literal-include.js';
     </script>
 </body>

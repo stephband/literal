@@ -29,22 +29,27 @@
     window.detailsToggleStylesheet = 'https://stephen.band/literal/documentation/build/details-toggle/shadow.css';
 </script>
 
-<link rel="stylesheet" href="https://stephen.band/literal/documentation/build/module.css">
+<link rel="stylesheet" href="../documentation/module.css">
+<!--link rel="stylesheet" href="https://stephen.band/literal/documentation/build/module.css"-->
 <link rel="preload" as="style" href="https://stephen.band/literal/documentation/build/details-toggle/shadow.css">
 
 </head>
 
 <body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
+    <header class="x1 4x @1-x2 x-stretch">
+        <h1 class="text-01">Literal <span class="text-06">0.6.2</span></h1>
+    </header>
+
     
 
-<header class="x1 4x @3-x2 x-stretch">
-    <h1 class="text-01" id="template-is-element-template"><code>&lt;template is="element-template"&gt;</code></h1>
+<header class="x1 4x @2-x2 x-stretch">
+    <h1 class="text-02 no-wrap" id="template-is-element-template">&lt;template is="element-template"&gt;</h1>
 </header>
 
-<section class="x1 4x @3-x2 x-stretch y-start documentation-block block">
-    <p>An HTML template that declares a new custom element. Its <code>tag</code> attribute defines
-the tag name, and the content of the template defines the shadow DOM of the new
-custom element:</p>
+<section class="x1 4x @2-x2 x-stretch y-start documentation-block block">
+    <p>An HTML template that declares a new custom element. Its <code>tag</code> attribute, which
+is required, declares the tag name of the new custom element, and the content of
+the template defines the shadow DOM:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>element-template<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>dom-clock<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>time</span><span class="token punctuation">></span></span>${ time(1) } seconds<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>time</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
@@ -53,8 +58,8 @@ custom element:</p>
 </template>
 
 <p>Here the expression <code>${ time(1) }</code> is a stream of times that emits a new time
-every second (template scope contains a <a href="../documentation/templates/templates#library">small library of functions</a>).
-The declared element may now be written:</p>
+every second (template scope contains a <a href="../documentation/templates/templates#library">small library of functions</a>
+that help do this sort of thing). The declared element may now be written:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Current time: <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dom-clock</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dom-clock</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span></code></pre>
 <p>Current time: <dom-clock interval="1"></dom-clock></p>
 <p>Now for the sake of argument, let’s say we want to give <code>&lt;dom-clock&gt;</code> an
@@ -70,18 +75,13 @@ The declared element may now be written:</p>
 preventing a flash of unstyled content, using the <code>stylesheets</code> attribute, and
 it may have a lifecycle and scope variables defined in a JS module declared via
 the <code>src</code> attribute.</p>
-<p>For more about literal templates:</p>
-<ul>
-<li><a href="../documentation/templates/templates#library">Constants and functions available in template scope</a></li>
-<li><a href="../documentation/templates/templates#library">How expressions render to the DOM</a></li>
-</ul>
 
 </section>
 
 
-<div class="x1 4x @1-3x @3-x2 x-stretch y-start">
+<section class="x1 4x @2-x2 x-stretch y-start">
     
-    <h3>Attributes</h3>
+    <h2 class="text-03">Attributes</h2>
     
 
 <details-toggle class="attribute-details-toggle" id="attribute-tag">
@@ -162,35 +162,17 @@ preventing a flash of unstyled content.</p>
 </details-toggle>
 
 
-
-    
-    
-    
-
-    
-    
-    
-
-    
-    
-    
-</div>
-
-<div class="x1 4x @1-x4 @1-3x @3-x5 x-stretch y-start">
-    
-    
-    
-
-    
-    
-    
-
-    
-    
-    
-</div>
+</section>
 
 
+    <div class="x1 4x @2-x2 x-stretch y-start">
+        <h2>Literal templates</h2>
+
+        <ul>
+            <li><a href="../templates#template-scope">Helper functions in the template scope</a></li>
+            <li><a href="../templates#template-expressions">How template expressions render to the DOM</a></li>
+        </ul>
+    </div>
 
     <nav class="nav-block block">
     <a class="nav-button button block" href=".."><code>Literal</code></a>
@@ -230,6 +212,8 @@ preventing a flash of unstyled content.</p>
     <h4>Template scope</h4>
     
 
+    <a class="nav-button button block" href="./#selector-this"><code> this</code></a>
+
     <a class="nav-button button block" href="./#selector-data"><code> data</code></a>
 
     <a class="nav-button button block" href="./#selector-body"><code> body</code></a>
@@ -256,13 +240,13 @@ preventing a flash of unstyled content.</p>
 
     <a class="nav-button button block" href="./#function-clamp"><code>clamp</code></a>
 
-    <a class="nav-button button block" href="./#function-define"><code>define</code></a>
-
     <a class="nav-button button block" href="./#function-delegate"><code>delegate</code></a>
 
     <a class="nav-button button block" href="./#function-entries"><code>entries</code></a>
 
     <a class="nav-button button block" href="./#function-equals"><code>equals</code></a>
+
+    <a class="nav-button button block" href="./#function-events"><code>events</code></a>
 
     <a class="nav-button button block" href="./#function-events"><code>events</code></a>
 
@@ -289,6 +273,8 @@ preventing a flash of unstyled content.</p>
     <a class="nav-button button block" href="./#function-paramify"><code>paramify</code></a>
 
     <a class="nav-button button block" href="./#function-print"><code>print</code></a>
+
+    <a class="nav-button button block" href="./#function-request"><code>request</code></a>
 
     <a class="nav-button button block" href="./#function-round"><code>round</code></a>
 
@@ -322,11 +308,11 @@ preventing a flash of unstyled content.</p>
 </nav>
 
     
-<hr class="x1 4x @3-x2 x-stretch" />
+<hr class="x1 4x @2-x2 x-stretch" />
 
-<div class="x1 4x @3-x2 x-stretch y-start">
+<div class="x1 4x @2-x2 x-stretch y-start">
     <p class="text-10">
-    Built by <a href="http://stephen.band">Stephen</a> for
+    Built by <a href="http://stephen.band/">Stephen Band</a> for
     <a href="https://cruncher.ch"><img style="width: 1.366666667em; display: inline-block; vertical-align: bottom; margin-top: -0.1em; margin-bottom: -0.1em;" src="https://cruncher.ch/static/images/logo.svg" alt="Cruncher logo"/> Cruncher</a>.
     </p>
 
@@ -340,7 +326,7 @@ preventing a flash of unstyled content.</p>
 
     
 <footer class="x1 4x @1-6x @2-7x @3-9x 4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid grid footer">
-    <div class="x1 4x @1-2x @3-x2 x-stretch y-start">
+    <div class="x1 4x @1-2x @2-x2 x-stretch y-start">
         <h3>Elements</h3>
         <a class="block" href="https://stephen.band/slide-show/"><code class="lang-html">&lt;slide-show&gt;</code></a>
         <a class="block" href="https://stephen.band/details-toggle/"><code class="lang-html">&lt;details-toggle&gt;</code></a>
@@ -353,7 +339,7 @@ preventing a flash of unstyled content.</p>
         <a class="block" href="https://stephen.band/literal/element-template/"><code class="lang-html">&lt;element-template&gt;</code></a>
     </div>
 
-    <div class="x1 4x @1-2x @1-x3 @3-x4 x-stretch y-start">
+    <div class="x1 4x @1-2x @1-x3 @2-x4 x-stretch y-start">
         <h3>Tools</h3>
         <a class="block" href="https://stephen.band/font-size/">Font-size calculator</a>
     </div>

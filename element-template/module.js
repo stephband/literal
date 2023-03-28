@@ -1,9 +1,9 @@
 /**
 <template is="element-template">
 
-An HTML template that declares a new custom element. Its `tag` attribute defines
-the tag name, and the content of the template defines the shadow DOM of the new
-custom element:
+An HTML template that declares a new custom element. Its `tag` attribute, which
+is required, declares the tag name of the new custom element, and the content of
+the template defines the shadow DOM:
 
 ```html
 <template is="element-template" tag="dom-clock">
@@ -16,8 +16,8 @@ custom element:
 </template>
 
 Here the expression `${ time(1) }` is a stream of times that emits a new time
-every second (template scope contains a [small library of functions](./templates/#library)).
-The declared element may now be written:
+every second (template scope contains a [small library of functions](./templates/#library)
+that help do this sort of thing). The declared element may now be written:
 
 ```html
 <p>Current time: <dom-clock></dom-clock></p>
@@ -46,11 +46,6 @@ The new custom element may be made to load stylesheets before it is upgraded,
 preventing a flash of unstyled content, using the `stylesheets` attribute, and
 it may have a lifecycle and scope variables defined in a JS module declared via
 the `src` attribute.
-
-For more about literal templates:
-
-- [Constants and functions available in template scope](./templates/#library)
-- [How expressions render to the DOM](./templates/#library)
 **/
 
 

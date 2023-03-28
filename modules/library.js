@@ -1,4 +1,32 @@
 
+/** Template scope
+
+Literal templates are rendered in a scope that provides some useful objects and
+functions in addition to JavaScript's standard library.
+
+The `data` object contains data passed into the template. This object is special
+as the DOM is re-rendered in response to mutations.
+
+Expressions that return promises or streams also cause the DOM to be updated
+when new values are received. The `events()` function, for example, returns a
+mappable stream of events:
+
+```js
+${ events('hashchange', window).map((e) => location.hash) }
+```
+
+Templates can be composed with `include()` function:
+
+```js
+${ include('#some-other-template', data) }
+```
+
+Some functions are simply built-ins aliased for brevity. It is nicer to read
+`${ values(data) }` than `${ Object.values(data) }` within the constraints of a
+template.
+
+**/
+
 import id              from '../../fn/modules/id.js';
 import by              from '../../fn/modules/by.js';
 import { clamp }       from '../../fn/modules/clamp.js';
@@ -35,11 +63,6 @@ const library = {
     ceil: Math.ceil,
 
     clamp,
-
-    /** define()
-    Alias of `Object.defineProperties()`.
-    **/
-    define: Object.defineProperties,
 
     /** entries(object)
     Alias of `Object.entries()`.

@@ -95,6 +95,8 @@ pre + p, p + pre    { margin-top: 1.4em; }
     background-color: transparent;
 }
 
+p + table { margin-top: 2.1em; }
+
 
 
 .default-text {

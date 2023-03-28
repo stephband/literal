@@ -6,7 +6,7 @@
     <title>Literal</title>
 
 <meta charset="utf-8" />
-<meta name="author" content="Stephen" />
+<meta name="author" content="Stephen Band" />
 <meta name="description" content="Literal enhances HTML templates with JS literal template tags, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
 <meta name="viewport" content="width=device-width" />
 
@@ -36,7 +36,8 @@
     window.detailsToggleStylesheet = 'https://stephen.band/literal/documentation/build/details-toggle/shadow.css';
 </script>
 
-<link rel="stylesheet" href="https://stephen.band/literal/documentation/build/module.css">
+<link rel="stylesheet" href="../../documentation/module.css">
+<!--link rel="stylesheet" href="https://stephen.band/literal/documentation/build/module.css"-->
 <link rel="preload" as="style" href="https://stephen.band/literal/documentation/build/details-toggle/shadow.css">
 
 
@@ -46,11 +47,11 @@
 <body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
     
 
-<header class="x1 4x @3-x2 x-stretch">
-    <h1 class="text-01" id="literal-include"><code>&lt;literal-include&gt;</code></h1>
+<header class="x1 4x @2-x2 x-stretch">
+    <h1 class="text-02 no-wrap" id="literal-include">&lt;literal-include&gt;</h1>
 </header>
 
-<section class="x1 4x @3-x2 x-stretch y-start documentation-block block">
+<section class="x1 4x @2-x2 x-stretch y-start documentation-block block">
     <p>A <code>literal-include</code> may be placed pretty much anywhere in your HTML, enabling
 the insertion of chunks of dynamic, JS-rendered DOM wherever you like in a
 document.</p>
@@ -77,9 +78,9 @@ object inside the template:</p>
 </section>
 
 
-<div class="x1 4x @1-3x @3-x2 x-stretch y-start">
+<section class="x1 4x @2-x2 x-stretch y-start">
     
-    <h3>Attributes</h3>
+    <h2 class="text-03">Attributes</h2>
     
 
 <details-toggle class="attribute-details-toggle" id="attribute-data">
@@ -118,53 +119,7 @@ in the DOM.</p>
 </details-toggle>
 
 
-
-    
-    <h3>Properties</h3>
-    
-
-<details-toggle class="property-details-toggle" id="property|selector-data">
-    <h4 class="property-text text-05" slot="summary">
-        <code class="property language-js">.data</code>
-    </h4>
-
-    <p>The <code>data</code> property may be set with a path to a JSON file or JS module, or a
-raw JSON string and behaves the same way as the <code>data</code> attribute. In
-addition it accepts a JS object or array.</p>
-<p>Getting the <code>data</code> property returns the data object currently being
-rendered. Note that if a path was set, this object is not available
-immediately, as the data must first be fetched.</p>
-<p>Technically, the returned data object is a <em>proxy</em> of the object that has
-been set. Mutations to the data object are detected by the proxy and the
-DOM is rendered accordingly.</p>
-
-</details-toggle>
-
-
-
-    
-    
-    
-
-    
-    
-    
-</div>
-
-<div class="x1 4x @1-x4 @1-3x @3-x5 x-stretch y-start">
-    
-    
-    
-
-    
-    
-    
-
-    
-    
-    
-</div>
-
+</section>
 
 
     <nav class="nav-block block">
@@ -205,6 +160,8 @@ DOM is rendered accordingly.</p>
     <h4>Template scope</h4>
     
 
+    <a class="nav-button button block" href="./#selector-this"><code> this</code></a>
+
     <a class="nav-button button block" href="./#selector-data"><code> data</code></a>
 
     <a class="nav-button button block" href="./#selector-body"><code> body</code></a>
@@ -231,13 +188,13 @@ DOM is rendered accordingly.</p>
 
     <a class="nav-button button block" href="./#function-clamp"><code>clamp</code></a>
 
-    <a class="nav-button button block" href="./#function-define"><code>define</code></a>
-
     <a class="nav-button button block" href="./#function-delegate"><code>delegate</code></a>
 
     <a class="nav-button button block" href="./#function-entries"><code>entries</code></a>
 
     <a class="nav-button button block" href="./#function-equals"><code>equals</code></a>
+
+    <a class="nav-button button block" href="./#function-events"><code>events</code></a>
 
     <a class="nav-button button block" href="./#function-events"><code>events</code></a>
 
@@ -264,6 +221,8 @@ DOM is rendered accordingly.</p>
     <a class="nav-button button block" href="./#function-paramify"><code>paramify</code></a>
 
     <a class="nav-button button block" href="./#function-print"><code>print</code></a>
+
+    <a class="nav-button button block" href="./#function-request"><code>request</code></a>
 
     <a class="nav-button button block" href="./#function-round"><code>round</code></a>
 
@@ -297,11 +256,11 @@ DOM is rendered accordingly.</p>
 </nav>
 
     
-<hr class="x1 4x @3-x2 x-stretch" />
+<hr class="x1 4x @2-x2 x-stretch" />
 
-<div class="x1 4x @3-x2 x-stretch y-start">
+<div class="x1 4x @2-x2 x-stretch y-start">
     <p class="text-10">
-    Built by <a href="http://stephen.band">Stephen</a> for
+    Built by <a href="http://stephen.band/">Stephen Band</a> for
     <a href="https://cruncher.ch"><img style="width: 1.366666667em; display: inline-block; vertical-align: bottom; margin-top: -0.1em; margin-bottom: -0.1em;" src="https://cruncher.ch/static/images/logo.svg" alt="Cruncher logo"/> Cruncher</a>.
     </p>
 
@@ -315,7 +274,7 @@ DOM is rendered accordingly.</p>
 
     
 <footer class="x1 4x @1-6x @2-7x @3-9x 4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid grid footer">
-    <div class="x1 4x @1-2x @3-x2 x-stretch y-start">
+    <div class="x1 4x @1-2x @2-x2 x-stretch y-start">
         <h3>Elements</h3>
         <a class="block" href="https://stephen.band/slide-show/"><code class="lang-html">&lt;slide-show&gt;</code></a>
         <a class="block" href="https://stephen.band/details-toggle/"><code class="lang-html">&lt;details-toggle&gt;</code></a>
@@ -328,7 +287,7 @@ DOM is rendered accordingly.</p>
         <a class="block" href="https://stephen.band/literal/element-template/"><code class="lang-html">&lt;element-template&gt;</code></a>
     </div>
 
-    <div class="x1 4x @1-2x @1-x3 @3-x4 x-stretch y-start">
+    <div class="x1 4x @1-2x @1-x3 @2-x4 x-stretch y-start">
         <h3>Tools</h3>
         <a class="block" href="https://stephen.band/font-size/">Font-size calculator</a>
     </div>
