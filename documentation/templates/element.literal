@@ -1,6 +1,6 @@
 
 ${ data.filter((doc) => doc.type === 'element').map((doc) => `
-<div class="x1 4x @1-x2 x-stretch y-start documentation-block block">
+<div class="x1 4x @2-x2 x-stretch y-start documentation-block block">
     <h1 id="${ slugify(doc.name) }"><span class="tag-brace">&lt;</span>${ doc.name }<span class="tag-brace">&gt;</span></h1>
     ${ doc.body }
 </div>

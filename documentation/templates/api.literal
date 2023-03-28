@@ -1,4 +1,4 @@
-<div class="x1 4x @1-3x @3-x2 x-stretch y-start">
+<div class="x1 4x @1-3x @2-x2 x-stretch y-start">
     ${ this.attributes = data.filter((doc) => doc.type === 'attribute'), '' }
     ${ this.attributes.length ? '<h3>Attributes</h3>' : '' }
     ${ Promise.all(this.attributes.map((doc) => include("./entry.literal", doc))).then((array) => array.join('')) }
@@ -16,7 +16,7 @@
     ${ Promise.all(this.events.map((doc) => include("./entry.literal", doc))).then((array) => array.join(''))  }
 </div>
 
-<div class="x1 4x @1-x4 @1-3x @3-x5 x-stretch y-start">
+<div class="x1 4x @1-x4 @1-3x @2-x5 x-stretch y-start">
     ${ this.parts = data.filter((doc) => doc.type === 'part'), '' }
     ${ this.parts.length ? '<h3>Parts</h3>' : '' }
     ${ Promise.all(this.parts.map((doc) => include("./entry.literal", doc))).then((array) => array.join(''))  }

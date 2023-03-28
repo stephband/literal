@@ -2,16 +2,16 @@
 ${ data
 .slice(0, 1)
 .map((doc) => `
-<header class="x1 4x @1-x2 x-stretch">
+<header class="x1 4x @2-x2 x-stretch">
     <h1 class="text-02 no-wrap" id="${ slugify(doc.name) }">&lt;${ doc.name }&gt;</h1>
 </header>
 
-<section class="x1 4x @1-x2 x-stretch y-start documentation-block block">
+<section class="x1 4x @2-x2 x-stretch y-start documentation-block block">
     ${ doc.body }
 </section>
 `) }
 
-<section class="x1 4x @1-x2 x-stretch y-start">
+<section class="x1 4x @2-x2 x-stretch y-start">
     ${ this.attributes = data.filter((doc) => doc.type === 'attribute'), '' }
     ${ this.attributes.length ? '<h2 class="text-03">Attributes</h2>' : '' }
     ${ Promise.all(this.attributes.map((doc) => include("./entry.literal", doc))).then((array) => array.join('')) }
