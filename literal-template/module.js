@@ -39,7 +39,7 @@ attribute that parses as a URL imports a JavaScript module or fetches JSON:
 </template>
 
 The template scope has Literal's template objects and functions. Use the
-`include()` function to include other templates as literals:
+`include()` function to include other templates as literal templates:
 
 ```html
 <template id="todo-li">
