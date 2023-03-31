@@ -29,7 +29,7 @@ The template's `data` object may be set with the `data` attribute. A `data`
 attribute that parses as a URL imports a JavaScript module or fetches JSON:
 
 ```html
-<template is="literal-template" data="/data/clock.js">
+<template is="literal-template" data="../data/clock.js">
     <pre>${ data.time.toFixed(0) + 's' }</pre>
 </template>
 ```
@@ -47,7 +47,7 @@ The template scope has Literal's template objects and functions. Use the
 </template>
 
 <h3>Todo list</h3>
-<template is="literal-template" data="../../data/todo.json">
+<template is="literal-template" data="../data/todo.json">
     <ul>${ data.tasks.map(include('#todo-li')) }</ul>
 </template>
 ```
