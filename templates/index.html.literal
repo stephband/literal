@@ -59,7 +59,7 @@
         ${ (await comments(
             '../../dom/modules/parse-length.js'
         ))
-        .filter((doc) => (doc.type === 'function' || doc.type === 'constructor'))
+        .filter((doc) => (doc.type === 'function' || doc.type === 'constructor') && (!doc.name === 'vmin' || doc.name === 'vmax'))
         .map((doc) => include('../documentation/templates/entry.literal', doc)) }
 
         <!--h3>Adding functions to the template scope</h3>
