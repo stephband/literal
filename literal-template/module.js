@@ -25,9 +25,8 @@ Where JS fails a `literal-template` is left inert and unrendered.
 </template>
 ```
 
-The template's `data` object may be set with the `data` attribute, which may
-contain JSON or a URL. A `data` attribute that parses as a URL imports a
-JavaScript module or fetches JSON:
+The template's `data` object may be set with the `data` attribute. A `data`
+attribute that parses as a URL imports a JavaScript module or fetches JSON:
 
 ```html
 <template is="literal-template" data="/data/clock.js">
@@ -35,38 +34,32 @@ JavaScript module or fetches JSON:
 </template>
 ```
 
-<div class="example">
-    <template is="literal-template" data="../data/clock.js">
-        <pre>${ data.time.toFixed(0) + 's' }</pre>
-    </template>
-</div>
+<template is="literal-template" data="../../data/clock.js">
+    <pre>${ data.time.toFixed(0) + 's' }</pre>
+</template>
 
-The template has access to Literal's template constants and functions. Use the
-`include()` function to include other templates:
+The template scope has Literal's template objects and functions. Use the
+`include()` function to include other templates as literals:
 
 ```html
-<!-- In the head -->
 <template id="todo-li">
     <li>${ data.text }</li>
 </template>
 
-<!-- In the body -->
 <h3>Todo list</h3>
-<template is="literal-template" data="../data/todo.json">
+<template is="literal-template" data="../../data/todo.json">
     <ul>${ data.tasks.map(include('todo-li')) }</ul>
 </template>
 ```
 
-<div class="example">
 <template id="todo-li">
     <li>${ data.text }</li>
 </template>
 
 <h3>Todo list</h3>
-<template is="literal-template" data="../data/todo.json">
-    <ul>${ data.tasks.map(include('#todo-li')) }</ul>
+<template is="literal-template" data="../../data/todo.json">
+    <ul>${ data.tasks.map(include('todo-li')) }</ul>
 </template>
-</div>
 **/
 
 
