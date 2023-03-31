@@ -8,16 +8,16 @@ nothing.
 Prints an object or objects to the DOM as a debug message.
 
 ```html
-<literal-template data="../../package.json">
+<template is="literal-template" data="../../package.json">
     ${ print(data) }
-</literal-template>
+</template>
 ```
 
 Renders as:
 
-<literal-template data="../../package.json">
+<template is="literal-template" data="../../package.json">
     ${ print(data) }
-</literal-template>
+</template>
 
 <!--
 Messages should be styled with the print stylesheet:

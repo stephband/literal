@@ -431,13 +431,13 @@ array values.</p>
     <p>Where <code>window.DEBUG</code> was falsy at the time Literal is imported, <code>print()</code> does
 nothing.</p>
 <p>Prints an object or objects to the DOM as a debug message.</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>literal-template</span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../../package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../../package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     ${ print(data) }
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>literal-template</span><span class="token punctuation">></span></span></code></pre>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
 <p>Renders as:</p>
-<literal-template data="../documentation/package.json">
+<template is="literal-template" data="../documentation/package.json">
     ${ print(data) }
-</literal-template>
+</template>
 
 <!--
 Messages should be styled with the print stylesheet:
