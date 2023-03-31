@@ -1,6 +1,6 @@
 
 /**
-print(context, data)
+print(data)
 
 Where `window.DEBUG` was falsy at the time Literal is imported, `print()` does
 nothing.
