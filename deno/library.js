@@ -6,6 +6,7 @@ const moduleAbs = path.dirname(path.fromFileUrl(import.meta.url));
 
 import base        from '../modules/library.js';
 
+import capture     from '../../fn/modules/capture.js';
 import { addDate } from '../../fn/modules/date.js';
 import { addTime } from '../../fn/modules/time.js';
 import exec        from '../../fn/modules/exec.js';
@@ -318,9 +319,10 @@ function render(strings) {
 /* Export library */
 
 const library = assign(base, {
-    add:      add,
-    comments: comments,
-    exec:     exec,
+    add,
+    capture,
+    comments,
+    exec,
     include:  include,
     imports:  imports,
     render:   render,

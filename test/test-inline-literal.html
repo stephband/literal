@@ -41,7 +41,7 @@
     });
     </script>
 
-    <template is="literal-insert" id="test-a" data="./data/todo.json">
+    <template is="literal-template" id="test-a" data="./data/todo.json">
         <!-- Test for unique host, element, shadow -->
         ${ expect(host.id) }
         ${ expect(element.id) }
@@ -57,7 +57,7 @@ data.title:   ${ expect(data.title),   data.title }
         </pre>
     </template>
 
-    <template is="literal-insert" id="test-b" data-string="hello" data-number="3" data-boolean="true" data-clock="./data/clock.js">
+    <template is="literal-template" id="test-b" data-string="hello" data-number="3" data-boolean="true" data-clock="./data/clock.js">
         <!-- Test for unique host, element, shadow -->
         ${ expect(host.id) }
         ${ expect(element.id) }
@@ -77,7 +77,7 @@ data.boolean: ${ expect(data.boolean), data.boolean }
     </template>
 
     <script type="module">
-    import './literal-insert/module.js';
+    import './literal-template/module.js';
     </script>
 
     <div id="end"></div>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Literal template "/Users/stephband/Sites/literal/literal-insert/index.html.literal" -->
+<!-- Literal template "/Users/stephband/Sites/literal/literal-template/index.html.literal" -->
 
 <html lang="en">
 <head>
@@ -52,15 +52,15 @@
     
 
 <header class="x1 4x @2-x2 x-stretch">
-    <h1 class="text-02 no-wrap" id="template-is-literal-insert">&lt;template is="literal-insert"&gt;</h1>
+    <h1 class="text-02 no-wrap" id="template-is-literal-template">&lt;template is="literal-template"&gt;</h1>
 </header>
 
 <section class="x1 4x @2-x2 x-stretch y-start documentation-block block">
-    <p>A <code>literal-insert</code> may be placed anywhere in your HTML, and is designed to make
+    <p>A <code>literal-template</code> may be placed anywhere in your HTML, and is designed to make
 it easy to mix dynamic content into static content in just those locations where
 needed.</p>
-<p>A <code>literal-insert</code> is replaced by its own rendered content.</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-insert<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<p>A <code>literal-template</code> is replaced by its own rendered content.</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-template<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>pre</span><span class="token punctuation">></span></span>${ 'hello' }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>pre</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
 <div class="example">
@@ -70,11 +70,11 @@ needed.</p>
 <p>The template’s <code>data</code> constant may be set by the <code>data</code> attribute, which may
 contain JSON or a URL. A <code>data</code> attribute that parses as a URL imports a
 JavaScript module or fetches JSON:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-insert<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/data/clock.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/data/clock.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>pre</span><span class="token punctuation">></span></span>${ data.time.toFixed(0) + 's' }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>pre</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
 <div class="example">
-    <template is="literal-insert" data="../documentation/data/clock.js">
+    <template is="literal-template" data="../documentation/data/clock.js">
         <pre>${ data.time.toFixed(0) + 's' }</pre>
     </template>
 </div>
@@ -88,7 +88,7 @@ JavaScript module or fetches JSON:</p>
 
 <span class="token comment">&lt;!-- In the body --></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h3</span><span class="token punctuation">></span></span>Todo list<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h3</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-insert<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../data/todo.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../data/todo.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span>${ data.tasks.map(include('todo-li')) }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
 <div class="example">
@@ -97,13 +97,13 @@ JavaScript module or fetches JSON:</p>
 </template>
 
 <h3>Todo list</h3>
-<template is="literal-insert" data="../documentation/data/todo.json">
+<template is="literal-template" data="../documentation/data/todo.json">
     <ul>${ data.tasks.map(include('#todo-li')) }</ul>
 </template>
 </div>
 
-<p>Where JS fails a <code>literal-insert</code> is left inert and unrendered.</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-insert<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../data/clock.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<p>Where JS fails a <code>literal-template</code> is left inert and unrendered.</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../data/clock.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>pre</span><span class="token punctuation">></span></span>${ invalid JavaScript }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>pre</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
 <h2 id="enhancing-content">Enhancing content</h2>
@@ -117,18 +117,18 @@ the <code>/favourites/</code> page represented by an icon:</p>
 </div>
 
 <p>We want to enhance that link with a badge that displays a count of our
-favourites, so we use an <code>literal-insert</code> to render a <code>&lt;span&gt;</code> containing the
+favourites, so we use an <code>literal-template</code> to render a <code>&lt;span&gt;</code> containing the
 count inside the link:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/favourites/<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>fav-icon<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     Favourites
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-insert<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../data/favourites.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../data/favourites.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
         <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>badge<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>${ data.count }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span></code></pre>
 <div class="example">
     <a href="/favourites/" class="fav-icon">
         Favourites
-        <template is="literal-insert" data="../documentation/data/favourites.js">
+        <template is="literal-template" data="../documentation/data/favourites.js">
             <span class="badge">${ data.count }</span>
         </template>
     </a>
@@ -137,14 +137,14 @@ count inside the link:</p>
 <p>This count comes from the module at <code>../data/favourites.js</code>. That module also
 has a <code>toggle()</code> method that we may use to add or remove ids from a list of
 favourites, enabling us to write a favourite button:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-insert<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../data/favourites.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../data/favourites.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
         ${ data.ids.includes('a') ? 'Remove from favourites' : 'Add to favourites' }
         ${ events('click', element).each((e) => data.toggle('a')) }
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
 <div class="example">
-    <template is="literal-insert" data="../documentation/data/favourites.js">
+    <template is="literal-template" data="../documentation/data/favourites.js">
         <button type="button" class="${ data.ids.includes('a') ? 'fav' : 'not-fav' }">
             ${ data.ids.includes('a') ? 'Remove from favourites' : 'Add to favourites' }
             ${ events('click', element).each((e) => data.toggle('a')) }
@@ -209,7 +209,7 @@ module for production.</p>
 
 
 
-    <a class="nav-button button block" href="../elements/literal-insert"><code>&lt;literal-insert&gt;</code></a>
+    <a class="nav-button button block" href="../elements/literal-template"><code>&lt;literal-template&gt;</code></a>
 
     
 
@@ -278,6 +278,8 @@ module for production.</p>
     <a class="nav-button button block" href="./#function-floor"><code>floor</code></a>
 
     <a class="nav-button button block" href="./#function-get"><code>get</code></a>
+
+    <a class="nav-button button block" href="./#function-id"><code>id</code></a>
 
     <a class="nav-button button block" href="./#function-id"><code>id</code></a>
 

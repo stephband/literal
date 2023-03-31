@@ -1,14 +1,14 @@
 /**
-<template is="literal-insert">
+<template is="literal-template">
 
-A `literal-insert` may be placed anywhere in your HTML, and is designed to make
+A `literal-template` may be placed anywhere in your HTML, and is designed to make
 it easy to mix dynamic content into static content in just those locations where
 needed.
 
-A `literal-insert` is replaced by its own rendered content.
+A `literal-template` is replaced by its own rendered content.
 
 ```html
-<template is="literal-insert">
+<template is="literal-template">
     <pre>${ 'hello' }</pre>
 </template>
 ```
@@ -22,13 +22,13 @@ contain JSON or a URL. A `data` attribute that parses as a URL imports a
 JavaScript module or fetches JSON:
 
 ```html
-<template is="literal-insert" data="/data/clock.js">
+<template is="literal-template" data="/data/clock.js">
     <pre>${ data.time.toFixed(0) + 's' }</pre>
 </template>
 ```
 
 <div class="example">
-    <template is="literal-insert" data="../data/clock.js">
+    <template is="literal-template" data="../data/clock.js">
         <pre>${ data.time.toFixed(0) + 's' }</pre>
     </template>
 </div>
@@ -44,7 +44,7 @@ The template has access to Literal's template constants and functions. Use the
 
 <!-- In the body -->
 <h3>Todo list</h3>
-<template is="literal-insert" data="../data/todo.json">
+<template is="literal-template" data="../data/todo.json">
     <ul>${ data.tasks.map(include('todo-li')) }</ul>
 </template>
 ```
@@ -55,15 +55,15 @@ The template has access to Literal's template constants and functions. Use the
 </template>
 
 <h3>Todo list</h3>
-<template is="literal-insert" data="../data/todo.json">
+<template is="literal-template" data="../data/todo.json">
     <ul>${ data.tasks.map(include('#todo-li')) }</ul>
 </template>
 </div>
 
-Where JS fails a `literal-insert` is left inert and unrendered.
+Where JS fails a `literal-template` is left inert and unrendered.
 
 ```html
-<template is="literal-insert" data="../data/clock.js">
+<template is="literal-template" data="../data/clock.js">
     <pre>${ invalid JavaScript }</pre>
 </template>
 ```
@@ -84,13 +84,13 @@ the `/favourites/` page represented by an icon:
 </div>
 
 We want to enhance that link with a badge that displays a count of our
-favourites, so we use an `literal-insert` to render a `<span>` containing the
+favourites, so we use an `literal-template` to render a `<span>` containing the
 count inside the link:
 
 ```html
 <a href="/favourites/" class="fav-icon">
     Favourites
-    <template is="literal-insert" data="../data/favourites.js">
+    <template is="literal-template" data="../data/favourites.js">
         <span class="badge">${ data.count }</span>
     </template>
 </a>
@@ -99,7 +99,7 @@ count inside the link:
 <div class="example">
     <a href="/favourites/" class="fav-icon">
         Favourites
-        <template is="literal-insert" data="../data/favourites.js">
+        <template is="literal-template" data="../data/favourites.js">
             <span class="badge">${ data.count }</span>
         </template>
     </a>
@@ -110,7 +110,7 @@ has a `toggle()` method that we may use to add or remove ids from a list of
 favourites, enabling us to write a favourite button:
 
 ```html
-<template is="literal-insert" data="../data/favourites.js">
+<template is="literal-template" data="../data/favourites.js">
     <button type="button">
         ${ data.ids.includes('a') ? 'Remove from favourites' : 'Add to favourites' }
         ${ events('click', element).each((e) => data.toggle('a')) }
@@ -119,7 +119,7 @@ favourites, enabling us to write a favourite button:
 ```
 
 <div class="example">
-    <template is="literal-insert" data="../data/favourites.js">
+    <template is="literal-template" data="../data/favourites.js">
         <button type="button" class="${ data.ids.includes('a') ? 'fav' : 'not-fav' }">
             ${ data.ids.includes('a') ? 'Remove from favourites' : 'Add to favourites' }
             ${ events('click', element).each((e) => data.toggle('a')) }
@@ -221,7 +221,7 @@ const onerror = window.DEBUG ?
     noop ;
 
 // tag, template, lifecycle, properties, log
-export default element('<template is="literal-insert">', {
+export default element('<template is="literal-template">', {
     construct: function() {
         const internals = Internals(this);
 

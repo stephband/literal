@@ -17,6 +17,8 @@
             '../modules/library.js'
         ))[0]) }
 
+        <h3>Objects</h3>
+
         ${ (await comments(
             '../modules/renderer.js',
             '../modules/define-element.js',
@@ -26,7 +28,7 @@
         //.sort(by(get('name')))
         .map((doc) => include('../documentation/templates/entry.literal', doc)) }
 
-        <hr/>
+        <h3>Functions</h3>
 
         ${ (await comments(
             '../../fn/modules/by.js',
@@ -39,6 +41,7 @@
             '../../fn/modules/nothing.js',
             '../../fn/modules/overload.js',
             '../../fn/modules/slugify.js',
+            '../../fn/modules/stream.js',
             '../../fn/modules/sum.js',
             //'../fn/observer/observe.js',
             '../../dom/modules/delegate.js',
@@ -50,7 +53,7 @@
             '../modules/library/print.js'
         ))
         .filter((doc) => (doc.type === 'function' || doc.type === 'constructor'))
-        .sort(by(get('name')))
+        .sort(by((entry) => entry.name.toLowerCase()))
         .map((doc) => include('../documentation/templates/entry.literal', doc)) }
 
         ${ (await comments(
@@ -78,5 +81,6 @@
 
     <script type="module">
         import '../literal-include/module.js';
+        import '../literal-template/module.js';
     </script>
 </body>

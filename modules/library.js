@@ -43,6 +43,7 @@ import overload        from '../../fn/modules/overload.js';
 import { Observer, notify }    from '../../fn/observer/observer.js';
 import observe         from '../../fn/observer/observe.js';
 import Stream          from '../../fn/modules/stream.js';
+import ClockStream     from '../../fn/modules/stream/clock-stream.js';
 
 import paramify        from './library/paramify.js';
 
@@ -75,7 +76,6 @@ const library = {
     floor: Math.floor,
 
     /** get(path, object)
-
     Gets the value of `path` in `object`, where `path` is a string in JS
     dot-notation. Where a path does not lead to a value, returns `undefined`:
 
@@ -91,6 +91,12 @@ const library = {
     **/
 
     get,
+
+    /**
+    id(value)
+    Returns `value`.
+    **/
+
     id,
 
     /**
@@ -103,15 +109,23 @@ const library = {
     ${ clock(1).map(floor) }
     ```
 
+    <template is="literal-template">
+        <p>${ clock(1).map(floor) }</p>
+    </template>
+
     If `duration` is `"frame"`, returns a stream of DOM timestamps of animation
     frames.
 
     ```js
     ${ clock('frame').map((time) => time.toFixed(2)) }
     ```
+
+    <template is="literal-template">
+        <p>${ clock('frame').map((time) => time.toFixed(2)) }</p>
+    </template>
     **/
 
-    clock: Stream.clock,
+    clock: (duration) => new ClockStream(duration),
 
     /** keys(object)
     Alias of `Object.keys()`.
@@ -137,7 +151,8 @@ const library = {
 
     observe,
 
-    /* Data(object)
+    /*
+    Data(object)
     Returns the observer data proxy of `object`. Use this proxy to set
     properties in a way that will be observed by `observe(path, object)`.
     */
@@ -154,11 +169,6 @@ const library = {
 
     paramify,
     slugify,
-
-    /* Stream(fn)
-    Returns a stream of values.
-    */
-
     Stream,
     sum,
 

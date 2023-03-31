@@ -148,9 +148,9 @@ const parseDotted = capture(/^(\w[\w\d]*)(?:(\(\s*)|(\s*=\s*)|(\s*\n\s*)|(\s*))/
     }
 });
 
-//                             1                2          3    4                 5
-//                             attribute =      N          n    ame function      Title
-const parseName = capture(/^(?:([\w-:]+)\s*=\s*|(?:([A-Z])|(\w))([\w\d]*)\s*\(\s*|([A-Z](?:[^\n]|,\s*)*))\s*/, {
+//                             1                   2       3    4                               5
+//                             attribute =     |   N       n    ame     .method                 (   |Title
+const parseName = capture(/^(?:([\w-:]+)\s*=\s*|(?:([A-Z])|(\w))([\w\d]*(?:\.[\w\d]+)*)\s*\(\s*|([A-Z](?:[^\n]|,\s*)*))\s*/, {
     // name="value" name='value' name=value
     1: (data, captures) => {
         if (captures[1] === 'slot') {
