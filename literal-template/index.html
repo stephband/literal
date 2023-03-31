@@ -40,12 +40,6 @@
 <!--link rel="stylesheet" href="https://stephen.band/literal/documentation/build/module.css"-->
 <link rel="preload" as="style" href="https://stephen.band/literal/documentation/build/details-toggle/shadow.css">
 
-
-    <script title="debug">
-        window.DEBUG = true;
-    </script>
-
-    <link rel="stylesheet" href="../documentation.css" />
 </head>
 
 <body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
@@ -104,67 +98,8 @@ JavaScript module or fetches JSON:</p>
 
 <p>Where JS fails a <code>literal-template</code> is left inert and unrendered.</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../data/clock.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>pre</span><span class="token punctuation">></span></span>${ invalid JavaScript }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>pre</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>pre</span><span class="token punctuation">></span></span>${ throws an error }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>pre</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
-<h2 id="enhancing-content">Enhancing content</h2>
-<p>Let’s consider a classic  ‘favourites’ button. The static version is a link to
-the <code>/favourites/</code> page represented by an icon:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/favourites/<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>fav-icon<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>Favourites<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span></code></pre>
-<div class="example">
-    <a href="/favourites/" class="fav-icon">
-        Favourites
-    </a>
-</div>
-
-<p>We want to enhance that link with a badge that displays a count of our
-favourites, so we use an <code>literal-template</code> to render a <code>&lt;span&gt;</code> containing the
-count inside the link:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/favourites/<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>fav-icon<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    Favourites
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../data/favourites.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>badge<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>${ data.count }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span></code></pre>
-<div class="example">
-    <a href="/favourites/" class="fav-icon">
-        Favourites
-        <template is="literal-template" data="../documentation/data/favourites.js">
-            <span class="badge">${ data.count }</span>
-        </template>
-    </a>
-</div>
-
-<p>This count comes from the module at <code>../data/favourites.js</code>. That module also
-has a <code>toggle()</code> method that we may use to add or remove ids from a list of
-favourites, enabling us to write a favourite button:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../data/favourites.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>button<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-        ${ data.ids.includes('a') ? 'Remove from favourites' : 'Add to favourites' }
-        ${ events('click', element).each((e) => data.toggle('a')) }
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
-<div class="example">
-    <template is="literal-template" data="../documentation/data/favourites.js">
-        <button type="button" class="${ data.ids.includes('a') ? 'fav' : 'not-fav' }">
-            ${ data.ids.includes('a') ? 'Remove from favourites' : 'Add to favourites' }
-            ${ events('click', element).each((e) => data.toggle('a')) }
-        </button>
-    </template>
-</div>
-
-<p>Note how the badge in the favourites link is updated when this is clicked.</p>
-<h2 id="importing-production-modules">Importing production modules</h2>
-<p>URLs to modules may be rewritten, which is useful if you are bundling modules
-for production. Rather than having to rewrite the HTML with new data URLs,
-Literal provides an <code>urls</code> map:</p>
-<pre><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> urls <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../documentation/module.js'</span><span class="token punctuation">;</span>
-
-<span class="token function">assign</span><span class="token punctuation">(</span>urls<span class="token punctuation">,</span> <span class="token punctuation">{</span>
-    <span class="token comment">// Map the default export of favourites.js to the export</span>
-    <span class="token comment">// named 'favourites' of bundle.js...</span>
-    <span class="token string">'../documentation/data/favourites.js'</span><span class="token operator">:</span> <span class="token string">'../documentation/build/bundle.js#favourites'</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-</code></pre>
 
 </section>
 
@@ -281,8 +216,6 @@ module for production.</p>
 
     <a class="nav-button button block" href="./#function-id"><code>id</code></a>
 
-    <a class="nav-button button block" href="./#function-id"><code>id</code></a>
-
     <a class="nav-button button block" href="./#function-include"><code>include</code></a>
 
     <a class="nav-button button block" href="./#function-keys"><code>keys</code></a>
@@ -292,8 +225,6 @@ module for production.</p>
     <a class="nav-button button block" href="./#function-matches"><code>matches</code></a>
 
     <a class="nav-button button block" href="./#function-noop"><code>noop</code></a>
-
-    <a class="nav-button button block" href="./#function-observe"><code>observe</code></a>
 
     <a class="nav-button button block" href="./#function-overload"><code>overload</code></a>
 

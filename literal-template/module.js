@@ -64,88 +64,9 @@ Where JS fails a `literal-template` is left inert and unrendered.
 
 ```html
 <template is="literal-template" data="../data/clock.js">
-    <pre>${ invalid JavaScript }</pre>
+    <pre>${ throws an error }</pre>
 </template>
 ```
-
-## Enhancing content
-
-Let's consider a classic  'favourites' button. The static version is a link to
-the `/favourites/` page represented by an icon:
-
-```html
-<a href="/favourites/" class="fav-icon">Favourites</a>
-```
-
-<div class="example">
-    <a href="/favourites/" class="fav-icon">
-        Favourites
-    </a>
-</div>
-
-We want to enhance that link with a badge that displays a count of our
-favourites, so we use an `literal-template` to render a `<span>` containing the
-count inside the link:
-
-```html
-<a href="/favourites/" class="fav-icon">
-    Favourites
-    <template is="literal-template" data="../data/favourites.js">
-        <span class="badge">${ data.count }</span>
-    </template>
-</a>
-```
-
-<div class="example">
-    <a href="/favourites/" class="fav-icon">
-        Favourites
-        <template is="literal-template" data="../data/favourites.js">
-            <span class="badge">${ data.count }</span>
-        </template>
-    </a>
-</div>
-
-This count comes from the module at `../data/favourites.js`. That module also
-has a `toggle()` method that we may use to add or remove ids from a list of
-favourites, enabling us to write a favourite button:
-
-```html
-<template is="literal-template" data="../data/favourites.js">
-    <button type="button">
-        ${ data.ids.includes('a') ? 'Remove from favourites' : 'Add to favourites' }
-        ${ events('click', element).each((e) => data.toggle('a')) }
-    </button>
-</template>
-```
-
-<div class="example">
-    <template is="literal-template" data="../data/favourites.js">
-        <button type="button" class="${ data.ids.includes('a') ? 'fav' : 'not-fav' }">
-            ${ data.ids.includes('a') ? 'Remove from favourites' : 'Add to favourites' }
-            ${ events('click', element).each((e) => data.toggle('a')) }
-        </button>
-    </template>
-</div>
-
-Note how the badge in the favourites link is updated when this is clicked.
-
-## Importing production modules
-
-URLs to modules may be rewritten, which is useful if you are bundling modules
-for production. Rather than having to rewrite the HTML with new data URLs,
-Literal provides an `urls` map:
-
-```js
-import { urls } from '../module.js';
-
-assign(urls, {
-    // Map the default export of favourites.js to the export
-    // named 'favourites' of bundle.js...
-    '../data/favourites.js': '../build/bundle.js#favourites'
-});
-
-```
-
 **/
 
 

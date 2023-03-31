@@ -91,12 +91,6 @@ const library = {
     **/
 
     get,
-
-    /**
-    id(value)
-    Returns `value`.
-    **/
-
     id,
 
     /**
@@ -142,12 +136,12 @@ const library = {
     */
     //notify,
 
-    /**
+    /*
     observe(name, object)
 
     Returns a stream of values of `object[name]` whenever property `name` is
     mutated.
-    **/
+    */
 
     observe,
 
@@ -163,9 +157,8 @@ const library = {
     /** round(n, value)
     Round `value` to the nearest multiple of `n`.
     **/
-    round: function(n, value) {
-        return Math.round(value / n) * n;
-    },
+
+    round: (n, value) => Math.round(value / n) * n,
 
     paramify,
     slugify,
