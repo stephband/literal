@@ -13,11 +13,19 @@ A `literal-template` is replaced by its own rendered content.
 </template>
 ```
 
-<div class="example">
-    <pre>hello</pre>
-</div>
+<template is="literal-template">
+    <pre>${ 'hello' }</pre>
+</template>
 
-The template's `data` constant may be set by the `data` attribute, which may
+Where JS fails a `literal-template` is left inert and unrendered.
+
+```html
+<template is="literal-template">
+    <pre>${ throws an error }</pre>
+</template>
+```
+
+The template's `data` object may be set with the `data` attribute, which may
 contain JSON or a URL. A `data` attribute that parses as a URL imports a
 JavaScript module or fetches JSON:
 
@@ -59,14 +67,6 @@ The template has access to Literal's template constants and functions. Use the
     <ul>${ data.tasks.map(include('#todo-li')) }</ul>
 </template>
 </div>
-
-Where JS fails a `literal-template` is left inert and unrendered.
-
-```html
-<template is="literal-template" data="../data/clock.js">
-    <pre>${ throws an error }</pre>
-</template>
-```
 **/
 
 
