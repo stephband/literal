@@ -4,7 +4,7 @@ details-toggle {
     transition: margin-top 0.3s linear;
 }
 
-h3 + details-toggle, .text-03 + details-toggle { margin-top: 0.116666667em; }
+h3 + details-toggle, .text-03 + details-toggle { margin-top: 0.666666667em; }
 p + details-toggle { margin-top: 1.4em; }
 hr + details-toggle { margin-top: 1.4em; }
 details-toggle + hr { margin-top: 1.4em; }
