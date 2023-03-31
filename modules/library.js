@@ -2,13 +2,16 @@
 /** Template scope
 
 Literal templates are rendered in a scope that provides some useful objects and
-functions in addition to JavaScript's standard library.
+functions.
 
-The `data` object contains data passed into the template. This object is special
-as the DOM is re-rendered in response to mutations.
+The `data` object is the data passed into the template to be rendered.
+
+```js
+${ data.name }
+```
 
 Expressions that return promises or streams also cause the DOM to be updated
-when new values are received. The `events()` function, for example, returns a
+when values are resolved. The `events()` function, for example, returns a
 mappable stream of events:
 
 ```js

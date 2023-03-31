@@ -54,11 +54,11 @@
 
 <h2 class="text-02" id="template-scope">Template scope</h2>
 <p>Literal templates are rendered in a scope that provides some useful objects and
-functions in addition to JavaScript’s standard library.</p>
-<p>The <code>data</code> object contains data passed into the template. This object is special
-as the DOM is re-rendered in response to mutations.</p>
+functions.</p>
+<p>The <code>data</code> object is the data passed into the template to be rendered.</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> data<span class="token punctuation">.</span>name <span class="token punctuation">}</span></code></pre>
 <p>Expressions that return promises or streams also cause the DOM to be updated
-when new values are received. The <code>events()</code> function, for example, returns a
+when values are resolved. The <code>events()</code> function, for example, returns a
 mappable stream of events:</p>
 <pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token string">'hashchange'</span><span class="token punctuation">,</span> window<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> location<span class="token punctuation">.</span>hash<span class="token punctuation">)</span> <span class="token punctuation">}</span></code></pre>
 <p>Templates can be composed with <code>include()</code> function:</p>
