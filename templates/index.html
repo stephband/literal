@@ -626,6 +626,71 @@ optionally <code>detail</code>, which must be an object, and <code>bubbles</code
 
         
 
+<details-toggle class="function-details-toggle" id="function-px">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">px(<span class="param">value</span>)</code>
+    </h4>
+
+    <p>Takes a number in pixels or a string of the form <code>&#39;10px&#39;</code>, <code>&#39;10em&#39;</code>, <code>&#39;10rem&#39;</code>,
+<code>&#39;100vw&#39;</code>, <code>&#39;100vh&#39;</code>, <code>&#39;100vmin&#39;</code> or <code>&#39;100vmax&#39;</code>, and returns a numeric value
+in pixels.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-em">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">em(<span class="param">value</span>)</code>
+    </h4>
+
+    <p>Takes numeric value in px, or CSS length of the form <code>&#39;10px&#39;</code>, and returns
+a numeric value in <code>em</code>, eg. <code>0.625</code>. Depends on the user defined browser
+<code>font-size</code>.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-rem">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">rem(<span class="param">value</span>)</code>
+    </h4>
+
+    <p>Takes numeric value in px, or CSS length of the form <code>&#39;10px&#39;</code>, and returns
+a numeric value in <code>rem</code>, eg. <code>0.625</code>. Depends on the <code>font-size</code> of the
+documentElement.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-vw">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">vw(<span class="param">value</span>)</code>
+    </h4>
+
+    <p>Takes number in pixels or CSS length of the form <code>&#39;10em&#39;</code> and returns a
+numeric value in <code>vw</code>, eg. <code>120</code>. Depends on the width of the viewport at
+render time.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-vh">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">vh(<span class="param">value</span>)</code>
+    </h4>
+
+    <p>Takes number in pixels or CSS length of the form <code>&#39;10em&#39;</code> and returns a
+numeric value in <code>vh</code>, eg. <code>120</code>. Depends on the height of the viewport at
+render time.</p>
+
+</details-toggle>
+
+
+
         <!--h3>Adding functions to the template scope</h3>
 
         <p>The scope is extensible. You may assign your own objects and functions.
