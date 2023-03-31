@@ -46,8 +46,8 @@ The template scope has Literal's template objects and functions. Use the
     <li>${ data.text }</li>
 </template>
 
-<h3>Todo list</h3>
 <template is="literal-template" data="../data/todo.json">
+    <h3>Todo list</h3>
     <ul>${ data.tasks.map(include('#todo-li')) }</ul>
 </template>
 ```
@@ -56,8 +56,8 @@ The template scope has Literal's template objects and functions. Use the
     <li>${ data.text }</li>
 </template>
 
-<h3>Todo list</h3>
 <template is="literal-template" data="../../data/todo.json">
+    <h3>Todo list</h3>
     <ul>${ data.tasks.map(include('#todo-li')) }</ul>
 </template>
 **/
