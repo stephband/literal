@@ -16,7 +16,9 @@
         ${ include('../documentation/templates/entry.literal', (await comments(
             '../modules/library.js'
         ))[0]) }
+    </section>
 
+    <div class="x1 4x @1-x4 @1-3x @1-y3 @2-x5 x-stretch y-start">
         <h3>Objects</h3>
 
         ${ (await comments(
@@ -27,7 +29,9 @@
         .filter((doc) => (doc.type === 'selector'))
         //.sort(by(get('name')))
         .map((doc) => include('../documentation/templates/entry.literal', doc)) }
+    </div>
 
+    <div class="x1 4x @1-3x @1-y3 @2-x2 x-stretch y-start">
         <h3>Functions</h3>
 
         ${ (await comments(
@@ -66,7 +70,7 @@
 
         <p>The scope is extensible. You may assign your own objects and functions.
         This must be done before templates are compiled and cached.</p-->
-    </section>
+    </div>
 
     <section class="x1 4x @2-x2 x-stretch" id="template-expressions">
         ${ (await comments(
