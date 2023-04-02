@@ -13,14 +13,3 @@ body.grid {
 body > hr {
     margin-top: var(--y-gap);
 }
-
-body > .nav-block {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    grid-column: auto;
-    grid-row: auto;
-    transform: translate3d(0, -100%, 0);
-}

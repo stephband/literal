@@ -14,15 +14,15 @@ const keys   = Object.keys;
 const values = Object.values;
 
 /**
-this
-The current renderer. Normally this should not be touched, but it can be useful
-for debugging, or for storing values between one render and the next.
-**/
-
-/**
 data
 The main object passed into the template carrying data. This object is special.
 When it mutates, the DOM re-renders.
+**/
+
+/**
+this
+The current renderer. Normally this should not be touched, and is provided for
+debugging.
 **/
 
 // Observers

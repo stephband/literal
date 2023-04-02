@@ -29,8 +29,7 @@
     window.detailsToggleStylesheet = 'https://stephen.band/literal/documentation/build/details-toggle/shadow.css';
 </script>
 
-<link rel="stylesheet" href="../documentation/module.css">
-<!--link rel="stylesheet" href="https://stephen.band/literal/documentation/build/module.css"-->
+<link rel="stylesheet" href="https://stephen.band/literal/documentation/build/module.css">
 <link rel="preload" as="style" href="https://stephen.band/literal/documentation/build/details-toggle/shadow.css">
 
 </head>
@@ -52,7 +51,8 @@ is required, declares the tag name of the new custom element, and the content of
 the template defines the shadow DOM:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>element-template<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>dom-clock<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>time</span><span class="token punctuation">></span></span>${ clock(1).map(floor) } seconds<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>time</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
+</code></pre>
 <template is="element-template" tag="dom-clock" attributes="interval:number">
     <time>${ clock(data.interval).map(floor) } seconds</time>
 </template>
@@ -60,16 +60,19 @@ the template defines the shadow DOM:</p>
 <p>Here the expression <code>${ clock(1) }</code> is a stream of times that emits a new time
 every <code>1</code> second (template scope contains a <a href="../documentation/templates/templates#library">small library of functions</a>
 that help do this sort of thing). The declared element may now be written:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Current time: <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dom-clock</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dom-clock</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span></code></pre>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Current time: <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dom-clock</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dom-clock</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+</code></pre>
 <p>Current time: <dom-clock interval="1"></dom-clock></p>
 <p>Now for the sake of argument, let’s say we want to give <code>&lt;dom-clock&gt;</code> an
 <code>interval</code> attribute, and make it available as a number inside the template
 scope:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>element-template<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>dom-clock<span class="token punctuation">"</span></span> <span class="token attr-name">attributes</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>interval:number<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>time</span><span class="token punctuation">></span></span>${ clock(data.interval).map(floor) } seconds<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>time</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
+</code></pre>
 <p>That may now be authored:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Current time: <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dom-clock</span> <span class="token attr-name">interval</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>3<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dom-clock</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span></code></pre>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Current time: <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dom-clock</span> <span class="token attr-name">interval</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>3<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dom-clock</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+</code></pre>
 <p>Current time: <dom-clock interval="3"></dom-clock></p>
 
 <p>The new custom element may be made to load stylesheets before it is upgraded,
@@ -91,7 +94,8 @@ the <code>src</code> attribute.</p>
     </h4>
 
     <p>Defines the tag name of a new custom element.</p>
-<pre><code class="language-html">tag=&quot;my-player&quot;</code></pre>
+<pre><code class="language-html">tag=&quot;my-player&quot;
+</code></pre>
 <p>Being a custom element definition, clearly the name must conform to the
 rules for custom element names (ie. must contain a dash).</p>
 
@@ -105,11 +109,13 @@ rules for custom element names (ie. must contain a dash).</p>
     </h4>
 
     <p>Defines attributes of the new custom element as a list of names:</p>
-<pre><code class="language-html">attributes=&quot;previous next&quot;</code></pre>
+<pre><code class="language-html">attributes=&quot;previous next&quot;
+</code></pre>
 <p>Attributes may be given a type. A typed attribute defines both an attribute
 and a property of the new custom element. The type defines the behaviour of
 the attribute and type of value of the property:</p>
-<pre><code class="language-html">attributes=&quot;loop:boolean controls:tokens&quot;</code></pre>
+<pre><code class="language-html">attributes=&quot;loop:boolean controls:tokens&quot;
+</code></pre>
 <p>Possible types are:</p>
 <ul>
 <li><code>boolean</code> – a boolean attribute, boolean property</li>
@@ -123,7 +129,8 @@ the attribute and type of value of the property:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>element-template<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>my-carousel<span class="token punctuation">"</span></span> <span class="token attr-name">attributes</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>loop:boolean controls:tokens<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Looping is ${ data.loop ? 'on' : 'off' }.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Play button is ${ data.controls.includes('play') ? 'shown' : 'hidden' }.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span></code></pre>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
+</code></pre>
 
 </details-toggle>
 
@@ -136,7 +143,8 @@ the attribute and type of value of the property:</p>
 
     <p>Imports a JS module. The module’s <code>default</code> export is the element’s
 lifecycle, and its named exports are added to the template scope.</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>element-template<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>...<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./path/to/module.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span></code></pre>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>element-template<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>...<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./path/to/module.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+</code></pre>
 <p>And in <code>module.js</code>:</p>
 <pre><code class="language-js"><span class="token comment">// Export lifecycle</span>
 <span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
@@ -145,7 +153,8 @@ lifecycle, and its named exports are added to the template scope.</p>
 <span class="token punctuation">}</span>
 
 <span class="token comment">// Export scope variables</span>
-<span class="token keyword">export</span> <span class="token keyword">const</span> text <span class="token operator">=</span> <span class="token string">'I say what'</span><span class="token punctuation">;</span></code></pre>
+<span class="token keyword">export</span> <span class="token keyword">const</span> text <span class="token operator">=</span> <span class="token string">'I say what'</span><span class="token punctuation">;</span>
+</code></pre>
 
 </details-toggle>
 
@@ -158,7 +167,8 @@ lifecycle, and its named exports are added to the template scope.</p>
 
     <p>A list of stylesheets urls. They are loaded before the element is defined,
 preventing a flash of unstyled content.</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>element-template<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>...<span class="token punctuation">"</span></span> <span class="token attr-name">stylesheets</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./path/to/style1.css ./path/to/style2.css<span class="token punctuation">"</span></span><span class="token punctuation">></span></span></code></pre>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>element-template<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>...<span class="token punctuation">"</span></span> <span class="token attr-name">stylesheets</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./path/to/style1.css ./path/to/style2.css<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+</code></pre>
 
 </details-toggle>
 
@@ -175,137 +185,181 @@ preventing a flash of unstyled content.</p>
         </ul>
     </div>
 
-    <nav class="nav-block block">
-    <a class="nav-button button block" href=".."><code>Literal</code></a>
-
-    <h4>Elements</h4>
-    <a class="nav-button button block" href="../elements/element-template"><code>&lt;element-template&gt;</code></a>
-
     
-
-
-
-    <a class="nav-button button block" href="../elements/literal-template"><code>&lt;literal-template&gt;</code></a>
-
-    
-
-    <a class="nav-button button block" href="..#attribute-data"><code>data</code></a>
-
-    <a class="nav-button button block" href="..#attribute-loading"><code>loading</code></a>
-
-
-
-    <a class="nav-button button block" href="../elements/literal-include"><code>&lt;literal-include&gt;</code></a>
-
-    
-
-    <a class="nav-button button block" href="..#attribute-data"><code>data</code></a>
-
-    <a class="nav-button button block" href="..#attribute-loading"><code>loading</code></a>
-
-    <a class="nav-button button block" href="..#attribute-src"><code>src</code></a>
-
-
-
-    <h4>Templates</h4>
-    <a class="nav-button button block" href="../documentation/templates">Evaluation table</a>
-
-    <h4>Template scope</h4>
-    
-
-    <a class="nav-button button block" href="./#selector-this"><code> this</code></a>
-
-    <a class="nav-button button block" href="./#selector-data"><code> data</code></a>
-
-    <a class="nav-button button block" href="./#selector-body"><code> body</code></a>
-
-    <a class="nav-button button block" href="./#selector-element"><code> element</code></a>
-
-    <a class="nav-button button block" href="./#selector-host"><code> host</code></a>
-
-    <a class="nav-button button block" href="./#selector-shadow"><code> shadow</code></a>
-
-    <a class="nav-button button block" href="./#selector-nothing"><code> nothing</code></a>
-
-
-
-    
-
-    <a class="nav-button button block" href="./#function-assign"><code>assign</code></a>
-
-    <a class="nav-button button block" href="./#function-by"><code>by</code></a>
-
-    <a class="nav-button button block" href="./#function-ceil"><code>ceil</code></a>
-
-    <a class="nav-button button block" href="./#function-clamp"><code>clamp</code></a>
-
-    <a class="nav-button button block" href="./#function-clock"><code>clock</code></a>
-
-    <a class="nav-button button block" href="./#function-delegate"><code>delegate</code></a>
-
-    <a class="nav-button button block" href="./#function-entries"><code>entries</code></a>
-
-    <a class="nav-button button block" href="./#function-equals"><code>equals</code></a>
-
-    <a class="nav-button button block" href="./#function-events"><code>events</code></a>
-
-    <a class="nav-button button block" href="./#function-events"><code>events</code></a>
-
-    <a class="nav-button button block" href="./#function-floor"><code>floor</code></a>
-
-    <a class="nav-button button block" href="./#function-get"><code>get</code></a>
-
-    <a class="nav-button button block" href="./#function-id"><code>id</code></a>
-
-    <a class="nav-button button block" href="./#function-include"><code>include</code></a>
-
-    <a class="nav-button button block" href="./#function-keys"><code>keys</code></a>
-
-    <a class="nav-button button block" href="./#function-last"><code>last</code></a>
-
-    <a class="nav-button button block" href="./#function-matches"><code>matches</code></a>
-
-    <a class="nav-button button block" href="./#function-noop"><code>noop</code></a>
-
-    <a class="nav-button button block" href="./#function-overload"><code>overload</code></a>
-
-    <a class="nav-button button block" href="./#function-paramify"><code>paramify</code></a>
-
-    <a class="nav-button button block" href="./#function-print"><code>print</code></a>
-
-    <a class="nav-button button block" href="./#function-request"><code>request</code></a>
-
-    <a class="nav-button button block" href="./#function-round"><code>round</code></a>
-
-    <a class="nav-button button block" href="./#function-slugify"><code>slugify</code></a>
-
-    <a class="nav-button button block" href="./#function-sum"><code>sum</code></a>
-
-    <a class="nav-button button block" href="./#function-translate"><code>translate</code></a>
-
-    <a class="nav-button button block" href="./#function-trigger"><code>trigger</code></a>
-
-    <a class="nav-button button block" href="./#function-values"><code>values</code></a>
-
-
-
-    
-
-    <a class="nav-button button block" href="./#function-px"><code>px</code></a>
-
-    <a class="nav-button button block" href="./#function-em"><code>em</code></a>
-
-    <a class="nav-button button block" href="./#function-rem"><code>rem</code></a>
-
-    <a class="nav-button button block" href="./#function-vw"><code>vw</code></a>
-
-    <a class="nav-button button block" href="./#function-vh"><code>vh</code></a>
-
-    <a class="nav-button button block" href="./#function-vmin"><code>vmin</code></a>
-
-    <a class="nav-button button block" href="./#function-vmax"><code>vmax</code></a>
-
-
+<nav>
+    <details-toggle class="nav-details-toggle">
+        <button slot="summary" class="nav-thumb thumb">
+            <span class="open-hidden">Show</span><span class="closed-hidden">Hide</span> navigation
+            <svg viewbox="0 0 18 18">
+                <line class="stroke" x1="4.5" x2="13.5" y1="6"  y2="6"  />
+                <line class="stroke" x1="4.5" x2="13.5" y1="9"  y2="9"  />
+                <line class="stroke" x1="4.5" x2="13.5" y1="12" y2="12" />
+            <svg>
+        </button>
+        <a class=" nav-button button block" href="/literal/">
+    Literal
+    <template is="literal-template">
+        ${ Stream
+            .merge(events('dom-navigate', window), {})
+            .map((e) => (
+                window.location.pathname === element.pathname
+                && window.location.hash === element.hash
+            ))
+            .reduce((previous, t) => {
+                console.log(t);
+                if (t === previous) {
+                    return t;
+                }
+                else if (t) {
+                    element.classList.add('located');
+                }
+                else {
+                    element.classList.remove('located');
+                }
+
+                return t;
+           }, false), ''
+       }
+    </template>
+</a>
+<a class="l1-nav-button nav-button button block" href="/literal/literal-template/">
+    <code>literal-template</code>
+    <template is="literal-template">
+        ${ Stream
+            .merge(events('dom-navigate', window), {})
+            .map((e) => (
+                window.location.pathname === element.pathname
+                && window.location.hash === element.hash
+            ))
+            .reduce((previous, t) => {
+                console.log(t);
+                if (t === previous) {
+                    return t;
+                }
+                else if (t) {
+                    element.classList.add('located');
+                }
+                else {
+                    element.classList.remove('located');
+                }
+
+                return t;
+           }, false), ''
+       }
+    </template>
+</a>
+
+<a class="l1-nav-button nav-button button block" href="/literal/element-template/">
+    <code>element-template</code>
+    <template is="literal-template">
+        ${ Stream
+            .merge(events('dom-navigate', window), {})
+            .map((e) => (
+                window.location.pathname === element.pathname
+                && window.location.hash === element.hash
+            ))
+            .reduce((previous, t) => {
+                console.log(t);
+                if (t === previous) {
+                    return t;
+                }
+                else if (t) {
+                    element.classList.add('located');
+                }
+                else {
+                    element.classList.remove('located');
+                }
+
+                return t;
+           }, false), ''
+       }
+    </template>
+</a>
+
+<a class="l1-nav-button nav-button button block" href="/literal/templates/">
+    Templates
+    <template is="literal-template">
+        ${ Stream
+            .merge(events('dom-navigate', window), {})
+            .map((e) => (
+                window.location.pathname === element.pathname
+                && window.location.hash === element.hash
+            ))
+            .reduce((previous, t) => {
+                console.log(t);
+                if (t === previous) {
+                    return t;
+                }
+                else if (t) {
+                    element.classList.add('located');
+                }
+                else {
+                    element.classList.remove('located');
+                }
+
+                return t;
+           }, false), ''
+       }
+    </template>
+</a>
+
+<a class="l1-nav-button nav-button button block" href="/literal/templates/#template-scope">
+    Template scope
+    <template is="literal-template">
+        ${ Stream
+            .merge(events('dom-navigate', window), {})
+            .map((e) => (
+                window.location.pathname === element.pathname
+                && window.location.hash === element.hash
+            ))
+            .reduce((previous, t) => {
+                console.log(t);
+                if (t === previous) {
+                    return t;
+                }
+                else if (t) {
+                    element.classList.add('located');
+                }
+                else {
+                    element.classList.remove('located');
+                }
+
+                return t;
+           }, false), ''
+       }
+    </template>
+</a>
+
+<a class="l1-nav-button nav-button button block" href="/literal/templates/#template-expressions">
+    Template expressions
+    <template is="literal-template">
+        ${ Stream
+            .merge(events('dom-navigate', window), {})
+            .map((e) => (
+                window.location.pathname === element.pathname
+                && window.location.hash === element.hash
+            ))
+            .reduce((previous, t) => {
+                console.log(t);
+                if (t === previous) {
+                    return t;
+                }
+                else if (t) {
+                    element.classList.add('located');
+                }
+                else {
+                    element.classList.remove('located');
+                }
+
+                return t;
+           }, false), ''
+       }
+    </template>
+</a>
+
+
+
+    </details-toggle>
 </nav>
 
     

@@ -1,16 +1,22 @@
 
 /** Template scope
 
-Literal templates are rendered in a scope that provides some useful objects and
+Literal templates are rendered in a scope that contains some useful objects and
 functions.
 
-The `data` object is the data passed into the template to be rendered.
+The `data` object is the data passed into the template to be rendered:
 
 ```js
 ${ data.name }
 ```
 
-Expressions that return promises or streams also cause the DOM to be updated
+Other templates can be included with `include()` function:
+
+```js
+${ include('#some-other-template', data) }
+```
+
+Expressions that return promises or streams cause the DOM to be updated
 when values are resolved. The `events()` function, for example, returns a
 mappable stream of events:
 
@@ -18,15 +24,9 @@ mappable stream of events:
 ${ events('hashchange', window).map((e) => location.hash) }
 ```
 
-Templates can be composed with `include()` function:
-
-```js
-${ include('#some-other-template', data) }
-```
-
-Some functions are simply built-ins, aliased for brevity. It is nicer to read
+Some functions are simply built-ins, aliased for brevity (it is nicer to read
 `${ values(data) }` than `${ Object.values(data) }` within the constraints of a
-template.
+template).
 
 **/
 

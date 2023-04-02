@@ -12,7 +12,7 @@
         ${ include('./documentation/templates/header.literal', './package.json') }
     </header>
 
-    ${ include('./documentation/templates/nav.literal',     './package.json') }
+    ${ include("./templates/nav.literal", "./nav.json") }
     ${ include('./documentation/templates/credit.literal',  './package.json') }
     ${ include('./documentation/templates/footer.literal',  './package.json') }
     ${ include('./documentation/templates/scripts.literal', './package.json') }

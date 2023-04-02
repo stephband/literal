@@ -14,11 +14,12 @@ import get         from '../../fn/modules/get.js';
 import overload    from '../../fn/modules/overload.js';
 import toType      from '../../fn/modules/to-type.js';
 
-import read        from './read.js';
+import read            from './read.js';
 import { rewriteURL, rewriteURLs } from './url.js';
-import compile     from './compile.js';
-import comments    from './comments.js';
+import compile         from './compile.js';
+import comments        from './comments.js';
 import { px, em, rem } from './parse-length.js';
+import parseMarkdown   from './parse-markdown.js';
 
 import { red, yellow }     from './log.js';
 
@@ -325,6 +326,7 @@ const library = assign(base, {
     exec,
     include:  include,
     imports:  imports,
+    markdown: parseMarkdown,
     render:   render,
     px,
     em,
