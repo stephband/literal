@@ -194,14 +194,14 @@ assign({
     A path to a JSON file or JS module exporting data to be rendered.
 
     ```html
-    <literal-include src="#template" data="./data.json"></literal-include>
-    <literal-include src="#template" data="./module.js"></literal-include>
+    <template is="literal-template" data="./data.json">...</template>
+    <template is="literal-template" data="./module.js">...</template>
     ```
 
-    Named exports are supported via the path hash:
+    Named exports are supported via the hash:
 
     ```html
-    <literal-include src="#template" data="./module.js#namedExport"></literal-include>
+    <template is="literal-template" data="./module.js#namedExport">...</template>
     ```
 
     Paths may be rewritten. This helps when JS modules are bundled into a single
@@ -218,7 +218,7 @@ assign({
     The `data` attribute also accepts raw JSON:
 
     ```html
-    <literal-include src="#template" data='{"property": "value"}'></literal-include>
+    <template is="literal-template" data='{"property": "value"}'>...</template>
     ```
     **/
 
