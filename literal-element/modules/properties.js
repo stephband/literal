@@ -49,7 +49,7 @@ export default {
     `data`:
 
     ```html
-    <template is="element-template" tag="my-carousel" attributes="loop:boolean controls:tokens">
+    <template is="literal-element" tag="my-carousel" attributes="loop:boolean controls:tokens">
         <p>Looping is ${ data.loop ? 'on' : 'off' }.</p>
         <p>Play button is ${ data.controls.includes('play') ? 'shown' : 'hidden' }.</p>
     </template>
@@ -69,7 +69,7 @@ export default {
     lifecycle, and its named exports are added to the template scope.
 
     ```html
-    <template is="element-template" tag="..." src="./path/to/module.js">
+    <template is="literal-element" tag="..." src="./path/to/module.js">
     ```
 
     And in `module.js`:
@@ -102,7 +102,7 @@ export default {
     preventing a flash of unstyled content.
 
     ```html
-    <template is="element-template" tag="..." stylesheets="./path/to/style1.css ./path/to/style2.css">
+    <template is="literal-element" tag="..." stylesheets="./path/to/style1.css ./path/to/style2.css">
     ```
     **/
 

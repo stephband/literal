@@ -1,17 +1,17 @@
 /**
-<template is="element-template">
+<template is="literal-element">
 
 An HTML template that declares a new custom element. Its `tag` attribute, which
 is required, declares the tag name of the new custom element, and the content of
 the template defines the shadow DOM:
 
 ```html
-<template is="element-template" tag="dom-clock">
+<template is="literal-element" tag="dom-clock">
     <time>${ clock(1).map(floor) } seconds</time>
 </template>
 ```
 
-<template is="element-template" tag="dom-clock" attributes="interval:number">
+<template is="literal-element" tag="dom-clock" attributes="interval:number">
     <time>${ clock(data.interval).map(floor) } seconds</time>
 </template>
 
@@ -30,7 +30,7 @@ Now for the sake of argument, let's say we want to give `<dom-clock>` an
 scope:
 
 ```html
-<template is="element-template" tag="dom-clock" attributes="interval:number">
+<template is="literal-element" tag="dom-clock" attributes="interval:number">
     <time>${ clock(data.interval).map(floor) } seconds</time>
 </template>
 ```
@@ -55,12 +55,12 @@ the `src` attribute.
 
 ### The `loading` attribute
 
-Custom elements defined by `element-template` have a read-only boolean `loading`
+Custom elements defined by `literal-element` have a read-only boolean `loading`
 attribute. This is enabled when the shadow DOM contains assets – stylesheets –
 that must be loaded:
 
 ```html
-<template is="element-template" tag="my-element">
+<template is="literal-element" tag="my-element">
     <link href="path/to/stylesheet.css" rel="stylesheet" />
     ...
 </template>
@@ -77,4 +77,4 @@ import element    from '../../dom/modules/element.js';
 import lifecycle  from './modules/lifecycle.js';
 import properties from './modules/properties.js';
 
-export default element('<template is="element-template">', lifecycle, properties, null, 'stephen.band/literal/');
+export default element('<template is="literal-element">', lifecycle, properties, null, 'stephen.band/literal/');

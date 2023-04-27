@@ -149,11 +149,12 @@ export default function defineElement(tag, src, lifecycle = {}, props, scope = {
             // attributes, which mutate data, now trigger template updates
             internals.data = Data(data);
 
+            // Connect callback called pre-render
+            lifecycle.connect && lifecycle.connect.call(this, shadow, Data(data), internals);
+
             // We must render synchronously here else rendered 'slotchange'
             // listeners miss the first slotchange
             renderer.push(data);
-
-            lifecycle.connect && lifecycle.connect.call(this, shadow, Data(data), internals);
         }
     }, properties, null, window.DEBUG ? (
         ('\n  Stylesheets\n    ' + stylesheets.map((url) => url.pathname).join('\n    ')) +
