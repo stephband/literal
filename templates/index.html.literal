@@ -39,6 +39,7 @@
             '../../fn/modules/clamp.js',
             '../../fn/modules/equals.js',
             '../../fn/modules/id.js',
+            '../../fn/modules/is-defined.js',
             '../../fn/modules/last.js',
             '../../fn/modules/matches.js',
             '../../fn/modules/noop.js',

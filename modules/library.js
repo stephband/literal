@@ -35,6 +35,7 @@ import by              from '../../fn/modules/by.js';
 import { clamp }       from '../../fn/modules/clamp.js';
 //import capture         from '../../fn/modules/capture.js';
 import equals          from '../../fn/modules/equals.js';
+import isDefined       from '../../fn/modules/is-defined.js';
 import matches         from '../../fn/modules/matches.js';
 import nothing         from '../../fn/modules/nothing.js';
 import get             from '../../fn/modules/get-path.js';
@@ -95,6 +96,7 @@ const library = {
 
     get,
     id,
+    isDefined,
 
     /**
     clock(duration)
