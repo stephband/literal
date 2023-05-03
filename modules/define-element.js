@@ -135,7 +135,7 @@ export default function defineElement(tag, src, lifecycle = {}, props, scope = {
             let name;
             for (name in props) {
                 if (!(name in data)) {
-                    data[name] = props[name].default;
+                    data[name] = properties[name].default;
                 }
             }
 
