@@ -65,11 +65,14 @@ export default {
     },
 
     /** src=""
-    Imports a JS module. The module's `default` export is the element's
-    lifecycle, and its named exports are added to the template scope.
+    Imports a JS module. The module's `default` export may be an object of
+    lifecycle callbacks, while any named exports are imported into the template
+    scope.
 
     ```html
-    <template is="literal-element" tag="..." src="./path/to/module.js">
+    <template is="literal-element" tag="my-elem" src="./path/to/module.js">
+        From the module's named exports: ${ text }
+    </template>
     ```
 
     And in `module.js`:
@@ -77,8 +80,8 @@ export default {
     ```js
     // Export lifecycle
     export default {
-        construct: function() { ... },
-        connect:   function() { ... }
+        construct: function(shadow, internals) { ... },
+        connect:   function(shadow, internals) { ... }
     }
 
     // Export scope variables
@@ -102,7 +105,7 @@ export default {
     preventing a flash of unstyled content.
 
     ```html
-    <template is="literal-element" tag="..." stylesheets="./path/to/style1.css ./path/to/style2.css">
+    <template is="literal-element" tag="my-elem" stylesheets="./path/to/style1.css ./path/to/style2.css">
     ```
     **/
 
