@@ -1,6 +1,6 @@
 
 /**
-print(context, data)
+print(data)
 
 Where `window.DEBUG` was falsy at the time Literal is imported, `print()` does
 nothing.
@@ -8,17 +8,16 @@ nothing.
 Prints an object or objects to the DOM as a debug message.
 
 ```html
-<template id="debug">${ print(data) }</template>
-<literal-include src="#debug" data="../package.json"></literal-include>
+<template is="literal-template" data="../../package.json">
+    ${ print(data) }
+</template>
 ```
 
 Renders as:
 
-<template id="debug">
+<template is="literal-template" data="../../../package.json">
     ${ print(data) }
 </template>
-
-<literal-include src="#debug" data="../../package.json"></literal-include>
 
 <!--
 Messages should be styled with the print stylesheet:

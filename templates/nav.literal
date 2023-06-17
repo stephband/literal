@@ -1,0 +1,14 @@
+
+<nav>
+    <details-toggle class="nav-details-toggle">
+        <button slot="summary" class="nav-thumb thumb">
+            <span class="open-hidden">Show</span><span class="closed-hidden">Hide</span> navigation
+            <svg viewbox="0 0 18 18">
+                <line class="stroke" x1="4.5" x2="13.5" y1="6"  y2="6"  />
+                <line class="stroke" x1="4.5" x2="13.5" y1="9"  y2="9"  />
+                <line class="stroke" x1="4.5" x2="13.5" y1="12" y2="12" />
+            <svg>
+        </button>
+        ${ include('./nav-section.literal', data) }
+    </details-toggle>
+</nav>

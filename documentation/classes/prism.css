@@ -1,0 +1,43 @@
+
+/*code,
+code .tag,
+code .attr-name,
+code .attr-value,
+code .params,
+code .punctuation,
+code .keyword,
+code .operator,
+code .number,
+code .comment,
+code .string,
+code .function {
+    color: #e2006f;
+}*/
+
+pre > code .punctuation { color: #779aab; }
+pre > code .keyword     { color: var(--sky); }
+pre > code .rule        { color: var(--sky); }
+pre > code .operator    { color: var(--sky); }
+pre > code .number      { color: #FE267E; }
+pre > code .comment     { color: var(--slate0); } /* #75858c */
+pre > code .string      { color: var(--lime); }
+pre > code .function    { color: var(--orange); }
+
+pre > .language-html                            { color: var(--slate2); }
+pre > .language-html .tag                       { color: #fc6827; }
+pre > .language-html .tag > .punctuation        { color: #8B572A; }
+pre > .language-html .attr-name                 { color: var(--orange); }
+pre > .language-html .attr-value                { color: var(--lime); }
+pre > .language-html .attr-value > .punctuation { color: #8B572A; }
+pre > .language-html .property                  { color: var(--sky); }
+pre > .language-html .property > .variable      { color: var(--slate3); }
+
+pre > .language-js                              { color: #7DAED3; }
+
+pre > .language-css .function                   { color: #5AB7B2; }
+pre > .language-css .selector                   { color: var(--orange); }
+pre > .language-css .punctuation                { color: #5E7F8F; }
+pre > .language-css .property                   { color: #288DC1; }
+
+
+

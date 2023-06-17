@@ -1,4 +1,0 @@
-
-${ data.docs.map((doc) => `
-    <a class="nav-button button block" href="${ data.path || '' }#${ doc.type }-${ slugify(doc.name) }"><code>${ doc.name }</code></a>
-`) }

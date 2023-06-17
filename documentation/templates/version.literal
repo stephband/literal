@@ -1,0 +1,1 @@
+<span class="text-10">${ data.version }</span>

@@ -1,0 +1,32 @@
+
+body > .footer {
+    margin-top: 0;
+    margin-left: calc(-1 * var(--x-gap));
+    margin-right: calc(-1 * var(--x-gap));
+    padding-left: inherit;
+    padding-right: inherit;
+}
+
+.footer {
+    padding-top: var(--y-gap);
+    padding-bottom: calc(2 * var(--y-gap));
+
+    color: var(--slate1);
+    background-color: var(--slate);
+}
+
+.footer a {
+    color: var(--slate3);
+    /*font-weight: 600;*/
+    text-decoration: none;
+}
+
+.footer a:hover,
+.footer a:focus {
+    color: var(--sky);
+    text-decoration: none;
+}
+
+.footer .text-10 {
+    color: var(--slate2);
+}

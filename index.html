@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<!-- Literal template "/Users/stephband/Sites/kavea/kavea/static/literal/index.html.literal" -->
+<!-- Literal template "/Users/stephband/Sites/literal/index.html.literal" -->
 
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-<meta name="author" content="Stephen" />
-<meta name="description" content="Documentation for Literal. Literal enhances HTML templates with JS literal template tags, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
+    <title>Literal</title>
+
+<meta charset="utf-8" />
+<meta name="author" content="Stephen Band" />
+<meta name="description" content="Literal enhances HTML templates with JS literal template tags, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
 <meta name="viewport" content="width=device-width" />
 
 
@@ -16,8 +18,6 @@
 <meta property="og:image" content="undefined" />
 <meta property="og:url" content="https://stephen.band/literal" />
 
-
-<title>Literal</title>
 
 
 
@@ -31,19 +31,23 @@
 </script>
 
 
-    <script title="debug">
-        window.DEBUG = true;
-    </script>
+<script title="debug">
+    window.DEBUG = true;
+    window.detailsToggleStylesheet = 'https://stephen.band/literal/documentation/build/details-toggle/shadow.css';
+</script>
 
-    <link rel="stylesheet" href="./documentation.css" />
-    <link rel="stylesheet" href="./literal-include.css" />
+<link rel="stylesheet" href="https://stephen.band/literal/documentation/build/module.css">
+<link rel="preload" as="style" href="https://stephen.band/literal/documentation/build/details-toggle/shadow.css">
+
+
+    <link rel="stylesheet" href="./literal-include/module.css" />
 </head>
 
-<body class="docs-grid @0-grid @0-3x-grid @1-6x-grid @2-9x-grid">
-    <header class="@0-x3" style="grid-column-end: span 4;">
+<body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
+    <header class="x1 4x @2-x2 x-stretch">
         
-<h1 class="docs-text-01">Literal <span class="docs-text-06">0.6.4</span></h1>
-<p class="docs-text-08">Literal enhances HTML templates with JS literal template tags, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped.</p>
+<h1 class="text-01">Literal <span class="text-06">0.6.4</span></h1>
+<p class="text-08">Literal enhances HTML templates with JS literal template tags, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped.</p>
 <ul class="link-index index">
     <li><strong>repo:</strong> <a href="https://github.com/stephband/literal.git">github.com/stephband/literal.git</a></li>
     <li><strong>bugs:</strong> <a href="https://github.com/stephband/literal/issues/">github.com/stephband/literal/issues/</a></li>
@@ -51,143 +55,226 @@
 
     </header>
 
-    <nav>
-    <a class="nav-button button block" href="./"><code>Literal</code></a>
-
-    <h4>Elements</h4>
-    <a class="nav-button button block" href="./elements/literal-element"><code>&lt;literal-element&gt;</code></a>
-
     
-
-    <a class="nav-button button block" href="./#attribute-scope"><code>scope</code></a>
-
-    <a class="nav-button button block" href="./#attribute-tag"><code>tag</code></a>
-
-
-
-    <a class="nav-button button block" href="./elements/literal-insert"><code>&lt;literal-insert&gt;</code></a>
-
-    
-
-    <a class="nav-button button block" href="./#attribute-data"><code>data</code></a>
-
-    <a class="nav-button button block" href="./#attribute-loading"><code>loading</code></a>
-
-
-
-    <a class="nav-button button block" href="./elements/literal-include"><code>&lt;literal-include&gt;</code></a>
-
-    
-
-    <a class="nav-button button block" href="./#attribute-data"><code>data</code></a>
-
-    <a class="nav-button button block" href="./#attribute-loading"><code>loading</code></a>
-
-    <a class="nav-button button block" href="./#attribute-src"><code>src</code></a>
-
-
-
-    <h4>Templates</h4>
-    <a class="nav-button button block" href="./docs/templates">Evaluation table</a>
-
-    <h4>Template constants</h4>
-    
-
-    <a class="nav-button button block" href="./docs/templates#selector-data"><code> data</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#selector-body"><code> body</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#selector-element"><code> element</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#selector-host"><code> host</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#selector-shadow"><code> shadow</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#selector-nothing"><code> nothing</code></a>
-
-
-
-    <h4>Template functions</h4>
-    
-
-    <a class="nav-button button block" href="./docs/templates#constructor-stream"><code>Stream</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-assign"><code>assign</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-by"><code>by</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-ceil"><code>ceil</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-clamp"><code>clamp</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-define"><code>define</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-delegate"><code>delegate</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-entries"><code>entries</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-equals"><code>equals</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-events"><code>events</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-floor"><code>floor</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-get"><code>get</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-id"><code>id</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-include"><code>include</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-keys"><code>keys</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-last"><code>last</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-matches"><code>matches</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-noop"><code>noop</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-notify"><code>notify</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-overload"><code>overload</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-paramify"><code>paramify</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-print"><code>print</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-round"><code>round</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-slugify"><code>slugify</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-sum"><code>sum</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-trigger"><code>trigger</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-values"><code>values</code></a>
-
-
-
-    
-
-    <a class="nav-button button block" href="./docs/templates#function-px"><code>px</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-em"><code>em</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-rem"><code>rem</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-vw"><code>vw</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-vh"><code>vh</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-vmin"><code>vmin</code></a>
-
-    <a class="nav-button button block" href="./docs/templates#function-vmax"><code>vmax</code></a>
-
-
+<nav>
+    <details-toggle class="nav-details-toggle">
+        <button slot="summary" class="nav-thumb thumb">
+            <span class="open-hidden">Show</span><span class="closed-hidden">Hide</span> navigation
+            <svg viewbox="0 0 18 18">
+                <line class="stroke" x1="4.5" x2="13.5" y1="6"  y2="6"  />
+                <line class="stroke" x1="4.5" x2="13.5" y1="9"  y2="9"  />
+                <line class="stroke" x1="4.5" x2="13.5" y1="12" y2="12" />
+            <svg>
+        </button>
+        <a class=" nav-button button block" href="/literal/">
+    Literal
+    <template is="literal-template">
+        ${ Stream
+            .merge(events('dom-navigate', window), {})
+            .map((e) => (
+                window.location.pathname === element.pathname
+                && window.location.hash === element.hash
+            ))
+            .reduce((previous, t) => {
+                console.log(t);
+                if (t === previous) {
+                    return t;
+                }
+                else if (t) {
+                    element.classList.add('located');
+                }
+                else {
+                    element.classList.remove('located');
+                }
+
+                return t;
+           }, false), ''
+       }
+    </template>
+</a>
+<a class="l1-nav-button nav-button button block" href="/literal/literal-template/">
+    <code>literal-template</code>
+    <template is="literal-template">
+        ${ Stream
+            .merge(events('dom-navigate', window), {})
+            .map((e) => (
+                window.location.pathname === element.pathname
+                && window.location.hash === element.hash
+            ))
+            .reduce((previous, t) => {
+                console.log(t);
+                if (t === previous) {
+                    return t;
+                }
+                else if (t) {
+                    element.classList.add('located');
+                }
+                else {
+                    element.classList.remove('located');
+                }
+
+                return t;
+           }, false), ''
+       }
+    </template>
+</a>
+
+<a class="l1-nav-button nav-button button block" href="/literal/literal-element/">
+    <code>literal-element</code>
+    <template is="literal-template">
+        ${ Stream
+            .merge(events('dom-navigate', window), {})
+            .map((e) => (
+                window.location.pathname === element.pathname
+                && window.location.hash === element.hash
+            ))
+            .reduce((previous, t) => {
+                console.log(t);
+                if (t === previous) {
+                    return t;
+                }
+                else if (t) {
+                    element.classList.add('located');
+                }
+                else {
+                    element.classList.remove('located');
+                }
+
+                return t;
+           }, false), ''
+       }
+    </template>
+</a>
+
+<a class="l1-nav-button nav-button button block" href="/literal/templates/">
+    Templates
+    <template is="literal-template">
+        ${ Stream
+            .merge(events('dom-navigate', window), {})
+            .map((e) => (
+                window.location.pathname === element.pathname
+                && window.location.hash === element.hash
+            ))
+            .reduce((previous, t) => {
+                console.log(t);
+                if (t === previous) {
+                    return t;
+                }
+                else if (t) {
+                    element.classList.add('located');
+                }
+                else {
+                    element.classList.remove('located');
+                }
+
+                return t;
+           }, false), ''
+       }
+    </template>
+</a>
+
+<a class="l1-nav-button nav-button button block" href="/literal/templates/#template-scope">
+    Template scope
+    <template is="literal-template">
+        ${ Stream
+            .merge(events('dom-navigate', window), {})
+            .map((e) => (
+                window.location.pathname === element.pathname
+                && window.location.hash === element.hash
+            ))
+            .reduce((previous, t) => {
+                console.log(t);
+                if (t === previous) {
+                    return t;
+                }
+                else if (t) {
+                    element.classList.add('located');
+                }
+                else {
+                    element.classList.remove('located');
+                }
+
+                return t;
+           }, false), ''
+       }
+    </template>
+</a>
+
+<a class="l1-nav-button nav-button button block" href="/literal/templates/#template-expressions">
+    Template expressions
+    <template is="literal-template">
+        ${ Stream
+            .merge(events('dom-navigate', window), {})
+            .map((e) => (
+                window.location.pathname === element.pathname
+                && window.location.hash === element.hash
+            ))
+            .reduce((previous, t) => {
+                console.log(t);
+                if (t === previous) {
+                    return t;
+                }
+                else if (t) {
+                    element.classList.add('located');
+                }
+                else {
+                    element.classList.remove('located');
+                }
+
+                return t;
+           }, false), ''
+       }
+    </template>
+</a>
+
+
+
+    </details-toggle>
 </nav>
+
+    
+<hr class="x1 4x @2-x2 x-stretch" />
+
+<div class="x1 4x @2-x2 x-stretch y-start">
+    <p class="text-10">
+    Built by <a href="http://stephen.band/">Stephen Band</a> for
+    <a href="https://cruncher.ch"><img style="width: 1.366666667em; display: inline-block; vertical-align: bottom; margin-top: -0.1em; margin-bottom: -0.1em;" src="https://cruncher.ch/static/images/logo.svg" alt="Cruncher logo"/> Cruncher</a>.
+    </p>
+
+    <p class="text-10">
+    Documentation set in <a href="https://www.swisstypefaces.com/fonts/euclid/">Euclid</a>
+    and <a href="https://github.com/evilmartians/mono">Martian Mono</a>. Fonts
+    used for documentation not included as part of the license covering the
+    use of <code>Literal</code>.
+    </p>
+</div>
+
+    
+<footer class="x1 4x @1-6x @2-7x @3-9x 4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid grid footer">
+    <div class="x1 4x @1-2x @2-x2 x-stretch y-start">
+        <h3>Elements</h3>
+        <a class="block" href="https://stephen.band/slide-show/"><code>&lt;slide-show&gt;</code></a>
+        <a class="block" href="https://stephen.band/details-toggle/"><code>&lt;details-toggle&gt;</code></a>
+        <a class="block" href="https://stephen.band/form-elements/rotary-input/"><code>&lt;rotary-input&gt;</code></a>
+        <a class="block" href="https://stephen.band/form-elements/range-input/"><code>&lt;range-input&gt;</code></a>
+        <a class="block" href="https://stephen.band/form-elements/y-input/"><code>&lt;y-input&gt;</code></a>
+        <a class="block" href="https://stephen.band/form-elements/xy-input/"><code>&lt;xy-input&gt;</code></a>
+        <a class="block" href="https://stephen.band/form-elements/number-control/"><code>&lt;number-control&gt;</code></a>
+        <a class="block" href="https://stephen.band/form-elements/select-control/"><code>&lt;select-control&gt;</code></a>
+        <a class="block" href="https://stephen.band/literal/literal-element/"><code>&lt;literal-element&gt;</code></a>
+        <a class="block" href="https://stephen.band/literal/literal-template/"><code>&lt;literal-template&gt;</code></a>
+    </div>
+
+    <div class="x1 4x @1-2x @1-x3 @2-x4 x-stretch y-start">
+        <h3>Tools</h3>
+        <a class="block" href="https://stephen.band/font-size/">Font-size calculator</a>
+    </div>
+</footer>
+
+    <script type="module" src="https://stephen.band/literal/documentation/build/module.js"></script>
 
 
     <script type="module">
-        import './literal-element.js';
-        import './documentation.js';
+        import './literal-element/module.js';
     </script>
 </body>

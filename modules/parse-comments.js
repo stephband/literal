@@ -3,38 +3,14 @@
 Parse files for documentation comments
 */
 
-
-// markdown library
-// https://marked.js.org/#/README.md#README.md
-import '../libs/marked/marked.min.js';
-
-// Syntax highlighter
-// https://prismjs.com/
-import '../libs/prism/prism.js';
-
 import capture from '../../fn/modules/capture.js';
 import noop    from '../../fn/modules/noop.js';
 import slugify from '../../fn/modules/slugify.js';
 
 import { parseString } from './parse-string.js';
 import { parseParams } from './parse-params.js';
+import parseMarkdown   from '../deno/parse-markdown.js';
 
-
-const markedOptions = {
-    // GitHub Flavoured Markdown
-    gfm: true,
-
-    // Highlight code blocks
-    highlight: function(code, lang, callback) {
-        return Prism.highlight(code, Prism.languages[lang || 'js'], lang || 'js');
-    },
-
-    // Emit self-closing tags
-    xhtml: true,
-
-    // Typographic niceties
-    smartypants: true
-};
 
 const parseParensClose = capture(/^\)\s*/, {}, null);
 
@@ -148,14 +124,21 @@ const parseDotted = capture(/^(\w[\w\d]*)(?:(\(\s*)|(\s*=\s*)|(\s*\n\s*)|(\s*))/
     }
 });
 
-//                             1                2          3    4                 5
-//                             attribute =      N          n    ame function      Title
-const parseName = capture(/^(?:([\w-:]+)\s*=\s*|(?:([A-Z])|(\w))([\w\d]*)\s*\(\s*|([A-Z](?:[^\n]|,\s*)*))\s*/, {
+//                             1                   2       3    4                               5
+//                             attribute =     |   N       n    ame     .method                 (   |Title
+const parseName = capture(/^(?:([\w-:]+)\s*=\s*|(?:([A-Z])|(\w))([\w\d]*(?:\.[\w\d]+)*)\s*\(\s*|([A-Z](?:[^\n]|,\s*)*))\s*/, {
     // name="value" name='value' name=value
     1: (data, captures) => {
-        data.type    = 'attribute';
-        data.name    = captures[1];
-        data.defaultValue = parseString(captures);
+        if (captures[1] === 'slot') {
+            data.type = 'slot';
+            data.name = parseString(captures);
+        }
+        else {
+            data.type    = 'attribute';
+            data.name    = captures[1];
+            data.defaultValue = parseString(captures);
+        }
+
         return data;
     },
 
@@ -298,15 +281,7 @@ const parseComment = capture(/([^\S\r\n]*)\/\*\*+\s*(?:(\.)|(--)|(::part\()\s*|(
                 captures[1].replaceAll('\n' + data.indent, '\n') :
                 captures[1] ;
 
-            data.body = marked(body, Object.assign(markedOptions, {
-                // Highlight code blocks
-                highlight: function (code, lang, callback) {
-                    // Grab HTML code blocks and add to examples
-                    if (lang === 'html') { data.examples.push(code); }
-                    // Highlight code inside documentation HTML
-                    return Prism.highlight(code, Prism.languages[lang || 'js'], lang || 'js');
-                }
-            }));
+            data.body = parseMarkdown(body);
 
             return data;
         },

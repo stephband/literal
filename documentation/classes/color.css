@@ -1,0 +1,60 @@
+
+/* Colours for dark background */
+
+:root      { --slate: #141B1E; }
+.slate-fg  { color: #141B1E; }
+.slate-bg  { background-color: #141B1E; }
+
+:root          { --lightslate: #272a2b; }
+.lightslate-fg { color: #272a2b; }
+.lightslate-bg { background-color: #272a2b; }
+
+:root      { --slate0: #485b68; }
+.slate0-fg { color: #485b68; }
+.slate0-bg { background-color: #485b68; }
+
+:root      { --slate1: #5E7F8F; }
+.slate1-fg { color: #5E7F8F; }
+.slate1-bg { background-color: #5E7F8F; }
+
+:root      { --slate2: #9AB7C7; }
+.slate2-fg { color: #9AB7C7; }
+.slate2-bg { background-color: #9AB7C7; }
+
+:root      { --slate3: #b7d6e7; }
+.slate3-fg { color: #b7d6e7; }
+.slate3-bg { background-color: #b7d6e7; }
+
+
+
+:root      { --pink: #F5426C; }
+.pink-fg   { color: #F5426C; }
+.pink-bg   { background-color: #F5426C; }
+
+:root      { --lime: #B2CB3A; }
+.lime-fg   { color: #B2CB3A; }
+.lime-bg   { background-color: #B2CB3A; }
+
+:root      { --orange: #f5a623; }
+.orange-fg { color: #f5a623; }
+.orange-bg { background-color: #f5a623; }
+
+:root      { --sky: #63ACDD; }
+.sky-fg    { color: #63ACDD; }
+.sky-bg    { background-color: #63ACDD; }
+
+
+
+/* Colours for white background */
+
+:root      { --aqua: #026f63; }
+.aqua-fg   { color: #026f63; }
+.aqua-bg   { background-color: #026f63; }
+
+:root      { --blue: #46789a; }
+.blue-fg   { color: #46789a; }
+.blue-bg   { background-color: #46789a; }
+
+:root      { --navy: #005177; }
+.navy-fg   { color: #005177; }
+.navy-bg   { background-color: #005177; }

@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<!-- Literal template "/Users/stephband/Sites/literal/templates/index.html.literal" -->
+
+<html lang="en">
+<head>
+    <title>Literal</title>
+
+<meta charset="utf-8" />
+<meta name="author" content="Stephen Band" />
+<meta name="description" content="Literal enhances HTML templates with JS literal template tags, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
+<meta name="viewport" content="width=device-width" />
+
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@stephband">
+<meta property="og:title" content="Literal" />
+<meta property="og:description" content="Literal enhances HTML templates with JS literal template tags, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
+<meta property="og:image" content="undefined" />
+<meta property="og:url" content="https://stephen.band/literal" />
+
+
+
+
+<script title="load">
+    document.documentElement.className += ' js loading';
+    // window.addEventListener('DOMContentLoaded', () => document.documentElement.classList.remove('content-loading'));
+    // Wait for other load handlers to run first - Bolt does a few things on
+    // load (eg. targetable scrolls) and we want them to run before the loading
+    // class is removed
+    window.addEventListener('load', () => window.requestAnimationFrame(() => document.documentElement.classList.remove('loading')));
+</script>
+
+
+<script title="debug">
+    window.DEBUG = true;
+    window.detailsToggleStylesheet = 'https://stephen.band/literal/documentation/build/details-toggle/shadow.css';
+</script>
+
+<link rel="stylesheet" href="https://stephen.band/literal/documentation/build/module.css">
+<link rel="preload" as="style" href="https://stephen.band/literal/documentation/build/details-toggle/shadow.css">
+
+
+    <link rel="stylesheet" href="../literal-include/module.css" />
+</head>
+
+<body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
+    <header class="x1 4x @2-x2 x-stretch">
+        <h1 class="text-01">Literal <span class="text-06">0.6.2</span></h1>
+    </header>
+
+    <section class="x1 4x @2-x2 x-stretch" id="template-scope">
+        
+
+<h2 class="text-02" id="template-scope">Template scope</h2>
+<p>Literal templates are rendered in a scope that contains some useful objects and
+functions.</p>
+<p>The <code>data</code> object is the data passed into the template to be rendered:</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> data<span class="token punctuation">.</span>name <span class="token punctuation">}</span>
+</code></pre>
+<p>Other templates can be included with <code>include()</code> function:</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#some-other-template'</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre>
+<p>Expressions that return promises or streams cause the DOM to be updated
+when values are resolved. The <code>events()</code> function, for example, returns a
+mappable stream of events:</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token string">'hashchange'</span><span class="token punctuation">,</span> window<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> location<span class="token punctuation">.</span>hash<span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre>
+<p>Some functions are simply built-ins, aliased for brevity (it is nicer to read
+<code>${ values(data) }</code> than <code>${ Object.values(data) }</code> within the constraints of a
+template).</p>
+
+
+
+    </section>
+
+    <div class="x1 4x @1-x4 @1-3x @1-y3 @2-x5 x-stretch y-start">
+        <h3>Objects</h3>
+
+        
+
+<details-toggle class="selector-details-toggle" id="selector-data">
+    <h4 class="selector-text text-05" slot="summary">
+        <code class=" language-css"> data</code>
+    </h4>
+
+    <p>The main object passed into the template carrying data. This object is special.
+When it mutates, the DOM re-renders.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="selector-details-toggle" id="selector-this">
+    <h4 class="selector-text text-05" slot="summary">
+        <code class=" language-css"> this</code>
+    </h4>
+
+    <p>The current renderer. Normally this should not be touched, and is provided for
+debugging.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="selector-details-toggle" id="selector-body">
+    <h4 class="selector-text text-05" slot="summary">
+        <code class=" language-css"> body</code>
+    </h4>
+
+    <p>An alias of <code>document.body</code>.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="selector-details-toggle" id="selector-element">
+    <h4 class="selector-text text-05" slot="summary">
+        <code class=" language-css"> element</code>
+    </h4>
+
+    <p>The element enclosing the current template tag.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="selector-details-toggle" id="selector-host">
+    <h4 class="selector-text text-05" slot="summary">
+        <code class=" language-css"> host</code>
+    </h4>
+
+    <p>Where this literal template renders the shadow DOM of a custom element, <code>host</code>
+refers to the custom element.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="selector-details-toggle" id="selector-shadow">
+    <h4 class="selector-text text-05" slot="summary">
+        <code class=" language-css"> shadow</code>
+    </h4>
+
+    <p>Where this literal template renders the shadow DOM of a custom element, <code>shadow</code>
+refers to the custom element’s shadow root.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="selector-details-toggle" id="selector-nothing">
+    <h4 class="selector-text text-05" slot="summary">
+        <code class=" language-css"> nothing</code>
+    </h4>
+
+    <p>A frozen array-like and stream-like object that contains no value.</p>
+
+</details-toggle>
+
+
+    </div>
+
+    <div class="x1 4x @1-3x @1-y3 @2-x2 x-stretch y-start">
+        <h3>Functions</h3>
+
+        
+
+<details-toggle class="function-details-toggle" id="function-assign-1">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">assign(<span class="param">a</span>, <span class="param">b</span>, <span class="param">…</span>)</code>
+    </h4>
+
+    <p>Alias of <code>Object.assign()</code>.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-by">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">by(<span class="param">fn</span>, <span class="param">a</span>, <span class="param">b</span>)</code>
+    </h4>
+
+    <p>For sorting arrays. Compares <code>fn(a)</code> against <code>fn(b)</code> and returns <code>-1</code>, <code>0</code> or
+<code>1</code>. Partially applicable. To sort an array of objects by their ids:</p>
+<pre><code>array<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token function">by</span><span class="token punctuation">(</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'id'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+</code></pre>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-ceil-1">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">ceil(<span class="param">n</span>)</code>
+    </h4>
+
+    <p>Alias of <code>Math.ceil()</code>.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-clamp">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">clamp(<span class="param">min</span>, <span class="param">max</span>, <span class="param">n</span>)</code>
+    </h4>
+
+    <p>Clamps number <code>n</code> to the limits <code>min</code> to <code>max</code>. Values of <code>n</code> lower than <code>min</code>
+return <code>min</code>, and those higher than <code>max</code> return <code>max</code>.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-clock-1">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">clock(<span class="param">duration</span>)</code>
+    </h4>
+
+    <p>If <code>duration</code> is a number, returns a stream of DOM timestamps at <code>duration</code>
+seconds apart.</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">clock</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>floor<span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre>
+<template is="literal-template">
+    <p>${ clock(1).map(floor) }</p>
+</template>
+
+<p>If <code>duration</code> is <code>&quot;frame&quot;</code>, returns a stream of DOM timestamps of animation
+frames.</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">clock</span><span class="token punctuation">(</span><span class="token string">'frame'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">time</span><span class="token punctuation">)</span> <span class="token operator">=></span> time<span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre>
+<template is="literal-template">
+    <p>${ clock('frame').map((time) => time.toFixed(2)) }</p>
+</template>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-delegate">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">delegate(<span class="param">map</span>)</code>
+    </h4>
+
+    <p>Takes an object map of functions keyed to selectors, and returns a function that
+handles event objects, delegating them to the first function whose selector
+matches the event target. Functions are passed the target node and the event
+object, plus any other arguments passed to the handler.</p>
+<pre><code><span class="token function">delegate</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token string">'button'</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">button<span class="token punctuation">,</span> event</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-entries-1">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">entries(<span class="param">object</span>)</code>
+    </h4>
+
+    <p>Alias of <code>Object.entries()</code>.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-equals">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">equals(<span class="param">a</span>, <span class="param">b</span>)</code>
+    </h4>
+
+    <p>Compares <code>a</code> and <code>b</code> for deep equality and returns <code>true</code> where they are equal,
+otherwise false.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-events">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">events(<span class="param">type</span>, <span class="param">node</span>)</code>
+    </h4>
+
+    <p>Returns a mappable stream of events heard on <code>node</code>.</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> element<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>id<span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre>
+<p>The first parameter may also be an object with a <code>type</code> property. If the
+object has a <code>select</code> property that is a CSS selector, events are delegated
+from matching targets:</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'click'</span><span class="token punctuation">,</span> select<span class="token operator">:</span> <span class="token string">'[name="button"]'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> element<span class="token punctuation">)</span>
+   <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre>
+<p>Other properties are passed to addEventListener options, for passive and
+capture phase event binding:</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'scroll'</span><span class="token punctuation">,</span> passive<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> capture <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> window<span class="token punctuation">)</span>
+   <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> window<span class="token punctuation">.</span>scrollTop<span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre>
+<p>Stopping an event stream removes event listeners. Streams returned from
+expressions are automatically stopped when their renderers are removed.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-floor-1">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">floor(<span class="param">n</span>)</code>
+    </h4>
+
+    <p>Alias of <code>Math.floor()</code>.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-get-1">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">get(<span class="param">path</span>, <span class="param">object</span>)</code>
+    </h4>
+
+    <p>Gets the value of <code>path</code> in <code>object</code>, where <code>path</code> is a string in JS
+dot-notation. Where a path does not lead to a value, returns <code>undefined</code>:</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'path.to.value'</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre>
+<p>Numbers are accepted as path components:</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'array.0'</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-id">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">id(<span class="param">value</span>)</code>
+    </h4>
+
+    <p>Returns <code>value</code>.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-include">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">include(<span class="param">src</span>, <span class="param">data</span>)</code>
+    </h4>
+
+    <p>Includes a template identified by <code>src</code>, passing in an object to render in that
+template as <code>data</code>. In production it is recommended that <code>src</code> is a fragment
+identifier referring to the id of a template already in the DOM:</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#another-template'</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre>
+<p>The <code>include</code> function is partially applicable, making it easy to use for
+looping over an array to return an array of rendered templates:</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> data<span class="token punctuation">.</span>array<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#list-item'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-keys-1">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">keys(<span class="param">object</span>)</code>
+    </h4>
+
+    <p>Alias of <code>Object.keys()</code>.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-last">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">last(<span class="param">array</span>)</code>
+    </h4>
+
+    <p>Returns the last value in an array.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-matches">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">matches(<span class="param">selector</span>, <span class="param">object</span>)</code>
+    </h4>
+
+    <p>For filtering and pattern matching. Returns true where all the properties
+of <code>selector</code> object are strictly equal to the same properties of <code>object</code>.
+Note that <code>object</code> may have more properties than <code>selector</code>.</p>
+<pre><code><span class="token keyword">const</span> vegetarian <span class="token operator">=</span> menu<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token function">matches</span><span class="token punctuation">(</span><span class="token punctuation">{</span> vegetable<span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-noop">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">noop(<span class="param"></span>)</code>
+    </h4>
+
+    <p>Does nothing, returns undefined.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-overload">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">overload(<span class="param">fn</span>, <span class="param">map</span>)</code>
+    </h4>
+
+    <p>For function overloading. Takes a <code>fn</code> that returns a string key, and a <code>map</code>
+object of functions stored against keys. Returns a function that calls the
+function at the key generated by calling <code>fn()</code> with all arguments.</p>
+<p>Where a key is not in <code>map</code> but <code>map</code> contains the property <code>&#39;default&#39;</code>,
+that default function is called. Where there is no default function an error
+is thrown.</p>
+<pre><code><span class="token keyword">var</span> handleEvent <span class="token operator">=</span> <span class="token function">overload</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> e<span class="token punctuation">.</span>type<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    <span class="token function-variable function">click</span><span class="token operator">:</span>   <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><span class="token operator">...</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">input</span><span class="token operator">:</span>   <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><span class="token operator">...</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">default</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><span class="token operator">...</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-paramify">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">paramify(<span class="param">object</span>)</code>
+    </h4>
+
+    <p>Turns an object with enumerable properties into a native URL search
+parameters object. Rejects undefined properties and flattens out
+array values.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-print">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">print(<span class="param">data</span>)</code>
+    </h4>
+
+    <p>Where <code>window.DEBUG</code> was falsy at the time Literal is imported, <code>print()</code> does
+nothing.</p>
+<p>Prints an object or objects to the DOM as a debug message.</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../../package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    ${ print(data) }
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
+</code></pre>
+<p>Renders as:</p>
+<template is="literal-template" data="../package.json">
+    ${ print(data) }
+</template>
+
+<!--
+Messages should be styled with the print stylesheet:
+
+```css
+@import "http://stephen.band/literal/modules/library/print.css";
+```-->
+
+
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-request">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">request(<span class="param">method</span>, <span class="param">url</span>)</code>
+    </h4>
+
+    <p>Uses <code>fetch()</code> to send a request to <code>url</code>. Returns a promise.</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">request</span><span class="token punctuation">(</span>method<span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token operator">...</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre>
+<p>To send data with the request:</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">request</span><span class="token punctuation">(</span>method<span class="token punctuation">,</span> url<span class="token punctuation">,</span> data<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token operator">...</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre>
+<p>Where <code>type</code> is <code>&quot;GET&quot;</code>, <code>data</code> is serialised and appended to the URL,
+otherwise it is sent as a request body.</p>
+<p>A 4th parameter may be a content type string or a headers object
+(in which case it must have a <code>&#39;Content-Type&#39;</code> property).</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">request</span><span class="token punctuation">(</span>method<span class="token punctuation">,</span> url<span class="token punctuation">,</span> data<span class="token punctuation">,</span> headers<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token operator">...</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-round-1">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">round(<span class="param">n</span>, <span class="param">value</span>)</code>
+    </h4>
+
+    <p>Round <code>value</code> to the nearest multiple of <code>n</code>.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-slugify">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">slugify(<span class="param">string</span>)</code>
+    </h4>
+
+    <p>Replaces any series of non-word characters with a <code>&#39;-&#39;</code> and lowercases the rest.</p>
+<pre><code class="language-js">    <span class="token function">slugify</span><span class="token punctuation">(</span><span class="token string">'Party on #mydudes!'</span><span class="token punctuation">)</span> <span class="token comment">// 'party-on-mydudes'</span>
+</code></pre>
+
+</details-toggle>
+
+
+
+<details-toggle class="constructor-details-toggle" id="constructor-stream-combine">
+    <h4 class="constructor-text text-05" slot="summary">
+        <code class=" language-js">Stream.combine(<span class="param">object</span>)</code>
+    </h4>
+
+    <p>Creates a stream of objects containing the latest values of all streams and
+promises in <code>object</code>, as soon as they become active or resolved.</p>
+<pre><code class="language-js">Stream<span class="token punctuation">.</span><span class="token function">combine</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> stream<span class="token punctuation">,</span> b<span class="token operator">:</span> promise <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">object</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token comment">// object.a and object.b are values</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>If <code>object</code> contains properties that are not streams or promises, those are
+also set on streamed objects.</p>
+<pre><code class="language-js">Stream<span class="token punctuation">.</span><span class="token function">combine</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> stream<span class="token punctuation">,</span> b<span class="token operator">:</span> promise<span class="token punctuation">,</span> c<span class="token operator">:</span> <span class="token number">5</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">object</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token comment">// object.c is 5</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Output objects are created using the constructor of the input <code>object</code>,
+making it possible to use an array or other object as input and expect an
+array or other object as output.</p>
+<pre><code class="language-js">Stream<span class="token punctuation">.</span><span class="token function">combine</span><span class="token punctuation">(</span><span class="token punctuation">[</span>promise<span class="token punctuation">,</span> stream<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">object</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token comment">// object is an Array</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>The stream may be made mutable by passing <code>true</code> (or an options object with
+<code>mutable</code> set to <code>true</code>) as a second parameter. In this case no new objects
+are constructed, instead the input <code>object</code> is mutated and pushed to the
+output stream. This may be a Good Idea when it is necessary to avoid garbage
+collection, such as when animating.</p>
+<pre><code class="language-js">Stream<span class="token punctuation">.</span><span class="token function">combine</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> stream<span class="token punctuation">,</span> b<span class="token operator">:</span> promise <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">object</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token comment">// object is the input object, properties a and b are now values</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+
+</details-toggle>
+
+
+
+<details-toggle class="constructor-details-toggle" id="constructor-stream-from">
+    <h4 class="constructor-text text-05" slot="summary">
+        <code class=" language-js">Stream.from(<span class="param">source</span>)</code>
+    </h4>
+
+    <p>Creates a stream from <code>source</code>, which may be a pipeable (an object with
+<code>.pipe()</code> and <code>.stop()</code> methods), an array (or array-like), or a promise.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="constructor-details-toggle" id="constructor-stream-merge">
+    <h4 class="constructor-text text-05" slot="summary">
+        <code class=" language-js">Stream.merge(<span class="param">stream1</span>, <span class="param">stream2</span>, <span class="param">…</span>)</code>
+    </h4>
+
+    <p>Creates a stream by merging values from any number of input streams into a
+single output stream. Values are emitted in the time order they are received
+from inputs.</p>
+<pre><code class="language-js">Stream<span class="token punctuation">.</span><span class="token function">merge</span><span class="token punctuation">(</span>stream1<span class="token punctuation">,</span> stream2<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">value</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token comment">// value is from stream1 or stream 2</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+
+</details-toggle>
+
+
+
+<details-toggle class="constructor-details-toggle" id="constructor-stream-of">
+    <h4 class="constructor-text text-05" slot="summary">
+        <code class=" language-js">Stream.of(<span class="param">value1</span>, <span class="param">value2</span>, <span class="param">…</span>)</code>
+    </h4>
+
+    <p>Creates a pushable BufferStream from the given parameters.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-sum">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">sum(<span class="param">a</span>, <span class="param">b</span>)</code>
+    </h4>
+
+    <p>Returns the sum of <code>b + a</code>.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-translate-1">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">translate(<span class="param">key</span>)</code>
+    </h4>
+
+    <p>Looks up an alternative value stored by <code>key</code> in a <code>window.translations</code>
+object, if it exists. A super simple translation mechanism, but requires
+<code>window.translations</code> to be populated.</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">translate</span><span class="token punctuation">(</span><span class="token string">'Go to homepage'</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-trigger">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">trigger(<span class="param">type</span>, <span class="param">node</span>)</code>
+    </h4>
+
+    <p>Triggers event of <code>type</code> on <code>node</code>. Returns <code>false</code> if the event default was
+prevented, otherwise <code>true</code>.</p>
+<pre><code><span class="token function">trigger</span><span class="token punctuation">(</span><span class="token string">'activate'</span><span class="token punctuation">,</span> node<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Alternatively the first argument may be an object with a <code>type</code> property, and
+optionally <code>detail</code>, which must be an object, and <code>bubbles</code>, <code>cancelable</code> and
+<code>composed</code> options, which determine the behaviour of the event.</p>
+<pre><code><span class="token function">trigger</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    type<span class="token operator">:</span>       <span class="token string">'activate'</span><span class="token punctuation">,</span>
+    detail<span class="token operator">:</span>     <span class="token punctuation">{</span><span class="token operator">...</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+    bubbles<span class="token operator">:</span>    <span class="token boolean">true</span><span class="token punctuation">,</span>
+    cancelable<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    composed<span class="token operator">:</span>   <span class="token boolean">false</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> node<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-values-1">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">values(<span class="param"></span>)</code>
+    </h4>
+
+    <p>Alias of <code>Object.values()</code>.</p>
+
+</details-toggle>
+
+
+
+        
+
+<details-toggle class="function-details-toggle" id="function-px">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">px(<span class="param">value</span>)</code>
+    </h4>
+
+    <p>Takes a number in pixels or a string of the form <code>&#39;10px&#39;</code>, <code>&#39;10em&#39;</code>, <code>&#39;10rem&#39;</code>,
+<code>&#39;100vw&#39;</code>, <code>&#39;100vh&#39;</code>, <code>&#39;100vmin&#39;</code> or <code>&#39;100vmax&#39;</code>, and returns a numeric value
+in pixels.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-em">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">em(<span class="param">value</span>)</code>
+    </h4>
+
+    <p>Takes numeric value in px, or CSS length of the form <code>&#39;10px&#39;</code>, and returns
+a numeric value in <code>em</code>, eg. <code>0.625</code>. Depends on the user defined browser
+<code>font-size</code>.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-rem">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">rem(<span class="param">value</span>)</code>
+    </h4>
+
+    <p>Takes numeric value in px, or CSS length of the form <code>&#39;10px&#39;</code>, and returns
+a numeric value in <code>rem</code>, eg. <code>0.625</code>. Depends on the <code>font-size</code> of the
+documentElement.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-vw">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">vw(<span class="param">value</span>)</code>
+    </h4>
+
+    <p>Takes number in pixels or CSS length of the form <code>&#39;10em&#39;</code> and returns a
+numeric value in <code>vw</code>, eg. <code>120</code>. Depends on the width of the viewport at
+render time.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-vh">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">vh(<span class="param">value</span>)</code>
+    </h4>
+
+    <p>Takes number in pixels or CSS length of the form <code>&#39;10em&#39;</code> and returns a
+numeric value in <code>vh</code>, eg. <code>120</code>. Depends on the height of the viewport at
+render time.</p>
+
+</details-toggle>
+
+
+
+        <!--h3>Adding functions to the template scope</h3>
+
+        <p>The scope is extensible. You may assign your own objects and functions.
+        This must be done before templates are compiled and cached.</p-->
+    </div>
+
+    <section class="x1 4x @2-x2 x-stretch" id="template-expressions">
+        
+
+<h2 class="text-02" id="template-expressions">Template expressions</h2>
+<p>How evaluated expressions are rendered into the DOM depends upon their type.</p>
+<p>Promises are resolved before they render, arrays are flattened and joined
+without spaces or commas, and streams are re-rendered every time they emit a new
+value.</p>
+<p>Literal flattens nested collections – a <em>promise</em> of a <em>stream</em> of <em>arrays</em> of
+<em>strings</em> will render as a string as its values arrive.</p>
+<p>False-y values, other than <code>false</code> itself, don’t render at all, so expressions
+may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
+<table class="striped-table x-bleed">
+    <thead>
+        <tr>
+            <th style="width:20%;">Type</th>
+            <th>Expression</th>
+            <th style="width:30%;">Renders as</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>undefined</th>
+            <th><code>${ undefined }</code></th>
+            <td>
+                <template is="literal-template">${ undefined }</template>
+            </td>
+        </tr>
+        <tr>
+            <th>null</th>
+            <th><code>${ null }</code></th>
+            <td>
+                <template is="literal-template">${ null }</template>
+            </td>
+        </tr>
+        <tr>
+            <th>NaN</th>
+            <th><code>${ NaN }</code></th>
+            <td>
+                <template is="literal-template">${ NaN }</template>
+            </td>
+        </tr>
+        <tr>
+            <th>String</th>
+            <th><code>${ 'Hello' }</code></th>
+            <td>
+                <template is="literal-template">${ 'Hello' }</template>
+            </td>
+        </tr>
+        <tr>
+            <th>Boolean</th>
+            <th><code>${ true }, ${ false }</code></th>
+            <td>
+                <template is="literal-template">${ true }, ${ false }</template>
+            </td>
+        </tr>
+        <tr>
+            <th>Number</th>
+            <th><code>${ 100.3 }</code></th>
+            <td>
+                <template is="literal-template">${ 100.3 }</template>
+            </td>
+        </tr>
+        <tr>
+            <th>Infinity</th>
+            <th><code>${ Infinity }, ${ -Infinity }</code></th>
+            <td>
+                <template is="literal-template">${ Infinity }, ${ -Infinity }</template>
+            </td>
+        </tr>
+        <tr>
+            <th>Function</th>
+            <th><code>${ function name(param) {} }</code></th>
+            <td>
+                <template is="literal-template">${ function name(param) {} }</template>
+            </td>
+        </tr>
+        <tr>
+            <th>Arrow</th>
+            <th><code>${ (param) => {} }</code></th>
+            <td>
+                <template is="literal-template">${ (param) => {} }</template>
+            </td>
+        </tr>
+        <tr>
+            <th>RegExp</th>
+            <th><code>${ /^regexp/ }</code></th>
+            <td>
+                <template is="literal-template">${ /^regexp/ }</template>
+            </td>
+        </tr>
+        <tr>
+            <th>Symbol</th>
+            <th><code>${ Symbol('name') }</code></th>
+            <td>
+                <template is="literal-template">${ Symbol('name') }</template>
+            </td>
+        </tr>
+        <tr>
+            <th>Array</th>
+            <th><code>${ [0, 1, 2, 3] }</code></th>
+            <td>
+                <template is="literal-template">${ [0, 1, 2, 3] }</template>
+            </td>
+        </tr>
+        <tr>
+            <th>Object</th>
+            <th><code>${ { property: 'value' } }</code></th>
+            <td>
+                <template is="literal-template">${ { property: 'value' } }</template>
+            </td>
+        </tr>
+        <tr>
+            <th>Node</th>
+            <th><code>${ document.createTextNode('Text') }</code></th>
+            <td>
+                <template is="literal-template">${ document.createTextNode('Text') }</template>
+            </td>
+        </tr>
+        <tr>
+            <th>Promise</th>
+            <th><code>${ Promise.resolve('promise') }</code></th>
+            <td>
+                <template is="literal-template">${ Promise.resolve('promise') }</template>
+            </td>
+        </tr>
+        <tr>
+            <th>Stream</th>
+            <th><code>${ events('pointermove', body)<br/>
+            &nbsp;&nbsp;.map((e) => e.pageX.toFixed(1)) }</code></th>
+            <td>
+                <template is="literal-template">${ events('pointermove', body).map((e) => e.pageX.toFixed(1)) }</template>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+    </section>
+
+    
+<nav>
+    <details-toggle class="nav-details-toggle">
+        <button slot="summary" class="nav-thumb thumb">
+            <span class="open-hidden">Show</span><span class="closed-hidden">Hide</span> navigation
+            <svg viewbox="0 0 18 18">
+                <line class="stroke" x1="4.5" x2="13.5" y1="6"  y2="6"  />
+                <line class="stroke" x1="4.5" x2="13.5" y1="9"  y2="9"  />
+                <line class="stroke" x1="4.5" x2="13.5" y1="12" y2="12" />
+            <svg>
+        </button>
+        <a class=" nav-button button block" href="/literal/">
+    Literal
+    <template is="literal-template">
+        ${ Stream
+            .merge(events('dom-navigate', window), {})
+            .map((e) => (
+                window.location.pathname === element.pathname
+                && window.location.hash === element.hash
+            ))
+            .reduce((previous, t) => {
+                console.log(t);
+                if (t === previous) {
+                    return t;
+                }
+                else if (t) {
+                    element.classList.add('located');
+                }
+                else {
+                    element.classList.remove('located');
+                }
+
+                return t;
+           }, false), ''
+       }
+    </template>
+</a>
+<a class="l1-nav-button nav-button button block" href="/literal/literal-template/">
+    <code>literal-template</code>
+    <template is="literal-template">
+        ${ Stream
+            .merge(events('dom-navigate', window), {})
+            .map((e) => (
+                window.location.pathname === element.pathname
+                && window.location.hash === element.hash
+            ))
+            .reduce((previous, t) => {
+                console.log(t);
+                if (t === previous) {
+                    return t;
+                }
+                else if (t) {
+                    element.classList.add('located');
+                }
+                else {
+                    element.classList.remove('located');
+                }
+
+                return t;
+           }, false), ''
+       }
+    </template>
+</a>
+
+<a class="l1-nav-button nav-button button block" href="/literal/literal-element/">
+    <code>literal-element</code>
+    <template is="literal-template">
+        ${ Stream
+            .merge(events('dom-navigate', window), {})
+            .map((e) => (
+                window.location.pathname === element.pathname
+                && window.location.hash === element.hash
+            ))
+            .reduce((previous, t) => {
+                console.log(t);
+                if (t === previous) {
+                    return t;
+                }
+                else if (t) {
+                    element.classList.add('located');
+                }
+                else {
+                    element.classList.remove('located');
+                }
+
+                return t;
+           }, false), ''
+       }
+    </template>
+</a>
+
+<a class="l1-nav-button nav-button button block" href="/literal/templates/">
+    Templates
+    <template is="literal-template">
+        ${ Stream
+            .merge(events('dom-navigate', window), {})
+            .map((e) => (
+                window.location.pathname === element.pathname
+                && window.location.hash === element.hash
+            ))
+            .reduce((previous, t) => {
+                console.log(t);
+                if (t === previous) {
+                    return t;
+                }
+                else if (t) {
+                    element.classList.add('located');
+                }
+                else {
+                    element.classList.remove('located');
+                }
+
+                return t;
+           }, false), ''
+       }
+    </template>
+</a>
+
+<a class="l1-nav-button nav-button button block" href="/literal/templates/#template-scope">
+    Template scope
+    <template is="literal-template">
+        ${ Stream
+            .merge(events('dom-navigate', window), {})
+            .map((e) => (
+                window.location.pathname === element.pathname
+                && window.location.hash === element.hash
+            ))
+            .reduce((previous, t) => {
+                console.log(t);
+                if (t === previous) {
+                    return t;
+                }
+                else if (t) {
+                    element.classList.add('located');
+                }
+                else {
+                    element.classList.remove('located');
+                }
+
+                return t;
+           }, false), ''
+       }
+    </template>
+</a>
+
+<a class="l1-nav-button nav-button button block" href="/literal/templates/#template-expressions">
+    Template expressions
+    <template is="literal-template">
+        ${ Stream
+            .merge(events('dom-navigate', window), {})
+            .map((e) => (
+                window.location.pathname === element.pathname
+                && window.location.hash === element.hash
+            ))
+            .reduce((previous, t) => {
+                console.log(t);
+                if (t === previous) {
+                    return t;
+                }
+                else if (t) {
+                    element.classList.add('located');
+                }
+                else {
+                    element.classList.remove('located');
+                }
+
+                return t;
+           }, false), ''
+       }
+    </template>
+</a>
+
+
+
+    </details-toggle>
+</nav>
+
+    
+<hr class="x1 4x @2-x2 x-stretch" />
+
+<div class="x1 4x @2-x2 x-stretch y-start">
+    <p class="text-10">
+    Built by <a href="http://stephen.band/">Stephen Band</a> for
+    <a href="https://cruncher.ch"><img style="width: 1.366666667em; display: inline-block; vertical-align: bottom; margin-top: -0.1em; margin-bottom: -0.1em;" src="https://cruncher.ch/static/images/logo.svg" alt="Cruncher logo"/> Cruncher</a>.
+    </p>
+
+    <p class="text-10">
+    Documentation set in <a href="https://www.swisstypefaces.com/fonts/euclid/">Euclid</a>
+    and <a href="https://github.com/evilmartians/mono">Martian Mono</a>. Fonts
+    used for documentation not included as part of the license covering the
+    use of <code>Literal</code>.
+    </p>
+</div>
+
+    
+<footer class="x1 4x @1-6x @2-7x @3-9x 4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid grid footer">
+    <div class="x1 4x @1-2x @2-x2 x-stretch y-start">
+        <h3>Elements</h3>
+        <a class="block" href="https://stephen.band/slide-show/"><code>&lt;slide-show&gt;</code></a>
+        <a class="block" href="https://stephen.band/details-toggle/"><code>&lt;details-toggle&gt;</code></a>
+        <a class="block" href="https://stephen.band/form-elements/rotary-input/"><code>&lt;rotary-input&gt;</code></a>
+        <a class="block" href="https://stephen.band/form-elements/range-input/"><code>&lt;range-input&gt;</code></a>
+        <a class="block" href="https://stephen.band/form-elements/y-input/"><code>&lt;y-input&gt;</code></a>
+        <a class="block" href="https://stephen.band/form-elements/xy-input/"><code>&lt;xy-input&gt;</code></a>
+        <a class="block" href="https://stephen.band/form-elements/number-control/"><code>&lt;number-control&gt;</code></a>
+        <a class="block" href="https://stephen.band/form-elements/select-control/"><code>&lt;select-control&gt;</code></a>
+        <a class="block" href="https://stephen.band/literal/literal-element/"><code>&lt;literal-element&gt;</code></a>
+        <a class="block" href="https://stephen.band/literal/literal-template/"><code>&lt;literal-template&gt;</code></a>
+    </div>
+
+    <div class="x1 4x @1-2x @1-x3 @2-x4 x-stretch y-start">
+        <h3>Tools</h3>
+        <a class="block" href="https://stephen.band/font-size/">Font-size calculator</a>
+    </div>
+</footer>
+
+    <script type="module" src="https://stephen.band/literal/documentation/build/module.js"></script>
+
+
+    <script type="module">
+        import '../literal-template/module.js';
+    </script>
+</body>

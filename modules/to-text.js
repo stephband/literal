@@ -1,14 +1,18 @@
 
 /**
-Template tags
+Template expressions
 
-Template tags may contain any valid JavaScript expression. How their evaluated
-values are rendered into the DOM depends upon their type.
+How evaluated expressions are rendered into the DOM depends upon their type.
 
-Promises are resolved before they render, arrays are flattened and joined, and
-streams have their latest value continuously rendered. Literal flattens any
-combination of asynchronous values or collections. A _promise_ of a _stream_ of
-_arrays_ of _strings_ will render as concatted strings as they arrive.
+Promises are resolved before they render, arrays are flattened and joined
+without spaces or commas, and streams are re-rendered every time they emit a new
+value.
+
+Literal flattens nested collections – a _promise_ of a _stream_ of _arrays_ of
+_strings_ will render as a string as its values arrive.
+
+False-y values, other than `false` itself, don't render at all, so expressions
+may evaluate to `undefined` or `null` and go unseen.
 
 <table class="striped-table x-bleed">
     <thead>
@@ -23,112 +27,105 @@ _arrays_ of _strings_ will render as concatted strings as they arrive.
             <th>undefined</th>
             <th><code>${ undefined }</code></th>
             <td>
-                <template id="value-undefined">${ undefined }</template>
-                <literal-include src="#value-undefined"data="{}"></literal-include>
+                <template is="literal-template">${ undefined }</template>
             </td>
         </tr>
         <tr>
             <th>null</th>
             <th><code>${ null }</code></th>
             <td>
-                <template id="value-null">${ null }</template>
-                <literal-include src="#value-null"data="{}"></literal-include>
+                <template is="literal-template">${ null }</template>
             </td>
         </tr>
         <tr>
             <th>NaN</th>
             <th><code>${ NaN }</code></th>
             <td>
-                <template id="value-nan">${ NaN }</template>
-                <literal-include src="#value-nan"data="{}"></literal-include>
+                <template is="literal-template">${ NaN }</template>
             </td>
         </tr>
         <tr>
             <th>String</th>
             <th><code>${ 'Hello' }</code></th>
             <td>
-                <template id="value-string">${ 'Hello' }</template>
-                <literal-include src="#value-string"data="{}"></literal-include>
+                <template is="literal-template">${ 'Hello' }</template>
+            </td>
+        </tr>
+        <tr>
+            <th>Boolean</th>
+            <th><code>${ true }, ${ false }</code></th>
+            <td>
+                <template is="literal-template">${ true }, ${ false }</template>
             </td>
         </tr>
         <tr>
             <th>Number</th>
             <th><code>${ 100.3 }</code></th>
             <td>
-                <template id="value-number">${ 100.3 }</template>
-                <literal-include src="#value-number"data="{}"></literal-include>
+                <template is="literal-template">${ 100.3 }</template>
             </td>
         </tr>
         <tr>
             <th>Infinity</th>
             <th><code>${ Infinity }, ${ -Infinity }</code></th>
             <td>
-                <template id="value-infinity">${ Infinity }, ${ -Infinity }</template>
-                <literal-include src="#value-infinity"data="{}"></literal-include>
+                <template is="literal-template">${ Infinity }, ${ -Infinity }</template>
             </td>
         </tr>
         <tr>
             <th>Function</th>
             <th><code>${ function name(param) {} }</code></th>
             <td>
-                <template id="value-function">${ function name(param) {} }</template>
-                <literal-include src="#value-function"data="{}"></literal-include>
+                <template is="literal-template">${ function name(param) {} }</template>
             </td>
         </tr>
         <tr>
             <th>Arrow</th>
             <th><code>${ (param) => {} }</code></th>
             <td>
-                <template id="value-arrow">${ (param) => {} }</template>
-                <literal-include src="#value-arrow"data="{}"></literal-include>
+                <template is="literal-template">${ (param) => {} }</template>
             </td>
         </tr>
         <tr>
             <th>RegExp</th>
             <th><code>${ /^regexp/ }</code></th>
             <td>
-                <template id="value-regexp">${ /^regexp/ }</template>
-                <literal-include src="#value-regexp"data="{}"></literal-include>
+                <template is="literal-template">${ /^regexp/ }</template>
             </td>
         </tr>
         <tr>
             <th>Symbol</th>
             <th><code>${ Symbol('name') }</code></th>
             <td>
-                <template id="value-symbol">${ Symbol('name') }</template>
-                <literal-include src="#value-symbol"data="{}"></literal-include>
+                <template is="literal-template">${ Symbol('name') }</template>
             </td>
         </tr>
         <tr>
             <th>Array</th>
             <th><code>${ [0, 1, 2, 3] }</code></th>
             <td>
-                <template id="value-array">${ [0, 1, 2, 3] }</template>
-                <literal-include src="#value-array"data="{}"></literal-include>
+                <template is="literal-template">${ [0, 1, 2, 3] }</template>
             </td>
         </tr>
         <tr>
             <th>Object</th>
             <th><code>${ { property: 'value' } }</code></th>
             <td>
-                <template id="value-object">${ { property: 'value' } }</template>
-                <literal-include src="#value-object"data="{}"></literal-include>
+                <template is="literal-template">${ { property: 'value' } }</template>
             </td>
         </tr>
         <tr>
             <th>Node</th>
             <th><code>${ document.createTextNode('Text') }</code></th>
             <td>
-                <template id="value-node">${ document.createTextNode('Text') }</template>
-                <literal-include src="#value-node"data="{}"></literal-include>
+                <template is="literal-template">${ document.createTextNode('Text') }</template>
             </td>
         </tr>
         <tr>
             <th>Promise</th>
             <th><code>${ Promise.resolve('promise') }</code></th>
             <td>
-                <template id="value-promise">${ Promise.resolve('promise') }</template>
-                <literal-include src="#value-promise"data="{}"></literal-include>
+                <template is="literal-template">${ Promise.resolve('promise') }</template>
             </td>
         </tr>
         <tr>
@@ -136,8 +133,7 @@ _arrays_ of _strings_ will render as concatted strings as they arrive.
             <th><code>${ events('pointermove', body)<br/>
             &nbsp;&nbsp;.map((e) => e.pageX.toFixed(1)) }</code></th>
             <td>
-                <template id="value-stream">${ events('pointermove', body).map((e) => e.pageX.toFixed(1)) }</template>
-                <literal-include src="#value-stream"data="{}"></literal-include>
+                <template is="literal-template">${ events('pointermove', body).map((e) => e.pageX.toFixed(1)) }</template>
             </td>
         </tr>
     </tbody>
@@ -147,16 +143,13 @@ _arrays_ of _strings_ will render as concatted strings as they arrive.
 import id       from '../../fn/modules/id.js';
 import overload from '../../fn/modules/overload.js';
 import toType   from '../../fn/modules/to-type.js';
-import { Observer } from '../../fn/observer/observer.js';
+//import { Observer } from '../../fn/observer/observer.js';
 
 // Matches the arguments list in the result of fn.toString()
 const rarrowents = /\s*(\([\w,\s]*\))/;
 const rarguments = /function(?:\s+\w+)?\s*(\([\w,\s]*\))/;
 
 const toText = overload(toType, {
-    /**
-
-    **/
     'boolean': id,
 
     // Print function and parameters
@@ -184,12 +177,7 @@ const toText = overload(toType, {
         'RegExp':  (object) => '/' + object.source + '/',
         'Stream':  () => '',
         'null':    () => '',
-
-        // We do want keys of observer to be read so that changes will cause
-        // updates. TODO: it may be better not to getTarget these things
-        // before sending to toText() ? I mean, ${ DATA } wont be static like
-        // this !
-        'default': (object) => JSON.stringify(Observer(object), null, 2)
+        'default': (object) => JSON.stringify(object, null, 2)
     }),
 
     'default': JSON.stringify

@@ -1,0 +1,36 @@
+
+${ data
+.slice(0, 1)
+.map((doc) => `
+# ${ doc.name }
+
+${ doc.body }
+`) }
+
+${ this.attributes = data.filter((doc) => doc.type === 'attribute'), '' }
+${ this.attributes.length ? '## Attributes' : '' }
+${ Promise.all(this.attributes.map((doc) => include("./entry-markdown.literal", doc))).then((array) => array.join('')) }
+
+${ this.slots = data.filter((doc) => doc.type === 'slot'), '' }
+${ this.slots.length ? '## Slots' : '' }
+${ Promise.all(this.slots.map((doc) => include("./entry-markdown.literal", doc))).then((array) => array.join(''))  }
+
+${ this.properties = data.filter((doc) => doc.type === 'property'), '' }
+${ this.properties.length ? '## Properties' : '' }
+${ Promise.all(this.properties.map((doc) => include("./entry-markdown.literal", doc))).then((array) => array.join(''))  }
+
+${ this.methods = data.filter((doc) => doc.type === 'method'), '' }
+${ this.methods.length ? '## Methods' : '' }
+${ Promise.all(this.methods.map((doc) => include("./entry-markdown.literal", doc))).then((array) => array.join(''))  }
+
+${ this.events = data.filter((doc) => doc.type === 'event'), '' }
+${ this.events.length ? '## Events' : '' }
+${ Promise.all(this.events.map((doc) => include("./entry-markdown.literal", doc))).then((array) => array.join(''))  }
+
+${ this.parts = data.filter((doc) => doc.type === 'part'), '' }
+${ this.parts.length ? '## Parts' : '' }
+${ Promise.all(this.parts.map((doc) => include("./entry-markdown.literal", doc))).then((array) => array.join(''))  }
+
+${ this.vars = data.filter((doc) => doc.type === 'var'), '' }
+${ this.vars.length ? '## Variables' : '' }
+${ Promise.all(this.vars.map((doc) => include("./entry-markdown.literal", doc))).then((array) => array.join(''))  }

@@ -1,0 +1,34 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    ${ include("../documentation/templates/head.literal", "../../package.json") }
+</head>
+
+<body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
+    <header class="x1 4x @2-x2 x-stretch">
+        <h1 class="text-01">Literal <span class="text-06">0.6.2</span></h1>
+    </header>
+
+    ${ include('../documentation/templates/page.literal', (await comments(
+        './module.js'
+    ))) }
+
+    <div class="x1 4x @2-x2 x-stretch y-start">
+        <h2>Literal templates</h2>
+
+        <ul>
+            <li><a href="../templates/#template-scope">Helper functions in the template scope</a></li>
+            <li><a href="../templates/#template-expressions">How template expressions render to the DOM</a></li>
+        </ul>
+    </div>
+
+    ${ include("../templates/nav.literal", "../nav.json") }
+    ${ include('../documentation/templates/credit.literal', '../package.json') }
+    ${ include('../documentation/templates/footer.literal', '../package.json') }
+    ${ include('../documentation/templates/scripts.literal', '../package.json') }
+
+    <script type="module">
+        import './module.js';
+    </script>
+</body>

@@ -1,0 +1,25 @@
+{
+    "label": "Literal",
+    "path":  "/literal/",
+    "paths": {
+        "literal-template/": {
+            "label": "`literal-template`"
+        },
+
+        "literal-element/": {
+            "label": "`literal-element`"
+        },
+
+        "templates/": {
+            "label": "Templates"
+        },
+
+        "templates/#template-scope": {
+            "label": "Template scope"
+        },
+
+        "templates/#template-expressions": {
+            "label": "Template expressions"
+        }
+    }
+}

@@ -1,0 +1,42 @@
+
+code {
+    padding-left:    0.125em;
+    padding-right:   0.125em;
+    margin-left:    -1px;
+    margin-right:   -1px;
+    padding-bottom:  0.125em;
+    padding-top:     0;
+    border-radius:   0.35em;
+    word-spacing:   -0.125em;
+    white-space:     nowrap;
+    letter-spacing: -0.0125em;
+}
+
+code > .params {
+    color:#46789a;
+    font-weight: 400;
+}
+
+code.block,
+pre > code {
+    display: block;
+    overflow: auto;
+
+    padding-left:   0.84em;
+    padding-top:    0.56em;
+    padding-bottom: 0.56em;
+    padding-right:  0.84em;
+    margin-left:   -0.84em;
+    margin-right:  -0.84em;
+    width: calc(100% + 0.84em + 0.84em);
+
+    box-shadow: inset -18px 4px 110px -20px rgba(0,0,0,0.1);
+    color: var(--slate2);
+    background-color: var(--slate);
+    border-radius: 0.35em;
+}
+
+pre,
+code.block {
+    white-space: pre;
+}

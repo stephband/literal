@@ -1,0 +1,10 @@
+
+a:not([class]) {
+    color: var(--navy);
+    text-decoration: none;
+}
+
+a:not([class]):hover {
+    color: var(--blue);
+    text-decoration: underline;
+}

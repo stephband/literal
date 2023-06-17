@@ -1,0 +1,32 @@
+<a class="${ data.level && ('l' + data.level + '-nav-button') } nav-button button block" href="${ data.path }">
+    ${ data.label && markdown(data.label) }
+    <template is="literal-template">
+        \${ Stream
+            .merge(events('dom-navigate', window), {})
+            .map((e) => (
+                window.location.pathname === element.pathname
+                && window.location.hash === element.hash
+            ))
+            .reduce((previous, t) => {
+                console.log(t);
+                if (t === previous) {
+                    return t;
+                }
+                else if (t) {
+                    element.classList.add('located');
+                }
+                else {
+                    element.classList.remove('located');
+                }
+
+                return t;
+           }, false), ''
+       }
+    </template>
+</a>
+${ data.paths && entries(data.paths).map((entry) =>
+    include('./nav-section.literal', assign(entry[1], {
+        path:  data.path + entry[0],
+        level: (data.level || 0) + 1
+    }))
+) }

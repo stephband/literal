@@ -3,21 +3,18 @@
 include(src, data)
 
 Includes a template identified by `src`, passing in an object to render in that
-template as `data`. Most often, `src` will be a reference to the id of another
-template in the DOM.
+template as `data`. In production it is recommended that `src` is a fragment
+identifier referring to the id of a template already in the DOM:
 
-```html
-<div>
-    <h2>The thing</h2>
-    ${ include('#another-template', data.thing) }
-</div>
+```js
+${ include('#another-template', data) }
 ```
 
-The `include` function is partially applicable, making it suitable to use for
-mapping over an array to return an array of rendered templates.
+The `include` function is partially applicable, making it easy to use for
+looping over an array to return an array of rendered templates:
 
-```html
-<ul>${ data.array.map(include('#li')) }</ul>
+```js
+${ data.array.map(include('#list-item')) }
 ```
 **/
 

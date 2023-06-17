@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    ${ include("../documentation/templates/head.literal", "../package.json") }
+
+    <link rel="stylesheet" href="../literal-include/module.css" />
+</head>
+
+<body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
+    <header class="x1 4x @2-x2 x-stretch">
+        <h1 class="text-01">Literal <span class="text-06">0.6.2</span></h1>
+    </header>
+
+    <section class="x1 4x @2-x2 x-stretch" id="template-scope">
+        ${ include('../documentation/templates/entry.literal', (await comments(
+            '../modules/library.js'
+        ))[0]) }
+    </section>
+
+    <div class="x1 4x @1-x4 @1-3x @1-y3 @2-x5 x-stretch y-start">
+        <h3>Objects</h3>
+
+        ${ (await comments(
+            '../modules/renderer.js',
+            '../modules/define-element.js',
+            '../../fn/modules/nothing.js',
+        ))
+        .filter((doc) => (doc.type === 'selector'))
+        //.sort(by(get('name')))
+        .map((doc) => include('../documentation/templates/entry.literal', doc)) }
+    </div>
+
+    <div class="x1 4x @1-3x @1-y3 @2-x2 x-stretch y-start">
+        <h3>Functions</h3>
+
+        ${ (await comments(
+            '../../fn/modules/by.js',
+            '../../fn/modules/clamp.js',
+            '../../fn/modules/denormalise.js',
+            '../../fn/modules/equals.js',
+            '../../fn/modules/id.js',
+            '../../fn/modules/is-defined.js',
+            '../../fn/modules/last.js',
+            '../../fn/modules/matches.js',
+            '../../fn/modules/noop.js',
+            '../../fn/modules/normalise.js',
+            '../../fn/modules/nothing.js',
+            '../../fn/modules/overload.js',
+            '../../fn/modules/slugify.js',
+            '../../fn/modules/stream.js',
+            '../../fn/modules/sum.js',
+            //'../fn/observer/observe.js',
+            '../../dom/modules/delegate.js',
+            '../../dom/modules/rect.js',
+            '../../dom/modules/trigger.js',
+            '../modules/library.js',
+            '../modules/library-dom.js',
+            '../modules/library/include.js',
+            '../modules/library/paramify.js',
+            '../modules/library/print.js'
+        ))
+        .filter((doc) => (doc.type === 'function' || doc.type === 'constructor'))
+        .sort(by((entry) => entry.name.toLowerCase()))
+        .map((doc) => include('../documentation/templates/entry.literal', doc)) }
+
+        ${ (await comments(
+            '../../dom/modules/parse-length.js'
+        ))
+        .filter((doc) => (doc.type === 'function' || doc.type === 'constructor') && doc.name !== 'vmin' && doc.name !== 'vmax')
+        .map((doc) => include('../documentation/templates/entry.literal', doc)) }
+
+        <!--h3>Adding functions to the template scope</h3>
+
+        <p>The scope is extensible. You may assign your own objects and functions.
+        This must be done before templates are compiled and cached.</p-->
+    </div>
+
+    <section class="x1 4x @2-x2 x-stretch" id="template-expressions">
+        ${ (await comments(
+            '../modules/to-text.js'
+        )).map((doc) => include('../documentation/templates/entry.literal', doc)) }
+    </section>
+
+    ${ include("../templates/nav.literal", "../nav.json") }
+    ${ include('../documentation/templates/credit.literal', '../package.json') }
+    ${ include('../documentation/templates/footer.literal', '../package.json') }
+    ${ include('../documentation/templates/scripts.literal', '../package.json') }
+
+    <script type="module">
+        import '../literal-template/module.js';
+    </script>
+</body>

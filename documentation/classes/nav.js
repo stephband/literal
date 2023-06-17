@@ -1,0 +1,14 @@
+
+import { clamp } from '../../../fn/modules/clamp.js';
+import events    from '../../../dom/modules/events.js';
+
+
+events({ type: 'scroll', capture: true }, window)
+.reduce((r, e) => {
+    const scrollingElement = document.scrollingElement;
+    const scrollTop        = clamp(0, 200, scrollingElement.scrollTop);
+    const scrollRatio      = scrollTop / 200;
+    if (scrollRatio === r) { return r; }
+    document.body.style.setProperty('--nav-scroll-ratio', scrollRatio);
+    return scrollRatio;
+});

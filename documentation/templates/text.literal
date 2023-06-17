@@ -1,0 +1,14 @@
+
+${ data[0].type === 'text' ? `
+<section class="x1 3x @1-4x @2-x2 x-stretch y-start">
+<h2 class="text-02" id="${ slugify(data[0].name) }">${ data[0].name }</h2>
+${ data[0].body }
+</section>
+` : `` }
+
+${ data[1].type === 'text' ? `
+<section class="x1 3x @1-4x @2-x2 x-stretch y-start">
+<h2 class="text-02" id="${ slugify(data[1].name) }">${ data[1].name }</h2>
+${ data[1].body }
+</section>
+` : `` }
