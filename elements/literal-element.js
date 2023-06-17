@@ -191,9 +191,10 @@ function assignProperty(properties, attribute) {
     return properties;
 }
 
+// Parse a space or comma-separated list of name:value pairs
 //                                1              2
 const parseNameValues = capture(/^([\w-]+)(?:\s*:\s*(\w+))?\s*;?\s*/, {
-    // Attribute name
+    // Name
     1: (namevalues, captures) => {
         namevalues.push({
             name: captures[1]
@@ -201,6 +202,7 @@ const parseNameValues = capture(/^([\w-]+)(?:\s*:\s*(\w+))?\s*;?\s*/, {
         return namevalues;
     },
 
+    // Value
     2: (namevalues, captures) => {
         const namevalue = last(namevalues);
         namevalue.value = captures[2];

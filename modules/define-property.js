@@ -111,6 +111,11 @@ export default overload((name, descriptor) => typeof descriptor, {
     }),
 
     // Where property is a descriptor object pass it straight back
-    object: arg(1)
+    object: arg(1),
+
+    // Where property is undefined assume it is an attribute
+    undefined: (name) => ({
+        attribute: function(value) { Internals(this).data[name] = value; }
+    })
 });
 
