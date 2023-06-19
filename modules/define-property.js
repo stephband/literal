@@ -106,12 +106,28 @@ export default overload((name, descriptor) => typeof descriptor, {
             default:   null
         }),
 
+        // Todo: should accept JS module only
+        module: (name) => ({
+            attribute: function(value) { this[name] = value; },
+            get:       function() { return Internals(this).renderer.data[name]; },
+            set:       function(value) { resolveAndAssign(name, this, value); },
+            default:   null
+        }),
+
+        // Todo: should accept JSON url only
+        json: (name) => ({
+            attribute: function(value) { this[name] = value; },
+            get:       function() { return Internals(this).renderer.data[name]; },
+            set:       function(value) { resolveAndAssign(name, this, value); },
+            default:   null
+        }),
+
         default: (name, type) => {
             if (type === 'url' || type === 'import') {
-                throw new SyntaxError('Attribute type "' + type + '" should be "src"');
+                throw new SyntaxError('Literal type deprecated in attribute definition "' + name + ':' + type + '", should be "' + name + ':src", "' + name + ':module" or "' + name + ':json"');
             }
 
-            throw new SyntaxError('Attribute type "' + type + '" not supported');
+            throw new SyntaxError('Literal type not supported in attribute definition "' + name + ':' + type + '"');
         }
     }),
 
