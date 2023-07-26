@@ -1,0 +1,21 @@
+
+${ capture(/\.(?:(jpg|jpeg|webp|png|gif|svg)|(mp4|mov|mkv))$/, {
+    // Image
+    1: (data) => (['<@s', '<@m', '<@l', '@l', '@m', '@s'].find((media) => !!data[media]) ?
+        `<picture class="block">
+            ${ data['<@s'] && `<source srcset="${ data['<@s'] }" media="(max-width: ${ fetch('../breakpoints.json').then((res) => res.json()).then((bps) => em(bps[1].width) + 'em') })"/>` }
+            ${ data['<@m'] && `<source srcset="${ data['<@m'] }" media="(max-width: ${ fetch('../breakpoints.json').then((res) => res.json()).then((bps) => em(bps[2].width) + 'em') })"/>` }
+            ${ data['<@l'] && `<source srcset="${ data['<@l'] }" media="(max-width: ${ fetch('../breakpoints.json').then((res) => res.json()).then((bps) => em(bps[3].width) + 'em') })"/>` }
+            ${ data['@l' ] && `<source srcset="${ data['@l']  }" media="(min-width: ${ fetch('../breakpoints.json').then((res) => res.json()).then((bps) => em(bps[3].width) + 'em') })"/>` }
+            ${ data['@m' ] && `<source srcset="${ data['@m']  }" media="(min-width: ${ fetch('../breakpoints.json').then((res) => res.json()).then((bps) => em(bps[2].width) + 'em') })"/>` }
+            ${ data['@s' ] && `<source srcset="${ data['@s']  }" media="(min-width: ${ fetch('../breakpoints.json').then((res) => res.json()).then((bps) => em(bps[1].width) + 'em') })"/>` }
+            ${ data.src   && `<img class="block" src="${ data.src }" draggable="false" alt="${ data.alt }" />` }
+        </picture>` :
+        `<img class="block" src="${ data.src }" ${ data.width && `width="${ px(data.width) }"` } ${ data.height && `height="${ px(data.height) }"` } alt="${ data.alt }" draggable="false" />`
+    ),
+
+    // Video
+    2: (data) => `<video class="block" src="${ data.src }" ${ data.width && `width="${ px(data.width) }"` } ${ data.height && `height="${ px(data.height) }"` } draggable="false"></video>`,
+
+    catch: (data) => console.error('Unhandled extension ' + data.src)
+}, data, data.src) }

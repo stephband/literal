@@ -1,32 +1,42 @@
 
 /** Template scope
 
-Literal templates are rendered in a scope that contains some useful objects and
-functions.
+Literal templates are rendered in a scope that has a few useful functions
+and objects.
 
 The `data` object is the data passed into the template to be rendered:
 
 ```js
-${ data.name }
+${ data }
 ```
 
-Other templates can be included with `include()` function:
+Include another template with the `include()` function:
 
 ```js
-${ include('#some-other-template', data) }
+${ include('#another-template', data.object) }
 ```
 
-Expressions that return promises or streams cause the DOM to be updated
-when values are resolved. The `events()` function, for example, returns a
-mappable stream of events:
+The `include()` function is partially applicable. Include multiple templates by
+mapping over an array:
+
+```js
+${ data.array.map(include('#item-template')) }
+```
+
+Expressions that evaluate as promises or streams cause the DOM to be updated
+when values resolve. The `events()` function returns a mappable stream of
+events:
 
 ```js
 ${ events('hashchange', window).map((e) => location.hash) }
 ```
 
-Some functions are simply built-ins, aliased for brevity (it is nicer to read
-`${ values(data) }` than `${ Object.values(data) }` within the constraints of a
-template).
+Some functions in the scope are simply built-ins aliased for brevity. It is
+nicer to read `${ values(data) }` than `${ Object.values(data) }` in a template.
+(A couple of functions in the scope might seem a bit niche, but are part of
+Literal's implementation anyway, so come at no cost.)
+
+Of course, you can also use any old JavaScript in an expression.
 
 **/
 
@@ -43,7 +53,7 @@ import slugify         from '../../fn/modules/slugify.js';
 import sum             from '../../fn/modules/sum.js';
 import last            from '../../fn/modules/last.js';
 import overload        from '../../fn/modules/overload.js';
-import { Observer, notify }    from '../../fn/observer/observer.js';
+import { Observer, notify } from '../../fn/observer/observer.js';
 import observe         from '../../fn/observer/observe.js';
 import Stream          from '../../fn/modules/stream.js';
 import ClockStream     from '../../fn/modules/stream/clock-stream.js';
@@ -173,13 +183,17 @@ const library = {
 
     Looks up an alternative value stored by `key` in a `window.translations`
     object, if it exists. A super simple translation mechanism, but requires
-    `window.translations` to be populated.
+    `window.translations` to be an object.
 
     ```js
     ${ translate('Go to homepage') }
     ```
     **/
-    translate: function(key) {
+    translate: function translate(key) {
+        if (window.DEBUG && !window.translations) {
+            throw new Error('translate() - no window.translations object found');
+        }
+
         return window.translations && window.translations[key] || key;
     },
 

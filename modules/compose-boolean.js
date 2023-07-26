@@ -4,7 +4,7 @@ import sum from '../../fn/modules/sum.js';
 export default function composeBoolean(values) {
     values = Array.from(values);
 
-    // Ignore space in the attribute
+    // Sum the strings in values[0], ignoring spaces
     values[0] = !!values[0]
         .join(' ')
         .trim()
@@ -12,7 +12,7 @@ export default function composeBoolean(values) {
         .map(Boolean)
         .reduce(sum);
 
-    // But not from the literal values
+    // Sum all values
     return !!values
         .map(Boolean)
         .reduce(sum);

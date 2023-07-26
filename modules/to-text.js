@@ -2,17 +2,16 @@
 /**
 Template expressions
 
-How evaluated expressions are rendered into the DOM depends upon their type.
+Expressions are evaluated, and how they then render depends on their type.
 
-Promises are resolved before they render, arrays are flattened and joined
-without spaces or commas, and streams are re-rendered every time they emit a new
-value.
+Promises are rendered when they resolve; arrays are flattened and joined without
+spaces or commas; streams are rendered whenever they emit a value.
 
-Literal flattens nested collections – a _promise_ of a _stream_ of _arrays_ of
-_strings_ will render as a string as its values arrive.
+Falsy values other than `false` and `0` don't render at all, so expressions
+may evaluate to `undefined`, `null` or `NaN` and go unseen.
 
-False-y values, other than `false` itself, don't render at all, so expressions
-may evaluate to `undefined` or `null` and go unseen.
+Literal flattens nested collections. A _stream_ of _arrays_ of _strings_ will
+render text whenever the stream emits an array of strings.
 
 <table class="striped-table x-bleed">
     <thead>
@@ -60,9 +59,9 @@ may evaluate to `undefined` or `null` and go unseen.
         </tr>
         <tr>
             <th>Number</th>
-            <th><code>${ 100.3 }</code></th>
+            <th><code>${ 123.4 }</code></th>
             <td>
-                <template is="literal-template">${ 100.3 }</template>
+                <template is="literal-template">${ 123.4 }</template>
             </td>
         </tr>
         <tr>
@@ -116,24 +115,24 @@ may evaluate to `undefined` or `null` and go unseen.
         </tr>
         <tr>
             <th>Node</th>
-            <th><code>${ document.createTextNode('Text') }</code></th>
+            <th><code>${ document.createTextNode('Hello') }</code></th>
             <td>
-                <template is="literal-template">${ document.createTextNode('Text') }</template>
+                <template is="literal-template">${ document.createTextNode('Hello') }</template>
             </td>
         </tr>
         <tr>
             <th>Promise</th>
-            <th><code>${ Promise.resolve('promise') }</code></th>
+            <th><code>${ Promise.resolve('yoohoo') }</code></th>
             <td>
-                <template is="literal-template">${ Promise.resolve('promise') }</template>
+                <template is="literal-template">${ Promise.resolve('yoohoo') }</template>
             </td>
         </tr>
         <tr>
             <th>Stream</th>
             <th><code>${ events('pointermove', body)<br/>
-            &nbsp;&nbsp;.map((e) => e.pageX.toFixed(1)) }</code></th>
+            &nbsp;&nbsp;.map((e) => round(e.pageX)) }</code></th>
             <td>
-                <template is="literal-template">${ events('pointermove', body).map((e) => e.pageX.toFixed(1)) }</template>
+                <template is="literal-template">${ events('pointermove', body).map((e) => round(e.pageX)) }</template>
             </td>
         </tr>
     </tbody>

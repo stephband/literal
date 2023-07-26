@@ -1,0 +1,8 @@
+
+<figure class="${ data.class } block">
+    ${ include('./media.literal', data) }
+    <figcaption>
+        ${ data.title ?       '<h4 class="white-fg text-06">' + data.title + '</h4>' : '' }
+        ${ data.description ? '<p class="white-fg text-10">' + data.description + '</p>' : '' }
+    </figcaption>
+</figure>
