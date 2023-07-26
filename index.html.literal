@@ -18,7 +18,7 @@
     ${ include('./documentation/templates/scripts.literal', './package.json') }
 
     <script type="module">
-        import './element-template/module.js';
+        import './literal-element/module.js';
     </script>
 </body>
 </html>

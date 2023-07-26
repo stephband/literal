@@ -1,6 +1,7 @@
 
 import delegate                from '../../dom/modules/delegate.js';
 import events                  from '../../dom/modules/events.js';
+import rect                    from '../../dom/modules/rect.js';
 import request                 from '../../dom/modules/request.js';
 import { trigger }             from '../../dom/modules/trigger.js';
 import { px, em, rem, vw, vh } from '../../dom/modules/parse-length.js';
@@ -43,6 +44,14 @@ export default Object.assign({
     **/
 
     events,
+
+    /**
+    rect(element)
+    An shortcut for `element.getBoundingClientRectangle()`. Returns a DOMRect
+    object with `left`, `top`, `width` and `height` properties.
+    **/
+
+    rect,
 
     /**
     request(method, url)

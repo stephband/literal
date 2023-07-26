@@ -6,8 +6,8 @@
             "label": "`literal-template`"
         },
 
-        "element-template/": {
-            "label": "`element-template`"
+        "literal-element/": {
+            "label": "`literal-element`"
         },
 
         "templates/": {

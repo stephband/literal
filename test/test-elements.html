@@ -10,7 +10,7 @@
         window.DEBUG = { literal: false };
     </script>
 
-    <template id="defined-element-template">
+    <template id="defined-literal-element">
         <link rel="stylesheet" href="./test/defined-element.css" />
         <pre>${ data }</pre>
         <slot>Default content</slot>
@@ -20,7 +20,7 @@
         </pre>
     </template>
 
-    <template is="element-template" tag="declared-element" attributes="attribute; property:property; number:number; string:string; boolean:boolean tokens:tokens data:import">
+    <template is="literal-element" tag="declared-element" attributes="attribute; property:property; number:number; string:string; boolean:boolean tokens:tokens data:import">
         <link rel="stylesheet" href="./test/declared-element.css" />
         <pre>${ data.data }</pre>
         <slot>Default content</slot>
@@ -51,7 +51,7 @@ ${ element.property = 3, '' }
     </section>
 
     <section title="declared-element">
-        <h2><code>&lt;template is="element-template" tag="declared-element"&gt;</code></h2>
+        <h2><code>&lt;template is="literal-element" tag="declared-element"&gt;</code></h2>
         <declared-element data="./test/test-clock.js" attribute="bollocks" property="bollocks" number="4" string="things" boolean tokens="car bicycle">
             Slotted content
         </declared-element>
@@ -69,7 +69,7 @@ ${ element.property = 3, '' }
     import defineElement    from "./modules/define-element.js";
     import { getInternals } from "../dom/modules/element.js";
 
-    const TestElement = defineElement('defined-element', '#defined-element-template', {}, {
+    const TestElement = defineElement('defined-element', '#defined-literal-element', {}, {
         attribute: {
             attribute: function(value) {
                 getInternals(this).data.attribute = value;
@@ -87,7 +87,7 @@ ${ element.property = 3, '' }
         }
     });
 
-    import './element-template/module.js';
+    import './literal-element/module.js';
 
     test('thing', [], function() {
 

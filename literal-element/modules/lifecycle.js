@@ -14,7 +14,7 @@ const resolved = Promise.resolve();
 
 function isDefineableAttribute(attribute) {
     return !ignore[attribute.name];
-    //console.error('<template is="element-template"> Not permitted to define property ' + attribute.localName + '="' + attribute.value + '"');
+    //console.error('<template is="literal-element"> Not permitted to define property ' + attribute.localName + '="' + attribute.value + '"');
 }
 
 function assignProperty(properties, attribute) {
@@ -30,7 +30,7 @@ export default {
         const internals = getInternals(this);
 
         if (!internals.tag) {
-            throw new SyntaxError('<template is="element-template"> must have an attribute tag="name-of-element"');
+            throw new SyntaxError('<template is="literal-element"> must have an attribute tag="name-of-element"');
         }
 
         const attributes = internals.attributes ?

@@ -40,23 +40,26 @@ Of course, you can also use any old JavaScript in an expression.
 
 **/
 
-import id              from '../../fn/modules/id.js';
-import by              from '../../fn/modules/by.js';
-import { clamp }       from '../../fn/modules/clamp.js';
+import id                   from '../../fn/modules/id.js';
+import by                   from '../../fn/modules/by.js';
+import { clamp }            from '../../fn/modules/clamp.js';
 //import capture         from '../../fn/modules/capture.js';
-import equals          from '../../fn/modules/equals.js';
-import matches         from '../../fn/modules/matches.js';
-import nothing         from '../../fn/modules/nothing.js';
-import get             from '../../fn/modules/get-path.js';
-import noop            from '../../fn/modules/noop.js';
-import slugify         from '../../fn/modules/slugify.js';
-import sum             from '../../fn/modules/sum.js';
-import last            from '../../fn/modules/last.js';
-import overload        from '../../fn/modules/overload.js';
+import equals               from '../../fn/modules/equals.js';
+import isDefined            from '../../fn/modules/is-defined.js';
+import matches              from '../../fn/modules/matches.js';
+import nothing              from '../../fn/modules/nothing.js';
+import get                  from '../../fn/modules/get-path.js';
+import noop                 from '../../fn/modules/noop.js';
+import slugify              from '../../fn/modules/slugify.js';
+import sum                  from '../../fn/modules/sum.js';
+import last                 from '../../fn/modules/last.js';
+import normalise            from '../../fn/modules/normalise.js';
+import denormalise          from '../../fn/modules/denormalise.js';
+import overload             from '../../fn/modules/overload.js';
 import { Observer, notify } from '../../fn/observer/observer.js';
-import observe         from '../../fn/observer/observe.js';
-import Stream          from '../../fn/modules/stream.js';
-import ClockStream     from '../../fn/modules/stream/clock-stream.js';
+import observe              from '../../fn/observer/observe.js';
+import Stream               from '../../fn/modules/stream.js';
+import ClockStream          from '../../fn/modules/stream/clock-stream.js';
 
 import paramify        from './library/paramify.js';
 
@@ -75,6 +78,7 @@ const library = {
     ceil: Math.ceil,
 
     clamp,
+    denormalise,
 
     /** entries(object)
     Alias of `Object.entries()`.
@@ -105,6 +109,7 @@ const library = {
 
     get,
     id,
+    isDefined,
 
     /**
     clock(duration)
@@ -142,6 +147,7 @@ const library = {
     last,
     matches,
     noop,
+    normalise,
     nothing,
 
     /* notify(path, object)

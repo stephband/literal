@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Literal template "/Users/stephband/Sites/literal/element-template/index.html.literal" -->
+<!-- Literal template "/Users/stephband/Sites/literal/literal-element/index.html.literal" -->
 
 <html lang="en">
 <head>
@@ -42,18 +42,18 @@
     
 
 <header class="x1 4x @2-x2 x-stretch">
-    <h1 class="text-02 no-wrap" id="template-is-element-template">&lt;template is="element-template"&gt;</h1>
+    <h1 class="text-02 no-wrap" id="template-is-literal-element">&lt;template is="literal-element"&gt;</h1>
 </header>
 
 <section class="x1 4x @2-x2 x-stretch y-start documentation-block block">
     <p>An HTML template that declares a new custom element. Its <code>tag</code> attribute, which
 is required, declares the tag name of the new custom element, and the content of
 the template defines the shadow DOM:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>element-template<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>dom-clock<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>dom-clock<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>time</span><span class="token punctuation">></span></span>${ clock(1).map(floor) } seconds<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>time</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 </code></pre>
-<template is="element-template" tag="dom-clock" attributes="interval:number">
+<template is="literal-element" tag="dom-clock" attributes="interval:number">
     <time>${ clock(data.interval).map(floor) } seconds</time>
 </template>
 
@@ -66,7 +66,7 @@ that help do this sort of thing). The declared element may now be written:</p>
 <p>Now for the sake of argument, let’s say we want to give <code>&lt;dom-clock&gt;</code> an
 <code>interval</code> attribute, and make it available as a number inside the template
 scope:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>element-template<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>dom-clock<span class="token punctuation">"</span></span> <span class="token attr-name">attributes</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>interval:number<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>dom-clock<span class="token punctuation">"</span></span> <span class="token attr-name">attributes</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>interval:number<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>time</span><span class="token punctuation">></span></span>${ clock(data.interval).map(floor) } seconds<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>time</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 </code></pre>
@@ -126,7 +126,7 @@ the attribute and type of value of the property:</p>
 </ul>
 <p>Attribute values are available inside the template scope as properties of
 <code>data</code>:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>element-template<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>my-carousel<span class="token punctuation">"</span></span> <span class="token attr-name">attributes</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>loop:boolean controls:tokens<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>my-carousel<span class="token punctuation">"</span></span> <span class="token attr-name">attributes</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>loop:boolean controls:tokens<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Looping is ${ data.loop ? 'on' : 'off' }.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Play button is ${ data.controls.includes('play') ? 'shown' : 'hidden' }.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
@@ -143,7 +143,7 @@ the attribute and type of value of the property:</p>
 
     <p>Imports a JS module. The module’s <code>default</code> export is the element’s
 lifecycle, and its named exports are added to the template scope.</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>element-template<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>...<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./path/to/module.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>...<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./path/to/module.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
 </code></pre>
 <p>And in <code>module.js</code>:</p>
 <pre><code class="language-js"><span class="token comment">// Export lifecycle</span>
@@ -167,7 +167,7 @@ lifecycle, and its named exports are added to the template scope.</p>
 
     <p>A list of stylesheets urls. They are loaded before the element is defined,
 preventing a flash of unstyled content.</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>element-template<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>...<span class="token punctuation">"</span></span> <span class="token attr-name">stylesheets</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./path/to/style1.css ./path/to/style2.css<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>...<span class="token punctuation">"</span></span> <span class="token attr-name">stylesheets</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./path/to/style1.css ./path/to/style2.css<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
 </code></pre>
 
 </details-toggle>
@@ -249,8 +249,8 @@ preventing a flash of unstyled content.</p>
     </template>
 </a>
 
-<a class="l1-nav-button nav-button button block" href="/literal/element-template/">
-    <code>element-template</code>
+<a class="l1-nav-button nav-button button block" href="/literal/literal-element/">
+    <code>literal-element</code>
     <template is="literal-template">
         ${ Stream
             .merge(events('dom-navigate', window), {})
@@ -391,7 +391,7 @@ preventing a flash of unstyled content.</p>
         <a class="block" href="https://stephen.band/form-elements/xy-input/"><code>&lt;xy-input&gt;</code></a>
         <a class="block" href="https://stephen.band/form-elements/number-control/"><code>&lt;number-control&gt;</code></a>
         <a class="block" href="https://stephen.band/form-elements/select-control/"><code>&lt;select-control&gt;</code></a>
-        <a class="block" href="https://stephen.band/literal/element-template/"><code>&lt;element-template&gt;</code></a>
+        <a class="block" href="https://stephen.band/literal/literal-element/"><code>&lt;literal-element&gt;</code></a>
         <a class="block" href="https://stephen.band/literal/literal-template/"><code>&lt;literal-template&gt;</code></a>
     </div>
 
