@@ -1,4 +1,6 @@
 
+// Lifecycle for <template is="literal-element">
+
 import nothing          from '../../../fn/modules/nothing.js';
 import { getInternals } from '../../../dom/modules/element.js';
 import defineElement    from '../../modules/define-element.js';
