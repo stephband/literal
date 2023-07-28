@@ -43,11 +43,11 @@ export default {
             internals.src.then((module) => {
                 const scope = assign({}, module);
                 delete scope.default;
-                defineElement(internals.tag, this, module.default || {}, attributes, scope, internals.stylesheets)
+                defineElement(internals.tag, this, module.default || {}, attributes, scope/*, internals.stylesheets */)
             });
         }
         else {
-            defineElement(internals.tag, this, {}, attributes, {}, internals.stylesheets);
+            defineElement(internals.tag, this, {}, attributes, {}/*, internals.stylesheets */);
         }
     }
 }
