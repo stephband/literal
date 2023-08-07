@@ -84,7 +84,7 @@ mapping an array of data objects to template includes:
 import noop             from '../../fn/modules/noop.js';
 import Stream           from '../../fn/modules/stream.js';
 import element, { getInternals as Internals } from '../../dom/modules/element.js';
-import properties, { addLoading, removeLoading } from '../modules/properties.js';
+/*import properties, { addLoading, removeLoading } from '../modules/properties.js';*/
 import requestData      from '../modules/request-data.js';
 import TemplateRenderer from '../modules/renderer-template.js';
 import print            from '../modules/library/print.js';
@@ -117,12 +117,12 @@ function resolveData(value) {
 function requestDataFromValue(template, datas, value) {
     if (typeof value === 'string') {
         if (rpath.test(value)) {
-            addLoading(template);
+            //addLoading(template);
 
             requestData(value)
             .then((data) => datas.push(data))
             .catch((e)   => onerror(e, template))
-            .finally(()  => removeLoading(template));
+            //.finally(()  => removeLoading(template));
         }
         else {
             datas.push(JSON.parse(value));
@@ -137,7 +137,7 @@ function requestDataFromDataset(template, datas, dataset) {
     const keys   = Object.keys(dataset);
     const values = Object.values(dataset);
 
-    addLoading(template);
+    //addLoading(template);
 
     Promise
     .all(values.map(resolveData))
@@ -145,7 +145,7 @@ function requestDataFromDataset(template, datas, dataset) {
         values.reduce((data, value, i) => (data[keys[i]] = value, data), {})
     ))
     .catch((e)   => onerror(e, template))
-    .finally(()  => removeLoading(template));
+    //.finally(()  => removeLoading(template));
 }
 
 const onerror = window.DEBUG ?
@@ -186,9 +186,7 @@ export default element('<template is="literal-template">', {
             requestDataFromDataset(this, datas, this.dataset);
         }
     }
-},
-
-assign({
+}, {
     /**
     data=""
     A path to a JSON file or JS module exporting data to be rendered.
@@ -258,4 +256,4 @@ assign({
             internals.hasData = true;
         }
     }
-}, properties));
+});
