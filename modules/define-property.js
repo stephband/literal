@@ -5,7 +5,7 @@ import nothing              from '../../fn/modules/nothing.js';
 import overload             from '../../fn/modules/overload.js';
 import TokenList            from '../../dom/modules/element/token-list.js';
 import updateTokenList      from '../../dom/modules/element/update-token-list.js';
-import { getInternals as Internals } from '../../dom/modules/element.js';
+import { getInternals }     from '../../dom/modules/element.js';
 /*import { addLoading, removeLoading } from './properties.js';*/
 import requestData          from './request-data.js';
 
@@ -13,7 +13,7 @@ const rpath   = /^\.*\/|^https?:\/\//;
 
 const resolveAndAssign = overload((name, element, value) => typeof value, {
     string: function(name, element, value) {
-        const internals = Internals(element);
+        const internals = getInternals(element);
 
         if (rpath.test(value)) {
             /*addLoading(element);*/
@@ -31,40 +31,40 @@ const resolveAndAssign = overload((name, element, value) => typeof value, {
     },
 
     default: function(name, element, value) {
-        Internals(element)[name] = value;
+        getInternals(element)[name] = value;
     }
 });
 
 export default overload((name, descriptor) => typeof descriptor, {
-    // Where property is a string return a descriptor object of that type
+    // Where descriptor is a string return a descriptor object of that type
     string: overload((name, type) => type, {
         attribute: (name) => ({
-            attribute: function(value) { Internals(this).data[name] = value; }
+            attribute: function(value) { getInternals(this).data[name] = value; }
         }),
 
         /* property: (name) => ({
-            get: function() { return Internals(this).data[name].value; },
-            set: function(value) { Internals(this).data[name] = value; }
+            get: function() { return getInternals(this).data[name].value; },
+            set: function(value) { getInternals(this).data[name] = value; }
         }),*/
 
         string: (name) => ({
             attribute: function(value) { this[name] = value; },
-            get:       function() { return Internals(this).data[name]; },
-            set:       function(value) { Internals(this).data[name] = value; },
+            get:       function() { return getInternals(this).data[name]; },
+            set:       function(value) { getInternals(this).data[name] = value; },
             default:   ''
         }),
 
         boolean: (name) => ({
             attribute: function(value) { this[name] = value !== null; },
-            get:       function() { return !!Internals(this).data[name] || false; },
-            set:       function(value) { Internals(this).data[name] = !!value; },
+            get:       function() { return !!getInternals(this).data[name] || false; },
+            set:       function(value) { getInternals(this).data[name] = !!value; },
             default:   false
         }),
 
         number: (name) => ({
             attribute: function(value) { this[name] = value; },
-            get:       function() { return Internals(this).data[name] || 0; },
-            set:       function(value) { Internals(this).data[name] = Number(value); },
+            get:       function() { return getInternals(this).data[name] || 0; },
+            set:       function(value) { getInternals(this).data[name] = Number(value); },
             default:   0
         }),
 
@@ -74,7 +74,7 @@ export default overload((name, descriptor) => typeof descriptor, {
             },
 
             get: function() {
-                const internals = Internals(this);
+                const internals = getInternals(this);
 
                 // Where list exists, return it
                 if (internals[name]) {
@@ -101,7 +101,7 @@ export default overload((name, descriptor) => typeof descriptor, {
 
         src: (name) => ({
             attribute: function(value) { this[name] = value; },
-            get:       function() { return Internals(this).renderer.data[name]; },
+            get:       function() { return getInternals(this).renderer.data[name]; },
             set:       function(value) { resolveAndAssign(name, this, value); },
             default:   null
         }),
@@ -109,7 +109,7 @@ export default overload((name, descriptor) => typeof descriptor, {
         // Todo: should accept JS module only
         module: (name) => ({
             attribute: function(value) { this[name] = value; },
-            get:       function() { return Internals(this).renderer.data[name]; },
+            get:       function() { return getInternals(this).renderer.data[name]; },
             set:       function(value) { resolveAndAssign(name, this, value); },
             default:   null
         }),
@@ -117,7 +117,7 @@ export default overload((name, descriptor) => typeof descriptor, {
         // Todo: should accept JSON url only
         json: (name) => ({
             attribute: function(value) { this[name] = value; },
-            get:       function() { return Internals(this).renderer.data[name]; },
+            get:       function() { return getInternals(this).renderer.data[name]; },
             set:       function(value) { resolveAndAssign(name, this, value); },
             default:   null
         }),
@@ -131,12 +131,12 @@ export default overload((name, descriptor) => typeof descriptor, {
         }
     }),
 
-    // Where property is a descriptor object pass it straight back
+    // Where descriptor is a descriptor object pass it straight back
     object: arg(1),
 
-    // Where property is undefined assume it is an attribute
+    // Where descriptor is undefined assume it is an attribute
     undefined: (name) => ({
-        attribute: function(value) { Internals(this).data[name] = value; }
+        attribute: function(value) { getInternals(this).data[name] = value; }
     })
 });
 

@@ -2,7 +2,7 @@
 import cache                from '../../fn/modules/cache.js';
 import { Observer as Data } from '../../fn/observer/observer.js';
 import create               from '../../dom/modules/create.js';
-import element, { getInternals as Internals } from '../../dom/modules/element.js';
+import element, { getInternals } from '../../dom/modules/element.js';
 import toPrefetchPromise    from '../../dom/modules/element/to-prefetch-promise.js';
 import defineProperty       from './define-property.js';
 import getTemplate          from './get-template.js';
@@ -61,7 +61,7 @@ export default function defineElement(tag, src, lifecycle = {}, props, scope = {
 
     return element(tag, {
         construct: function(shadow) {
-            const internals = Internals(this);
+            const internals = getInternals(this);
             const renderer  = internals.renderer = new TemplateRenderer(template, assign({}, scope, {
                 body:     document.body,
                 element:  this,
@@ -80,7 +80,7 @@ export default function defineElement(tag, src, lifecycle = {}, props, scope = {
         },
 
         connect: function(shadow) {
-            const internals = Internals(this);
+            const internals = getInternals(this);
             const { renderer, data } = internals;
 
             // Give default value to properties not initialised via attributes
