@@ -41,21 +41,21 @@ export default function include(src, data, parameters) {
     // Operate on target to be sure we are not registering gets in
     // parent renderer
     const object = getTarget(data);
-console.log('INCLUDING', src);
+
     if (/^#/.test(src)) {
         const template = getTemplate(src);
         const dataRequest = typeof object === 'string' ? requestData(object) :
             object && object.then ? object :
             null;
-console.log(1);
+
         if (dataRequest) {
             return dataRequest.then((data) => push(template, data, parameters));
         }
-console.log(2);
+
         if (object && object.each) {
             return pipe(template, object, parameters);
         }
-console.log(3);
+
         return push(template, object || {}, parameters);
     }
 
