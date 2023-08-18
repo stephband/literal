@@ -4,7 +4,7 @@
     <meta name="description" content="Documentation for Literal. Literal puts JS into your HTML. Literal defines a custom include element that parses and renders templates written as JS Literals, in a small library under 15kB minified and gzipped." />
     <meta name="viewport" content="width=device-width" />
 
-    <link rel="stylesheet" href="./literal-include/module.css" />
+    <link rel="stylesheet" href="../literal-include/module.css" />
 
     <script>
         window.DEBUG = true;
@@ -82,7 +82,7 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
         <literal-include src="#test" data-one="./test/test.json" data-two="./test/test.json"></literal-include>
         <literal-include src="#test" data="./test/test-bad.json"></literal-include>
         <literal-include src="#test" id="data-later"></literal-include>
-    </section>
+    </section-->
 
     <section title="Values">
         <h3 class="text-03">Values <span class="test-count">(1 test)</span></h3>
@@ -130,7 +130,7 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
         <hr/>
     </section>
 
-    <section title="Binding">
+    <!--section title="Binding">
         <h3 class="text-03">Live binding <span class="test-count">(4 tests)</span></h3>
 
         <template id="clock-template">
@@ -213,9 +213,9 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
     </section-->
 
     <script type="module">
-    import test        from "../fn/modules/test.js";
-    import Renderer     from './modules/renderer.js';
-    import { Observer } from '../fn/observer/observer.js';
+    import test        from "../../fn/modules/test.js";
+    import Renderer     from '../modules/renderer.js';
+    import { Observer } from '../../fn/observer/observer.js';
 /*
     const keys = Object.keys;
 
@@ -409,8 +409,8 @@ import TemplateRenderer from './modules/renderer-template.js';
     });
 
 */
-    import { urls } from './module.js';
-    import './literal-include/module.js';
+    import { urls } from '../module.js';
+    import '../literal-include/module.js';
 
     urls({
         './my-arse-is-on-fire': './test/tracks.json'

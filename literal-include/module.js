@@ -54,13 +54,13 @@ Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a
 import element, { getInternals as Internals } from '../../dom/modules/element.js';
 
 import lifecycle       from '../modules/lifecycle.js';
-import properties, { addLoading, removeLoading } from '../modules/properties.js';
+//import properties, { addLoading, removeLoading } from '../modules/properties.js';
 import getTemplate     from '../modules/get-template.js';
 import requestTemplate from '../modules/request-template.js';
 
 const assign = Object.assign;
 
-export default element('literal-include', lifecycle, assign({
+export default element('literal-include', lifecycle, {
     /**
     data=""
     A path to a JSON file or JS module exporting data to be rendered.
@@ -158,4 +158,4 @@ export default element('literal-include', lifecycle, assign({
             });
         }
     }
-}, properties));
+});
