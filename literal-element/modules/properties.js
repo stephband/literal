@@ -99,7 +99,9 @@ export default {
         }
     },
 
-    /** stylesheets=""
+    /* Prefetching stylesheets DOES NOT PREVENT FOUC. Pants. */
+
+    /* stylesheets=""
 
     A list of stylesheets urls. They are loaded before the element is defined,
     preventing a flash of unstyled content.
@@ -107,12 +109,13 @@ export default {
     ```html
     <template is="literal-element" tag="my-elem" stylesheets="./path/to/style1.css ./path/to/style2.css">
     ```
-    **/
-
+    */
+    /*
     stylesheets: {
         attribute: function(value) {
             const internals = getInternals(this);
             internals.stylesheets = value.split(/\s+/);
         }
     }
+    */
 }

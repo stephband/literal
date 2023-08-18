@@ -21,8 +21,8 @@ When it mutates, the DOM re-renders.
 
 /**
 this
-The current renderer. Normally this should not be touched, and is provided for
-debugging.
+The current renderer. Normally you wouldn't reference this unless you want to
+print information about the template renderer itself.
 **/
 
 // Observers

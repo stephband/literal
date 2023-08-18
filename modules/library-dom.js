@@ -62,23 +62,23 @@ export default Object.assign({
     Uses `fetch()` to send a request to `url`. Returns a promise.
 
     ```js
-    ${ request(method, url).then(...) }
+    ${ request('get', './package.json').then(get('author')) }
     ```
 
     To send data with the request:
 
     ```js
-    ${ request(method, url, data).then(...) }
+    ${ request('post', url, data).then(...) }
     ```
 
-    Where `type` is `"GET"`, `data` is serialised and appended to the URL,
-    otherwise it is sent as a request body.
+    (Where `type` is `"GET"`, `data` is serialised and appended to the URL,
+    otherwise it is sent as a request body.)
 
     A 4th parameter may be a content type string or a headers object
     (in which case it must have a `'Content-Type'` property).
 
     ```js
-    ${ request(method, url, data, headers).then(...) }
+    ${ request('post', url, data, {...}).then(...) }
     ```
     **/
 

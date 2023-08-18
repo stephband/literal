@@ -1,4 +1,6 @@
 
+// Lifecycle for <template is="literal-element">
+
 import nothing          from '../../../fn/modules/nothing.js';
 import { getInternals } from '../../../dom/modules/element.js';
 import defineElement    from '../../modules/define-element.js';
@@ -41,11 +43,11 @@ export default {
             internals.src.then((module) => {
                 const scope = assign({}, module);
                 delete scope.default;
-                defineElement(internals.tag, this, module.default || {}, attributes, scope, internals.stylesheets)
+                defineElement(internals.tag, this, module.default || {}, attributes, scope/*, internals.stylesheets */)
             });
         }
         else {
-            defineElement(internals.tag, this, {}, attributes, {}, internals.stylesheets);
+            defineElement(internals.tag, this, {}, attributes, {}/*, internals.stylesheets */);
         }
     }
 }
