@@ -153,10 +153,11 @@ export default function TemplateRenderer(template, parameters) {
 
     // Get template constants from dataset keys, where `data-name` becomes
     // available as `name` inside the template
-    const consts = keys(template.dataset).join(', ');
+    //const consts = keys(template.dataset).join(', ');
+    // No we wont do this, we do not want data- attributes ending up in scope
 
     // compileNode(renderers, node, template, path, parameters, consts)
-    this.contents = compileNode([], this.content, '#' + template.id, '', parameters, consts);
+    this.contents = compileNode([], this.content, '#' + template.id, '', parameters, '');
 
     // Stop child when template renderer stops
     this.contents.forEach((renderer) => this.done(renderer));

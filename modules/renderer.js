@@ -13,6 +13,8 @@ const assign = Object.assign;
 const keys   = Object.keys;
 const values = Object.values;
 
+let CURRENTRENDERER;
+
 /**
 data
 The main object passed into the template carrying data. This object is special.
@@ -65,24 +67,47 @@ function toParams(params, value) {
 // Values
 
 // TODO: sort out stats
-let VALUES = {};
+let last;
 
-function toValues(last, record) {
+function toValues(values, record) {
     // Check for paths traversed while getting to the end of the
     // path - is this path an extension of the last?
     if (last && last.length < record.path.length && record.path.startsWith(last)) {
-        delete VALUES[last];
+        delete values[last];
     }
 
     if (!(record.path in values)) {
-        VALUES[record.path] = record.value;
-
+        values[record.path] = record.value;
         // Signal to next reduce iteration that we just pushed a
         // path and therefore the next path should be checked as
         // an extension of this one
-        return record.path;
+        last = record.path;
+        //return record.path;
     }
+
+    return values;
 }
+
+
+/*
+function toRecords(records, record) {
+    const last = records[records.length - 1];
+console.log('Records', last, record, last === record);
+    // Check for paths traversed while getting to the end of the
+    // path - is this path an extension of the last?
+    if (last && (last.path.length < record.path.length) && record.path.startsWith(last.path)) {
+console.log('REMOVE');
+        --records.length;
+    }
+
+    if (!(records.find((r) => r.path === record.path))) {
+console.log('ADD', record);
+        records.push(record);
+    }
+
+    return records;
+}
+*/
 
 function renderValue(renderer, args, values, n, object, isRender = false) {
     if (object && typeof object === 'object') {
@@ -140,7 +165,7 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
     }
 }
 
-function observeData(observers, values, data, cue) {
+function observeData(observers, values, data, renderer) {
     let path;
 
     for (path in observers) {
@@ -157,7 +182,7 @@ function observeData(observers, values, data, cue) {
 
     // Create observers for remaining paths
     for (path in values) {
-        observers[path] = observe(path, data, values[path]).each(cue);
+        observers[path] = observe(path, data, values[path]).each(renderer.cue);
     }
 }
 
@@ -229,18 +254,21 @@ assign(Renderer.prototype, {
         // Calls this.render and this.compose
         this.status = 'rendering';
 
-        VALUES = {};
-        const records = Gets(data) ;
-        records.reduce(toValues);
+        // Filter out gets from sub-renderers by keeping track of
+        // current renderer
+        const previousrenderer = CURRENTRENDERER;
+        CURRENTRENDERER = this;
+
+        const records = Gets(data).filter(() => CURRENTRENDERER === this) ;
+        const values  = records.reduce(toValues, {});
 
         // literal the template. Todo: note that we are potentially leaving
         // observers live here, if any data is set during render we may trigger
         // a further render... not what we want. Do we need to pause observers?
-
-        let stats;
+        // Yes probably. A voire.
         if (window.DEBUG) {
             try {
-                stats = this.literal.apply(this, this.getParameters());
+                this.literal.apply(this, this.getParameters());
             }
             catch(e) {
                 e.message += " in " + this.template + " " + this.message;
@@ -248,7 +276,7 @@ assign(Renderer.prototype, {
             }
         }
         else {
-            stats = this.literal.apply(this, this.getParameters());
+            this.literal.apply(this, this.getParameters());
         }
 
         // We may only collect synchronous gets – other templates may use
@@ -257,9 +285,8 @@ assign(Renderer.prototype, {
         // proxy per template instance would be the way to go. Currently
         // observer proxies are shared by all observers. We're not going there.
         records.stop();
-        stats.values = VALUES;
-
-        observeData(observers, stats.values, data, this.cue);
+        observeData(observers, values, data, this);
+        CURRENTRENDERER = previousrenderer;
         this.status = this.status === 'rendering' ? 'idle' : this.status ;
         return this;
     },

@@ -126,7 +126,7 @@ assign(DOMRenderer.prototype, Renderer.prototype, {
 
     update: function() {
         // Stop all nodes, they are about to be recreated. This needs to be done
-        // here as well as render, as update may be called by TemplateRenderer
+        // here as well as in push, as update may be called by TemplateRenderer
         // without going through .push() cueing first. (??)
         this.contents.forEach(stop);
         this.contents.length = 0;

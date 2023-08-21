@@ -15,7 +15,7 @@ export const compiled = {};
 // Last param, message, is for logging/throwing message
 export default function compile(source, scope, params, consts, message = '') {
     const code = '\n'
-        + (consts ? indent + 'const { ' + consts + ' } = data;\n' : '')
+        //+ (consts ? indent + 'const { ' + consts + ' } = data;\n' : '')
         + indent + 'return this.compose`' + source + '`;\n';
 
     // Return cached fn

@@ -11,7 +11,6 @@
     </script>
 
     <template id="template-1">
-    ${ observe('state', data).each((d) => console.log('ST8TE', d)) }
         <p>Template 1 ${ data.value }</p>
     </template>
 
@@ -26,21 +25,16 @@
     <template is="literal-template" data-state="1">
         Literal template
 
-        ${ observe('state', data).each((d) => console.log('STATE', d)) }
-
         ${
             events({ type: 'change', select: '[name="state"]' }, element)
             .each((e) => data.state = e.target.value)
         }
 
-        ${ Stream.merge(
-            observe('state', data),
-            Promise.resolve({})
-        ).map(() => include('#template-' + data.state, {})) }
+        ${ include('#template-' + data.state, data) }
 
-        <input class="masked" type="radio" name="state" value="1" id="state-1" checked="${ data.state === '1' }" />
+        <input class="masked" type="radio" name="state" value="1" id="state-1" checked="${ data.state == '1' }" />
         <label class="black-pill-button pill-button button register-btn log-in-btn" for="state-1">1</label>
-        <input class="masked" type="radio" name="state" value="2" id="state-2" checked="${ data.state === '2' }" />
+        <input class="masked" type="radio" name="state" value="2" id="state-2" checked="${ data.state == '2' }" />
         <label class="black-pill-button pill-button button register-btn log-in-btn" for="state-2">2</label>
     </template>
 
