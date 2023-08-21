@@ -33,8 +33,8 @@ function setAttribute(node, name, value) {
     return 1;
 }
 
-export default function AttributeRenderer(source, consts, template, path, node, name, message, parameters) {
-    Renderer.call(this, source, library, assign({}, parameters, { element: node }), consts, message);
+export default function AttributeRenderer(source, template, path, node, name, message, parameters) {
+    Renderer.call(this, source, library, assign({}, parameters, { element: node }), message);
 
     this.template = template;
     this.path     = path;

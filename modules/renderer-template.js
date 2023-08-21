@@ -96,8 +96,8 @@ function cloneRenderer(renderer) {
     // `this` is the parent templateRenderer of the new renderer
     const node = getDescendant(renderer.path, this.content);
 
-    //source, consts, template, path, node, name, message, parameters
-    const clone = new renderer.constructor(renderer.literal, '', renderer.template, renderer.path, node, renderer.name, '', this.parameters);
+    //source, template, path, node, name, message, parameters
+    const clone = new renderer.constructor(renderer.literal, renderer.template, renderer.path, node, renderer.name, '', this.parameters) ;
 
     // Stop clone when template renderer stops
     this.done(clone);
@@ -148,15 +148,8 @@ export default function TemplateRenderer(template, parameters) {
         this.content = this.template.cloneNode(true) ;
     }
 
-    this.first = this.content.childNodes[0];
-    this.last  = this.content.childNodes[this.content.childNodes.length - 1];
-
-    // Get template constants from dataset keys, where `data-name` becomes
-    // available as `name` inside the template
-    //const consts = keys(template.dataset).join(', ');
-    // No we wont do this, we do not want data- attributes ending up in scope
-
-    // compileNode(renderers, node, template, path, parameters, consts)
+    this.first    = this.content.childNodes[0];
+    this.last     = this.content.childNodes[this.content.childNodes.length - 1];
     this.contents = compileNode([], this.content, '#' + template.id, '', parameters, '');
 
     // Stop child when template renderer stops

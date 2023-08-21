@@ -4,7 +4,7 @@
 import library from './library.js';
 import compile from './compile.js';
 
-/** 
+/**
 compileString()
 **/
 

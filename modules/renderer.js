@@ -193,10 +193,10 @@ Takes a `source` string or optionally a compiled `render` function and creates
 a consumer stream.
 **/
 
-export default function Renderer(source, scope, parameters, consts, message, fn) {
+export default function Renderer(source, scope, parameters, message, fn) {
     this.literal = typeof source === 'string' ?
         // data will be the observer proxy of DATA, which we set in .update()
-        compile(source, scope, 'data, DATA' + (parameters ? ', ' + keys(parameters).join(', ') : ''), consts, message) :
+        compile(source, scope, 'data, DATA' + (parameters ? ', ' + keys(parameters).join(', ') : ''), message) :
         // source is assumed to be the compiled function
         source ;
 

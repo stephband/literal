@@ -5,7 +5,7 @@ import { log }    from './log.js';
 
 
 /**
-compile(source, scope, params, consts, message)
+compile(source, scope, parameters, message)
 Compiles a literal template string to a function.
 **/
 
@@ -13,13 +13,11 @@ Compiles a literal template string to a function.
 export const compiled = {};
 
 // Last param, message, is for logging/throwing message
-export default function compile(source, scope, params, consts, message = '') {
-    const code = '\n'
-        //+ (consts ? indent + 'const { ' + consts + ' } = data;\n' : '')
-        + indent + 'return this.compose`' + source + '`;\n';
+export default function compile(source, scope, parameters, message = '') {
+    const code = '\n' + indent + 'return this.compose`' + source + '`;\n';
 
     // Return cached fn
-    // Todo: factor in keys from scope and params to make this key truly
+    // Todo: factor in keys from scope and parameters to make this key truly
     // unique to all same instances of compiled function
     const key = code;
     if (compiled[key]) { return compiled[key]; }
@@ -28,7 +26,7 @@ export default function compile(source, scope, params, consts, message = '') {
     if (window.DEBUG) {
         try {
             const t0 = window.performance.now();
-            const fn = compileFn(scope, params, code);
+            const fn = compileFn(scope, parameters, code);
             const t1 = window.performance.now();
 
             // Store totals on the compile function
@@ -48,5 +46,5 @@ export default function compile(source, scope, params, consts, message = '') {
     }
 
     // The quick version
-    return compiled[key] = compileFn(scope, params, code);
+    return compiled[key] = compileFn(scope, parameters, code);
 }

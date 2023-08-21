@@ -17,27 +17,27 @@ const assign = Object.assign;
 compileElement()
 **/
 
-function compileChildren(renderers, node, template, path, parameters, consts) {
+function compileChildren(renderers, node, template, path, parameters) {
     const children = node.childNodes;
 
     if (children) {
         let n = -1;
 
         while(children[++n]) {
-            compileNode(renderers, children[n], template, path ? path + pathSeparator + n : '' + n, parameters, consts);
+            compileNode(renderers, children[n], template, path ? path + pathSeparator + n : '' + n, parameters);
         }
     }
 
     return renderers;
 }
 
-function compileAttributes(renderers, node, template, path, parameters, consts) {
+function compileAttributes(renderers, node, template, path, parameters) {
     // Attributes may be removed during parsing so copy the list before looping
     const attributes = Array.from(node.attributes);
     var n = -1, attribute;
 
     while (attribute = attributes[++n]) {
-        compileAttribute(renderers, attribute, template, path, parameters, consts);
+        compileAttribute(renderers, attribute, template, path, parameters);
     }
 }
 
@@ -46,18 +46,18 @@ const compileElement = overload((renderers, node) => node.tagName.toLowerCase(),
     'defs': noop,
 
     // Do not parse the inner DOM of scripts
-    'script': (renderers, node, template, path, parameters, consts) => {
-        compileAttributes(renderers, node, template, path, parameters, consts);
+    'script': (renderers, node, template, path, parameters) => {
+        compileAttributes(renderers, node, template, path, parameters);
         return renderers;
     },
 
     // Ignore templates
     'template': noop,
 
-    'default': (renderers, node, template, path, parameters, consts) => {
+    'default': (renderers, node, template, path, parameters) => {
         // Children first means inner DOM to outer DOM
-        compileAttributes(renderers, node, template, path, parameters, consts);
-        compileChildren(renderers, node, template, path, assign({}, parameters, { element: node }), consts);
+        compileAttributes(renderers, node, template, path, parameters);
+        compileChildren(renderers, node, template, path, assign({}, parameters, { element: node }));
 
         return renderers;
     }
@@ -75,7 +75,7 @@ const compileNode = overload((renderers, node) => toType(node), {
 
     'fragment': compileChildren,
 
-    'text': (renderers, node, template, path, parameters, consts) => {
+    'text': (renderers, node, template, path, parameters) => {
         const string = node.nodeValue;
 
         if (isLiteral(string)) {
@@ -84,7 +84,7 @@ const compileNode = overload((renderers, node) => toType(node), {
                 + '<' + parameters.element.tagName.toLowerCase() + '>'
                 + truncate(32, source);
 
-            renderers.push(new DOMRenderer(source, consts, template, path, node, null, debug, parameters));
+            renderers.push(new DOMRenderer(source, template, path, node, null, debug, parameters));
         }
 
         return renderers;
@@ -92,8 +92,8 @@ const compileNode = overload((renderers, node) => toType(node), {
 
     'doctype': noop,
 
-    'document': (renderers, document, template, path, parameters, consts) => {
-        compileElement(renderers, document.documentElement, template, path, parameters, consts);
+    'document': (renderers, document, template, path, parameters) => {
+        compileElement(renderers, document.documentElement, template, path, parameters);
         return renderers;
     },
 

@@ -14,11 +14,11 @@ import truncate          from './truncate.js';
 
 
 /**
-compileAttributes(renderers, attribute, template, path, consts, debug)
+compileAttributes(renderers, attribute, template, path, debug)
 **/
 
-const compileBoolean = (attribute, template, path, source, parameters, consts, debug) =>
-    new BooleanRenderer(source, consts, template, path, attribute.ownerElement, attribute.localName, debug, parameters);
+const compileBoolean = (attribute, template, path, source, parameters, debug) =>
+    new BooleanRenderer(source, template, path, attribute.ownerElement, attribute.localName, debug, parameters);
 
 const compileAttributeByName = overload(get('localName'), {
     async:          compileBoolean,
@@ -41,38 +41,39 @@ const compileAttributeByName = overload(get('localName'), {
     required:       compileBoolean,
     reversed:       compileBoolean,
     selected:       compileBoolean,
-    // Default is a boolean attribute, but we cant use the key 'default' here
+    // TODO: Default is a boolean attribute, but we cant use the key 'default'
+    // here because of overload() signature
     //default:        compileBoolean,
 
-    checked: (attribute, template, path, source, parameters, consts, debug) =>
-        new CheckedRenderer(source, consts, template, path, attribute.ownerElement, null, debug, parameters),
+    checked: (attribute, template, path, source, parameters, debug) =>
+        new CheckedRenderer(source, template, path, attribute.ownerElement, null, debug, parameters),
 
-    class: (attribute, template, path, source, parameters, consts, debug) =>
-        new TokensRenderer(source, consts, template, path, attribute.ownerElement, 'class', debug, parameters),
+    class: (attribute, template, path, source, parameters, debug) =>
+        new TokensRenderer(source, template, path, attribute.ownerElement, 'class', debug, parameters),
 
-    datetime: function compileDatetime(attribute, template, path, source, parameters, consts, debug) {
+    datetime: function compileDatetime(attribute, template, path, source, parameters, debug) {
         if (window.DEBUG) { console.log('Todo: compile datetime attribute'); }
     },
 
     // Special workaround attribute used in cases where ${} cannot be added
     // directly to the HTML content, such as in <tbody> or <tr>
-    'inner-content': (attribute, template, path, source, parameters, consts, debug) => {
+    'inner-content': (attribute, template, path, source, parameters, debug) => {
         const node = attribute.ownerElement;
         node.removeAttribute(attribute.localName);
-        // source, consts, template, path, node, name, element
-        return new DOMRenderer(decode(source), consts, template, path, node, 'innerHTML', debug, parameters);
+        // source, template, path, node, name, element
+        return new DOMRenderer(decode(source), template, path, node, 'innerHTML', debug, parameters);
     },
 
-    value: (attribute, template, path, source, parameters, consts, debug) =>
-        // source, consts, template, path, node, name, message, parameters
-        new ValueRenderer(source, consts, template, path, attribute.ownerElement, null, debug, parameters),
+    value: (attribute, template, path, source, parameters, debug) =>
+        // source, template, path, node, name, message, parameters
+        new ValueRenderer(source, template, path, attribute.ownerElement, null, debug, parameters),
 
-    default: (attribute, template, path, source, parameters, consts, debug) =>
-        // source, consts, template, path, node, name, message, parameters
-        new AttributeRenderer(source, consts, template, path, attribute.ownerElement, attribute.localName, debug, parameters)
+    default: (attribute, template, path, source, parameters, debug) =>
+        // source, template, path, node, name, message, parameters
+        new AttributeRenderer(source, template, path, attribute.ownerElement, attribute.localName, debug, parameters)
 });
 
-export default function compileAttribute(renderers, attribute, template, path, parameters, consts) {
+export default function compileAttribute(renderers, attribute, template, path, parameters) {
     const source = attribute.value;
     if (!isLiteral(source)) { return; }
 
@@ -82,5 +83,5 @@ export default function compileAttribute(renderers, attribute, template, path, p
         + attribute.localName + '="' + truncate(32, source)
         + '">';
 
-    renderers.push(compileAttributeByName(attribute, template, path, source, parameters, consts, debug));
+    renderers.push(compileAttributeByName(attribute, template, path, source, parameters, debug));
 }

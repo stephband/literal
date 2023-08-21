@@ -234,8 +234,8 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
         [],
         'Error'
     ], function(expects, done) {
-        // source, scope, parameters, consts, errorstring, fn
-        const renderer = new Renderer('Hail ${ data.x ? data.a : data.b }', {}, {}, '', 'TEST', (string) =>
+        // source, scope, parameters, errorstring, fn
+        const renderer = new Renderer('Hail ${ data.x ? data.a : data.b }', {}, {}, 'TEST', (string) =>
             expects(string)
         );
 

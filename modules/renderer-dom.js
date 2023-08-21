@@ -90,7 +90,7 @@ function setContents(first, last, contents, state) {
     return count;
 }
 
-export default function DOMRenderer(source, consts, template, path, node, name, message, parameters) {
+export default function DOMRenderer(source, template, path, node, name, message, parameters) {
     Renderer.call(this, source, library, assign({}, parameters, {
         // If path is empty node is a direct child of a template, but if not
         // element should be set to this text node's parent
@@ -105,7 +105,7 @@ export default function DOMRenderer(source, consts, template, path, node, name, 
         ),
 
         print: (...args) => print(this, ...args)
-    }), consts, message);
+    }), message);
 
     this.template = template;
     this.path     = path;
