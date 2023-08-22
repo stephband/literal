@@ -22,13 +22,11 @@
 <body>
     TEST
 
-    <template is="literal-template" data-state="1">
-        Literal template
+    <template is="literal-template" data-state="1" data-value="Hello">
+        <h2>Literal template</h2>
 
-        ${
-            events({ type: 'change', select: '[name="state"]' }, element)
-            .each((e) => data.state = e.target.value)
-        }
+        ${  events({ type: 'change', select: '[name="state"]' }, element)
+            .each((e) => data.state = e.target.value) }
 
         ${ include('#template-' + data.state, data) }
 

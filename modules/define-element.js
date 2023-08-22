@@ -41,6 +41,27 @@ function assignProperty(properties, entry) {
     return properties;
 }
 
+function parseData(value) {
+        // Object or array
+    return robject.test(value) ? JSON.parse(value) :
+        // Number
+        !Number.isNaN(Number(value)) ? Number(value) :
+        // Boolean
+        value === 'true' ? true :
+        value === 'false' ? false :
+        // String
+        value ;
+}
+
+function getDataFromDataset(dataset, data) {
+    const keys   = Object.keys(dataset);
+    const values = Object.values(dataset);
+
+    values
+    .map(parseData)
+    .reduce((data, value, i) => (data[keys[i]] = value, data), {});
+}
+
 export default function defineElement(tag, src, lifecycle = {}, props, scope = {}) {
     // Assemble properties
     const properties = props ?
@@ -74,7 +95,8 @@ export default function defineElement(tag, src, lifecycle = {}, props, scope = {
             const data = internals.data = {};
 
             // Put raw template content into the host, even though it has not
-            // yet been rendered so that stylesheet links start loading (or do they?)
+            // yet been rendered so that stylesheet links start loading (or do
+            // they?)
             shadow.append(renderer.content);
             lifecycle.construct && lifecycle.construct.call(this, shadow, Data(data), internals);
         },
@@ -90,6 +112,9 @@ export default function defineElement(tag, src, lifecycle = {}, props, scope = {
                     data[name] = properties[name].default;
                 }
             }
+
+            // Get data found in dataset
+            getDataFromDataset(this.dataset, data);
 
             // Set internal data to its observer proxy so that changes to host
             // attributes, which mutate data, now trigger template updates
