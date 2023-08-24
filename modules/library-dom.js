@@ -46,6 +46,9 @@ export default Object.assign({
     **/
 
     events,
+
+    frame: window.requestAnimationFrame,
+
     isValid,
 
     /**
