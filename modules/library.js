@@ -16,28 +16,25 @@ Include another template with the `include()` function:
 ${ include('#another-template', data) }
 ```
 
-The `include()` function is partially applicable. Include multiple templates by
-mapping over an array:
+The `include()` function is partially applicable, making it easy to map an array
+of objects to templates:
 
 ```js
 ${ data.array.map(include('#item-template')) }
 ```
 
 Expressions that evaluate as promises or streams cause the DOM to be updated
-when values resolve. The `events()` function returns a mappable stream of
-events:
+when values resolve. For example the `events()` function returns a mappable
+stream of events:
 
 ```js
 ${ events('hashchange', window).map((e) => location.hash) }
 ```
 
-Some functions in the scope are simply built-ins aliased for brevity. It is
-nicer to read `${ values(data) }` than `${ Object.values(data) }` in a template.
-(A couple of functions in the scope might seem a bit niche, but are part of
-Literal's implementation anyway, so come at no cost.)
-
-Of course, you can also use any old JavaScript in an expression.
-
+Of course, you can also use Any Old JavaScript in an expression. The functions
+in scope have been chosen to make writing and reading templates brief for the
+most common operations. Some functions in the scope are simply aliases of JS
+built-ins given shorter names to make templates shorter to read.
 **/
 
 import id                   from '../../fn/modules/id.js';
@@ -166,18 +163,27 @@ const library = {
 
     /*
     Data(object)
-    Returns the observer data proxy of `object`. Use this proxy to set
-    properties in a way that will be observed by `observe(path, object)`.
+
+    Returns the data proxy of `object`. Use this proxy to set properties in a
+    way that can be observed with `observe(path, object)`.
+
+    Normally this is not needed. It's for advanced use. The `data` object in the
+    scope of the template is already a data proxy and mutations to it are
+    observed by the template renderer.
     */
 
     Data: Observer,
     overload,
 
-    /** round(n, value)
+    /** round(value)
+    Round `value` to the nearest integer.
+    **/
+
+    /** round(value, n)
     Round `value` to the nearest multiple of `n`.
     **/
 
-    round: (n, value) => Math.round(value / n) * n,
+    round: (value, n = 1) => Math.round(value / n) * n,
 
     paramify,
     slugify,

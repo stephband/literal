@@ -60,20 +60,19 @@ and objects.</p>
 <p>Include another template with the <code>include()</code> function:</p>
 <pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#another-template'</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
-<p>The <code>include()</code> function is partially applicable. Include multiple templates by
-mapping over an array:</p>
+<p>The <code>include()</code> function is partially applicable, making it easy to map an array
+of objects to templates:</p>
 <pre><code class="language-js">$<span class="token punctuation">{</span> data<span class="token punctuation">.</span>array<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#item-template'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
 <p>Expressions that evaluate as promises or streams cause the DOM to be updated
-when values resolve. The <code>events()</code> function returns a mappable stream of
-events:</p>
+when values resolve. For example the <code>events()</code> function returns a mappable
+stream of events:</p>
 <pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token string">'hashchange'</span><span class="token punctuation">,</span> window<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> location<span class="token punctuation">.</span>hash<span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
-<p>Some functions in the scope are simply built-ins aliased for brevity. It is
-nicer to read <code>${ values(data) }</code> than <code>${ Object.values(data) }</code> in a template.
-(A couple of functions in the scope might seem a bit niche, but are part of
-Literal’s implementation anyway, so come at no cost.)</p>
-<p>Of course, you can also use any old JavaScript in an expression.</p>
+<p>Of course, you can also use Any Old JavaScript in an expression. The functions
+in scope have been chosen to make writing and reading templates brief for the
+most common operations. Some functions in the scope are simply aliases of JS
+built-ins given shorter names to make templates shorter to read.</p>
 
 
 
@@ -589,9 +588,20 @@ otherwise it is sent as a request body.)</p>
 
 
 
-<details-toggle class="function-details-toggle" id="function-round-1">
+<details-toggle class="function-details-toggle" id="function-round-2">
     <h4 class="function-text text-05" slot="summary">
-        <code class=" language-js">round(<span class="param">n</span>, <span class="param">value</span>)</code>
+        <code class=" language-js">round(<span class="param">value</span>)</code>
+    </h4>
+
+    <p>Round <code>value</code> to the nearest integer.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-round-3">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">round(<span class="param">value</span>, <span class="param">n</span>)</code>
     </h4>
 
     <p>Round <code>value</code> to the nearest multiple of <code>n</code>.</p>
