@@ -24,17 +24,16 @@ ${ data.array.map(include('#item-template')) }
 ```
 
 Expressions that evaluate as promises or streams cause the DOM to be updated
-when values resolve. For example the `events()` function returns a mappable
-stream of events:
+asynchronously as values resolve. For example, `events()` returns a mappable
+stream of events that will update the DOM whenever an event is heard:
 
 ```js
 ${ events('hashchange', window).map((e) => location.hash) }
 ```
 
-Of course, you can also use Any Old JavaScript in an expression. The functions
-in scope have been chosen to make writing and reading templates brief for the
-most common operations. Some functions in the scope are simply aliases of JS
-built-ins given shorter names to make templates shorter to read.
+Of course, any old valid JavaScript can be used in an expression. The functions
+in scope have been chosen to make templates brief to read for some common
+operations. Some are simply aliases of JS built-ins given shorter names.
 **/
 
 import id                   from '../../fn/modules/id.js';

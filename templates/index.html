@@ -65,14 +65,13 @@ of objects to templates:</p>
 <pre><code class="language-js">$<span class="token punctuation">{</span> data<span class="token punctuation">.</span>array<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#item-template'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
 <p>Expressions that evaluate as promises or streams cause the DOM to be updated
-when values resolve. For example the <code>events()</code> function returns a mappable
-stream of events:</p>
+asynchronously as values resolve. For example, <code>events()</code> returns a mappable
+stream of events that will update the DOM whenever an event is heard:</p>
 <pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token string">'hashchange'</span><span class="token punctuation">,</span> window<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> location<span class="token punctuation">.</span>hash<span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
-<p>Of course, you can also use Any Old JavaScript in an expression. The functions
-in scope have been chosen to make writing and reading templates brief for the
-most common operations. Some functions in the scope are simply aliases of JS
-built-ins given shorter names to make templates shorter to read.</p>
+<p>Of course, any old valid JavaScript can be used in an expression. The functions
+in scope have been chosen to make templates brief to read for some common
+operations. Some are simply aliases of JS built-ins given shorter names.</p>
 
 
 
