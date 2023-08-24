@@ -16,44 +16,74 @@ export default Object.assign({
     delegate,
 
     /**
-    events(type, node)
+    events(type, element)
 
-    Returns a mappable stream of events heard on `node`.
+    Returns a mappable stream of events heard on `element`.
 
     ```js
     ${ events('click', element).map((e) => e.target.id) }
     ```
 
-    The first parameter may also be an object with a `type` property. If the
-    object has a `select` property that is a CSS selector, events are delegated
-    from matching targets:
+    The first parameter may alternatively be a select object. It must have a
+    `.type` property.
 
     ```js
-    ${ events({ type: 'click', select: '[name="button"]' }, element)
-       .map((e) => e.target.value) }
+    ${ events({ type: 'click' }, element).map((e) => e.target.id) }
     ```
 
-    Other properties are passed to addEventListener options, for passive and
-    capture phase event binding:
+    The object may contain a number of other properties that select the events
+    received. It supports the standard addEventListener options, for passive and
+    capture phase event binding.
 
     ```js
     ${ events({ type: 'scroll', passive: true, capture true }, window)
        .map((e) => window.scrollTop) }
     ```
 
-    Stopping an event stream removes event listeners. Streams returned from
-    expressions are automatically stopped when their renderers are removed.
+    And a `.select` property, a CSS selector, that filters events to those with
+    targets that match or have a `closest()` ancestor that matches the selector.
+
+    ```js
+    ${ events({ type: 'click', select: '[name="button"]' }, element)
+       .map((e) => e.target.id) }
+    ```
+
+    However, if you need to delegate events it is recommended to use the
+    `delegate()` function, which has the added benefit of direct access to the
+    delegated target.
+
+    ```js
+    ${ events('click', element).each(delegate({
+        '[name="button"]': (target, e) => console.log(target.id),
+        '[name="remove"]': (target, e) => document.getElementById(target.value).remove(),
+        ...
+    })) }
+    ```
+
+    Stopping an event stream removes event listeners.
+
+    ```js
+    ${ events('click', element).stop() }
+    ```
+
+    But streams returned from template expressions, like this one, are stopped
+    automatically when the renderer is stopped, so normally there is no need to
+    worry about managing them.
     **/
 
     events,
 
+    /** frame(fn)
+    Alias of `window.requestAnimationFrame(fn)`. Aliased for brevity inside
+    templates.
+    **/
     frame: window.requestAnimationFrame,
 
     isValid,
 
     /**
     rect(element)
-    An shortcut for `element.getBoundingClientRectangle()`. Returns a DOMRect
+    A shortcut for `element.getBoundingClientRectangle()`. Returns a DOMRect
     object with `left`, `top`, `width` and `height` properties.
     **/
 
