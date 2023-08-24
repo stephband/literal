@@ -65,8 +65,6 @@ function toParams(params, value) {
 }
 
 // Values
-
-// TODO: sort out stats
 let last;
 
 function toValues(values, record) {

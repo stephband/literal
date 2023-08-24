@@ -2,16 +2,16 @@
 /**
 TemplateRenderer(template, parameters)
 
-Import the `TemplateRenderer` constructor from the main module:
+Import the `TemplateRenderer` constructor:
 
 ```js
-import TemplateRenderer from 'https://stephen.band/literal/module.js';
+import TemplateRenderer from './literal/modules/renderer-template.js';
 ```
 
-The `TemplateRenderer` constructor takes a template element, or the `id` of a
-template element, and creates a renderer of a clone of the template's content.
-A renderer manages an asynchronous lifecycle of content renders, updating its
-DOM nodes in response to changing data.
+The `TemplateRenderer` constructor takes a template element (or the `id` of a
+template element), clones the template's content, and returns a renderer that
+renders data into the content. The renderer updates its DOM nodes in response
+to changing data.
 
 ```js
 const renderer = new TemplateRenderer('id');
@@ -220,11 +220,16 @@ assign(TemplateRenderer.prototype, {
 
     /**
     .remove()
-    Removes rendered content from the DOM, place it back in renderer.content.
+    Removes rendered content from the DOM, placing it back in the
+    fragment at `renderer.content`.
     **/
     remove: function() {
-        // Remove last to first and all nodes in between and put them back
-        // in the content fragment
+        // Can't remove if we're already removed
+        if (this.content.firstChild === this.first) {
+            return 0;
+        }
+
+        // Remove first to last and all nodes in between to .content fragment
         const nodes = getNodeRange(this.first, this.last);
         this.content.append.apply(this.content, nodes);
         return nodes.length;
