@@ -30,6 +30,7 @@ import identify          from '../../dom/modules/identify.js';
 import isTextNode        from '../../dom/modules/is-text-node.js';
 import compileNode       from './compile-node.js';
 import removeNodes       from './remove-nodes.js';
+import getNodeRange      from './get-node-range.js';
 import { cue, uncue }    from './cue.js';
 import { pathSeparator } from './constants.js';
 
@@ -219,10 +220,14 @@ assign(TemplateRenderer.prototype, {
 
     /**
     .remove()
-    Removes rendered content from the DOM.
+    Removes rendered content from the DOM, place it back in renderer.content.
     **/
     remove: function() {
-        return removeNodes(this.first, this.last);
+        // Remove last to first and all nodes in between and put them back
+        // in the content fragment
+        const nodes = getNodeRange(this.first, this.last);
+        this.content.append.apply(this.content, nodes);
+        return nodes.length;
     },
 
     /**

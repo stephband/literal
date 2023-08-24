@@ -14,6 +14,7 @@ import removeNodes       from './remove-nodes.js';
 import TemplateRenderer  from './renderer-template.js';
 import { pathSeparator } from './constants.js';
 import print             from './library/print.js';
+import isTextNode from '../../dom/modules/is-text-node.js';
 
 const assign = Object.assign;
 
@@ -65,11 +66,14 @@ function toContent(object) {
         object.content ? toContent(object.content) :
         object ;
 }
-
+/*
 function setContents(first, last, contents, state) {
     let count = 0;
 
     // Remove existing nodes, leaving first and last alone
+    //
+    // BUT!! Some of these might belong to a TemplateRenderer ???? And a
+    // TemplateRenderer can't put them back once they are out of the DOM!!!!
     if (first.nextSibling && last.previousSibling !== first) {
         count += removeNodes(first.nextSibling, last.previousSibling);
     }
@@ -86,6 +90,57 @@ function setContents(first, last, contents, state) {
         first.after.apply(first, nodes);
         count += contents.length;
     }
+
+    return count;
+}
+*/
+function resetContents(first, last, contents, state) {
+    let node = first;
+    let c    = -1;
+    let object, count;
+
+    while (++c < contents.length - 1) {
+        object = contents[c];
+
+        if (typeof object === 'object') {
+            // Object is a renderer
+            if (object instanceof TemplateRenderer) {
+                if (node === object.first) {
+                    // Nodes are already in the right place, skip over them
+                    node = object.last.nextSibling;
+                }
+                else {
+                    count += object.remove();
+                    node.before(toContent(object));
+                    ++count;
+                }
+            }
+            // Object is some other kind of object
+            else {
+                const value = toContent(object);
+                node.before(value);
+                ++count;
+            }
+        }
+        else {
+            if (isTextNode(node) && node !== last) {
+                count += setNodeValue(node, object);
+                node = node.nextSibling;
+            }
+            else {
+                node.before(object);
+            }
+        }
+    }
+
+    while (node && node !== last) {
+        const n = node;
+        node = node.nextSibling;
+        n.remove();
+    }
+
+    // Set last text node, contents[-1] is always a string
+    count += setNodeValue(last, contents[contents.length - 1]);
 
     return count;
 }
@@ -112,8 +167,9 @@ export default function DOMRenderer(source, template, path, node, name, message,
     this.node     = node;
     this.first    = node;
     this.last     = document.createTextNode('');
-    this.first.after(this.last);
     this.contents = [];
+
+    this.first.after(this.last);
 }
 
 assign(DOMRenderer.prototype, Renderer.prototype, {
@@ -144,7 +200,7 @@ assign(DOMRenderer.prototype, Renderer.prototype, {
             pushContents(this.contents, strings[n]);
         }
 
-        this.mutations = setContents(this.first, this.last, this.contents, this.status);
+        this.mutations = resetContents(this.first, this.last, this.contents, this.status);
         return this;
     },
 

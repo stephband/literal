@@ -25,7 +25,7 @@
     <template is="literal-template" data-state="1" data-value="Hello">
         <h2>Literal template</h2>
 
-        ${  events({ type: 'change', select: '[name="state"]' }, element)
+        ${ events({ type: 'change', select: '[name="state"]' }, element)
             .each((e) => data.state = e.target.value) }
 
         ${ include('#template-' + data.state, data) }
@@ -34,6 +34,36 @@
         <label class="black-pill-button pill-button button register-btn log-in-btn" for="state-1">1</label>
         <input class="masked" type="radio" name="state" value="2" id="state-2" checked="${ data.state == '2' }" />
         <label class="black-pill-button pill-button button register-btn log-in-btn" for="state-2">2</label>
+    </template>
+
+    <template is="literal-template" data-default="1" data-value="Hello">
+        <h2>Literal template</h2>
+
+        ${ Stream.merge(
+            [{ type: 'render', target: { value: data.default } }],
+            events({ type: 'change', select: '[name="test-2"]' }, element)
+        ).map((e) => include('#template-' + e.target.value, data)) }
+
+        <input class="masked" type="radio" name="test-2" value="1" id="test-2-value-1" checked="${ data.default == '1' }" />
+        <label class="black-pill-button pill-button button register-btn log-in-btn" for="test-2-value-1">1</label>
+        <input class="masked" type="radio" name="test-2" value="2" id="test-2-value-2" checked="${ data.default == '2' }" />
+        <label class="black-pill-button pill-button button register-btn log-in-btn" for="test-2-value-2">2</label>
+    </template>
+
+    <template is="literal-template" data-default="1" data-value="Hello">
+        <h2>Literal template</h2>
+
+        ${ new Promise((r) => setTimeout(() => r('Async text test'), 400)) }
+
+        ${ Stream.merge(
+            [{ type: 'render', target: { value: data.default } }],
+            events({ type: 'change', select: '[name="test-3"]' }, element)
+        ).map((e) => include('#template-' + e.target.value, data)) }
+
+        <input class="masked" type="radio" name="test-3" value="1" id="test-3-value-1" checked="${ data.default == '1' }" />
+        <label class="black-pill-button pill-button button register-btn log-in-btn" for="test-3-value-1">1</label>
+        <input class="masked" type="radio" name="test-3" value="2" id="test-3-value-2" checked="${ data.default == '2' }" />
+        <label class="black-pill-button pill-button button register-btn log-in-btn" for="test-3-value-2">2</label>
     </template>
 
     <script type="module">
