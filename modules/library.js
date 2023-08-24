@@ -13,7 +13,7 @@ ${ data }
 Include another template with the `include()` function:
 
 ```js
-${ include('#another-template', data.object) }
+${ include('#another-template', data) }
 ```
 
 The `include()` function is partially applicable. Include multiple templates by
