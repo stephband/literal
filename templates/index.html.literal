@@ -88,7 +88,7 @@
     ${ include('../documentation/templates/scripts.literal', '../package.json') }
 
     <script type="module">
-        import '../literal-template/module.js';
+        import '../literal-html/module.js';
     </script>
 </body>
 </html>

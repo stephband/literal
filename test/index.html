@@ -175,57 +175,57 @@
     </section>
 
     <section title="literal-include src">
-        <h3 class="text-03"><code>&lt;literal-include src="#literal-template"&gt;</code> <span class="test-count">(8 tests)</span></h3>
+        <h3 class="text-03"><code>&lt;literal-include src="#literal-html"&gt;</code> <span class="test-count">(8 tests)</span></h3>
 
-        <template id="literal-template">
+        <template id="literal-html">
             <p>✓ Content in a <code>&lt;template&gt;</code> element, with rendered data:</p>
             <pre><code>${ data }</code></pre>
         </template>
 
-        <literal-include src="#literal-template" data="./nonexistant.json">
-            <p>✓ Default content of an <code>&lt;literal-include src="#literal-template" data="nonexistant"&gt;</code> element.</p>
+        <literal-include src="#literal-html" data="./nonexistant.json">
+            <p>✓ Default content of an <code>&lt;literal-include src="#literal-html" data="nonexistant"&gt;</code> element.</p>
         </literal-include>
 
         <hr/>
 
-        <literal-include src="#literal-template" data="./test-bad.json">
-            <p>✓ Default content of an <code>&lt;literal-include src="#literal-template" data="test-bad.json"&gt;</code> element.</p>
+        <literal-include src="#literal-html" data="./test-bad.json">
+            <p>✓ Default content of an <code>&lt;literal-include src="#literal-html" data="test-bad.json"&gt;</code> element.</p>
         </literal-include>
 
         <hr/>
 
-        <literal-include src="#literal-template" data="./test-bad.js">
-            <p>✓ Default content of an <code>&lt;literal-include src="#literal-template" data="test-bad.js"&gt;</code> element.</p>
+        <literal-include src="#literal-html" data="./test-bad.js">
+            <p>✓ Default content of an <code>&lt;literal-include src="#literal-html" data="test-bad.js"&gt;</code> element.</p>
         </literal-include>
 
         <hr/>
 
-        <literal-include src="#literal-template">
-            <p>❌ Default content of an <code>&lt;literal-include src="#literal-template"&gt;</code> element.</p>
+        <literal-include src="#literal-html">
+            <p>❌ Default content of an <code>&lt;literal-include src="#literal-html"&gt;</code> element.</p>
         </literal-include>
 
         <hr/>
 
-        <literal-include src="#literal-template" data="./test.json">
-            <p>❌ Default content of an <code>&lt;literal-include src="#literal-template" data="./test.json"&gt;</code> element.</p>
+        <literal-include src="#literal-html" data="./test.json">
+            <p>❌ Default content of an <code>&lt;literal-include src="#literal-html" data="./test.json"&gt;</code> element.</p>
         </literal-include>
 
         <hr/>
 
-        <literal-include src="#literal-template" data="./test.js">
-            <p>❌ Default content of an <code>&lt;literal-include src="#literal-template" data="./test.js"&gt;</code> element.</p>
+        <literal-include src="#literal-html" data="./test.js">
+            <p>❌ Default content of an <code>&lt;literal-include src="#literal-html" data="./test.js"&gt;</code> element.</p>
         </literal-include>
 
         <hr/>
 
-        <literal-include src="#literal-template" data="./test.js#named">
-            <p>❌ Default content of an <code>&lt;literal-include src="#literal-template" data="./test.js#named"&gt;</code> element.</p>
+        <literal-include src="#literal-html" data="./test.js#named">
+            <p>❌ Default content of an <code>&lt;literal-include src="#literal-html" data="./test.js#named"&gt;</code> element.</p>
         </literal-include>
 
         <hr/>
 
-        <literal-include src="#literal-template" data="./test.js#fn('string',1,null)">
-            <p>❌ Default content of an <code>&lt;literal-include src="#literal-template" data="./test.js#fn('string', 1, null)"&gt;</code> element.</p>
+        <literal-include src="#literal-html" data="./test.js#fn('string',1,null)">
+            <p>❌ Default content of an <code>&lt;literal-include src="#literal-html" data="./test.js#fn('string', 1, null)"&gt;</code> element.</p>
         </literal-include>
 
         <hr/>

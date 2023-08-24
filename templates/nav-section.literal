@@ -1,6 +1,6 @@
 <a class="${ data.level && ('l' + data.level + '-nav-button') } nav-button button block" href="${ data.path }">
     ${ data.label && markdown(data.label) }
-    <template is="literal-template">
+    <template is="literal-html">
         \${ Stream
             .merge(events('dom-navigate', window), {})
             .map((e) => (

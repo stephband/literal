@@ -8,14 +8,14 @@ nothing.
 Prints an object or objects to the DOM as a debug message.
 
 ```html
-<template is="literal-template" data="../../package.json">
+<template is="literal-html" data="../../package.json">
     ${ print(data) }
 </template>
 ```
 
 Renders as:
 
-<template is="literal-template" data="../../../package.json">
+<template is="literal-html" data="../../../package.json">
     ${ print(data) }
 </template>
 

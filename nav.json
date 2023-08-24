@@ -2,8 +2,8 @@
     "label": "Literal",
     "path":  "/literal/",
     "paths": {
-        "literal-template/": {
-            "label": "`literal-template`"
+        "literal-html/": {
+            "label": "`literal-html`"
         },
 
         "literal-element/": {

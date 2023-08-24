@@ -26,105 +26,105 @@ render text whenever the stream emits an array of strings.
             <th>undefined</th>
             <th><code>${ undefined }</code></th>
             <td>
-                <template is="literal-template">${ undefined }</template>
+                <template is="literal-html">${ undefined }</template>
             </td>
         </tr>
         <tr>
             <th>null</th>
             <th><code>${ null }</code></th>
             <td>
-                <template is="literal-template">${ null }</template>
+                <template is="literal-html">${ null }</template>
             </td>
         </tr>
         <tr>
             <th>NaN</th>
             <th><code>${ NaN }</code></th>
             <td>
-                <template is="literal-template">${ NaN }</template>
+                <template is="literal-html">${ NaN }</template>
             </td>
         </tr>
         <tr>
             <th>String</th>
             <th><code>${ 'Hello' }</code></th>
             <td>
-                <template is="literal-template">${ 'Hello' }</template>
+                <template is="literal-html">${ 'Hello' }</template>
             </td>
         </tr>
         <tr>
             <th>Boolean</th>
             <th><code>${ true }, ${ false }</code></th>
             <td>
-                <template is="literal-template">${ true }, ${ false }</template>
+                <template is="literal-html">${ true }, ${ false }</template>
             </td>
         </tr>
         <tr>
             <th>Number</th>
             <th><code>${ 123.4 }</code></th>
             <td>
-                <template is="literal-template">${ 123.4 }</template>
+                <template is="literal-html">${ 123.4 }</template>
             </td>
         </tr>
         <tr>
             <th>Infinity</th>
             <th><code>${ Infinity }, ${ -Infinity }</code></th>
             <td>
-                <template is="literal-template">${ Infinity }, ${ -Infinity }</template>
+                <template is="literal-html">${ Infinity }, ${ -Infinity }</template>
             </td>
         </tr>
         <tr>
             <th>Function</th>
             <th><code>${ function name(param) {} }</code></th>
             <td>
-                <template is="literal-template">${ function name(param) {} }</template>
+                <template is="literal-html">${ function name(param) {} }</template>
             </td>
         </tr>
         <tr>
             <th>Arrow</th>
             <th><code>${ (param) => {} }</code></th>
             <td>
-                <template is="literal-template">${ (param) => {} }</template>
+                <template is="literal-html">${ (param) => {} }</template>
             </td>
         </tr>
         <tr>
             <th>RegExp</th>
             <th><code>${ /^regexp/ }</code></th>
             <td>
-                <template is="literal-template">${ /^regexp/ }</template>
+                <template is="literal-html">${ /^regexp/ }</template>
             </td>
         </tr>
         <tr>
             <th>Symbol</th>
             <th><code>${ Symbol('name') }</code></th>
             <td>
-                <template is="literal-template">${ Symbol('name') }</template>
+                <template is="literal-html">${ Symbol('name') }</template>
             </td>
         </tr>
         <tr>
             <th>Array</th>
             <th><code>${ [0, 1, 2, 3] }</code></th>
             <td>
-                <template is="literal-template">${ [0, 1, 2, 3] }</template>
+                <template is="literal-html">${ [0, 1, 2, 3] }</template>
             </td>
         </tr>
         <tr>
             <th>Object</th>
             <th><code>${ { property: 'value' } }</code></th>
             <td>
-                <template is="literal-template">${ { property: 'value' } }</template>
+                <template is="literal-html">${ { property: 'value' } }</template>
             </td>
         </tr>
         <tr>
             <th>Node</th>
             <th><code>${ document.createTextNode('Hello') }</code></th>
             <td>
-                <template is="literal-template">${ document.createTextNode('Hello') }</template>
+                <template is="literal-html">${ document.createTextNode('Hello') }</template>
             </td>
         </tr>
         <tr>
             <th>Promise</th>
             <th><code>${ Promise.resolve('yoohoo') }</code></th>
             <td>
-                <template is="literal-template">${ Promise.resolve('yoohoo') }</template>
+                <template is="literal-html">${ Promise.resolve('yoohoo') }</template>
             </td>
         </tr>
         <tr>
@@ -132,7 +132,7 @@ render text whenever the stream emits an array of strings.
             <th><code>${ events('pointermove', body)<br/>
             &nbsp;&nbsp;.map((e) => round(e.pageX)) }</code></th>
             <td>
-                <template is="literal-template">${ events('pointermove', body).map((e) => round(e.pageX)) }</template>
+                <template is="literal-html">${ events('pointermove', body).map((e) => round(e.pageX)) }</template>
             </td>
         </tr>
     </tbody>

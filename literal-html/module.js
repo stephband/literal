@@ -1,26 +1,26 @@
 /**
-<template is="literal-template">
+<template is="literal-html">
 
-A `literal-template` may be placed anywhere in your HTML, and is designed to make
+A `literal-html` may be placed anywhere in your HTML, and is designed to make
 it easy to mix dynamic content into static content in just those locations where
 needed.
 
-A `literal-template` is replaced by its own rendered content.
+A `literal-html` is replaced by its own rendered content.
 
 ```html
-<template is="literal-template">
+<template is="literal-html">
     <pre>${ 'hello' }</pre>
 </template>
 ```
 
-<template is="literal-template">
+<template is="literal-html">
     <pre>${ 'hello' }</pre>
 </template>
 
-Where JS fails a `literal-template` is left inert and unrendered.
+Where JS fails a `literal-html` is left inert and unrendered.
 
 ```html
-<template is="literal-template">
+<template is="literal-html">
     <pre>${ throws an error }</pre>
 </template>
 ```
@@ -29,12 +29,12 @@ The template's `data` object may be set with the `data` attribute. A `data`
 attribute that parses as a URL imports a JavaScript module or fetches JSON:
 
 ```html
-<template is="literal-template" data="../data/clock.js">
+<template is="literal-html" data="../data/clock.js">
     <pre>${ data.time.toFixed(0) + 's' }</pre>
 </template>
 ```
 
-<template is="literal-template" data="../../data/clock.js">
+<template is="literal-html" data="../../data/clock.js">
     <pre>${ data.time.toFixed(0) + 's' }</pre>
 </template>
 
@@ -48,7 +48,7 @@ The template scope contains a bunch of helper functions. The
     <li>${ data.text }</li>
 </template>
 
-<template is="literal-template">
+<template is="literal-html">
     <h5>Todo list</h5>
     <ul>${ include('#todo-li', { text: 'Wake up' }) }</ul>
 </template>
@@ -58,7 +58,7 @@ The template scope contains a bunch of helper functions. The
     <li>${ data.text }</li>
 </template>
 
-<template is="literal-template">
+<template is="literal-html">
     <h5>Todo list</h5>
     <ul>${ include('#todo-li', { text: 'Wake up' }) }</ul>
 </template>
@@ -68,13 +68,13 @@ The `include(src, data)` function is partially applicable, helpful for
 mapping an array of data objects to template includes:
 
 ```html
-<template is="literal-template" data="../data/todo.json">
+<template is="literal-html" data="../data/todo.json">
     <h5>Todo list</h5>
     <ul>${ data.tasks.map(include('#todo-li')) }</ul>
 </template>
 ```
 
-<template is="literal-template" data="../../data/todo.json">
+<template is="literal-html" data="../../data/todo.json">
     <h5>Todo list</h5>
     <ul>${ data.tasks.map(include('#todo-li')) }</ul>
 </template>
@@ -153,7 +153,7 @@ const onerror = window.DEBUG ?
     noop ;
 
 // tag, template, lifecycle, properties, log
-export default element('<template is="literal-template">', {
+export default element('<template is="literal-html">', {
     construct: function() {
         const internals = Internals(this);
 
@@ -192,14 +192,14 @@ export default element('<template is="literal-template">', {
     A path to a JSON file or JS module exporting data to be rendered.
 
     ```html
-    <template is="literal-template" data="./data.json">...</template>
-    <template is="literal-template" data="./module.js">...</template>
+    <template is="literal-html" data="./data.json">...</template>
+    <template is="literal-html" data="./module.js">...</template>
     ```
 
     Named exports are supported via the hash:
 
     ```html
-    <template is="literal-template" data="./module.js#namedExport">...</template>
+    <template is="literal-html" data="./module.js#namedExport">...</template>
     ```
 
     Paths may be rewritten. This helps when JS modules are bundled into a single
@@ -216,7 +216,7 @@ export default element('<template is="literal-template">', {
     The `data` attribute also accepts raw JSON:
 
     ```html
-    <template is="literal-template" data='{"property": "value"}'>...</template>
+    <template is="literal-html" data='{"property": "value"}'>...</template>
     ```
     **/
 

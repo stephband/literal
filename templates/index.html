@@ -222,7 +222,7 @@ return <code>min</code>, and those higher than <code>max</code> return <code>max
 seconds apart.</p>
 <pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">clock</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>floor<span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
-<template is="literal-template">
+<template is="literal-html">
     <p>${ clock(1).map(floor) }</p>
 </template>
 
@@ -230,7 +230,7 @@ seconds apart.</p>
 frames.</p>
 <pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">clock</span><span class="token punctuation">(</span><span class="token string">'frame'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">time</span><span class="token punctuation">)</span> <span class="token operator">=></span> time<span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
-<template is="literal-template">
+<template is="literal-html">
     <p>${ clock('frame').map((time) => time.toFixed(2)) }</p>
 </template>
 
@@ -454,12 +454,12 @@ array values.</p>
     <p>Where <code>window.DEBUG</code> was falsy at the time Literal is imported, <code>print()</code> does
 nothing.</p>
 <p>Prints an object or objects to the DOM as a debug message.</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-template<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../../package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../../package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     ${ print(data) }
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 </code></pre>
 <p>Renders as:</p>
-<template is="literal-template" data="../package.json">
+<template is="literal-html" data="../package.json">
     ${ print(data) }
 </template>
 
@@ -760,105 +760,105 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
             <th>undefined</th>
             <th><code>${ undefined }</code></th>
             <td>
-                <template is="literal-template">${ undefined }</template>
+                <template is="literal-html">${ undefined }</template>
             </td>
         </tr>
         <tr>
             <th>null</th>
             <th><code>${ null }</code></th>
             <td>
-                <template is="literal-template">${ null }</template>
+                <template is="literal-html">${ null }</template>
             </td>
         </tr>
         <tr>
             <th>NaN</th>
             <th><code>${ NaN }</code></th>
             <td>
-                <template is="literal-template">${ NaN }</template>
+                <template is="literal-html">${ NaN }</template>
             </td>
         </tr>
         <tr>
             <th>String</th>
             <th><code>${ 'Hello' }</code></th>
             <td>
-                <template is="literal-template">${ 'Hello' }</template>
+                <template is="literal-html">${ 'Hello' }</template>
             </td>
         </tr>
         <tr>
             <th>Boolean</th>
             <th><code>${ true }, ${ false }</code></th>
             <td>
-                <template is="literal-template">${ true }, ${ false }</template>
+                <template is="literal-html">${ true }, ${ false }</template>
             </td>
         </tr>
         <tr>
             <th>Number</th>
             <th><code>${ 100.3 }</code></th>
             <td>
-                <template is="literal-template">${ 100.3 }</template>
+                <template is="literal-html">${ 100.3 }</template>
             </td>
         </tr>
         <tr>
             <th>Infinity</th>
             <th><code>${ Infinity }, ${ -Infinity }</code></th>
             <td>
-                <template is="literal-template">${ Infinity }, ${ -Infinity }</template>
+                <template is="literal-html">${ Infinity }, ${ -Infinity }</template>
             </td>
         </tr>
         <tr>
             <th>Function</th>
             <th><code>${ function name(param) {} }</code></th>
             <td>
-                <template is="literal-template">${ function name(param) {} }</template>
+                <template is="literal-html">${ function name(param) {} }</template>
             </td>
         </tr>
         <tr>
             <th>Arrow</th>
             <th><code>${ (param) => {} }</code></th>
             <td>
-                <template is="literal-template">${ (param) => {} }</template>
+                <template is="literal-html">${ (param) => {} }</template>
             </td>
         </tr>
         <tr>
             <th>RegExp</th>
             <th><code>${ /^regexp/ }</code></th>
             <td>
-                <template is="literal-template">${ /^regexp/ }</template>
+                <template is="literal-html">${ /^regexp/ }</template>
             </td>
         </tr>
         <tr>
             <th>Symbol</th>
             <th><code>${ Symbol('name') }</code></th>
             <td>
-                <template is="literal-template">${ Symbol('name') }</template>
+                <template is="literal-html">${ Symbol('name') }</template>
             </td>
         </tr>
         <tr>
             <th>Array</th>
             <th><code>${ [0, 1, 2, 3] }</code></th>
             <td>
-                <template is="literal-template">${ [0, 1, 2, 3] }</template>
+                <template is="literal-html">${ [0, 1, 2, 3] }</template>
             </td>
         </tr>
         <tr>
             <th>Object</th>
             <th><code>${ { property: 'value' } }</code></th>
             <td>
-                <template is="literal-template">${ { property: 'value' } }</template>
+                <template is="literal-html">${ { property: 'value' } }</template>
             </td>
         </tr>
         <tr>
             <th>Node</th>
             <th><code>${ document.createTextNode('Text') }</code></th>
             <td>
-                <template is="literal-template">${ document.createTextNode('Text') }</template>
+                <template is="literal-html">${ document.createTextNode('Text') }</template>
             </td>
         </tr>
         <tr>
             <th>Promise</th>
             <th><code>${ Promise.resolve('promise') }</code></th>
             <td>
-                <template is="literal-template">${ Promise.resolve('promise') }</template>
+                <template is="literal-html">${ Promise.resolve('promise') }</template>
             </td>
         </tr>
         <tr>
@@ -866,7 +866,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
             <th><code>${ events('pointermove', body)<br/>
             &nbsp;&nbsp;.map((e) => e.pageX.toFixed(1)) }</code></th>
             <td>
-                <template is="literal-template">${ events('pointermove', body).map((e) => e.pageX.toFixed(1)) }</template>
+                <template is="literal-html">${ events('pointermove', body).map((e) => e.pageX.toFixed(1)) }</template>
             </td>
         </tr>
     </tbody>
@@ -889,7 +889,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
         </button>
         <a class=" nav-button button block" href="/literal/">
     Literal
-    <template is="literal-template">
+    <template is="literal-html">
         ${ Stream
             .merge(events('dom-navigate', window), {})
             .map((e) => (
@@ -913,9 +913,9 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
        }
     </template>
 </a>
-<a class="l1-nav-button nav-button button block" href="/literal/literal-template/">
-    <code>literal-template</code>
-    <template is="literal-template">
+<a class="l1-nav-button nav-button button block" href="/literal/literal-html/">
+    <code>literal-html</code>
+    <template is="literal-html">
         ${ Stream
             .merge(events('dom-navigate', window), {})
             .map((e) => (
@@ -942,7 +942,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
 
 <a class="l1-nav-button nav-button button block" href="/literal/literal-element/">
     <code>literal-element</code>
-    <template is="literal-template">
+    <template is="literal-html">
         ${ Stream
             .merge(events('dom-navigate', window), {})
             .map((e) => (
@@ -969,7 +969,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
 
 <a class="l1-nav-button nav-button button block" href="/literal/templates/">
     Templates
-    <template is="literal-template">
+    <template is="literal-html">
         ${ Stream
             .merge(events('dom-navigate', window), {})
             .map((e) => (
@@ -996,7 +996,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
 
 <a class="l1-nav-button nav-button button block" href="/literal/templates/#template-scope">
     Template scope
-    <template is="literal-template">
+    <template is="literal-html">
         ${ Stream
             .merge(events('dom-navigate', window), {})
             .map((e) => (
@@ -1023,7 +1023,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
 
 <a class="l1-nav-button nav-button button block" href="/literal/templates/#template-expressions">
     Template expressions
-    <template is="literal-template">
+    <template is="literal-html">
         ${ Stream
             .merge(events('dom-navigate', window), {})
             .map((e) => (
@@ -1083,7 +1083,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
         <a class="block" href="https://stephen.band/form-elements/number-control/"><code>&lt;number-control&gt;</code></a>
         <a class="block" href="https://stephen.band/form-elements/select-control/"><code>&lt;select-control&gt;</code></a>
         <a class="block" href="https://stephen.band/literal/literal-element/"><code>&lt;literal-element&gt;</code></a>
-        <a class="block" href="https://stephen.band/literal/literal-template/"><code>&lt;literal-template&gt;</code></a>
+        <a class="block" href="https://stephen.band/literal/literal-html/"><code>&lt;literal-html&gt;</code></a>
     </div>
 
     <div class="x1 4x @1-2x @1-x3 @2-x4 x-stretch y-start">
@@ -1096,7 +1096,7 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
 
 
     <script type="module">
-        import '../literal-template/module.js';
+        import '../literal-html/module.js';
     </script>
 </body>
 </html>

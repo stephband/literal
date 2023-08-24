@@ -106,13 +106,13 @@ the `/favourites/` page represented by an icon:
 </div>
 
 We want to enhance that link with a badge that displays a count of our
-favourites, so we use an `literal-template` to render a `<span>` containing the
+favourites, so we use an `literal-html` to render a `<span>` containing the
 count inside the link:
 
 ```html
 <a href="/favourites/" class="fav-icon">
     Favourites
-    <template is="literal-template" data="../data/favourites.js">
+    <template is="literal-html" data="../data/favourites.js">
         <span class="badge">${ data.count }</span>
     </template>
 </a>
@@ -121,7 +121,7 @@ count inside the link:
 <div class="example">
     <a href="/favourites/" class="fav-icon">
         Favourites
-        <template is="literal-template" data="../data/favourites.js">
+        <template is="literal-html" data="../data/favourites.js">
             <span class="badge">${ data.count }</span>
         </template>
     </a>
@@ -132,7 +132,7 @@ has a `toggle()` method that we may use to add or remove ids from a list of
 favourites, enabling us to write a favourite button:
 
 ```html
-<template is="literal-template" data="../data/favourites.js">
+<template is="literal-html" data="../data/favourites.js">
     <button type="button">
         ${ data.ids.includes('a') ? 'Remove from favourites' : 'Add to favourites' }
         ${ events('click', element).each((e) => data.toggle('a')) }
@@ -141,7 +141,7 @@ favourites, enabling us to write a favourite button:
 ```
 
 <div class="example">
-    <template is="literal-template" data="../data/favourites.js">
+    <template is="literal-html" data="../data/favourites.js">
         <button type="button" class="${ data.ids.includes('a') ? 'fav' : 'not-fav' }">
             ${ data.ids.includes('a') ? 'Remove from favourites' : 'Add to favourites' }
             ${ events('click', element).each((e) => data.toggle('a')) }

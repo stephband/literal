@@ -121,7 +121,7 @@ const library = {
     ${ clock(1).map(floor) }
     ```
 
-    <template is="literal-template">
+    <template is="literal-html">
         <p>${ clock(1).map(floor) }</p>
     </template>
 
@@ -132,7 +132,7 @@ const library = {
     ${ clock('frame').map((time) => time.toFixed(2)) }
     ```
 
-    <template is="literal-template">
+    <template is="literal-html">
         <p>${ clock('frame').map((time) => time.toFixed(2)) }</p>
     </template>
     **/

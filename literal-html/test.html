@@ -22,7 +22,7 @@
 <body>
     TEST
 
-    <template is="literal-template" data-state="1" data-value="Hello">
+    <template is="literal-html" data-state="1" data-value="Hello">
         <h2>Literal template</h2>
 
         ${ events({ type: 'change', select: '[name="state"]' }, element)
@@ -36,7 +36,7 @@
         <label class="black-pill-button pill-button button register-btn log-in-btn" for="state-2">2</label>
     </template>
 
-    <template is="literal-template" data-default="2" data-value="Hello">
+    <template is="literal-html" data-default="2" data-value="Hello">
         <h2>Literal template</h2>
 
         ${ Stream.merge(
@@ -50,7 +50,7 @@
         <label class="black-pill-button pill-button button register-btn log-in-btn" for="test-2-value-2">2</label>
     </template>
 
-    <template is="literal-template" data-default="1" data-value="Hello">
+    <template is="literal-html" data-default="1" data-value="Hello">
         <h2>Literal template</h2>
 
         ${ new Promise((r) => setTimeout(() => r('Async text test'), 400)) }
