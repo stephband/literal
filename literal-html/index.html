@@ -46,10 +46,9 @@
 </header>
 
 <section class="x1 4x @2-x2 x-stretch y-start documentation-block block">
-    <p>A <code>literal-html</code> may be placed anywhere in your HTML, and is designed to make
-it easy to mix dynamic content into static content in just those locations where
-needed.</p>
-<p>A <code>literal-html</code> is replaced by its own rendered content.</p>
+    <p>A <code>literal-html</code> template may be placed anywhere in your HTML. It is designed to
+make it easy to mix islands of dynamically rendered content into static content.</p>
+<p>A <code>literal-html</code> template is replaced by its own rendered content.</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>pre</span><span class="token punctuation">></span></span>${ 'hello' }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>pre</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
@@ -58,7 +57,7 @@ needed.</p>
     <pre>${ 'hello' }</pre>
 </template>
 
-<p>Where JS fails a <code>literal-html</code> is left inert and unrendered.</p>
+<p>Where JS fails a <code>literal-html</code> template is left inert and unrendered.</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>pre</span><span class="token punctuation">></span></span>${ throws an error }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>pre</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
@@ -74,7 +73,7 @@ attribute that parses as a URL imports a JavaScript module or fetches JSON:</p>
 </template>
 
 <h3 id="include-other-templates">Include other templates</h3>
-<p>The template scope contains a bunch of helper functions. The
+<p>The template scope contains a number of helper functions. The
 <code>include(src, data)</code> function includes other templates:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>todo-li<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>${ data.text }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
@@ -96,7 +95,7 @@ attribute that parses as a URL imports a JavaScript module or fetches JSON:</p>
 
 
 <p>The <code>include(src, data)</code> function is partially applicable, helpful for
-mapping an array of data objects to template includes:</p>
+mapping an array of objects to template includes:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../data/todo.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h5</span><span class="token punctuation">></span></span>Todo list<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h5</span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span>${ data.tasks.map(include('#todo-li')) }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span>

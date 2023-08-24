@@ -1,11 +1,10 @@
 /**
 <template is="literal-html">
 
-A `literal-html` may be placed anywhere in your HTML, and is designed to make
-it easy to mix dynamic content into static content in just those locations where
-needed.
+A `literal-html` template may be placed anywhere in your HTML. It is designed to
+make it easy to mix islands of dynamically rendered content into static content.
 
-A `literal-html` is replaced by its own rendered content.
+A `literal-html` template is replaced by its own rendered content.
 
 ```html
 <template is="literal-html">
@@ -17,7 +16,7 @@ A `literal-html` is replaced by its own rendered content.
     <pre>${ 'hello' }</pre>
 </template>
 
-Where JS fails a `literal-html` is left inert and unrendered.
+Where JS fails a `literal-html` template is left inert and unrendered.
 
 ```html
 <template is="literal-html">
@@ -40,7 +39,7 @@ attribute that parses as a URL imports a JavaScript module or fetches JSON:
 
 ### Include other templates
 
-The template scope contains a bunch of helper functions. The
+The template scope contains a number of helper functions. The
 `include(src, data)` function includes other templates:
 
 ```html
@@ -65,7 +64,7 @@ The template scope contains a bunch of helper functions. The
 
 
 The `include(src, data)` function is partially applicable, helpful for
-mapping an array of data objects to template includes:
+mapping an array of objects to template includes:
 
 ```html
 <template is="literal-html" data="../data/todo.json">
