@@ -27,6 +27,10 @@ function render(renderers) {
         stats = renderers[n].update();
 
         if (window.DEBUG) {
+            if (!stats.mutations && Number.isNaN(stats.mutations)) {
+                throw new Error('Something is not feeding back a mutations count. We should prbably tidy up stats anyway.');
+            }
+
             mutations += stats.mutations;
         }
     }

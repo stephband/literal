@@ -8,11 +8,11 @@ export default {
     Defines the tag name of a new custom element.
 
     ```html
-    tag="my-player"
+    <template is="literal-element" tag="play-list">
     ```
 
-    Being a custom element definition, clearly the name must conform to the
-    rules for custom element names (ie. must contain a dash).
+    Being a custom element definition, clearly the tag name must conform to the
+    rules for custom element names (ie. it must contain a dash).
     **/
 
     tag: {
@@ -26,7 +26,7 @@ export default {
     Defines attributes of the new custom element as a list of names:
 
     ```html
-    attributes="previous next"
+    <template is="literal-element" attributes="previous next" tag="play-list">
     ```
 
     Attributes may be given a type. A typed attribute defines both an attribute
@@ -34,27 +34,26 @@ export default {
     the attribute and type of value of the property:
 
     ```html
-    attributes="loop:boolean controls:tokens"
+    <template is="literal-element" attributes="loop:boolean controls:tokens" tag="play-list">
     ```
 
     Possible types are:
 
-    - `boolean` – a boolean attribute, boolean property
-    - `number`  – a string attribute, number property
-    - `string`  – a string attribute, string property
-    - `tokens`  – a string attribute, TokenList property
-    - `src`     – a string attribute, object property
+    - `:boolean` – a boolean attribute, boolean property
+    - `:number`  – a string attribute, number property
+    - `:string`  – a string attribute, string property
+    - `:tokens`  – a string attribute, TokenList property
+    - `:src`     – a string attribute, object property
 
     Attribute values are available inside the template scope as properties of
     `data`:
 
     ```html
-    <template is="literal-element" tag="my-carousel" attributes="loop:boolean controls:tokens">
+    <template is="literal-element" tag="play-list" attributes="loop:boolean controls:tokens">
         <p>Looping is ${ data.loop ? 'on' : 'off' }.</p>
         <p>Play button is ${ data.controls.includes('play') ? 'shown' : 'hidden' }.</p>
     </template>
     ```
-
     **/
 
     attributes: {

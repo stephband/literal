@@ -14,6 +14,7 @@ import removeNodes       from './remove-nodes.js';
 import TemplateRenderer  from './renderer-template.js';
 import { pathSeparator } from './constants.js';
 import print             from './library/print.js';
+import isTextNode from '../../dom/modules/is-text-node.js';
 
 const assign = Object.assign;
 
@@ -61,32 +62,68 @@ function setNodeValue(node, value) {
 }
 
 function toContent(object) {
-    return typeof object === 'string' ? object :
-        object.content ? toContent(object.content) :
+    return object.content ?
+        toContent(object.content) :
         object ;
 }
 
-function setContents(first, last, contents, state) {
-    let count = 0;
+function updateDOM(first, last, contents) {
+    let node = first;
+    let c    = -1;
+    let object, count = 0;
 
-    // Remove existing nodes, leaving first and last alone
-    if (first.nextSibling && last.previousSibling !== first) {
-        count += removeNodes(first.nextSibling, last.previousSibling);
+    while (++c < contents.length - 1) {
+        object = contents[c];
+
+        if (typeof object === 'string') {
+            // If there's a text node (but not last) lined up, populate it
+            if (isTextNode(node) && node !== last) {
+                count += setNodeValue(node, object);
+                node = node.nextSibling;
+            }
+            // Otherwise insert a new text node
+            else {
+                node.before(object);
+            }
+        }
+
+        // If a renderer's nodes are already in the right place in the DOM,
+        // skip over them by setting node to object.last
+        else if (object instanceof TemplateRenderer && node === object.first) {
+            node = object.last.nextSibling;
+        }
+
+        // If node is object, move right on
+        else if (node === object) {
+            console.log('DO WE GET HERE EVER? Not sure the logics right, it just feels like the right thing to do.');
+            if (node !== last) {
+                node = node.nextSibling;
+            }
+        }
+
+        // Object is not in sync with the DOM
+        else {
+            // Remove template or node from wherever it currently is
+            if (object.remove) {
+                count += (object.remove() || 0);
+            }
+
+            // And put it here
+            node.before(toContent(object));
+            ++count;
+        }
     }
 
-    // Set first text node, contents[0] is always a string
-    count += setNodeValue(first, contents[0]);
+    // Remove unused nodes up until last
+    while (node && node !== last) {
+        const n = node;
+        node = node.nextSibling;
+        n.remove();
+        ++count;
+    }
 
     // Set last text node, contents[-1] is always a string
-    count += setNodeValue(last, contents[contents.length - 1]);
-
-    const nodes = contents.map(toContent).slice(1, contents.length - 1);
-
-    if (nodes.length) {
-        first.after.apply(first, nodes);
-        count += contents.length;
-    }
-
+    count += setNodeValue(last, contents[c]);
     return count;
 }
 
@@ -112,8 +149,9 @@ export default function DOMRenderer(source, template, path, node, name, message,
     this.node     = node;
     this.first    = node;
     this.last     = document.createTextNode('');
-    this.first.after(this.last);
     this.contents = [];
+
+    this.first.after(this.last);
 }
 
 assign(DOMRenderer.prototype, Renderer.prototype, {
@@ -144,7 +182,7 @@ assign(DOMRenderer.prototype, Renderer.prototype, {
             pushContents(this.contents, strings[n]);
         }
 
-        this.mutations = setContents(this.first, this.last, this.contents, this.status);
+        this.mutations = updateDOM(this.first, this.last, this.contents);
         return this;
     },
 

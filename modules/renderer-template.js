@@ -2,16 +2,16 @@
 /**
 TemplateRenderer(template, parameters)
 
-Import the `TemplateRenderer` constructor from the main module:
+Import the `TemplateRenderer` constructor:
 
 ```js
-import TemplateRenderer from 'https://stephen.band/literal/module.js';
+import TemplateRenderer from './literal/modules/renderer-template.js';
 ```
 
-The `TemplateRenderer` constructor takes a template element, or the `id` of a
-template element, and creates a renderer of a clone of the template's content.
-A renderer manages an asynchronous lifecycle of content renders, updating its
-DOM nodes in response to changing data.
+The `TemplateRenderer` constructor takes a template element (or the `id` of a
+template element), clones the template's content, and returns a renderer that
+renders data into the content. The renderer updates its DOM nodes in response
+to changing data.
 
 ```js
 const renderer = new TemplateRenderer('id');
@@ -30,6 +30,7 @@ import identify          from '../../dom/modules/identify.js';
 import isTextNode        from '../../dom/modules/is-text-node.js';
 import compileNode       from './compile-node.js';
 import removeNodes       from './remove-nodes.js';
+import getNodeRange      from './get-node-range.js';
 import { cue, uncue }    from './cue.js';
 import { pathSeparator } from './constants.js';
 
@@ -219,10 +220,19 @@ assign(TemplateRenderer.prototype, {
 
     /**
     .remove()
-    Removes rendered content from the DOM.
+    Removes rendered content from the DOM, placing it back in the
+    fragment at `renderer.content`.
     **/
     remove: function() {
-        return removeNodes(this.first, this.last);
+        // Can't remove if we're already removed
+        if (this.content.firstChild === this.first) {
+            return 0;
+        }
+
+        // Remove first to last and all nodes in between to .content fragment
+        const nodes = getNodeRange(this.first, this.last);
+        this.content.append.apply(this.content, nodes);
+        return nodes.length;
     },
 
     /**

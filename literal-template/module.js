@@ -40,8 +40,8 @@ attribute that parses as a URL imports a JavaScript module or fetches JSON:
 
 ### Include other templates
 
-The template scope contains Literal's template helper functions. Use the
-`include(src, data)` function to include other templates as literal templates:
+The template scope contains a bunch of helper functions. The
+`include(src, data)` function includes other templates:
 
 ```html
 <template id="todo-li">
@@ -144,7 +144,7 @@ function requestDataFromDataset(template, datas, dataset) {
     .then((values) => datas.push(
         values.reduce((data, value, i) => (data[keys[i]] = value, data), {})
     ))
-    .catch((e)   => onerror(e, template))
+    .catch((e) => onerror(e, template))
     //.finally(()  => removeLoading(template));
 }
 

@@ -65,8 +65,6 @@ function toParams(params, value) {
 }
 
 // Values
-
-// TODO: sort out stats
 let last;
 
 function toValues(values, record) {
@@ -132,7 +130,11 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
         if (target.each) {
             const streams = renderer.streams || (renderer.streams = []);
             values[n] = '';
-            target.each((value) => renderValue(renderer, args, values, n, value, true));
+            // Do not render synchronous values that are in the stream
+            // immediately, as they are about to be rendered by the renderer
+            let isRender = false;
+            target.each((value) => renderValue(renderer, args, values, n, value, isRender));
+            isRender = true;
             streams.push(target);
             return;
         }
