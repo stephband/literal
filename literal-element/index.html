@@ -94,10 +94,10 @@ the <code>src</code> attribute.</p>
     </h4>
 
     <p>Defines the tag name of a new custom element.</p>
-<pre><code class="language-html">tag=&quot;my-player&quot;
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>play-list<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
 </code></pre>
-<p>Being a custom element definition, clearly the name must conform to the
-rules for custom element names (ie. must contain a dash).</p>
+<p>Being a custom element definition, clearly the tag name must conform to the
+rules for custom element names (ie. it must contain a dash).</p>
 
 </details-toggle>
 
@@ -109,24 +109,24 @@ rules for custom element names (ie. must contain a dash).</p>
     </h4>
 
     <p>Defines attributes of the new custom element as a list of names:</p>
-<pre><code class="language-html">attributes=&quot;previous next&quot;
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">attributes</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>previous next<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>play-list<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
 </code></pre>
 <p>Attributes may be given a type. A typed attribute defines both an attribute
 and a property of the new custom element. The type defines the behaviour of
 the attribute and type of value of the property:</p>
-<pre><code class="language-html">attributes=&quot;loop:boolean controls:tokens&quot;
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">attributes</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>loop:boolean controls:tokens<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>play-list<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
 </code></pre>
 <p>Possible types are:</p>
 <ul>
-<li><code>boolean</code> – a boolean attribute, boolean property</li>
-<li><code>number</code>  – a string attribute, number property</li>
-<li><code>string</code>  – a string attribute, string property</li>
-<li><code>tokens</code>  – a string attribute, TokenList property</li>
-<li><code>src</code>     – a string attribute, object property</li>
+<li><code>:boolean</code> – a boolean attribute, boolean property</li>
+<li><code>:number</code>  – a string attribute, number property</li>
+<li><code>:string</code>  – a string attribute, string property</li>
+<li><code>:tokens</code>  – a string attribute, TokenList property</li>
+<li><code>:src</code>     – a string attribute, object property</li>
 </ul>
 <p>Attribute values are available inside the template scope as properties of
 <code>data</code>:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>my-carousel<span class="token punctuation">"</span></span> <span class="token attr-name">attributes</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>loop:boolean controls:tokens<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>play-list<span class="token punctuation">"</span></span> <span class="token attr-name">attributes</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>loop:boolean controls:tokens<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Looping is ${ data.loop ? 'on' : 'off' }.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Play button is ${ data.controls.includes('play') ? 'shown' : 'hidden' }.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
@@ -136,38 +136,27 @@ the attribute and type of value of the property:</p>
 
 
 
-<details-toggle class="attribute-details-toggle" id="attribute-src-1">
+<details-toggle class="attribute-details-toggle" id="attribute-src">
     <h4 class="attribute-text text-05" slot="summary">
         <code class="token language-html">src</code>
     </h4>
 
-    <p>Imports a JS module. The module’s <code>default</code> export is the element’s
-lifecycle, and its named exports are added to the template scope.</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>...<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./path/to/module.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <p>Imports a JS module. The module’s <code>default</code> export may be an object of
+lifecycle callbacks, while any named exports are imported into the template
+scope.</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>my-elem<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./path/to/module.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    From the module's named exports: ${ text }
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 </code></pre>
 <p>And in <code>module.js</code>:</p>
 <pre><code class="language-js"><span class="token comment">// Export lifecycle</span>
 <span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
-    <span class="token function-variable function">construct</span><span class="token operator">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token operator">...</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token function-variable function">connect</span><span class="token operator">:</span>   <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token operator">...</span> <span class="token punctuation">}</span>
+    <span class="token function-variable function">construct</span><span class="token operator">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">shadow<span class="token punctuation">,</span> internals</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token operator">...</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">connect</span><span class="token operator">:</span>   <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">shadow<span class="token punctuation">,</span> internals</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token operator">...</span> <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 
 <span class="token comment">// Export scope variables</span>
 <span class="token keyword">export</span> <span class="token keyword">const</span> text <span class="token operator">=</span> <span class="token string">'I say what'</span><span class="token punctuation">;</span>
-</code></pre>
-
-</details-toggle>
-
-
-
-<details-toggle class="attribute-details-toggle" id="attribute-stylesheets">
-    <h4 class="attribute-text text-05" slot="summary">
-        <code class="token language-html">stylesheets</code>
-    </h4>
-
-    <p>A list of stylesheets urls. They are loaded before the element is defined,
-preventing a flash of unstyled content.</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>...<span class="token punctuation">"</span></span> <span class="token attr-name">stylesheets</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./path/to/style1.css ./path/to/style2.css<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
 </code></pre>
 
 </details-toggle>

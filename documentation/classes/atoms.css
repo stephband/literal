@@ -231,23 +231,38 @@ Define the vertical grid gap (with units).
 
 
 .flex           { display: flex !important; }
+.flex > *       { flex: 0 0 auto; margin: 0; }
 .flex > li      { display: block; }
+
+.x-flex         { flex-direction: row; }
+.y-flex         { flex-direction: column; }
+
+.y-flex > .x-start  { align-self: start; }
+.y-flex > .x-center { align-self: center; }
+.y-flex > .x-end    { align-self: end; }
+
+/* Keep focus box-shadows over the top of their siblings */
+.flex *              { z-index: 0; }
+.flex .select-button { z-index: 1; }
+.flex *:focus        { z-index: 2; }
 
 .grid {
     --x-gap: 1.4rem;
     --y-gap: 1.4rem;
-}
 
-.grid {
     display: grid !important;
+
     /* Horizontal layout */
     grid-auto-flow: row;
+
     /* Create equal columns by default. */
     grid-auto-columns: minmax(0, 1fr);
     column-gap: var(--x-gap, 0);
     row-gap:    var(--y-gap, 0);
-    
-    
+
+    /* Stretch by default */
+    justify-items: stretch;
+    align-items: stretch;
 }
 
 a.grid,
@@ -259,6 +274,11 @@ a.grid:focus {
 .grid[hidden] {
     /* Override display grid !important declaration with hidden attribute */
     display: none !important;
+}
+
+.grid > * {
+    /* Make children stretch to fill by default */
+    margin: 0;
 }
 
 .grid > li {
@@ -336,31 +356,31 @@ a.grid:focus {
 .x-unbleedl {
     margin-left:  calc(0.5 * var(--x-gap));
     margin-right: 0;
-    max-width:    calc(100% - var(0.5 * --x-gap));
-    width:        calc(100% - var(0.5 * --x-gap));
+    max-width:    calc(100% - 0.5 * var(--x-gap));
+    width:        calc(100% - 0.5 * var(--x-gap));
 }
 
 .x-unbleedr {
     margin-left:  0;
     margin-right: calc(0.5 * var(--x-gap));
-    max-width:    calc(100% - var(0.5 * --x-gap));
-    width:        calc(100% - var(0.5 * --x-gap));
+    max-width:    calc(100% - 0.5 * var(--x-gap));
+    width:        calc(100% - 0.5 * var(--x-gap));
 }
 
 .x-bleedl {
     justify-self: stretch !important;
     margin-left:  calc(var(--x-gap) / -2);
     margin-right: 0;
-    max-width:    calc(100% + var(0.5 * --x-gap));
-    width:        calc(100% + var(0.5 * --x-gap));
+    max-width:    calc(100% + 0.5 * var(--x-gap));
+    width:        calc(100% + 0.5 * var(--x-gap));
 }
 
 .x-bleedr {
     justify-self: stretch !important;
     margin-left:  0;
     margin-right: calc(var(--x-gap) / -2);
-    max-width:    calc(100% + var(0.5 * --x-gap));
-    width:        calc(100% + var(0.5 * --x-gap));
+    max-width:    calc(100% + 0.5 * var(--x-gap));
+    width:        calc(100% + 0.5 * var(--x-gap));
 }
 
 .x-bleed {
@@ -512,11 +532,10 @@ a.grid:focus {
 .right-align    { text-align: right !important; }
 .center-align   { text-align: center !important; }
 .justify-align  { text-align: justify !important; }
-.size-18  { --size: 1.125rem; }
-.size-24  { --size: 1.5rem; }
-.size-30  { --size: 1.875rem; }
-.size-48  { --size: 3rem; }
-.size-60  { --size: 3.75rem; }
+
+
+
+.size-18 { --size: 1.125rem; }.size-24 { --size: 1.5rem; }.size-30 { --size: 1.875rem; }.size-36 { --size: 2.25rem; }.size-42 { --size: 2.625rem; }.size-48 { --size: 3rem; }.size-60 { --size: 3.75rem; }
 
 .margin-0         { margin-top: 0      !important; }
 .margin-8         { margin-top: 0.5rem !important; }
@@ -577,23 +596,38 @@ a.grid:focus {
 
 
 .\@1-flex           { display: flex !important; }
+.\@1-flex > *       { flex: 0 0 auto; margin: 0; }
 .\@1-flex > li      { display: block; }
 
-.grid {
-    --x-gap: 2.1rem;
-    --y-gap: 2.1rem;
-}
+.\@1-x-flex         { flex-direction: row; }
+.\@1-y-flex         { flex-direction: column; }
+
+.\@1-y-flex > .x-start  { align-self: start; }
+.\@1-y-flex > .x-center { align-self: center; }
+.\@1-y-flex > .x-end    { align-self: end; }
+
+/* Keep focus box-shadows over the top of their siblings */
+.\@1-flex *              { z-index: 0; }
+.\@1-flex .select-button { z-index: 1; }
+.\@1-flex *:focus        { z-index: 2; }
 
 .\@1-grid {
+    --x-gap: 2.1rem;
+    --y-gap: 2.1rem;
+
     display: grid !important;
+
     /* Horizontal layout */
     grid-auto-flow: row;
+
     /* Create equal columns by default. */
     grid-auto-columns: minmax(0, 1fr);
     column-gap: var(--x-gap, 0);
     row-gap:    var(--y-gap, 0);
-    --x-gap: 2.1rem;
-    --y-gap: 2.1rem;
+
+    /* Stretch by default */
+    justify-items: stretch;
+    align-items: stretch;
 }
 
 a.\@1-grid,
@@ -605,6 +639,11 @@ a.\@1-grid:focus {
 .\@1-grid[hidden] {
     /* Override display grid !important declaration with hidden attribute */
     display: none !important;
+}
+
+.\@1-grid > * {
+    /* Make children stretch to fill by default */
+    margin: 0;
 }
 
 .\@1-grid > li {
@@ -688,31 +727,31 @@ a.\@1-grid:focus {
 .\@1-x-unbleedl {
     margin-left:  calc(0.5 * var(--x-gap));
     margin-right: 0;
-    max-width:    calc(100% - var(0.5 * --x-gap));
-    width:        calc(100% - var(0.5 * --x-gap));
+    max-width:    calc(100% - 0.5 * var(--x-gap));
+    width:        calc(100% - 0.5 * var(--x-gap));
 }
 
 .\@1-x-unbleedr {
     margin-left:  0;
     margin-right: calc(0.5 * var(--x-gap));
-    max-width:    calc(100% - var(0.5 * --x-gap));
-    width:        calc(100% - var(0.5 * --x-gap));
+    max-width:    calc(100% - 0.5 * var(--x-gap));
+    width:        calc(100% - 0.5 * var(--x-gap));
 }
 
 .\@1-x-bleedl {
     justify-self: stretch !important;
     margin-left:  calc(var(--x-gap) / -2);
     margin-right: 0;
-    max-width:    calc(100% + var(0.5 * --x-gap));
-    width:        calc(100% + var(0.5 * --x-gap));
+    max-width:    calc(100% + 0.5 * var(--x-gap));
+    width:        calc(100% + 0.5 * var(--x-gap));
 }
 
 .\@1-x-bleedr {
     justify-self: stretch !important;
     margin-left:  0;
     margin-right: calc(var(--x-gap) / -2);
-    max-width:    calc(100% + var(0.5 * --x-gap));
-    width:        calc(100% + var(0.5 * --x-gap));
+    max-width:    calc(100% + 0.5 * var(--x-gap));
+    width:        calc(100% + 0.5 * var(--x-gap));
 }
 
 .\@1-x-bleed {
@@ -864,11 +903,10 @@ a.\@1-grid:focus {
 .\@1-right-align    { text-align: right !important; }
 .\@1-center-align   { text-align: center !important; }
 .\@1-justify-align  { text-align: justify !important; }
-.\@1-size-18  { --size: 1.125rem; }
-.\@1-size-24  { --size: 1.5rem; }
-.\@1-size-30  { --size: 1.875rem; }
-.\@1-size-48  { --size: 3rem; }
-.\@1-size-60  { --size: 3.75rem; }
+
+
+
+
 
 .\@1-margin-0         { margin-top: 0      !important; }
 .\@1-margin-8         { margin-top: 0.5rem !important; }
@@ -931,23 +969,38 @@ a.\@1-grid:focus {
 
 
 .\@2-flex           { display: flex !important; }
+.\@2-flex > *       { flex: 0 0 auto; margin: 0; }
 .\@2-flex > li      { display: block; }
 
-.grid {
-    --x-gap: 2.1rem;
-    --y-gap: 2.8rem;
-}
+.\@2-x-flex         { flex-direction: row; }
+.\@2-y-flex         { flex-direction: column; }
+
+.\@2-y-flex > .x-start  { align-self: start; }
+.\@2-y-flex > .x-center { align-self: center; }
+.\@2-y-flex > .x-end    { align-self: end; }
+
+/* Keep focus box-shadows over the top of their siblings */
+.\@2-flex *              { z-index: 0; }
+.\@2-flex .select-button { z-index: 1; }
+.\@2-flex *:focus        { z-index: 2; }
 
 .\@2-grid {
+    --x-gap: 2.1rem;
+    --y-gap: 2.8rem;
+
     display: grid !important;
+
     /* Horizontal layout */
     grid-auto-flow: row;
+
     /* Create equal columns by default. */
     grid-auto-columns: minmax(0, 1fr);
     column-gap: var(--x-gap, 0);
     row-gap:    var(--y-gap, 0);
-    --x-gap: 2.1rem;
-    --y-gap: 2.8rem;
+
+    /* Stretch by default */
+    justify-items: stretch;
+    align-items: stretch;
 }
 
 a.\@2-grid,
@@ -959,6 +1012,11 @@ a.\@2-grid:focus {
 .\@2-grid[hidden] {
     /* Override display grid !important declaration with hidden attribute */
     display: none !important;
+}
+
+.\@2-grid > * {
+    /* Make children stretch to fill by default */
+    margin: 0;
 }
 
 .\@2-grid > li {
@@ -1045,31 +1103,31 @@ a.\@2-grid:focus {
 .\@2-x-unbleedl {
     margin-left:  calc(0.5 * var(--x-gap));
     margin-right: 0;
-    max-width:    calc(100% - var(0.5 * --x-gap));
-    width:        calc(100% - var(0.5 * --x-gap));
+    max-width:    calc(100% - 0.5 * var(--x-gap));
+    width:        calc(100% - 0.5 * var(--x-gap));
 }
 
 .\@2-x-unbleedr {
     margin-left:  0;
     margin-right: calc(0.5 * var(--x-gap));
-    max-width:    calc(100% - var(0.5 * --x-gap));
-    width:        calc(100% - var(0.5 * --x-gap));
+    max-width:    calc(100% - 0.5 * var(--x-gap));
+    width:        calc(100% - 0.5 * var(--x-gap));
 }
 
 .\@2-x-bleedl {
     justify-self: stretch !important;
     margin-left:  calc(var(--x-gap) / -2);
     margin-right: 0;
-    max-width:    calc(100% + var(0.5 * --x-gap));
-    width:        calc(100% + var(0.5 * --x-gap));
+    max-width:    calc(100% + 0.5 * var(--x-gap));
+    width:        calc(100% + 0.5 * var(--x-gap));
 }
 
 .\@2-x-bleedr {
     justify-self: stretch !important;
     margin-left:  0;
     margin-right: calc(var(--x-gap) / -2);
-    max-width:    calc(100% + var(0.5 * --x-gap));
-    width:        calc(100% + var(0.5 * --x-gap));
+    max-width:    calc(100% + 0.5 * var(--x-gap));
+    width:        calc(100% + 0.5 * var(--x-gap));
 }
 
 .\@2-x-bleed {
@@ -1221,11 +1279,10 @@ a.\@2-grid:focus {
 .\@2-right-align    { text-align: right !important; }
 .\@2-center-align   { text-align: center !important; }
 .\@2-justify-align  { text-align: justify !important; }
-.\@2-size-18  { --size: 1.125rem; }
-.\@2-size-24  { --size: 1.5rem; }
-.\@2-size-30  { --size: 1.875rem; }
-.\@2-size-48  { --size: 3rem; }
-.\@2-size-60  { --size: 3.75rem; }
+
+
+
+
 
 .\@2-margin-0         { margin-top: 0      !important; }
 .\@2-margin-8         { margin-top: 0.5rem !important; }
@@ -1290,23 +1347,38 @@ a.\@2-grid:focus {
 
 
 .\@3-flex           { display: flex !important; }
+.\@3-flex > *       { flex: 0 0 auto; margin: 0; }
 .\@3-flex > li      { display: block; }
 
-.grid {
-    --x-gap: 2.1rem;
-    --y-gap: 4.2rem;
-}
+.\@3-x-flex         { flex-direction: row; }
+.\@3-y-flex         { flex-direction: column; }
+
+.\@3-y-flex > .x-start  { align-self: start; }
+.\@3-y-flex > .x-center { align-self: center; }
+.\@3-y-flex > .x-end    { align-self: end; }
+
+/* Keep focus box-shadows over the top of their siblings */
+.\@3-flex *              { z-index: 0; }
+.\@3-flex .select-button { z-index: 1; }
+.\@3-flex *:focus        { z-index: 2; }
 
 .\@3-grid {
+    --x-gap: 2.1rem;
+    --y-gap: 4.2rem;
+
     display: grid !important;
+
     /* Horizontal layout */
     grid-auto-flow: row;
+
     /* Create equal columns by default. */
     grid-auto-columns: minmax(0, 1fr);
     column-gap: var(--x-gap, 0);
     row-gap:    var(--y-gap, 0);
-    --x-gap: 2.1rem;
-    --y-gap: 4.2rem;
+
+    /* Stretch by default */
+    justify-items: stretch;
+    align-items: stretch;
 }
 
 a.\@3-grid,
@@ -1318,6 +1390,11 @@ a.\@3-grid:focus {
 .\@3-grid[hidden] {
     /* Override display grid !important declaration with hidden attribute */
     display: none !important;
+}
+
+.\@3-grid > * {
+    /* Make children stretch to fill by default */
+    margin: 0;
 }
 
 .\@3-grid > li {
@@ -1410,31 +1487,31 @@ a.\@3-grid:focus {
 .\@3-x-unbleedl {
     margin-left:  calc(0.5 * var(--x-gap));
     margin-right: 0;
-    max-width:    calc(100% - var(0.5 * --x-gap));
-    width:        calc(100% - var(0.5 * --x-gap));
+    max-width:    calc(100% - 0.5 * var(--x-gap));
+    width:        calc(100% - 0.5 * var(--x-gap));
 }
 
 .\@3-x-unbleedr {
     margin-left:  0;
     margin-right: calc(0.5 * var(--x-gap));
-    max-width:    calc(100% - var(0.5 * --x-gap));
-    width:        calc(100% - var(0.5 * --x-gap));
+    max-width:    calc(100% - 0.5 * var(--x-gap));
+    width:        calc(100% - 0.5 * var(--x-gap));
 }
 
 .\@3-x-bleedl {
     justify-self: stretch !important;
     margin-left:  calc(var(--x-gap) / -2);
     margin-right: 0;
-    max-width:    calc(100% + var(0.5 * --x-gap));
-    width:        calc(100% + var(0.5 * --x-gap));
+    max-width:    calc(100% + 0.5 * var(--x-gap));
+    width:        calc(100% + 0.5 * var(--x-gap));
 }
 
 .\@3-x-bleedr {
     justify-self: stretch !important;
     margin-left:  0;
     margin-right: calc(var(--x-gap) / -2);
-    max-width:    calc(100% + var(0.5 * --x-gap));
-    width:        calc(100% + var(0.5 * --x-gap));
+    max-width:    calc(100% + 0.5 * var(--x-gap));
+    width:        calc(100% + 0.5 * var(--x-gap));
 }
 
 .\@3-x-bleed {
@@ -1586,11 +1663,10 @@ a.\@3-grid:focus {
 .\@3-right-align    { text-align: right !important; }
 .\@3-center-align   { text-align: center !important; }
 .\@3-justify-align  { text-align: justify !important; }
-.\@3-size-18  { --size: 1.125rem; }
-.\@3-size-24  { --size: 1.5rem; }
-.\@3-size-30  { --size: 1.875rem; }
-.\@3-size-48  { --size: 3rem; }
-.\@3-size-60  { --size: 3.75rem; }
+
+
+
+
 
 .\@3-margin-0         { margin-top: 0      !important; }
 .\@3-margin-8         { margin-top: 0.5rem !important; }

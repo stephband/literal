@@ -7,14 +7,14 @@
 
 <meta charset="utf-8" />
 <meta name="author" content="Stephen Band" />
-<meta name="description" content="Literal enhances HTML templates with JS literal template tags, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
+<meta name="description" content="Literal enhances HTML templates with JS literal expressions for data binding, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
 <meta name="viewport" content="width=device-width" />
 
 
 <meta name="twitter:card" content="summary">
 <meta name="twitter:site" content="@stephband">
 <meta property="og:title" content="Literal" />
-<meta property="og:description" content="Literal enhances HTML templates with JS literal template tags, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
+<meta property="og:description" content="Literal enhances HTML templates with JS literal expressions for data binding, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
 <meta property="og:image" content="undefined" />
 <meta property="og:url" content="https://stephen.band/literal" />
 
@@ -52,22 +52,28 @@
         
 
 <h2 class="text-02" id="template-scope">Template scope</h2>
-<p>Literal templates are rendered in a scope that contains some useful objects and
-functions.</p>
+<p>Literal templates are rendered in a scope that has a few useful functions
+and objects.</p>
 <p>The <code>data</code> object is the data passed into the template to be rendered:</p>
-<pre><code class="language-js">$<span class="token punctuation">{</span> data<span class="token punctuation">.</span>name <span class="token punctuation">}</span>
+<pre><code class="language-js">$<span class="token punctuation">{</span> data <span class="token punctuation">}</span>
 </code></pre>
-<p>Other templates can be included with <code>include()</code> function:</p>
-<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#some-other-template'</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span> <span class="token punctuation">}</span>
+<p>Include another template with the <code>include()</code> function:</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#another-template'</span><span class="token punctuation">,</span> data<span class="token punctuation">.</span>object<span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
-<p>Expressions that return promises or streams cause the DOM to be updated
-when values are resolved. The <code>events()</code> function, for example, returns a
-mappable stream of events:</p>
+<p>The <code>include()</code> function is partially applicable. Include multiple templates by
+mapping over an array:</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> data<span class="token punctuation">.</span>array<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#item-template'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre>
+<p>Expressions that evaluate as promises or streams cause the DOM to be updated
+when values resolve. The <code>events()</code> function returns a mappable stream of
+events:</p>
 <pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token string">'hashchange'</span><span class="token punctuation">,</span> window<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> location<span class="token punctuation">.</span>hash<span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
-<p>Some functions are simply built-ins, aliased for brevity (it is nicer to read
-<code>${ values(data) }</code> than <code>${ Object.values(data) }</code> within the constraints of a
-template).</p>
+<p>Some functions in the scope are simply built-ins aliased for brevity. It is
+nicer to read <code>${ values(data) }</code> than <code>${ Object.values(data) }</code> in a template.
+(A couple of functions in the scope might seem a bit niche, but are part of
+Literal’s implementation anyway, so come at no cost.)</p>
+<p>Of course, you can also use any old JavaScript in an expression.</p>
 
 
 
@@ -95,8 +101,8 @@ When it mutates, the DOM re-renders.</p>
         <code class=" language-css"> this</code>
     </h4>
 
-    <p>The current renderer. Normally this should not be touched, and is provided for
-debugging.</p>
+    <p>The current renderer. Normally you wouldn’t reference this unless you want to
+print information about the template renderer itself.</p>
 
 </details-toggle>
 
@@ -256,6 +262,16 @@ object, plus any other arguments passed to the handler.</p>
 
 
 
+<details-toggle class="function-details-toggle" id="function-denormalise">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">denormalise(<span class="param">min</span>, <span class="param">max</span>, <span class="param">value</span>)</code>
+    </h4>
+
+    
+</details-toggle>
+
+
+
 <details-toggle class="function-details-toggle" id="function-entries-1">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">entries(<span class="param">object</span>)</code>
@@ -281,25 +297,42 @@ otherwise false.</p>
 
 <details-toggle class="function-details-toggle" id="function-events">
     <h4 class="function-text text-05" slot="summary">
-        <code class=" language-js">events(<span class="param">type</span>, <span class="param">node</span>)</code>
+        <code class=" language-js">events(<span class="param">type</span>, <span class="param">element</span>)</code>
     </h4>
 
-    <p>Returns a mappable stream of events heard on <code>node</code>.</p>
+    <p>Returns a mappable stream of events heard on <code>element</code>.</p>
 <pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> element<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>id<span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
-<p>The first parameter may also be an object with a <code>type</code> property. If the
-object has a <code>select</code> property that is a CSS selector, events are delegated
-from matching targets:</p>
-<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'click'</span><span class="token punctuation">,</span> select<span class="token operator">:</span> <span class="token string">'[name="button"]'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> element<span class="token punctuation">)</span>
-   <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">)</span> <span class="token punctuation">}</span>
+<p>The first parameter may alternatively be a select object. It must have a
+<code>.type</code> property.</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'click'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> element<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>id<span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
-<p>Other properties are passed to addEventListener options, for passive and
-capture phase event binding:</p>
+<p>The object may contain a number of other properties that select the events
+received. It supports the standard addEventListener options, for passive and
+capture phase event binding.</p>
 <pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'scroll'</span><span class="token punctuation">,</span> passive<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span> capture <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> window<span class="token punctuation">)</span>
    <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> window<span class="token punctuation">.</span>scrollTop<span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
-<p>Stopping an event stream removes event listeners. Streams returned from
-expressions are automatically stopped when their renderers are removed.</p>
+<p>And a <code>.select</code> property, a CSS selector, that filters events to those with
+targets that match or have a <code>closest()</code> ancestor that matches the selector.</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token operator">:</span> <span class="token string">'click'</span><span class="token punctuation">,</span> select<span class="token operator">:</span> <span class="token string">'[name="button"]'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> element<span class="token punctuation">)</span>
+   <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>id<span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre>
+<p>However, if you need to delegate events it is recommended to use the
+<code>delegate()</code> function, which has the added benefit of direct access to the
+delegated target.</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> element<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token function">delegate</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token string">'[name="button"]'</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">target<span class="token punctuation">,</span> e</span><span class="token punctuation">)</span> <span class="token operator">=></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>target<span class="token punctuation">.</span>id<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token string">'[name="remove"]'</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">target<span class="token punctuation">,</span> e</span><span class="token punctuation">)</span> <span class="token operator">=></span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span>target<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token operator">...</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre>
+<p>Stopping an event stream removes event listeners.</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> element<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">stop</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre>
+<p>But streams returned from template expressions, like this one, are stopped
+automatically when the renderer is stopped, so normally there is no need to
+worry about managing them.</p>
 
 </details-toggle>
 
@@ -311,6 +344,18 @@ expressions are automatically stopped when their renderers are removed.</p>
     </h4>
 
     <p>Alias of <code>Math.floor()</code>.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-frame">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">frame(<span class="param">fn</span>)</code>
+    </h4>
+
+    <p>Alias of <code>window.requestAnimationFrame(fn)</code>. Aliased for brevity inside
+templates.</p>
 
 </details-toggle>
 
@@ -358,6 +403,18 @@ identifier referring to the id of a template already in the DOM:</p>
 looping over an array to return an array of rendered templates:</p>
 <pre><code class="language-js">$<span class="token punctuation">{</span> data<span class="token punctuation">.</span>array<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#list-item'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-isdefined">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">isDefined(<span class="param">value</span>)</code>
+    </h4>
+
+    <p>Check for defined <code>value</code>. where <code>value</code> is <code>undefined</code>, <code>NaN</code> or <code>null</code>,
+returns <code>false</code>, otherwise <code>true</code>.</p>
 
 </details-toggle>
 
@@ -411,18 +468,28 @@ Note that <code>object</code> may have more properties than <code>selector</code
 
 
 
-<details-toggle class="function-details-toggle" id="function-overload">
+<details-toggle class="function-details-toggle" id="function-normalise">
     <h4 class="function-text text-05" slot="summary">
-        <code class=" language-js">overload(<span class="param">fn</span>, <span class="param">map</span>)</code>
+        <code class=" language-js">normalise(<span class="param">min</span>, <span class="param">max</span>, <span class="param">value</span>)</code>
     </h4>
 
-    <p>For function overloading. Takes a <code>fn</code> that returns a string key, and a <code>map</code>
-object of functions stored against keys. Returns a function that calls the
-function at the key generated by calling <code>fn()</code> with all arguments.</p>
-<p>Where a key is not in <code>map</code> but <code>map</code> contains the property <code>&#39;default&#39;</code>,
-that default function is called. Where there is no default function an error
-is thrown.</p>
-<pre><code><span class="token keyword">var</span> handleEvent <span class="token operator">=</span> <span class="token function">overload</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> e<span class="token punctuation">.</span>type<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-overload">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">overload(<span class="param">fn</span>, <span class="param">object</span>)</code>
+    </h4>
+
+    <p>Returns an overloaded.</p>
+<p>Takes a <code>fn</code> that returns a string key, and an <code>object</code> of key:function
+pairs. The returned function calls <code>fn</code> with all arguments to get a key,
+then calls the function at <code>object[key]</code> with all arguments.</p>
+<p>Where <code>fn</code> returns <code>undefined</code>, <code>object.default</code> is called if it is defined
+in <code>object</code>, otherwise <code>overload</code> throws a ‘no function defined for key’ error.</p>
+<pre><code><span class="token keyword">var</span> handleEvent <span class="token operator">=</span> <span class="token function">overload</span><span class="token punctuation">(</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'type'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
     <span class="token function-variable function">click</span><span class="token operator">:</span>   <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><span class="token operator">...</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token function-variable function">input</span><span class="token operator">:</span>   <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><span class="token operator">...</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token function-variable function">default</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><span class="token operator">...</span><span class="token punctuation">}</span>
@@ -476,22 +543,46 @@ Messages should be styled with the print stylesheet:
 
 
 
+<details-toggle class="function-details-toggle" id="function-rect">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">rect(<span class="param">node</span>)</code>
+    </h4>
+
+    <p>Returns a <code>DOMRect</code> object describing the draw rectangle of <code>node</code>.
+(If <code>node</code> is <code>window</code> a preudo-DOMRect object is returned).</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-rect-1">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">rect(<span class="param">element</span>)</code>
+    </h4>
+
+    <p>A shortcut for <code>element.getBoundingClientRectangle()</code>. Returns a DOMRect
+object with <code>left</code>, <code>top</code>, <code>width</code> and <code>height</code> properties.</p>
+
+</details-toggle>
+
+
+
 <details-toggle class="function-details-toggle" id="function-request">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">request(<span class="param">method</span>, <span class="param">url</span>)</code>
     </h4>
 
     <p>Uses <code>fetch()</code> to send a request to <code>url</code>. Returns a promise.</p>
-<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">request</span><span class="token punctuation">(</span>method<span class="token punctuation">,</span> url<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token operator">...</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">request</span><span class="token punctuation">(</span><span class="token string">'get'</span><span class="token punctuation">,</span> <span class="token string">'../documentation/modules/package.json'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'author'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
 <p>To send data with the request:</p>
-<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">request</span><span class="token punctuation">(</span>method<span class="token punctuation">,</span> url<span class="token punctuation">,</span> data<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token operator">...</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">request</span><span class="token punctuation">(</span><span class="token string">'post'</span><span class="token punctuation">,</span> url<span class="token punctuation">,</span> data<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token operator">...</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
-<p>Where <code>type</code> is <code>&quot;GET&quot;</code>, <code>data</code> is serialised and appended to the URL,
-otherwise it is sent as a request body.</p>
+<p>(Where <code>type</code> is <code>&quot;GET&quot;</code>, <code>data</code> is serialised and appended to the URL,
+otherwise it is sent as a request body.)</p>
 <p>A 4th parameter may be a content type string or a headers object
 (in which case it must have a <code>&#39;Content-Type&#39;</code> property).</p>
-<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">request</span><span class="token punctuation">(</span>method<span class="token punctuation">,</span> url<span class="token punctuation">,</span> data<span class="token punctuation">,</span> headers<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token operator">...</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">request</span><span class="token punctuation">(</span><span class="token string">'post'</span><span class="token punctuation">,</span> url<span class="token punctuation">,</span> data<span class="token punctuation">,</span> <span class="token punctuation">{</span><span class="token operator">...</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token operator">...</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
 
 </details-toggle>
@@ -524,19 +615,29 @@ otherwise it is sent as a request body.</p>
 
 <details-toggle class="constructor-details-toggle" id="constructor-stream-combine">
     <h4 class="constructor-text text-05" slot="summary">
-        <code class=" language-js">Stream.combine(<span class="param">object</span>)</code>
+        <code class=" language-js">Stream.combine(<span class="param">inputs</span>)</code>
     </h4>
 
     <p>Creates a stream of objects containing the latest values of all streams and
-promises in <code>object</code>, as soon as they become active or resolved.</p>
+promises in <code>inputs</code> as they resolve:</p>
 <pre><code class="language-js">Stream<span class="token punctuation">.</span><span class="token function">combine</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> stream<span class="token punctuation">,</span> b<span class="token operator">:</span> promise <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">object</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
     <span class="token comment">// object.a and object.b are values</span>
 <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
-<p>If <code>object</code> contains properties that are not streams or promises, those are
-also set on streamed objects.</p>
-<pre><code class="language-js">Stream<span class="token punctuation">.</span><span class="token function">combine</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> stream<span class="token punctuation">,</span> b<span class="token operator">:</span> promise<span class="token punctuation">,</span> c<span class="token operator">:</span> <span class="token number">5</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">object</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+<p>If <code>inputs</code> contains properties that are not streams or promises, those are
+also set on streamed objects:</p>
+<pre><code class="language-js">Stream<span class="token punctuation">.</span><span class="token function">combine</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> stream<span class="token punctuation">,</span> c<span class="token operator">:</span> <span class="token number">5</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">object</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
     <span class="token comment">// object.c is 5</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>By default immutable – the stream emits new objects – it can be made to
+mutate and emit the <code>inputs</code> object by passing an options object with
+<code>mutable</code> set to <code>true</code> as a second parameter. This can help minimise
+garbage collection when dealing with large streams.</p>
+<pre><code class="language-js">Stream
+<span class="token punctuation">.</span><span class="token function">combine</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> stream<span class="token punctuation">,</span> b<span class="token operator">:</span> promise <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> mutable<span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">object</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token comment">// object is the input object, properties a and b are now values</span>
 <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 <p>Output objects are created using the constructor of the input <code>object</code>,
@@ -544,15 +645,6 @@ making it possible to use an array or other object as input and expect an
 array or other object as output.</p>
 <pre><code class="language-js">Stream<span class="token punctuation">.</span><span class="token function">combine</span><span class="token punctuation">(</span><span class="token punctuation">[</span>promise<span class="token punctuation">,</span> stream<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">object</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
     <span class="token comment">// object is an Array</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-</code></pre>
-<p>The stream may be made mutable by passing <code>true</code> (or an options object with
-<code>mutable</code> set to <code>true</code>) as a second parameter. In this case no new objects
-are constructed, instead the input <code>object</code> is mutated and pushed to the
-output stream. This may be a Good Idea when it is necessary to avoid garbage
-collection, such as when animating.</p>
-<pre><code class="language-js">Stream<span class="token punctuation">.</span><span class="token function">combine</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> stream<span class="token punctuation">,</span> b<span class="token operator">:</span> promise <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">object</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
-    <span class="token comment">// object is the input object, properties a and b are now values</span>
 <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 
@@ -618,7 +710,7 @@ from inputs.</p>
 
     <p>Looks up an alternative value stored by <code>key</code> in a <code>window.translations</code>
 object, if it exists. A super simple translation mechanism, but requires
-<code>window.translations</code> to be populated.</p>
+<code>window.translations</code> to be an object.</p>
 <pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">translate</span><span class="token punctuation">(</span><span class="token string">'Go to homepage'</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
 
@@ -739,14 +831,13 @@ render time.</p>
         
 
 <h2 class="text-02" id="template-expressions">Template expressions</h2>
-<p>How evaluated expressions are rendered into the DOM depends upon their type.</p>
-<p>Promises are resolved before they render, arrays are flattened and joined
-without spaces or commas, and streams are re-rendered every time they emit a new
-value.</p>
-<p>Literal flattens nested collections – a <em>promise</em> of a <em>stream</em> of <em>arrays</em> of
-<em>strings</em> will render as a string as its values arrive.</p>
-<p>False-y values, other than <code>false</code> itself, don’t render at all, so expressions
-may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
+<p>Expressions are evaluated, and how they then render depends on their type.</p>
+<p>Promises are rendered when they resolve; arrays are flattened and joined without
+spaces or commas; streams are rendered whenever they emit a value.</p>
+<p>Falsy values other than <code>false</code> and <code>0</code> don’t render at all, so expressions
+may evaluate to <code>undefined</code>, <code>null</code> or <code>NaN</code> and go unseen.</p>
+<p>Literal flattens nested collections. A <em>stream</em> of <em>arrays</em> of <em>strings</em> will
+render text whenever the stream emits an array of strings.</p>
 <table class="striped-table x-bleed">
     <thead>
         <tr>
@@ -793,9 +884,9 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
         </tr>
         <tr>
             <th>Number</th>
-            <th><code>${ 100.3 }</code></th>
+            <th><code>${ 123.4 }</code></th>
             <td>
-                <template is="literal-html">${ 100.3 }</template>
+                <template is="literal-html">${ 123.4 }</template>
             </td>
         </tr>
         <tr>
@@ -849,24 +940,24 @@ may evaluate to <code>undefined</code> or <code>null</code> and go unseen.</p>
         </tr>
         <tr>
             <th>Node</th>
-            <th><code>${ document.createTextNode('Text') }</code></th>
+            <th><code>${ document.createTextNode('Hello') }</code></th>
             <td>
-                <template is="literal-html">${ document.createTextNode('Text') }</template>
+                <template is="literal-html">${ document.createTextNode('Hello') }</template>
             </td>
         </tr>
         <tr>
             <th>Promise</th>
-            <th><code>${ Promise.resolve('promise') }</code></th>
+            <th><code>${ Promise.resolve('yoohoo') }</code></th>
             <td>
-                <template is="literal-html">${ Promise.resolve('promise') }</template>
+                <template is="literal-html">${ Promise.resolve('yoohoo') }</template>
             </td>
         </tr>
         <tr>
             <th>Stream</th>
             <th><code>${ events('pointermove', body)<br/>
-            &nbsp;&nbsp;.map((e) => e.pageX.toFixed(1)) }</code></th>
+            &nbsp;&nbsp;.map((e) => round(e.pageX)) }</code></th>
             <td>
-                <template is="literal-html">${ events('pointermove', body).map((e) => e.pageX.toFixed(1)) }</template>
+                <template is="literal-html">${ events('pointermove', body).map((e) => round(e.pageX)) }</template>
             </td>
         </tr>
     </tbody>
