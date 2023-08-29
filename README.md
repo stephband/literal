@@ -2,7 +2,8 @@
 
 Literal is an HTML template rendering library. Literal enhances
 **HTML `<template>`s** with **JS template literals**, a data-binding
-DOM renderer, and a scope of functions for writing expressive expressions.
+DOM renderer, and a scope of functions for writing powerful expressions
+concisely.
 
 
 #### [`<template is="literal-html">`](./literal-html/)
@@ -40,7 +41,7 @@ entirely in HTML.
 #### [Template scope, functions and expressions](https://stephen.band/literal/templates/)
 
 Literal templates are compiled in a scope that has a number of **functions** and
-**objects** for writing concise, powerful expressions.
+**objects** for writing powerful expressions concisely.
 
 The `data` object holds data to bind to:
 
