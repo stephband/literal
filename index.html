@@ -44,7 +44,7 @@
 </head>
 
 <body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
-    <header class="x1 4x @2-x2 x-stretch">
+    <!--header class="x1 4x @2-x2 x-stretch">
         
 <h1 class="text-01">Literal <span class="text-06">0.6.5</span></h1>
 <p class="text-08">Literal enhances HTML templates with JS literal expressions for data binding, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped.</p>
@@ -53,7 +53,68 @@
     <li><strong>bugs:</strong> <a href="https://github.com/stephband/literal/issues/">github.com/stephband/literal/issues/</a></li>
 </ul>
 
-    </header>
+    </header-->
+
+    <section class="x1 4x @2-x2 x-stretch">
+        <h1 id="literal-065">Literal <span class="text-06">0.6.5</span></h1>
+<p>Literal is a DOM rendering library.</p>
+<p>Literal enhances <strong>HTML <code>&lt;template&gt;</code>s</strong> with <strong>JS template literals</strong>, a data-binding
+DOM renderer, and a scope of functions for writing concise expressions.</p>
+<h4 id="template-isliteral-html"><a href="./literal-html"><code>&lt;template is=&quot;literal-html&quot;&gt;</code></a></h4>
+<p>A <code>literal-html</code> template acts as an <strong>include</strong>, enabling you to place dynamic
+content pretty much anywhere in your HTML. It is replaced in the DOM with its
+own rendered content.</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span>${ data.title }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
+</code></pre>
+<h4 id="template-isliteral-element"><a href="./literal-element"><code>&lt;template is=&quot;literal-element&quot;&gt;</code></a></h4>
+<p>A <code>literal-element</code> template defines a <strong>custom element</strong> and its <strong>shadow DOM</strong>,
+entirely in HTML.</p>
+<pre><code class="language-html"><span class="token comment">&lt;!-- in the head --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>my-element<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Shadow DOM for ${ host.tagName }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>slot</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>slot</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
+
+<span class="token comment">&lt;!-- in the body --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>my-element</span><span class="token punctuation">></span></span>
+    Slotted content
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>my-element</span><span class="token punctuation">></span></span>
+</code></pre>
+<h4 id="template-scope-functions-and-expressions"><a href="https://stephen.band/literal/templates/">Template scope, functions and expressions</a></h4>
+<p>Literal templates are compiled in a scope that has a number of <strong>functions</strong> and
+<strong>objects</strong> for writing concise, powerful expressions.</p>
+<p>The <code>data</code> object holds data to bind to:</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span>${ data.title }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>${ data.version }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
+</code></pre>
+<p>The <code>include()</code> function includes other templates:</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token comment">&lt;!-- Include a template --></span>
+    ${ include('#template-id', data) }
+
+    <span class="token comment">&lt;!-- Include a template and render it when JSON data is fetched --></span>
+    ${ include('#template-id', './package.json') }
+
+    <span class="token comment">&lt;!-- Include a template for each object in an array --></span>
+    ${ data.array.map(include('#template-id')) }
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
+</code></pre>
+<p>Listen to DOM events by creating an <code>events()</code> stream:</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token comment">&lt;!-- Listen to events --></span>
+    ${ events('click', element).each((e) => { ... }) }
+
+    <span class="token comment">&lt;!-- Map a stream of events to text --></span>
+    ${ events('change', element).map((e) => e.target.value) }
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
+</code></pre>
+<p>Read more <a href="https://stephen.band/literal/templates/">template functions and expressions</a></p>
+
+    </section>
 
     
 <nav>

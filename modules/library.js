@@ -1,8 +1,8 @@
 
 /** Template scope
 
-Literal templates are rendered in a scope that has a few useful functions
-and objects.
+Literal templates are rendered in a scope that contains a number of useful
+functions and objects.
 
 The `data` object is the data passed into the template to be rendered:
 
