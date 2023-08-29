@@ -1,0 +1,19 @@
+
+.demo-block {
+    padding: 0.7em;
+    background-color: #f4f4f1;
+    box-shadow: 0 0 3rem rgba(73, 73, 19, 0.1) inset;
+    border-bottom-left-radius: 0.3em;
+    border-bottom-right-radius: 0.3em;
+}
+
+* > .demo-block {
+    width: calc(100% + 1.4em);
+    margin-left: -0.7em;
+    margin-right: -0.7em;
+}
+
+pre + .demo-block {
+    border-top: 0.3em solid var(--slate);
+    margin-top: -0.3em;
+}
