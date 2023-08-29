@@ -47,7 +47,7 @@ Here's a definition of a bare-bones show/hide '`<my-toggle>`' element:
         <!-- Listen to events on the button -->
         ${ events('click', element).each(() => (data.active = !data.active)) }
     </button>
-    <!-- Boolean attributes understand a single truthy/falsy expression -->
+    <!-- Boolean attributes take a single truthy/falsy expression -->
     <slot hidden="${ !data.active }"></slot>
 </template>
 

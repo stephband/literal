@@ -92,7 +92,7 @@ Here’s a definition of a bare-bones show/hide ‘<code>&lt;my-toggle&gt;</code
         <span class="token comment">&lt;!-- Listen to events on the button --></span>
         ${ events('click', element).each(() => (data.active = !data.active)) }
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
-    <span class="token comment">&lt;!-- Boolean attributes understand a single truthy/falsy expression --></span>
+    <span class="token comment">&lt;!-- Boolean attributes take a single truthy/falsy expression --></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>slot</span> <span class="token attr-name">hidden</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${ !data.active }<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>slot</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 
