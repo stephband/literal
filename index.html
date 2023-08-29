@@ -57,11 +57,10 @@
 
     <section class="x1 4x @2-x2 x-stretch">
         <h1 id="literal-065">Literal <span class="text-06">0.6.5</span></h1>
-<p>Literal is an HTML template rendering library. Literal enhances
-<strong>HTML <code>&lt;template&gt;</code>s</strong> with <strong>JS template literals</strong>, a data-binding
-DOM renderer, and a scope of functions for writing powerful expressions
-concisely.</p>
-<h4 id="template-isliteral-html"><a href="./literal-html"><code>&lt;template is=&quot;literal-html&quot;&gt;</code></a></h4>
+<p>Literal puts JS into HTML templates. Literal enhances <strong>HTML <code>&lt;template&gt;</code>s</strong>
+with <strong>JS template literals</strong>, a <strong>DOM renderer</strong>, and a scope of <strong>helper
+functions</strong> for writing concise, powerful expressions.</p>
+<h4 id="template-isliteral-html"><a href="https://stephen.band/literal/literal-html/"><code>&lt;template is=&quot;literal-html&quot;&gt;</code></a></h4>
 <p>A <code>literal-html</code> template acts as an <strong>include</strong>, enabling you to place dynamic
 content pretty much anywhere in your HTML. It is replaced in the DOM with its
 own rendered content.</p>
@@ -69,21 +68,30 @@ own rendered content.</p>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span>${ data.title }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 </code></pre>
-<h4 id="template-isliteral-element"><a href="./literal-element"><code>&lt;template is=&quot;literal-element&quot;&gt;</code></a></h4>
-<p>A <code>literal-element</code> template defines a <strong>custom element</strong> and its <strong>shadow DOM</strong>,
-entirely in HTML.</p>
+<h4 id="template-isliteral-element"><a href="https://stephen.band/literal/literal-element/"><code>&lt;template is=&quot;literal-element&quot;&gt;</code></a></h4>
+<p>A <code>literal-element</code> template defines a <strong>custom element</strong> and its <strong>shadow DOM</strong>.
+In HTML.</p>
 <pre><code class="language-html"><span class="token comment">&lt;!-- in the head --></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>my-element<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>my-element<span class="token punctuation">"</span></span> <span class="token attr-name">attributes</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>active:boolean<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Shadow DOM for ${ host.tagName }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>slot</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>slot</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>slot</span> <span class="token attr-name">hidden</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${ !data.active }<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>slot</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 
 <span class="token comment">&lt;!-- in the body --></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>my-element</span><span class="token punctuation">></span></span>
-    Slotted content
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>my-element</span> <span class="token attr-name">active</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Slotted content shown when active.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>my-element</span><span class="token punctuation">></span></span>
 </code></pre>
-<h4 id="template-scope-functions-and-expressions"><a href="https://stephen.band/literal/templates/">Template scope, functions and expressions</a></h4>
+<h3 id="get-started">Get started</h3>
+<p>Import and define the Literal template elements to start rendering them.</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>module<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"><span class="token language-javascript">
+    <span class="token comment">// Import and define &lt;template is="literal-html"></span>
+    <span class="token keyword">import</span> <span class="token string">'./build/literal-html/module.js'</span><span class="token punctuation">;</span>
+    <span class="token comment">// Import and define &lt;template is="literal-element"></span>
+    <span class="token keyword">import</span> <span class="token string">'./build/literal-element/module.js'</span><span class="token punctuation">;</span>
+</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+</code></pre>
+<h3 id="template-scope-functions-and-expressions"><a href="https://stephen.band/literal/templates/">Template scope, functions and expressions</a></h3>
 <p>Literal templates are compiled in a scope that has a number of <strong>functions</strong> and
 <strong>objects</strong> for writing powerful expressions concisely.</p>
 <p>The <code>data</code> object holds data to bind to:</p>
@@ -113,7 +121,7 @@ entirely in HTML.</p>
     ${ events('change', element).map((e) => e.target.value) }
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 </code></pre>
-<p>Read more <a href="https://stephen.band/literal/templates/">template functions and expressions</a></p>
+<p>Read more <a href="https://stephen.band/literal/templates/">template functions and expressions</a>.</p>
 
     </section>
 
@@ -330,6 +338,7 @@ entirely in HTML.</p>
     <div class="x1 4x @1-2x @1-x3 @2-x4 x-stretch y-start">
         <h3>Tools</h3>
         <a class="block" href="https://stephen.band/font-size/">Font-size calculator</a>
+        <a class="block" href="https://stephen.band/harmony-circle/">Harmonic circle</a>
     </div>
 </footer>
 

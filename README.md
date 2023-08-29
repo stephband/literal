@@ -1,12 +1,11 @@
 # Literal <span class="text-06">0.6.5</span>
 
-Literal is an HTML template rendering library. Literal enhances
-**HTML `<template>`s** with **JS template literals**, a data-binding
-DOM renderer, and a scope of functions for writing powerful expressions
-concisely.
+Literal puts JS into HTML templates. Literal enhances **HTML `<template>`s**
+with **JS template literals**, a **DOM renderer**, and a scope of **helper
+functions** for writing concise, powerful expressions.
 
 
-#### [`<template is="literal-html">`](./literal-html/)
+#### [`<template is="literal-html">`](https://stephen.band/literal/literal-html/)
 
 A `literal-html` template acts as an **include**, enabling you to place dynamic
 content pretty much anywhere in your HTML. It is replaced in the DOM with its
@@ -19,26 +18,40 @@ own rendered content.
 ```
 
 
-#### [`<template is="literal-element">`](./literal-element/)
+#### [`<template is="literal-element">`](https://stephen.band/literal/literal-element/)
 
-A `literal-element` template defines a **custom element** and its **shadow DOM**,
-entirely in HTML.
+A `literal-element` template defines a **custom element** and its **shadow DOM**.
+In HTML.
 
 ```html
 <!-- in the head -->
-<template is="literal-element" tag="my-element">
+<template is="literal-element" tag="my-element" attributes="active:boolean">
     <p>Shadow DOM for ${ host.tagName }</p>
-    <slot></slot>
+    <slot hidden="${ !data.active }"></slot>
 </template>
 
 <!-- in the body -->
-<my-element>
-    Slotted content
+<my-element active>
+    <p>Slotted content shown when active.</p>
 </my-element>
 ```
 
 
-#### [Template scope, functions and expressions](https://stephen.band/literal/templates/)
+### Get started
+
+Import and define the Literal template elements to start rendering them.
+
+```html
+<script type="module">
+    // Import and define <template is="literal-html">
+    import './build/literal-html/module.js';
+    // Import and define <template is="literal-element">
+    import './build/literal-element/module.js';
+</script>
+```
+
+
+### [Template scope, functions and expressions](https://stephen.band/literal/templates/)
 
 Literal templates are compiled in a scope that has a number of **functions** and
 **objects** for writing powerful expressions concisely.
@@ -79,4 +92,4 @@ Listen to DOM events by creating an `events()` stream:
 </template>
 ```
 
-Read more [template functions and expressions](https://stephen.band/literal/templates/)
+Read more [template functions and expressions](https://stephen.band/literal/templates/).
