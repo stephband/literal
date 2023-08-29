@@ -1,12 +1,11 @@
 # Literal <span class="text-06">0.6.5</span>
 
-Literal is an HTML template rendering library. Literal enhances
-**HTML `<template>`s** with **JS template literals**, a data-binding
-DOM renderer, and a scope of functions for writing powerful expressions
-concisely.
+Literal puts JS into HTML templates. Literal enhances **HTML `<template>`s**
+with **JS template literals**, a **DOM renderer**, and a scope of **helper
+functions** for writing concise, powerful expressions.
 
 
-#### [`<template is="literal-html">`](./literal-html/)
+#### [`<template is="literal-html">`](https://stephen.band/literal/literal-html/)
 
 A `literal-html` template acts as an **include**, enabling you to place dynamic
 content pretty much anywhere in your HTML. It is replaced in the DOM with its
@@ -18,23 +17,40 @@ own rendered content.
 </template>
 ```
 
+Import and define `<template is="literal-html">` to start rendering.
 
-#### [`<template is="literal-element">`](./literal-element/)
+```html
+<script type="module">
+    import './build/literal-html/module.js';
+</script>
+```
 
-A `literal-element` template defines a **custom element** and its **shadow DOM**,
-entirely in HTML.
+
+#### [`<template is="literal-element">`](https://stephen.band/literal/literal-element/)
+
+A `literal-element` template defines a **custom element** and its **shadow DOM**.
+In HTML.
 
 ```html
 <!-- in the head -->
-<template is="literal-element" tag="my-element">
+<template is="literal-element" tag="my-element" attributes="active:boolean">
     <p>Shadow DOM for ${ host.tagName }</p>
-    <slot></slot>
+    <slot hidden="${ !data.active }"></slot>
 </template>
 
 <!-- in the body -->
-<my-element>
-    Slotted content
+<my-element active>
+    <p>Slotted content shown when active.</p>
 </my-element>
+```
+
+Import and define `<template is="literal-element">` to start rendering Literal
+elements.
+
+```html
+<script type="module">
+    import './build/literal-element/module.js';
+</script>
 ```
 
 
@@ -79,4 +95,4 @@ Listen to DOM events by creating an `events()` stream:
 </template>
 ```
 
-Read more [template functions and expressions](https://stephen.band/literal/templates/)
+Read more [template functions and expressions](https://stephen.band/literal/templates/).
