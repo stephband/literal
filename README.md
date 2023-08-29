@@ -4,7 +4,7 @@ Literal puts JS into HTML templates. Literal enhances **HTML `<template>`s**
 with **JS template literals** and a scope of **functions** for writing concise
 expressions, and renders them with a **live DOM renderer**.
 
-Start authoring dynamic HTML with one of Literal's templates.
+Start authoring with one of Literal's customised built-in templates.
 
 
 #### [`<template is="literal-html">`](https://stephen.band/literal/literal-html/)
@@ -18,10 +18,8 @@ enabling you to place dynamic content pretty much anywhere in your HTML.
     <h2>${ data.title } <span class="text-06">${ data.version }</span></h2>
 </template>
 
-<script type="module">
-    // Import literal-html to start rendering
-    import './build/literal-html/module.js';
-</script>
+<!-- Import literal-html to start rendering -->
+<script type="module" src="./build/literal-html/module.js"></script>
 ```
 
 <div class="demo-block block">
@@ -55,10 +53,8 @@ Here's a definition of a bare-bones show/hide '`<my-toggle>`' element:
     <p>Content is shown when my-toggle is active.</p>
 </my-toggle>
 
-<script type="module">
-    // Import literal-element to define <my-toggle>
-    import './build/literal-element/module.js';
-</script>
+<!-- Import literal-element to define <my-toggle> -->
+<script type="module" src="./build/literal-element/module.js"></script>
 ```
 
 <div class="demo-block block">
@@ -87,34 +83,28 @@ Literal templates are compiled in a scope that has a number of **functions** and
 object holds data to bind to:
 
 ```html
-<template is="literal-html" data="./package.json">
-    <h2>${ data.title }</h2>
-    <p>${ data.version }</p>
-</template>
+<h2>${ data.title }</h2>
+<p>${ data.version }</p>
 ```
 
 The `include()` function includes other templates:
 
 ```html
-<template is="literal-html">
-    <!-- Include a template -->
-    ${ include('#template-id', data) }
-    <!-- Include a template and render it when JSON data is fetched -->
-    ${ include('#template-id', './package.json') }
-    <!-- Include a template for each object in an array -->
-    ${ data.array.map(include('#template-id')) }
-</template>
+<!-- Include a template -->
+${ include('#template-id', data) }
+<!-- Include a template and render it when JSON data is fetched -->
+${ include('#template-id', './package.json') }
+<!-- Include a template for each object in an array -->
+${ data.array.map(include('#template-id')) }
 ```
 
 Listen to DOM events by creating an `events()` stream:
 
 ```html
-<template is="literal-html">
-    <!-- Listen to events -->
-    ${ events('click', element).each((e) => { ... }) }
-    <!-- Map a stream of events to text -->
-    ${ events('change', element).map((e) => e.target.value) }
-</template>
+<!-- Listen to events -->
+${ events('click', element).each((e) => { ... }) }
+<!-- Map a stream of events to text -->
+${ events('change', element).map((e) => e.target.value) }
 ```
 
 [Read the template scope and expressions documentation](https://stephen.band/literal/templates/).

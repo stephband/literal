@@ -37,7 +37,7 @@ export default {
     <template is="literal-element" attributes="loop:boolean controls:tokens" tag="play-list">
     ```
 
-    Possible types are:
+    Possible attribute types are:
 
     - `:boolean` – a boolean attribute, boolean property
     - `:number`  – a string attribute, number property
