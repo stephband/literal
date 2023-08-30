@@ -46,9 +46,9 @@
 </header>
 
 <section class="x1 4x @2-x2 x-stretch y-start documentation-block block">
-    <p>An HTML template that declares a new custom element. Its <code>tag</code> attribute, which
-is required, declares the tag name of the new custom element, and the content of
-the template defines the shadow DOM:</p>
+    <p>An HTML template that declares a custom element. Its <code>tag</code> attribute, required,
+declares the tag name of new custom element, and the content of the template
+defines its shadow DOM:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>dom-clock<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>time</span><span class="token punctuation">></span></span>${ clock(1).map(floor) } seconds<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>time</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
@@ -74,11 +74,6 @@ scope:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Current time: <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dom-clock</span> <span class="token attr-name">interval</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>3<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dom-clock</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
 </code></pre>
 <p>Current time: <dom-clock interval="3"></dom-clock></p>
-
-<p>The new custom element may be made to load stylesheets before it is upgraded,
-preventing a flash of unstyled content, using the <code>stylesheets</code> attribute, and
-it may have a lifecycle and scope variables defined in a JS module declared via
-the <code>src</code> attribute.</p>
 
 </section>
 
@@ -116,7 +111,7 @@ and a property of the new custom element. The type defines the behaviour of
 the attribute and type of value of the property:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">attributes</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>loop:boolean controls:tokens<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>play-list<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
 </code></pre>
-<p>Possible types are:</p>
+<p>Possible attribute types are:</p>
 <ul>
 <li><code>:boolean</code> – a boolean attribute, boolean property</li>
 <li><code>:number</code>  – a string attribute, number property</li>
@@ -136,7 +131,7 @@ the attribute and type of value of the property:</p>
 
 
 
-<details-toggle class="attribute-details-toggle" id="attribute-src-1">
+<details-toggle class="attribute-details-toggle" id="attribute-src">
     <h4 class="attribute-text text-05" slot="summary">
         <code class="token language-html">src</code>
     </h4>

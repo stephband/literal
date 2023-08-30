@@ -49,12 +49,16 @@ Here's a definition of a bare-bones show/hide '`<my-toggle>`' element:
     <slot hidden="${ !data.active }"></slot>
 </template>
 
-<my-toggle active>
-    <p>Content is shown when my-toggle is active.</p>
-</my-toggle>
-
 <!-- Import literal-element to define <my-toggle> -->
 <script type="module" src="./build/literal-element/module.js"></script>
+```
+
+Which is authored as:
+
+```html
+<my-toggle>
+    <p>Content is shown when my-toggle is active.</p>
+</my-toggle>
 ```
 
 <div class="demo-block block">
