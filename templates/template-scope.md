@@ -8,9 +8,9 @@ scope.myFunction = () => { ... };
 ```
 
 Note that this must be done before `literal-html` or `literal-element` have been
-imported. Those imports declare and compile their templates, at which point
-their scopes cannot be changed. Put the above code into a setup script and
-import that before importing the templates.
+imported. Those imports declare and compile templates, at which point their
+scopes cannot be changed. Put the above code into a setup script and import that
+before importing the templates.
 
 ```js
 import './my-literal-setup.js';

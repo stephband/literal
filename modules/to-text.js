@@ -2,13 +2,17 @@
 /**
 Template expressions
 
-Expressions are evaluated, and how they then render depends on their type.
+Expressions are made powerful by Literal's renderer, which accepts expressions
+that evaluate to a **string** or other **primitive**, a **DOM node** or **fragment**,
+an **array** of values, another **renderer**, or even an asynchronous value in a
+**promise** or a **stream**.
 
-Promises are rendered when they resolve; arrays are flattened and joined without
-spaces or commas; streams are rendered whenever they emit a value.
+**Falsy** values other than `false` and `0` – `undefined`, `null` or `NaN` –  don't
+render at all.
 
-Falsy values other than `false` and `0` don't render at all, so expressions
-may evaluate to `undefined`, `null` or `NaN` and go unseen.
+**Arrays** are flattened and joined (without spaces or commas).
+
+**Promises** and **streams** are rendered asynchronously when they emit values.
 
 Literal flattens nested collections. A _stream_ of _arrays_ of _strings_ will
 render text whenever the stream emits an array of strings.
@@ -142,7 +146,6 @@ render text whenever the stream emits an array of strings.
 import id       from '../../fn/modules/id.js';
 import overload from '../../fn/modules/overload.js';
 import toType   from '../../fn/modules/to-type.js';
-//import { Observer } from '../../fn/observer/observer.js';
 
 // Matches the arguments list in the result of fn.toString()
 const rarrowents = /\s*(\([\w,\s]*\))/;

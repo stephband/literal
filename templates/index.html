@@ -59,22 +59,22 @@ that evaluate to a <strong>string</strong> or other <strong>primitive</strong>, 
 an <strong>array</strong> of values, another <strong>renderer</strong>, or even an asynchronous value in a
 <strong>promise</strong> or a <strong>stream</strong>.</p>
 <p>The <code>data</code> object carries data for rendering.</p>
-<pre><code class="language-html">${ data }
+<pre><code class="language-js">$<span class="token punctuation">{</span> data <span class="token punctuation">}</span>
 </code></pre>
 <p>The <code>events()</code> function returns a stream of DOM events.</p>
-<pre><code class="language-html"><span class="token comment">&lt;!-- Listen to events --></span>
-${ events('click', element).each((e) => { ... }) }
-<span class="token comment">&lt;!-- Map a stream of events to text --></span>
-${ events('change', element).map((e) => e.target.value) }
+<pre><code class="language-js"><span class="token operator">&lt;</span><span class="token operator">!</span><span class="token operator">--</span> Listen to events <span class="token operator">--</span><span class="token operator">></span>
+$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> element<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span> <span class="token operator">...</span> <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+<span class="token operator">&lt;</span><span class="token operator">!</span><span class="token operator">--</span> Map a stream <span class="token keyword">of</span> events to text <span class="token operator">--</span><span class="token operator">></span>
+$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token string">'change'</span><span class="token punctuation">,</span> element<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
 <p>The <code>include()</code> function returns a template renderer (or the promise of template
 renderer, if it has to fetch a template or some data).</p>
-<pre><code class="language-html"><span class="token comment">&lt;!-- Include another template --></span>
-${ include('#template-id', data) }
-<span class="token comment">&lt;!-- Include another template and render it when JSON data is fetched --></span>
-${ include('#template-id', '../documentation/modules/package.json') }
-<span class="token comment">&lt;!-- Include another template for each object in an array --></span>
-${ data.array.map(include('#template-id')) }
+<pre><code class="language-js"><span class="token operator">&lt;</span><span class="token operator">!</span><span class="token operator">--</span> Include another template <span class="token operator">--</span><span class="token operator">></span>
+$<span class="token punctuation">{</span> <span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#template-id'</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span> <span class="token punctuation">}</span>
+<span class="token operator">&lt;</span><span class="token operator">!</span><span class="token operator">--</span> Include another template and render it when <span class="token constant">JSON</span> data is fetched <span class="token operator">--</span><span class="token operator">></span>
+$<span class="token punctuation">{</span> <span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#template-id'</span><span class="token punctuation">,</span> <span class="token string">'../documentation/modules/package.json'</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+<span class="token operator">&lt;</span><span class="token operator">!</span><span class="token operator">--</span> Include another template <span class="token keyword">for</span> each object <span class="token keyword">in</span> an array <span class="token operator">--</span><span class="token operator">></span>
+$<span class="token punctuation">{</span> data<span class="token punctuation">.</span>array<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#template-id'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
 
 
@@ -855,9 +855,9 @@ render time.</p>
 scope<span class="token punctuation">.</span><span class="token function-variable function">myFunction</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span> <span class="token operator">...</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
 </code></pre>
 <p>Note that this must be done before <code>literal-html</code> or <code>literal-element</code> have been
-imported. Those imports declare and compile their templates, at which point
-their scopes cannot be changed. Put the above code into a setup script and
-import that before importing the templates.</p>
+imported. Those imports declare and compile templates, at which point their
+scopes cannot be changed. Put the above code into a setup script and import that
+before importing the templates.</p>
 <pre><code class="language-js"><span class="token keyword">import</span> <span class="token string">'./my-literal-setup.js'</span><span class="token punctuation">;</span>
 <span class="token keyword">import</span> <span class="token string">'./literal/literal-html/module.js'</span><span class="token punctuation">;</span>
 <span class="token keyword">import</span> <span class="token string">'./literal/literal-element/module.js'</span><span class="token punctuation">;</span>
@@ -869,11 +869,14 @@ import that before importing the templates.</p>
         
 
 <h2 class="text-02" id="template-expressions">Template expressions</h2>
-<p>Expressions are evaluated, and how they then render depends on their type.</p>
-<p>Promises are rendered when they resolve; arrays are flattened and joined without
-spaces or commas; streams are rendered whenever they emit a value.</p>
-<p>Falsy values other than <code>false</code> and <code>0</code> don’t render at all, so expressions
-may evaluate to <code>undefined</code>, <code>null</code> or <code>NaN</code> and go unseen.</p>
+<p>Expressions are made powerful by Literal’s renderer, which accepts expressions
+that evaluate to a <strong>string</strong> or other <strong>primitive</strong>, a <strong>DOM node</strong> or <strong>fragment</strong>,
+an <strong>array</strong> of values, another <strong>renderer</strong>, or even an asynchronous value in a
+<strong>promise</strong> or a <strong>stream</strong>.</p>
+<p><strong>Falsy</strong> values other than <code>false</code> and <code>0</code> – <code>undefined</code>, <code>null</code> or <code>NaN</code> –  don’t
+render at all.</p>
+<p><strong>Arrays</strong> are flattened and joined (without spaces or commas).</p>
+<p><strong>Promises</strong> and <strong>streams</strong> are rendered asynchronously when they emit values.</p>
 <p>Literal flattens nested collections. A <em>stream</em> of <em>arrays</em> of <em>strings</em> will
 render text whenever the stream emits an array of strings.</p>
 <table class="striped-table x-bleed">

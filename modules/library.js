@@ -11,13 +11,13 @@ an **array** of values, another **renderer**, or even an asynchronous value in a
 
 The `data` object carries data for rendering.
 
-```html
+```js
 ${ data }
 ```
 
 The `events()` function returns a stream of DOM events.
 
-```html
+```js
 <!-- Listen to events -->
 ${ events('click', element).each((e) => { ... }) }
 <!-- Map a stream of events to text -->
@@ -27,7 +27,7 @@ ${ events('change', element).map((e) => e.target.value) }
 The `include()` function returns a template renderer (or the promise of template
 renderer, if it has to fetch a template or some data).
 
-```html
+```js
 <!-- Include another template -->
 ${ include('#template-id', data) }
 <!-- Include another template and render it when JSON data is fetched -->
