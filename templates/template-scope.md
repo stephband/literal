@@ -1,6 +1,7 @@
 ### Extending the template scope
 
-To include a function in the scope of all Literal templates:
+To include a function in the scope of all Literal templates import Literal's
+scope object and assign your function to it.
 
 ```js
 import { scope } from './literal/module.js';
