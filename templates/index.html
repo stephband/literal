@@ -849,10 +849,10 @@ render time.</p>
 
     <section class="x1 4x @2-x2 x-stretch">
         <h3 id="extending-the-template-scope">Extending the template scope</h3>
-<p>To include a function in the scope of all Literal templates import Literal’s
-scope object and assign your function to it.</p>
+<p>To make a function or other object available in the scope of all Literal
+templates, import Literal’s <code>scope</code> object and assign to it.</p>
 <pre><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> scope <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./literal/module.js'</span><span class="token punctuation">;</span>
-scope<span class="token punctuation">.</span><span class="token function-variable function">myFunction</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span> <span class="token operator">...</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+scope<span class="token punctuation">.</span><span class="token function-variable function">myFunction</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
 </code></pre>
 <p>Note that this must be done before <code>literal-html</code> or <code>literal-element</code> have been
 imported. Those imports declare and compile templates, at which point their
