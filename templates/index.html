@@ -848,18 +848,22 @@ render time.</p>
 
     </div>
 
-    <div class="x1 4x @2-x2 x-stretch">
-        <h3>Extending the template scope</h3>
-        <p>Add a function to the scope of all Literal templates:</p>
-        <pre><code class="language-js">import { scope } from './literal/module.js';
-scope.myFunction = () => { ... };</code></pre>
-        <p>Note that this must be done before <code>literal-html</code> or
-        <code>literal-element</code> are imported (these imports declare and
-        compile the templates, at which point their scopes cannot be changed).
-        Put any literal configuration into a setup script and import that first.</p>
-        <pre><code class="language-js">import './setup-literal.js';
-import './liteddral/literal-html/module.js'</code></pre>
-    </div>
+    <section class="x1 4x @2-x2 x-stretch">
+        <h3 id="extending-the-template-scope">Extending the template scope</h3>
+<p>To include a function in the scope of all Literal templates:</p>
+<pre><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> scope <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./literal/module.js'</span><span class="token punctuation">;</span>
+scope<span class="token punctuation">.</span><span class="token function-variable function">myFunction</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span> <span class="token operator">...</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Note that this must be done before <code>literal-html</code> or <code>literal-element</code> have been
+imported. Those imports declare and compile their templates, at which point
+their scopes cannot be changed. Put the above code into a setup script and
+import that before importing the templates.</p>
+<pre><code class="language-js"><span class="token keyword">import</span> <span class="token string">'./my-literal-setup.js'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token string">'./literal/literal-html/module.js'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token string">'./literal/literal-element/module.js'</span><span class="token punctuation">;</span>
+</code></pre>
+
+    </section>
 
     <section class="x1 4x @2-x2 x-stretch" id="template-expressions">
         

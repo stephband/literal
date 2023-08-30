@@ -89,7 +89,7 @@ Expressions are made powerful by Literal's renderer, which accepts expressions
 that evaluate to a **string** or other **primitive**, a **DOM node** or **fragment**,
 an **array** of values, another **renderer**, or even an asynchronous value in a
 **promise** or a **stream**. This makes it possible to, for example, include
-other templates or listen to DOM events:
+other templates or listen to DOM events inside expressions:
 
 ```html
 <!-- Include another template -->

@@ -85,18 +85,9 @@
         .map((doc) => include('../documentation/templates/entry.literal', doc)) }
     </div>
 
-    <div class="x1 4x @2-x2 x-stretch">
-        <h3>Extending the template scope</h3>
-        <p>Add a function to the scope of all Literal templates:</p>
-        <pre><code class="language-js">import { scope } from './literal/module.js';
-scope.myFunction = () => { ... };</code></pre>
-        <p>Note that this must be done before <code>literal-html</code> or
-        <code>literal-element</code> are imported (these imports declare and
-        compile the templates, at which point their scopes cannot be changed).
-        Put any literal configuration into a setup script and import that first.</p>
-        <pre><code class="language-js">import './setup-literal.js';
-import './liteddral/literal-html/module.js'</code></pre>
-    </div>
+    <section class="x1 4x @2-x2 x-stretch">
+        ${ include('./template-scope.md', data) }
+    </section>
 
     <section class="x1 4x @2-x2 x-stretch" id="template-expressions">
         ${ (await comments(
