@@ -79,7 +79,7 @@ enabling you to place dynamic content pretty much anywhere in your HTML.</p>
     </template>
 </div>
 
-<p><a href="https://stephen.band/literal/literal-html/">Read the <code>literal-html</code> documentation</a>.</p>
+<p>Read the <a href="https://stephen.band/literal/literal-html/"><code>literal-html</code> documentation</a>.</p>
 <h3 id="template-isliteral-element"><code>&lt;template is=&quot;literal-element&quot;&gt;</code></h3>
 <p>A <code>literal-element</code> template defines a <strong>custom element</strong> and its <strong>shadow DOM</strong>.
 Here’s a definition of a bare-bones show/hide ‘<code>&lt;my-toggle&gt;</code>‘ element:</p>
@@ -97,7 +97,7 @@ Here’s a definition of a bare-bones show/hide ‘<code>&lt;my-toggle&gt;</code
 <span class="token comment">&lt;!-- Import literal-element to define &lt;my-toggle> --></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>module<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./build/literal-element/module.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
 </code></pre>
-<p>Which is authored as:</p>
+<p>Which is then authored as:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>my-toggle</span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Content is shown when my-toggle is active.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>my-toggle</span><span class="token punctuation">></span></span>
@@ -118,7 +118,7 @@ Here’s a definition of a bare-bones show/hide ‘<code>&lt;my-toggle&gt;</code
     </my-toggle>
 </div>
 
-<p><a href="https://stephen.band/literal/literal-element/">Read the <code>literal-element</code> documentation</a>.</p>
+<p>Read the <a href="https://stephen.band/literal/literal-element/"><code>literal-element</code> documentation</a>.</p>
 <h2 id="template-scope-and-expressions">Template scope and expressions</h2>
 <p>Literal templates are compiled in a <strong>scope</strong> that contains a number of <strong>objects</strong>
 and <strong>functions</strong> designed for writing concise template <strong>expressions</strong>.</p>
@@ -133,7 +133,7 @@ ${ include('#template-id', data) }
 <span class="token comment">&lt;!-- Listen to an event stream --></span>
 ${ events('click', element).each((e) => { ... }) }
 </code></pre>
-<p>Read more about <a href="https://stephen.band/literal/templates/">Template Scope and Expressions</a>.</p>
+<p>Read the <a href="https://stephen.band/literal/templates/">Template Scope and Expressions documentation</a>.</p>
 
     </section>
 

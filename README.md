@@ -29,7 +29,7 @@ enabling you to place dynamic content pretty much anywhere in your HTML.
     </template>
 </div>
 
-[Read the `literal-html` documentation](https://stephen.band/literal/literal-html/).
+Read the [`literal-html` documentation](https://stephen.band/literal/literal-html/).
 
 
 ### `<template is="literal-element">`
@@ -53,7 +53,7 @@ Here's a definition of a bare-bones show/hide '`<my-toggle>`' element:
 <script type="module" src="./build/literal-element/module.js"></script>
 ```
 
-Which is authored as:
+Which is then authored as:
 
 ```html
 <my-toggle>
@@ -77,7 +77,7 @@ Which is authored as:
     </my-toggle>
 </div>
 
-[Read the `literal-element` documentation](https://stephen.band/literal/literal-element/).
+Read the [`literal-element` documentation](https://stephen.band/literal/literal-element/).
 
 
 ## Template scope and expressions
@@ -99,4 +99,4 @@ ${ include('#template-id', data) }
 ${ events('click', element).each((e) => { ... }) }
 ```
 
-Read more about [Template Scope and Expressions](https://stephen.band/literal/templates/).
+Read the [Template Scope and Expressions documentation](https://stephen.band/literal/templates/).
