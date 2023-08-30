@@ -65,7 +65,8 @@ export default function include(src, data, parameters) {
         object ;
 
     if (object && object.each) {
-        return templateRequest.then((template) =>
+        return templateRequest
+        .then((template) =>
             pipe(template, data, parameters)
         );
     }
