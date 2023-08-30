@@ -71,6 +71,7 @@ h1 > .tag-brace, .text-01 > .tag-brace {
     vertical-align: -0.04em;
 }
 
+* + h2, * + .text-02 { margin-top: 1.3125em; }
 * + h3, * + .text-03 { margin-top: 1.05em; }
 * + h4, * + .text-04 { margin-top: 2.8em; }
 * + h5, * + .text-05 { margin-top: 1.225em; }

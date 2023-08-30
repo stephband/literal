@@ -7,7 +7,7 @@ expressions, and renders them with a **live DOM renderer**.
 Start authoring with one of Literal's customised built-in templates.
 
 
-#### [`<template is="literal-html">`](https://stephen.band/literal/literal-html/)
+### [`<template is="literal-html">`](https://stephen.band/literal/literal-html/)
 
 A `literal-html` template is replaced in the DOM with its own rendered content,
 enabling you to place dynamic content pretty much anywhere in your HTML.
@@ -32,7 +32,7 @@ enabling you to place dynamic content pretty much anywhere in your HTML.
 [Read the `literal-html` documentation](https://stephen.band/literal/literal-html/).
 
 
-#### [`<template is="literal-element">`](https://stephen.band/literal/literal-element/)
+### [`<template is="literal-element">`](https://stephen.band/literal/literal-element/)
 
 A `literal-element` template defines a **custom element** and its **shadow DOM**.
 Here's a definition of a bare-bones show/hide '`<my-toggle>`' element:
@@ -80,35 +80,23 @@ Which is authored as:
 [Read the `literal-element` documentation](https://stephen.band/literal/literal-element/).
 
 
-### [Template scope, functions and expressions](https://stephen.band/literal/templates/)
+## [Template scope and expressions](https://stephen.band/literal/templates/)
 
-Literal templates are compiled in a scope that has a number of **functions** and
-**objects** for writing powerful expressions concisely. For example, the `data`
-object holds data to bind to:
+Literal templates are compiled in a **scope** that contains a number of **objects**
+and **functions** designed for writing concise template **expressions**.
 
-```html
-<h2>${ data.title }</h2>
-<p>${ data.version }</p>
-```
-
-The `include()` function includes other templates:
+Expressions are made powerful by Literal's renderer, which accepts expressions
+that evaluate to a **string** or other **primitive**, a **DOM node** or **fragment**,
+an **array** of values, another **renderer**, or even an asynchronous value in a
+**promise** or a **stream**. This makes it possible to, for example, include
+other templates or listen to DOM events:
 
 ```html
-<!-- Include a template -->
+<!-- Include another template -->
 ${ include('#template-id', data) }
-<!-- Include a template and render it when JSON data is fetched -->
-${ include('#template-id', './package.json') }
-<!-- Include a template for each object in an array -->
-${ data.array.map(include('#template-id')) }
-```
 
-Listen to DOM events by creating an `events()` stream:
-
-```html
-<!-- Listen to events -->
+<!-- Listen to an event stream -->
 ${ events('click', element).each((e) => { ... }) }
-<!-- Map a stream of events to text -->
-${ events('change', element).map((e) => e.target.value) }
 ```
 
-[Read the template scope and expressions documentation](https://stephen.band/literal/templates/).
+Read more about [Template Scope and Expressions](https://stephen.band/literal/templates/).

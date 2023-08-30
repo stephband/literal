@@ -18,7 +18,7 @@
         ))[0]) }
     </section>
 
-    <div class="x1 4x @1-x4 @1-3x @1-y3 @2-x5 x-stretch y-start">
+    <div class="x1 4x @1-3x @1-y3 @2-x2 x-stretch y-start">
         <h3>Objects</h3>
 
         ${ (await comments(
@@ -29,18 +29,22 @@
         .filter((doc) => (doc.type === 'selector'))
         //.sort(by(get('name')))
         .map((doc) => include('../documentation/templates/entry.literal', doc)) }
-    </div>
 
-    <div class="x1 4x @1-3x @1-y3 @2-x2 x-stretch y-start">
         <h3>Streams</h3>
 
         ${ (await comments(
+            '../modules/library.js',
+            '../modules/library-dom.js',
             '../../fn/modules/stream.js',
             //'../fn/observer/observe.js',
         ))
         .filter((doc) => (doc.type === 'function' || doc.type === 'constructor'))
+        .filter((entry) => ['Stream.of', 'Stream.from', 'Stream.combine', 'Stream.merge', 'clock', 'events', 'observe'].includes(entry.name))
         .sort(by((entry) => entry.name.toLowerCase()))
         .map((doc) => include('../documentation/templates/entry.literal', doc)) }
+    </div>
+
+    <div class="x1 4x @1-x4 @1-3x @1-y3 @2-x5 x-stretch y-start">
 
         <h3>Functions</h3>
 
@@ -58,11 +62,10 @@
             '../../fn/modules/nothing.js',
             '../../fn/modules/overload.js',
             '../../fn/modules/slugify.js',
-            '../../fn/modules/stream.js',
+            //'../../fn/modules/stream.js',
             '../../fn/modules/sum.js',
             //'../fn/observer/observe.js',
             '../../dom/modules/delegate.js',
-            '../../dom/modules/rect.js',
             '../../dom/modules/trigger.js',
             '../modules/library.js',
             '../modules/library-dom.js',
@@ -71,6 +74,7 @@
             '../modules/library/print.js'
         ))
         .filter((doc) => (doc.type === 'function' || doc.type === 'constructor'))
+        .filter((entry) => !['Stream.of', 'Stream.from', 'Stream.combine', 'Stream.merge', 'clock', 'events', 'observe'].includes(entry.name))
         .sort(by((entry) => entry.name.toLowerCase()))
         .map((doc) => include('../documentation/templates/entry.literal', doc)) }
 

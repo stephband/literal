@@ -1,39 +1,43 @@
 
 /** Template scope
 
-Literal templates are rendered in a scope that contains a number of useful
-functions and objects.
+Literal templates are compiled in a **scope** that contains a number of **objects**
+and **functions** designed for writing concise template **expressions**.
 
-The `data` object is the data passed into the template to be rendered:
+Expressions are made powerful by Literal's renderer, which accepts expressions
+that evaluate to a **string** or other **primitive**, a **DOM node** or **fragment**,
+an **array** of values, another **renderer**, or even an asynchronous value in a
+**promise** or a **stream**.
 
-```js
+The `data` object carries data for rendering.
+
+```html
 ${ data }
 ```
 
-Include another template with the `include()` function:
+The `events()` function returns a stream of DOM events.
 
-```js
-${ include('#another-template', data) }
+```html
+<!-- Listen to events -->
+${ events('click', element).each((e) => { ... }) }
+<!-- Map a stream of events to text -->
+${ events('change', element).map((e) => e.target.value) }
 ```
 
-The `include()` function is partially applicable, making it easy to map an array
-of objects to templates:
+The `include()` function returns a template renderer (or the promise of template
+renderer, if it has to fetch a template or some data).
 
-```js
-${ data.array.map(include('#item-template')) }
+```html
+<!-- Include another template -->
+${ include('#template-id', data) }
+<!-- Include another template and render it when JSON data is fetched -->
+${ include('#template-id', './package.json') }
+<!-- Include another template for each object in an array -->
+${ data.array.map(include('#template-id')) }
 ```
 
-Expressions that evaluate as promises or streams cause the DOM to be updated
-asynchronously as values resolve. For example, `events()` returns a mappable
-stream of events that will update the DOM whenever an event is heard:
 
-```js
-${ events('hashchange', window).map((e) => location.hash) }
-```
 
-Of course, any old valid JavaScript can be used in an expression. The functions
-in scope have been chosen to make templates brief to read for some common
-operations. Some are simply aliases of JS built-ins given shorter names.
 **/
 
 import id                   from '../../fn/modules/id.js';
@@ -108,9 +112,9 @@ const library = {
     isDefined,
 
     /**
-    clock(duration)
+    clock(interval)
 
-    If `duration` is a number, returns a stream of DOM timestamps at `duration`
+    If `interval` is a number, returns a stream of DOM timestamps at `interval`
     seconds apart.
 
     ```js
@@ -151,16 +155,22 @@ const library = {
     */
     //notify,
 
-    /*
-    observe(name, object)
+    /**
+    observe(path, object)
+    Returns a stream of values at `path` in `object`. Values are sent whenever
+    the `Data()` proxy of `object` is mutated.
 
-    Returns a stream of values of `object[name]` whenever property `name` is
-    mutated.
-    */
+    ```js
+    ${ observe('path.to.value', data).each(() => {...}) }
+    ```
+
+    TODO: warning, this function is probably going to be renamed as `mutations()`,
+    `updates()` or `changes()`.
+    **/
 
     observe,
 
-    /*
+    /**
     Data(object)
 
     Returns the data proxy of `object`. Use this proxy to set properties in a
@@ -169,7 +179,7 @@ const library = {
     Normally this is not needed. It's for advanced use. The `data` object in the
     scope of the template is already a data proxy and mutations to it are
     observed by the template renderer.
-    */
+    **/
 
     Data: Observer,
     overload,
@@ -208,9 +218,9 @@ const library = {
         return window.translations && window.translations[key] || key;
     },
 
-    /** values()
+    /* values()
     Alias of `Object.values()`.
-    **/
+    */
     values: Object.values
 };
 

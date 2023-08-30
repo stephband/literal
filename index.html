@@ -61,7 +61,7 @@
 with <strong>JS template literals</strong> and a scope of <strong>functions</strong> for writing concise
 expressions, and renders them with a <strong>live DOM renderer</strong>.</p>
 <p>Start authoring with one of Literal’s customised built-in templates.</p>
-<h4 id="template-isliteral-html"><a href="https://stephen.band/literal/literal-html/"><code>&lt;template is=&quot;literal-html&quot;&gt;</code></a></h4>
+<h3 id="template-isliteral-html"><a href="https://stephen.band/literal/literal-html/"><code>&lt;template is=&quot;literal-html&quot;&gt;</code></a></h3>
 <p>A <code>literal-html</code> template is replaced in the DOM with its own rendered content,
 enabling you to place dynamic content pretty much anywhere in your HTML.</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
@@ -80,7 +80,7 @@ enabling you to place dynamic content pretty much anywhere in your HTML.</p>
 </div>
 
 <p><a href="https://stephen.band/literal/literal-html/">Read the <code>literal-html</code> documentation</a>.</p>
-<h4 id="template-isliteral-element"><a href="https://stephen.band/literal/literal-element/"><code>&lt;template is=&quot;literal-element&quot;&gt;</code></a></h4>
+<h3 id="template-isliteral-element"><a href="https://stephen.band/literal/literal-element/"><code>&lt;template is=&quot;literal-element&quot;&gt;</code></a></h3>
 <p>A <code>literal-element</code> template defines a <strong>custom element</strong> and its <strong>shadow DOM</strong>.
 Here’s a definition of a bare-bones show/hide ‘<code>&lt;my-toggle&gt;</code>‘ element:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>my-toggle<span class="token punctuation">"</span></span> <span class="token attr-name">attributes</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>active:boolean<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
@@ -119,28 +119,21 @@ Here’s a definition of a bare-bones show/hide ‘<code>&lt;my-toggle&gt;</code
 </div>
 
 <p><a href="https://stephen.band/literal/literal-element/">Read the <code>literal-element</code> documentation</a>.</p>
-<h3 id="template-scope-functions-and-expressions"><a href="https://stephen.band/literal/templates/">Template scope, functions and expressions</a></h3>
-<p>Literal templates are compiled in a scope that has a number of <strong>functions</strong> and
-<strong>objects</strong> for writing powerful expressions concisely. For example, the <code>data</code>
-object holds data to bind to:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span>${ data.title }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>${ data.version }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
-</code></pre>
-<p>The <code>include()</code> function includes other templates:</p>
-<pre><code class="language-html"><span class="token comment">&lt;!-- Include a template --></span>
+<h2 id="template-scope-and-expressions"><a href="https://stephen.band/literal/templates/">Template scope and expressions</a></h2>
+<p>Literal templates are compiled in a <strong>scope</strong> that contains a number of <strong>objects</strong>
+and <strong>functions</strong> designed for writing concise template <strong>expressions</strong>.</p>
+<p>Expressions are made powerful by Literal’s renderer, which accepts expressions
+that evaluate to a <strong>string</strong> or other <strong>primitive</strong>, a <strong>DOM node</strong> or <strong>fragment</strong>,
+an <strong>array</strong> of values, another <strong>renderer</strong>, or even an asynchronous value in a
+<strong>promise</strong> or a <strong>stream</strong>. This makes it possible to, for example, include
+other templates or listen to DOM events:</p>
+<pre><code class="language-html"><span class="token comment">&lt;!-- Include another template --></span>
 ${ include('#template-id', data) }
-<span class="token comment">&lt;!-- Include a template and render it when JSON data is fetched --></span>
-${ include('#template-id', './package.json') }
-<span class="token comment">&lt;!-- Include a template for each object in an array --></span>
-${ data.array.map(include('#template-id')) }
-</code></pre>
-<p>Listen to DOM events by creating an <code>events()</code> stream:</p>
-<pre><code class="language-html"><span class="token comment">&lt;!-- Listen to events --></span>
+
+<span class="token comment">&lt;!-- Listen to an event stream --></span>
 ${ events('click', element).each((e) => { ... }) }
-<span class="token comment">&lt;!-- Map a stream of events to text --></span>
-${ events('change', element).map((e) => e.target.value) }
 </code></pre>
-<p><a href="https://stephen.band/literal/templates/">Read the template scope and expressions documentation</a>.</p>
+<p>Read more about <a href="https://stephen.band/literal/templates/">Template Scope and Expressions</a>.</p>
 
     </section>
 
