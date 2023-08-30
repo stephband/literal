@@ -60,8 +60,8 @@
 <p>Literal puts JS into HTML templates. Literal enhances <strong>HTML <code>&lt;template&gt;</code>s</strong>
 with <strong>JS template literals</strong> and a scope of <strong>functions</strong> for writing concise
 expressions, and renders them with a <strong>live DOM renderer</strong>.</p>
-<p>Start authoring with one of Literal’s customised built-in templates.</p>
-<h3 id="template-isliteral-html"><a href="https://stephen.band/literal/literal-html/"><code>&lt;template is=&quot;literal-html&quot;&gt;</code></a></h3>
+<h2 id="literal-templates">Literal templates</h2>
+<h3 id="template-isliteral-html"><code>&lt;template is=&quot;literal-html&quot;&gt;</code></h3>
 <p>A <code>literal-html</code> template is replaced in the DOM with its own rendered content,
 enabling you to place dynamic content pretty much anywhere in your HTML.</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
@@ -80,7 +80,7 @@ enabling you to place dynamic content pretty much anywhere in your HTML.</p>
 </div>
 
 <p><a href="https://stephen.band/literal/literal-html/">Read the <code>literal-html</code> documentation</a>.</p>
-<h3 id="template-isliteral-element"><a href="https://stephen.band/literal/literal-element/"><code>&lt;template is=&quot;literal-element&quot;&gt;</code></a></h3>
+<h3 id="template-isliteral-element"><code>&lt;template is=&quot;literal-element&quot;&gt;</code></h3>
 <p>A <code>literal-element</code> template defines a <strong>custom element</strong> and its <strong>shadow DOM</strong>.
 Here’s a definition of a bare-bones show/hide ‘<code>&lt;my-toggle&gt;</code>‘ element:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>my-toggle<span class="token punctuation">"</span></span> <span class="token attr-name">attributes</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>active:boolean<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
@@ -119,7 +119,7 @@ Here’s a definition of a bare-bones show/hide ‘<code>&lt;my-toggle&gt;</code
 </div>
 
 <p><a href="https://stephen.band/literal/literal-element/">Read the <code>literal-element</code> documentation</a>.</p>
-<h2 id="template-scope-and-expressions"><a href="https://stephen.band/literal/templates/">Template scope and expressions</a></h2>
+<h2 id="template-scope-and-expressions">Template scope and expressions</h2>
 <p>Literal templates are compiled in a <strong>scope</strong> that contains a number of <strong>objects</strong>
 and <strong>functions</strong> designed for writing concise template <strong>expressions</strong>.</p>
 <p>Expressions are made powerful by Literal’s renderer, which accepts expressions

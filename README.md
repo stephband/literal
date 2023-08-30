@@ -4,10 +4,9 @@ Literal puts JS into HTML templates. Literal enhances **HTML `<template>`s**
 with **JS template literals** and a scope of **functions** for writing concise
 expressions, and renders them with a **live DOM renderer**.
 
-Start authoring with one of Literal's customised built-in templates.
+## Literal templates
 
-
-### [`<template is="literal-html">`](https://stephen.band/literal/literal-html/)
+### `<template is="literal-html">`
 
 A `literal-html` template is replaced in the DOM with its own rendered content,
 enabling you to place dynamic content pretty much anywhere in your HTML.
@@ -32,7 +31,7 @@ enabling you to place dynamic content pretty much anywhere in your HTML.
 [Read the `literal-html` documentation](https://stephen.band/literal/literal-html/).
 
 
-### [`<template is="literal-element">`](https://stephen.band/literal/literal-element/)
+### `<template is="literal-element">`
 
 A `literal-element` template defines a **custom element** and its **shadow DOM**.
 Here's a definition of a bare-bones show/hide '`<my-toggle>`' element:
@@ -80,7 +79,7 @@ Which is authored as:
 [Read the `literal-element` documentation](https://stephen.band/literal/literal-element/).
 
 
-## [Template scope and expressions](https://stephen.band/literal/templates/)
+## Template scope and expressions
 
 Literal templates are compiled in a **scope** that contains a number of **objects**
 and **functions** designed for writing concise template **expressions**.
