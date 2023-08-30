@@ -2,10 +2,9 @@
 /**
 Template expressions
 
-Expressions are made powerful by Literal's renderer, which accepts expressions
-that evaluate to a **string** or other **primitive**, a **DOM node** or **fragment**,
-an **array** of values, another **renderer**, or even an asynchronous value in a
-**promise** or a **stream**.
+Expressions may evaluate to a **string** or other **primitive**, a **DOM node**
+or **fragment**, an **array** of values, another **renderer**, or even an
+asynchronous value in a **promise** or a **stream**.
 
 **Falsy** values other than `false` and `0` – `undefined`, `null` or `NaN` –  don't
 render at all.
