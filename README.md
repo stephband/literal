@@ -72,7 +72,7 @@ Which is authored as:
         <!-- Boolean attributes understand a single truthy/falsy expression -->
         <slot hidden="${ !data.active }"></slot>
     </template>
-    <my-toggle active>
+    <my-toggle>
         <p>Content is shown when my-toggle is active.</p>
     </my-toggle>
 </div>
