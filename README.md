@@ -4,7 +4,8 @@ Literal puts JS into HTML templates. Literal enhances **HTML `<template>`s**
 with **JS template literals** and a scope of **functions** for writing concise
 expressions, and renders them with a **live DOM renderer**.
 
-## Literal templates
+Start authoring with one of Literal's customised built-in templates.
+
 
 ### `<template is="literal-html">`
 
