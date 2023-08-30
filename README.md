@@ -34,8 +34,8 @@ Read the [`literal-html` documentation](https://stephen.band/literal/literal-htm
 
 ### `<template is="literal-element">`
 
-A `literal-element` template defines a **custom element** and its **shadow DOM**.
-Here's a definition of a bare-bones show/hide '`<my-toggle>`' element:
+A `literal-element` template declares a **custom element** and its **shadow DOM**.
+Here's a declaration of a bare-bones show/hide '`<my-toggle>`' element:
 
 ```html
 <template is="literal-element" tag="my-toggle" attributes="active:boolean">
