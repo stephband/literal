@@ -24,8 +24,7 @@ ${ events('click', element).each((e) => { ... }) }
 ${ events('change', element).map((e) => e.target.value) }
 ```
 
-The `include()` function returns a template renderer (or the promise of template
-renderer, if it has to fetch a template or some data).
+The `include()` function returns a template renderer.
 
 ```js
 <!-- Include another template -->
