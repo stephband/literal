@@ -20,22 +20,25 @@ Where JS fails a `literal-html` template is left inert and unrendered.
 
 ```html
 <template is="literal-html">
-    <pre>${ throws an error }</pre>
+    <pre>${ throwSomeError() }</pre>
 </template>
 ```
 
-The template's `data` object may be set with the `data` attribute. A `data`
-attribute that parses as a URL imports a JavaScript module or fetches JSON:
+The template's `data` object may be set with the `src` attribute. A `src`
+attribute imports a JavaScript module or fetches JSON.
 
 ```html
-<template is="literal-html" data="../data/clock.js">
+<template is="literal-html" src="../data/clock.js">
     <pre>${ data.time.toFixed(0) + 's' }</pre>
 </template>
 ```
 
-<template is="literal-html" data="../../data/clock.js">
+<template is="literal-html" src="../../data/clock.js">
     <pre>${ data.time.toFixed(0) + 's' }</pre>
 </template>
+
+That imports the default export of `clock.js`. Named exports may be imported
+using an identifier, eg. `"../../data/clock.js#namedExport"`.
 
 ### Include other templates
 
@@ -63,17 +66,17 @@ The template scope contains a number of helper functions. The
 </template>
 
 
-The `include(src, data)` function is partially applicable, helpful for
+The `include(src, data)` function is partially applicable, which is helpful for
 mapping an array of objects to template includes:
 
 ```html
-<template is="literal-html" data="../data/todo.json">
+<template is="literal-html" src="../data/todo.json">
     <h5>Todo list</h5>
     <ul>${ data.tasks.map(include('#todo-li')) }</ul>
 </template>
 ```
 
-<template is="literal-html" data="../../data/todo.json">
+<template is="literal-html" src="../../data/todo.json">
     <h5>Todo list</h5>
     <ul>${ data.tasks.map(include('#todo-li')) }</ul>
 </template>
@@ -92,6 +95,9 @@ const assign  = Object.assign;
 const rpath   = /^(\.+|https?:\/)?\//;
 const robject = /^(\{|\[)/;
 
+const onerror = window.DEBUG ?
+    (e, element) => element.replaceWith(print(e)) :
+    noop ;
 
 /* Lifecycle */
 
@@ -113,23 +119,10 @@ function resolveData(value) {
         parseData(value) ;
 }
 
-function requestDataFromValue(template, datas, value) {
-    if (typeof value === 'string') {
-        if (rpath.test(value)) {
-            //addLoading(template);
-
-            requestData(value)
-            .then((data) => datas.push(data))
-            .catch((e)   => onerror(e, template))
-            //.finally(()  => removeLoading(template));
-        }
-        else {
-            datas.push(JSON.parse(value));
-        }
-    }
-    else {
-        datas.push(value);
-    }
+function requestDataFromSrc(template, datas, value) {
+    requestData(value)
+    .then((data) => datas.push(data))
+    .catch((e)   => onerror(e, template));
 }
 
 function requestDataFromDataset(template, datas, dataset) {
@@ -146,10 +139,6 @@ function requestDataFromDataset(template, datas, dataset) {
     .catch((e) => onerror(e, template))
     //.finally(()  => removeLoading(template));
 }
-
-const onerror = window.DEBUG ?
-    (e, element) => element.replaceWith(print(e)) :
-    noop ;
 
 // tag, template, lifecycle, properties, log
 export default element('<template is="literal-html">', {
@@ -187,57 +176,58 @@ export default element('<template is="literal-html">', {
     }
 }, {
     /**
-    data=""
+    src=""
     A path to a JSON file or JS module exporting data to be rendered.
 
     ```html
-    <template is="literal-html" data="./data.json">...</template>
-    <template is="literal-html" data="./module.js">...</template>
+    <template is="literal-html" src="./data.json">...</template>
+    <template is="literal-html" src="./module.js">...</template>
     ```
 
-    Named exports are supported via the hash:
+    Named exports are supported via an identifier:
 
     ```html
     <template is="literal-html" data="./module.js#namedExport">...</template>
     ```
+    **/
 
-    Paths may be rewritten. This helps when JS modules are bundled into a single
-    module for production.
+    src: {
+        attribute: function(value) { this.src = value; },
+        get: function() { this.src; },
+        set: function(value) {
+            const internals = Internals(this);
+            requestDataFromSrc(this, internals.datas, value);
+            // Flag data as having come from the data property
+            internals.hasData = true;
+        }
+    },
 
-    ```
-    import { urls } from './literal.js';
-
-    urls({
-        './path/to/module.js': './path/to/production/bundle.js#namedExport'
-    });
-    ```
-
-    The `data` attribute also accepts raw JSON:
-
-    ```html
-    <template is="literal-html" data='{"property": "value"}'>...</template>
-    ```
+    /**
+    data-*=""
+    If there is no `src` attribute, literal reads the content of dataset
+    properties and makes an data object.
     **/
 
     /**
     .data
 
-    The `data` property may be set with a path to a JSON file or JS module, or a
-    raw JSON string and behaves the same way as the `data` attribute. In
-    addition it accepts a JS object or array.
+    The `data` property may be set with a JS object or array.
 
-    Getting the `data` property returns the data object currently being
-    rendered. Note that if a path was set, this object is not available
-    immediately, as the data must first be fetched.
-
-    Technically, the returned data object is a _proxy_ of the object that has
-    been set. Mutations to the data object are detected by the proxy and the
-    DOM is rendered accordingly.
+    Getting the `data` property returns the object currently being rendered.
+    Sort of. The returned data object is actually a _proxy_ of the set object.
+    This data proxy monitors mutations which the Literal template is already
+    observing, so changes to this data are reflected in the DOM immediately
+    (well, not quite immediately – literal renders changes on the next frame).
     **/
 
     data: {
-        attribute: function(value) {
-            this.data = value;
+        attribute: function(json) {
+            try {
+                this.data = JSON.parse(json);
+            }
+            catch(e) {
+                throw new Error('Invalid JSON in <template is="literal-template"> data attribute: "' + json + '"');
+            }
         },
 
         get: function() {
@@ -249,8 +239,7 @@ export default element('<template is="literal-html">', {
 
         set: function(value) {
             const internals = Internals(this);
-
-            requestDataFromValue(this, internals.datas, value);
+            internals.datas.push(value);
             // Flag data as having come from the data property
             internals.hasData = true;
         }
