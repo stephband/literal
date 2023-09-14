@@ -200,6 +200,10 @@ const renderInclude = overload((source, target, file) => toExtension(file), {
         .then(extractBody)
         .then((html) => rewriteURLs(file, source, html)),
 
+    '.md': (source, target, file) => read(file)
+        .then((text) => parseMarkdown(text))
+        .then((html) => rewriteURLs(file, source, html)),
+
     '.css': (source, target, file) => read(file)
         .then((text) => rewriteURLs(file, source, text)),
 

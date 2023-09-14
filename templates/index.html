@@ -45,39 +45,42 @@
 
 <body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
     <header class="x1 4x @2-x2 x-stretch">
-        <h1 class="text-01">Literal <span class="text-06">0.6.2</span></h1>
+        <h1 class="text-01">Literal <span class="text-06">0.6.5</span></h1>
     </header>
 
     <section class="x1 4x @2-x2 x-stretch" id="template-scope">
         
 
 <h2 class="text-02" id="template-scope">Template scope</h2>
-<p>Literal templates are rendered in a scope that has a few useful functions
-and objects.</p>
-<p>The <code>data</code> object is the data passed into the template to be rendered:</p>
+<p>Literal templates are compiled in a <strong>scope</strong> that contains a number of <strong>objects</strong>
+and <strong>functions</strong> designed for writing concise template <strong>expressions</strong>.</p>
+<p>Expressions are made powerful by Literal’s renderer, which accepts expressions
+that evaluate to a <strong>string</strong> or other <strong>primitive</strong>, a <strong>DOM node</strong> or <strong>fragment</strong>,
+an <strong>array</strong> of values, another <strong>renderer</strong>, or even an asynchronous value in a
+<strong>promise</strong> or a <strong>stream</strong>.</p>
+<p>The <code>data</code> object carries data for rendering.</p>
 <pre><code class="language-js">$<span class="token punctuation">{</span> data <span class="token punctuation">}</span>
 </code></pre>
-<p>Include another template with the <code>include()</code> function:</p>
-<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#another-template'</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span> <span class="token punctuation">}</span>
+<p>The <code>events()</code> function returns a stream of DOM events.</p>
+<pre><code class="language-js"><span class="token operator">&lt;</span><span class="token operator">!</span><span class="token operator">--</span> Listen to events <span class="token operator">--</span><span class="token operator">></span>
+$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> element<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span> <span class="token operator">...</span> <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+<span class="token operator">&lt;</span><span class="token operator">!</span><span class="token operator">--</span> Map a stream <span class="token keyword">of</span> events to text <span class="token operator">--</span><span class="token operator">></span>
+$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token string">'change'</span><span class="token punctuation">,</span> element<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
-<p>The <code>include()</code> function is partially applicable, making it easy to map an array
-of objects to templates:</p>
-<pre><code class="language-js">$<span class="token punctuation">{</span> data<span class="token punctuation">.</span>array<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#item-template'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+<p>The <code>include()</code> function returns a template renderer.</p>
+<pre><code class="language-js"><span class="token operator">&lt;</span><span class="token operator">!</span><span class="token operator">--</span> Include another template <span class="token operator">--</span><span class="token operator">></span>
+$<span class="token punctuation">{</span> <span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#template-id'</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span> <span class="token punctuation">}</span>
+<span class="token operator">&lt;</span><span class="token operator">!</span><span class="token operator">--</span> Include another template and render it when <span class="token constant">JSON</span> data is fetched <span class="token operator">--</span><span class="token operator">></span>
+$<span class="token punctuation">{</span> <span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#template-id'</span><span class="token punctuation">,</span> <span class="token string">'../documentation/modules/package.json'</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+<span class="token operator">&lt;</span><span class="token operator">!</span><span class="token operator">--</span> Include another template <span class="token keyword">for</span> each object <span class="token keyword">in</span> an array <span class="token operator">--</span><span class="token operator">></span>
+$<span class="token punctuation">{</span> data<span class="token punctuation">.</span>array<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token function">include</span><span class="token punctuation">(</span><span class="token string">'#template-id'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
-<p>Expressions that evaluate as promises or streams cause the DOM to be updated
-asynchronously as values resolve. For example, <code>events()</code> returns a mappable
-stream of events that will update the DOM whenever an event is heard:</p>
-<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token string">'hashchange'</span><span class="token punctuation">,</span> window<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> location<span class="token punctuation">.</span>hash<span class="token punctuation">)</span> <span class="token punctuation">}</span>
-</code></pre>
-<p>Of course, any old valid JavaScript can be used in an expression. The functions
-in scope have been chosen to make templates brief to read for some common
-operations. Some are simply aliases of JS built-ins given shorter names.</p>
 
 
 
     </section>
 
-    <div class="x1 4x @1-x4 @1-3x @1-y3 @2-x5 x-stretch y-start">
+    <div class="x1 4x @1-3x @1-y3 @2-x2 x-stretch y-start">
         <h3>Objects</h3>
 
         
@@ -162,67 +165,17 @@ refers to the custom element’s shadow root.</p>
 </details-toggle>
 
 
-    </div>
 
-    <div class="x1 4x @1-3x @1-y3 @2-x2 x-stretch y-start">
-        <h3>Functions</h3>
+        <h3>Streams</h3>
 
         
 
-<details-toggle class="function-details-toggle" id="function-assign-1">
-    <h4 class="function-text text-05" slot="summary">
-        <code class=" language-js">assign(<span class="param">a</span>, <span class="param">b</span>, <span class="param">…</span>)</code>
-    </h4>
-
-    <p>Alias of <code>Object.assign()</code>.</p>
-
-</details-toggle>
-
-
-
-<details-toggle class="function-details-toggle" id="function-by">
-    <h4 class="function-text text-05" slot="summary">
-        <code class=" language-js">by(<span class="param">fn</span>, <span class="param">a</span>, <span class="param">b</span>)</code>
-    </h4>
-
-    <p>For sorting arrays. Compares <code>fn(a)</code> against <code>fn(b)</code> and returns <code>-1</code>, <code>0</code> or
-<code>1</code>. Partially applicable. To sort an array of objects by their ids:</p>
-<pre><code>array<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token function">by</span><span class="token punctuation">(</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'id'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-</code></pre>
-
-</details-toggle>
-
-
-
-<details-toggle class="function-details-toggle" id="function-ceil-1">
-    <h4 class="function-text text-05" slot="summary">
-        <code class=" language-js">ceil(<span class="param">n</span>)</code>
-    </h4>
-
-    <p>Alias of <code>Math.ceil()</code>.</p>
-
-</details-toggle>
-
-
-
-<details-toggle class="function-details-toggle" id="function-clamp">
-    <h4 class="function-text text-05" slot="summary">
-        <code class=" language-js">clamp(<span class="param">min</span>, <span class="param">max</span>, <span class="param">n</span>)</code>
-    </h4>
-
-    <p>Clamps number <code>n</code> to the limits <code>min</code> to <code>max</code>. Values of <code>n</code> lower than <code>min</code>
-return <code>min</code>, and those higher than <code>max</code> return <code>max</code>.</p>
-
-</details-toggle>
-
-
-
 <details-toggle class="function-details-toggle" id="function-clock-1">
     <h4 class="function-text text-05" slot="summary">
-        <code class=" language-js">clock(<span class="param">duration</span>)</code>
+        <code class=" language-js">clock(<span class="param">interval</span>)</code>
     </h4>
 
-    <p>If <code>duration</code> is a number, returns a stream of DOM timestamps at <code>duration</code>
+    <p>If <code>interval</code> is a number, returns a stream of DOM timestamps at <code>interval</code>
 seconds apart.</p>
 <pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">clock</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>floor<span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
@@ -237,57 +190,6 @@ frames.</p>
 <template is="literal-html">
     <p>${ clock('frame').map((time) => time.toFixed(2)) }</p>
 </template>
-
-</details-toggle>
-
-
-
-<details-toggle class="function-details-toggle" id="function-delegate">
-    <h4 class="function-text text-05" slot="summary">
-        <code class=" language-js">delegate(<span class="param">map</span>)</code>
-    </h4>
-
-    <p>Takes an object map of functions keyed to selectors, and returns a function that
-handles event objects, delegating them to the first function whose selector
-matches the event target. Functions are passed the target node and the event
-object, plus any other arguments passed to the handler.</p>
-<pre><code><span class="token function">delegate</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-    <span class="token string">'button'</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">button<span class="token punctuation">,</span> event</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span>
-</code></pre>
-
-</details-toggle>
-
-
-
-<details-toggle class="function-details-toggle" id="function-denormalise">
-    <h4 class="function-text text-05" slot="summary">
-        <code class=" language-js">denormalise(<span class="param">min</span>, <span class="param">max</span>, <span class="param">value</span>)</code>
-    </h4>
-
-    
-</details-toggle>
-
-
-
-<details-toggle class="function-details-toggle" id="function-entries-1">
-    <h4 class="function-text text-05" slot="summary">
-        <code class=" language-js">entries(<span class="param">object</span>)</code>
-    </h4>
-
-    <p>Alias of <code>Object.entries()</code>.</p>
-
-</details-toggle>
-
-
-
-<details-toggle class="function-details-toggle" id="function-equals">
-    <h4 class="function-text text-05" slot="summary">
-        <code class=" language-js">equals(<span class="param">a</span>, <span class="param">b</span>)</code>
-    </h4>
-
-    <p>Compares <code>a</code> and <code>b</code> for deep equality and returns <code>true</code> where they are equal,
-otherwise false.</p>
 
 </details-toggle>
 
@@ -336,7 +238,223 @@ worry about managing them.</p>
 
 
 
-<details-toggle class="function-details-toggle" id="function-floor-1">
+<details-toggle class="function-details-toggle" id="function-observe-1">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">observe(<span class="param">path</span>, <span class="param">object</span>)</code>
+    </h4>
+
+    <p>Returns a stream of values at <code>path</code> in <code>object</code>. Values are sent whenever
+the <code>Data()</code> proxy of <code>object</code> is mutated.</p>
+<pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">observe</span><span class="token punctuation">(</span><span class="token string">'path.to.value'</span><span class="token punctuation">,</span> data<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><span class="token operator">...</span><span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
+</code></pre>
+<p>TODO: warning, this function is probably going to be renamed as <code>mutations()</code>,
+<code>updates()</code> or <code>changes()</code>.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="constructor-details-toggle" id="constructor-stream-combine">
+    <h4 class="constructor-text text-05" slot="summary">
+        <code class=" language-js">Stream.combine(<span class="param">inputs</span>)</code>
+    </h4>
+
+    <p>Creates a stream of objects containing the latest values of all streams and
+promises in <code>inputs</code> as they resolve:</p>
+<pre><code class="language-js">Stream<span class="token punctuation">.</span><span class="token function">combine</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> stream<span class="token punctuation">,</span> b<span class="token operator">:</span> promise <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">object</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token comment">// object.a and object.b are values</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>If <code>inputs</code> contains properties that are not streams or promises, those are
+also set on streamed objects:</p>
+<pre><code class="language-js">Stream<span class="token punctuation">.</span><span class="token function">combine</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> stream<span class="token punctuation">,</span> c<span class="token operator">:</span> <span class="token number">5</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">object</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token comment">// object.c is 5</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>By default immutable – the stream emits new objects – it can be made to
+mutate and emit the <code>inputs</code> object by passing an options object with
+<code>mutable</code> set to <code>true</code> as a second parameter. This can help minimise
+garbage collection when dealing with large streams.</p>
+<pre><code class="language-js">Stream
+<span class="token punctuation">.</span><span class="token function">combine</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> stream<span class="token punctuation">,</span> b<span class="token operator">:</span> promise <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> mutable<span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">object</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token comment">// object is the input object, properties a and b are now values</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Output objects are created using the constructor of the input <code>object</code>,
+making it possible to use an array or other object as input and expect an
+array or other object as output.</p>
+<pre><code class="language-js">Stream<span class="token punctuation">.</span><span class="token function">combine</span><span class="token punctuation">(</span><span class="token punctuation">[</span>promise<span class="token punctuation">,</span> stream<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">object</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token comment">// object is an Array</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+
+</details-toggle>
+
+
+
+<details-toggle class="constructor-details-toggle" id="constructor-stream-from">
+    <h4 class="constructor-text text-05" slot="summary">
+        <code class=" language-js">Stream.from(<span class="param">source</span>)</code>
+    </h4>
+
+    <p>Creates a stream from <code>source</code>, which may be a pipeable (an object with
+<code>.pipe()</code> and <code>.stop()</code> methods), an array (or array-like), or a promise.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="constructor-details-toggle" id="constructor-stream-merge">
+    <h4 class="constructor-text text-05" slot="summary">
+        <code class=" language-js">Stream.merge(<span class="param">stream1</span>, <span class="param">stream2</span>, <span class="param">…</span>)</code>
+    </h4>
+
+    <p>Creates a stream by merging values from any number of input streams into a
+single output stream. Values are emitted in the time order they are received
+from inputs.</p>
+<pre><code class="language-js">Stream<span class="token punctuation">.</span><span class="token function">merge</span><span class="token punctuation">(</span>stream1<span class="token punctuation">,</span> stream2<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">value</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token comment">// value is from stream1 or stream 2</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+
+</details-toggle>
+
+
+
+<details-toggle class="constructor-details-toggle" id="constructor-stream-of">
+    <h4 class="constructor-text text-05" slot="summary">
+        <code class=" language-js">Stream.of(<span class="param">value1</span>, <span class="param">value2</span>, <span class="param">…</span>)</code>
+    </h4>
+
+    <p>Creates a pushable BufferStream from the given parameters.</p>
+
+</details-toggle>
+
+
+    </div>
+
+    <div class="x1 4x @1-x4 @1-3x @1-y3 @2-x5 x-stretch y-start">
+
+        <h3>Functions</h3>
+
+        
+
+<details-toggle class="function-details-toggle" id="function-assign-2">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">assign(<span class="param">a</span>, <span class="param">b</span>, <span class="param">…</span>)</code>
+    </h4>
+
+    <p>Alias of <code>Object.assign()</code>.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-by">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">by(<span class="param">fn</span>, <span class="param">a</span>, <span class="param">b</span>)</code>
+    </h4>
+
+    <p>For sorting arrays. Compares <code>fn(a)</code> against <code>fn(b)</code> and returns <code>-1</code>, <code>0</code> or
+<code>1</code>. Partially applicable. To sort an array of objects by their ids:</p>
+<pre><code>array<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token function">by</span><span class="token punctuation">(</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'id'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+</code></pre>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-ceil-2">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">ceil(<span class="param">n</span>)</code>
+    </h4>
+
+    <p>Alias of <code>Math.ceil()</code>.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-clamp">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">clamp(<span class="param">min</span>, <span class="param">max</span>, <span class="param">n</span>)</code>
+    </h4>
+
+    <p>Clamps number <code>n</code> to the limits <code>min</code> to <code>max</code>. Values of <code>n</code> lower than <code>min</code>
+return <code>min</code>, and those higher than <code>max</code> return <code>max</code>.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="constructor-details-toggle" id="constructor-data-2">
+    <h4 class="constructor-text text-05" slot="summary">
+        <code class=" language-js">Data(<span class="param">object</span>)</code>
+    </h4>
+
+    <p>Returns the data proxy of <code>object</code>. Use this proxy to set properties in a
+way that can be observed with <code>observe(path, object)</code>.</p>
+<p>Normally this is not needed. It’s for advanced use. The <code>data</code> object in the
+scope of the template is already a data proxy and mutations to it are
+observed by the template renderer.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-delegate">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">delegate(<span class="param">map</span>)</code>
+    </h4>
+
+    <p>Takes an object map of functions keyed to selectors, and returns a function that
+handles event objects, delegating them to the first function whose selector
+matches the event target. Functions are passed the target node and the event
+object, plus any other arguments passed to the handler.</p>
+<pre><code><span class="token function">delegate</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token string">'button'</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">button<span class="token punctuation">,</span> event</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-denormalise">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">denormalise(<span class="param">min</span>, <span class="param">max</span>, <span class="param">value</span>)</code>
+    </h4>
+
+    
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-entries-2">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">entries(<span class="param">object</span>)</code>
+    </h4>
+
+    <p>Alias of <code>Object.entries()</code>.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-equals">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">equals(<span class="param">a</span>, <span class="param">b</span>)</code>
+    </h4>
+
+    <p>Compares <code>a</code> and <code>b</code> for deep equality and returns <code>true</code> where they are equal,
+otherwise false.</p>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-floor-2">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">floor(<span class="param">n</span>)</code>
     </h4>
@@ -347,7 +465,7 @@ worry about managing them.</p>
 
 
 
-<details-toggle class="function-details-toggle" id="function-frame">
+<details-toggle class="function-details-toggle" id="function-frame-1">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">frame(<span class="param">fn</span>)</code>
     </h4>
@@ -359,7 +477,7 @@ templates.</p>
 
 
 
-<details-toggle class="function-details-toggle" id="function-get-1">
+<details-toggle class="function-details-toggle" id="function-get-2">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">get(<span class="param">path</span>, <span class="param">object</span>)</code>
     </h4>
@@ -418,7 +536,7 @@ returns <code>false</code>, otherwise <code>true</code>.</p>
 
 
 
-<details-toggle class="function-details-toggle" id="function-keys-1">
+<details-toggle class="function-details-toggle" id="function-keys-2">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">keys(<span class="param">object</span>)</code>
     </h4>
@@ -541,18 +659,6 @@ Messages should be styled with the print stylesheet:
 
 
 
-<details-toggle class="function-details-toggle" id="function-rect">
-    <h4 class="function-text text-05" slot="summary">
-        <code class=" language-js">rect(<span class="param">node</span>)</code>
-    </h4>
-
-    <p>Returns a <code>DOMRect</code> object describing the draw rectangle of <code>node</code>.
-(If <code>node</code> is <code>window</code> a preudo-DOMRect object is returned).</p>
-
-</details-toggle>
-
-
-
 <details-toggle class="function-details-toggle" id="function-rect-1">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">rect(<span class="param">element</span>)</code>
@@ -565,7 +671,7 @@ object with <code>left</code>, <code>top</code>, <code>width</code> and <code>he
 
 
 
-<details-toggle class="function-details-toggle" id="function-request">
+<details-toggle class="function-details-toggle" id="function-request-1">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">request(<span class="param">method</span>, <span class="param">url</span>)</code>
     </h4>
@@ -587,7 +693,7 @@ otherwise it is sent as a request body.)</p>
 
 
 
-<details-toggle class="function-details-toggle" id="function-round-2">
+<details-toggle class="function-details-toggle" id="function-round-4">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">round(<span class="param">value</span>)</code>
     </h4>
@@ -598,7 +704,7 @@ otherwise it is sent as a request body.)</p>
 
 
 
-<details-toggle class="function-details-toggle" id="function-round-3">
+<details-toggle class="function-details-toggle" id="function-round-5">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">round(<span class="param">value</span>, <span class="param">n</span>)</code>
     </h4>
@@ -622,85 +728,6 @@ otherwise it is sent as a request body.)</p>
 
 
 
-<details-toggle class="constructor-details-toggle" id="constructor-stream-combine">
-    <h4 class="constructor-text text-05" slot="summary">
-        <code class=" language-js">Stream.combine(<span class="param">inputs</span>)</code>
-    </h4>
-
-    <p>Creates a stream of objects containing the latest values of all streams and
-promises in <code>inputs</code> as they resolve:</p>
-<pre><code class="language-js">Stream<span class="token punctuation">.</span><span class="token function">combine</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> stream<span class="token punctuation">,</span> b<span class="token operator">:</span> promise <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">object</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
-    <span class="token comment">// object.a and object.b are values</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-</code></pre>
-<p>If <code>inputs</code> contains properties that are not streams or promises, those are
-also set on streamed objects:</p>
-<pre><code class="language-js">Stream<span class="token punctuation">.</span><span class="token function">combine</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> stream<span class="token punctuation">,</span> c<span class="token operator">:</span> <span class="token number">5</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">object</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
-    <span class="token comment">// object.c is 5</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-</code></pre>
-<p>By default immutable – the stream emits new objects – it can be made to
-mutate and emit the <code>inputs</code> object by passing an options object with
-<code>mutable</code> set to <code>true</code> as a second parameter. This can help minimise
-garbage collection when dealing with large streams.</p>
-<pre><code class="language-js">Stream
-<span class="token punctuation">.</span><span class="token function">combine</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> stream<span class="token punctuation">,</span> b<span class="token operator">:</span> promise <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> mutable<span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
-<span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">object</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
-    <span class="token comment">// object is the input object, properties a and b are now values</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-</code></pre>
-<p>Output objects are created using the constructor of the input <code>object</code>,
-making it possible to use an array or other object as input and expect an
-array or other object as output.</p>
-<pre><code class="language-js">Stream<span class="token punctuation">.</span><span class="token function">combine</span><span class="token punctuation">(</span><span class="token punctuation">[</span>promise<span class="token punctuation">,</span> stream<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">object</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
-    <span class="token comment">// object is an Array</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-</code></pre>
-
-</details-toggle>
-
-
-
-<details-toggle class="constructor-details-toggle" id="constructor-stream-from">
-    <h4 class="constructor-text text-05" slot="summary">
-        <code class=" language-js">Stream.from(<span class="param">source</span>)</code>
-    </h4>
-
-    <p>Creates a stream from <code>source</code>, which may be a pipeable (an object with
-<code>.pipe()</code> and <code>.stop()</code> methods), an array (or array-like), or a promise.</p>
-
-</details-toggle>
-
-
-
-<details-toggle class="constructor-details-toggle" id="constructor-stream-merge">
-    <h4 class="constructor-text text-05" slot="summary">
-        <code class=" language-js">Stream.merge(<span class="param">stream1</span>, <span class="param">stream2</span>, <span class="param">…</span>)</code>
-    </h4>
-
-    <p>Creates a stream by merging values from any number of input streams into a
-single output stream. Values are emitted in the time order they are received
-from inputs.</p>
-<pre><code class="language-js">Stream<span class="token punctuation">.</span><span class="token function">merge</span><span class="token punctuation">(</span>stream1<span class="token punctuation">,</span> stream2<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">value</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
-    <span class="token comment">// value is from stream1 or stream 2</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-</code></pre>
-
-</details-toggle>
-
-
-
-<details-toggle class="constructor-details-toggle" id="constructor-stream-of">
-    <h4 class="constructor-text text-05" slot="summary">
-        <code class=" language-js">Stream.of(<span class="param">value1</span>, <span class="param">value2</span>, <span class="param">…</span>)</code>
-    </h4>
-
-    <p>Creates a pushable BufferStream from the given parameters.</p>
-
-</details-toggle>
-
-
-
 <details-toggle class="function-details-toggle" id="function-sum">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">sum(<span class="param">a</span>, <span class="param">b</span>)</code>
@@ -712,7 +739,7 @@ from inputs.</p>
 
 
 
-<details-toggle class="function-details-toggle" id="function-translate-1">
+<details-toggle class="function-details-toggle" id="function-translate-2">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">translate(<span class="param">key</span>)</code>
     </h4>
@@ -747,17 +774,6 @@ optionally <code>detail</code>, which must be an object, and <code>bubbles</code
     composed<span class="token operator">:</span>   <span class="token boolean">false</span>
 <span class="token punctuation">}</span><span class="token punctuation">,</span> node<span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
-
-</details-toggle>
-
-
-
-<details-toggle class="function-details-toggle" id="function-values-1">
-    <h4 class="function-text text-05" slot="summary">
-        <code class=" language-js">values(<span class="param"></span>)</code>
-    </h4>
-
-    <p>Alias of <code>Object.values()</code>.</p>
 
 </details-toggle>
 
@@ -829,22 +845,37 @@ render time.</p>
 </details-toggle>
 
 
-
-        <!--h3>Adding functions to the template scope</h3>
-
-        <p>The scope is extensible. You may assign your own objects and functions.
-        This must be done before templates are compiled and cached.</p-->
     </div>
+
+    <section class="x1 4x @2-x2 x-stretch">
+        <h3 id="extending-the-template-scope">Extending the template scope</h3>
+<p>To make a function or other object available in the scope of all Literal
+templates, import Literal’s <code>scope</code> object and assign to it.</p>
+<pre><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> scope <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./literal/module.js'</span><span class="token punctuation">;</span>
+scope<span class="token punctuation">.</span><span class="token function-variable function">myFunction</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Note that this must be done before <code>literal-html</code> or <code>literal-element</code> have been
+imported. Those imports declare and compile templates, at which point their
+scopes cannot be changed. Put the above code into a setup script and import that
+before importing the templates.</p>
+<pre><code class="language-js"><span class="token keyword">import</span> <span class="token string">'./my-literal-setup.js'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token string">'./literal/literal-html/module.js'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token string">'./literal/literal-element/module.js'</span><span class="token punctuation">;</span>
+</code></pre>
+
+    </section>
 
     <section class="x1 4x @2-x2 x-stretch" id="template-expressions">
         
 
 <h2 class="text-02" id="template-expressions">Template expressions</h2>
-<p>Expressions are evaluated, and how they then render depends on their type.</p>
-<p>Promises are rendered when they resolve; arrays are flattened and joined without
-spaces or commas; streams are rendered whenever they emit a value.</p>
-<p>Falsy values other than <code>false</code> and <code>0</code> don’t render at all, so expressions
-may evaluate to <code>undefined</code>, <code>null</code> or <code>NaN</code> and go unseen.</p>
+<p>Expressions may evaluate to a <strong>string</strong> or other <strong>primitive</strong>, a <strong>DOM node</strong>
+or <strong>fragment</strong>, an <strong>array</strong> of values, another <strong>renderer</strong>, or even an
+asynchronous value in a <strong>promise</strong> or a <strong>stream</strong>.</p>
+<p><strong>Falsy</strong> values other than <code>false</code> and <code>0</code> – <code>undefined</code>, <code>null</code> or <code>NaN</code> –  don’t
+render at all.</p>
+<p><strong>Arrays</strong> are flattened and joined (without spaces or commas).</p>
+<p><strong>Promises</strong> and <strong>streams</strong> are rendered asynchronously when they emit values.</p>
 <p>Literal flattens nested collections. A <em>stream</em> of <em>arrays</em> of <em>strings</em> will
 render text whenever the stream emits an array of strings.</p>
 <table class="striped-table x-bleed">
@@ -1189,6 +1220,7 @@ render text whenever the stream emits an array of strings.</p>
     <div class="x1 4x @1-2x @1-x3 @2-x4 x-stretch y-start">
         <h3>Tools</h3>
         <a class="block" href="https://stephen.band/font-size/">Font-size calculator</a>
+        <a class="block" href="https://stephen.band/harmony-circle/">Harmonic circle</a>
     </div>
 </footer>
 

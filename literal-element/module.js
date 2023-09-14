@@ -1,9 +1,9 @@
 /**
 <template is="literal-element">
 
-An HTML template that declares a new custom element. Its `tag` attribute, which
-is required, declares the tag name of the new custom element, and the content of
-the template defines the shadow DOM:
+An HTML template that declares a custom element. Its `tag` attribute, required,
+declares the tag name of new custom element, and the content of the template
+defines its shadow DOM:
 
 ```html
 <template is="literal-element" tag="dom-clock">
@@ -42,11 +42,6 @@ That may now be authored:
 ```
 
 <p>Current time: <dom-clock interval="3"></dom-clock></p>
-
-The new custom element may be made to load stylesheets before it is upgraded,
-preventing a flash of unstyled content, using the `stylesheets` attribute, and
-it may have a lifecycle and scope variables defined in a JS module declared via
-the `src` attribute.
 **/
 
 
