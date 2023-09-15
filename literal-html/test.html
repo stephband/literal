@@ -24,7 +24,6 @@
 
     <template is="literal-html" data-state="1" data-value="Hello">
         <h2>Literal template</h2>
-
         ${ events({ type: 'change', select: '[name="state"]' }, element)
             .each((e) => data.state = e.target.value) }
 
@@ -53,7 +52,7 @@
     <template is="literal-html" data-default="1" data-value="Hello">
         <h2>Literal template</h2>
 
-        ${ new Promise((r) => setTimeout(() => r('Async text test'), 400)) }
+        ${ new Promise((resolve) => setTimeout(() => resolve('Promise of String test'), 400)) }
 
         ${ Stream.merge(
             [{ type: 'render', target: { value: data.default } }],
