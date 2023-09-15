@@ -64,6 +64,7 @@ function toParams(params, value) {
     return params;
 }
 
+
 // Values
 let last;
 

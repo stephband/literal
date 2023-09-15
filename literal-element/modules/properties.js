@@ -29,6 +29,7 @@ export default {
     <template is="literal-element" attributes="previous next" tag="play-list">
     ```
 
+    Attribute contents are available on the `data` object in the template.
     Attributes may be given a type. A typed attribute defines both an attribute
     and a property of the new custom element. The type defines the behaviour of
     the attribute and type of value of the property:
@@ -98,7 +99,8 @@ export default {
         }
     },
 
-    /* Prefetching stylesheets DOES NOT PREVENT FOUC. Pants. */
+    /* Prefetching stylesheets DOES NOT PREVENT FOUC. Pants. Leaving this here
+       so I don't try it again thinking I haven't done it. */
 
     /* stylesheets=""
 
