@@ -12,7 +12,6 @@ const assign  = Object.assign;
 const entries = Object.entries;
 const keys    = Object.keys;
 
-
 /**
 body
 An alias of `document.body`.
@@ -42,15 +41,12 @@ function assignProperty(properties, entry) {
 }
 
 function parseData(value) {
-        // Object or array
-    return robject.test(value) ? JSON.parse(value) :
-        // Number
-        !Number.isNaN(Number(value)) ? Number(value) :
-        // Boolean
-        value === 'true' ? true :
-        value === 'false' ? false :
-        // String
-        value ;
+    try {
+        return JSON.parse(value);
+    }
+    catch(e) {
+        return value;
+    }
 }
 
 function getDataFromDataset(dataset, data) {
