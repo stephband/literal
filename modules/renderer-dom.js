@@ -31,10 +31,11 @@ function toRenderer(value) {
 }
 
 function pushContents(contents, object) {
-    const last = contents[contents.length];
-
-    if (typeof object === 'string' && typeof last === 'string') {
-        contents[contents.length] = last + object;
+    // Object may be a string, DOM node, fragment, template renderer. Here
+    // we concat strings together. May have side effects on complicated DOM
+    // updates, so keep an eye out.
+    if (typeof object === 'string' && typeof contents[contents.length - 1] === 'string') {
+        contents[contents.length - 1] += object;
     }
     else {
         contents.push(object);
