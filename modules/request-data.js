@@ -51,9 +51,13 @@ const rextension = /\.([\w-]+)(?:#|\?|$)/;
 const empty      = [];
 
 const requestData = overload((url) => (rextension.exec(url.pathname) || empty)[1], {
-    js: cache((url) => {
+    js: cache((address) => {
+        // TODO if multiple '#' this will bork
+        const url = address.split('#');
+
         // Get named import from hash
-        const name = url.hash.slice(1) || 'default';
+        const src  = url[0];
+        const name = url[1] || 'default';
 
         // Return promise of imported named module
         return import(url).then(get(name));
