@@ -128,7 +128,7 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
         }
 
         // Is target a Stream?
-        if (target.each) {
+        if (target.pipe) {
             const streams = renderer.streams || (renderer.streams = []);
             values[n] = '';
             // Do not render synchronous values that are in the stream

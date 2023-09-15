@@ -52,7 +52,7 @@ export default function include(src, data, parameters) {
             return dataRequest.then((data) => push(template, data, parameters));
         }
 
-        if (object && object.each) {
+        if (object && object.pipe) {
             return pipe(template, object, parameters);
         }
 
@@ -64,8 +64,9 @@ export default function include(src, data, parameters) {
         object && object.then ? object :
         object ;
 
-    if (object && object.each) {
-        return templateRequest.then((template) =>
+    if (object && object.pipe) {
+        return templateRequest
+        .then((template) =>
             pipe(template, data, parameters)
         );
     }
