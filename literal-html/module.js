@@ -120,7 +120,7 @@ function resolveData(value) {
 }
 
 function requestDataFromSrc(template, datas, value) {
-    requestData(value)
+    return requestData(value)
     .then((data) => datas.push(data))
     .catch((e)   => onerror(e, template));
 }
@@ -131,7 +131,7 @@ function requestDataFromDataset(template, datas, dataset) {
 
     //addLoading(template);
 
-    Promise
+    return Promise
     .all(values.map(resolveData))
     .then((values) => datas.push(
         values.reduce((data, value, i) => (data[keys[i]] = value, data), {})
@@ -177,7 +177,7 @@ export default element('<template is="literal-html">', {
 }, {
     /**
     src=""
-    A path to a JSON file or JS module exporting data to be rendered.
+    A path to a JSON file, or JS module exporting data to be rendered.
 
     ```html
     <template is="literal-html" src="./data.json">...</template>
@@ -204,8 +204,12 @@ export default element('<template is="literal-html">', {
 
     /**
     data-*=""
-    If there is no `src` attribute, literal reads the content of dataset
-    properties and makes an data object.
+    If there is no `src` attribute, literal makes a data object from the dataset
+    properties. So `data-count="3"` is rendered in the template with `${ data.count }`.
+
+    Oh, by the way, if the template _does_ have a `src` attribute, the dataset
+    proper can still be accessed in (the usual way)[https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dataset],
+    `${ element.dataset.count }`.
     **/
 
     /**
