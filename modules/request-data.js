@@ -53,10 +53,10 @@ const empty      = [];
 const requestData = overload((url) => (rextension.exec(url.pathname) || empty)[1], {
     js: cache((url) => {
         // Get named import from hash
+        const src  = url.origin + url.pathname + url.search;
         const name = url.hash.slice(1) || 'default';
-
         // Return promise of imported named module
-        return import(url).then(get(name));
+        return import(src).then(get(name));
     }),
 
     default: cache(requestGet)
