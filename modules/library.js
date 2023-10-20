@@ -48,6 +48,7 @@ import isDefined            from '../../fn/modules/is-defined.js';
 import matches              from '../../fn/modules/matches.js';
 import nothing              from '../../fn/modules/nothing.js';
 import get                  from '../../fn/modules/get-path.js';
+import set                  from '../../fn/modules/set-path.js';
 import noop                 from '../../fn/modules/noop.js';
 import slugify              from '../../fn/modules/slugify.js';
 import sum                  from '../../fn/modules/sum.js';
@@ -194,6 +195,7 @@ const library = {
     round: (value, n = 1) => Math.round(value / n) * n,
 
     paramify,
+    set,
     slugify,
     Stream,
     sum,
