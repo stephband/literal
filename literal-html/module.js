@@ -84,9 +84,8 @@ mapping an array of objects to template includes:
 
 
 import noop             from '../../fn/modules/noop.js';
-import Stream           from '../../fn/modules/stream.js';
 import element, { getInternals as Internals } from '../../dom/modules/element.js';
-/*import properties, { addLoading, removeLoading } from '../modules/properties.js';*/
+import LatestStream     from '../modules/latest-stream.js';
 import requestData      from '../modules/request-data.js';
 import TemplateRenderer from '../modules/renderer-template.js';
 import print            from '../modules/library/print.js';
@@ -113,39 +112,20 @@ function parseData(value) {
         value ;
 }
 
-function resolveData(value) {
-    return rpath.test(value) ?
-        requestData(value) :
-        parseData(value) ;
-}
-
-function requestDataFromSrc(template, datas, value) {
-    return requestData(value)
-    .then((data) => datas.push(data))
-    .catch((e)   => onerror(e, template));
-}
-
-function requestDataFromDataset(template, datas, dataset) {
+function getDataFromDataset(dataset) {
     const keys   = Object.keys(dataset);
     const values = Object.values(dataset);
 
-    //addLoading(template);
-
-    return Promise
-    .all(values.map(resolveData))
-    .then((values) => datas.push(
-        values.reduce((data, value, i) => (data[keys[i]] = value, data), {})
-    ))
-    .catch((e) => onerror(e, template))
-    //.finally(()  => removeLoading(template));
+    return values
+        .map(parseData)
+        .reduce((data, value, i) => (data[keys[i]] = value, data), {}) ;
 }
 
 // tag, template, lifecycle, properties, log
 export default element('<template is="literal-html">', {
     construct: function() {
         const internals = Internals(this);
-
-        internals.datas    = Stream.of();
+        internals.datas    = new LatestStream();
         internals.renderer = new TemplateRenderer(this, {
             root:    document.documentElement,
             body:    document.body,
@@ -160,18 +140,39 @@ export default element('<template is="literal-html">', {
         const { datas, renderer } = internals;
 
         let replaced = false;
+        let promise;
 
-        datas.each((data) => {
+        const push = (data) => {
             renderer.push(data);
             if (!replaced) {
                 this.replaceWith(renderer.content);
                 replaced = true;
             }
+        };
+
+        datas.each((promiseOrData) => {
+            // Cancel existing promise of data
+            if (promise) {
+                promise.cancelled = true;
+                promise = undefined;
+            }
+
+            if (promiseOrData.then) {
+                // Set promise
+                const p = promise = promiseOrData.then((data) => {
+                    if (p.cancelled) { return; }
+                    push(data);
+                });
+
+                return;
+            }
+
+            push(promiseOrData);
         });
 
-        // If data property was not set use data found in dataset
-        if (!internals.hasData) {
-            requestDataFromDataset(this, datas, this.dataset);
+        // If src or data was not set use data found in dataset
+        if (!promise && !replaced) {
+            datas.push(getDataFromDataset(this.dataset));
         }
     }
 }, {
@@ -196,9 +197,9 @@ export default element('<template is="literal-html">', {
         get: function() { this.src; },
         set: function(value) {
             const internals = Internals(this);
-            requestDataFromSrc(this, internals.datas, value);
-            // Flag data as having come from the data property
-            internals.hasData = true;
+            internals.datas.push(
+                requestData(value).catch((e) => onerror(e, this))
+            );
         }
     },
 
@@ -244,8 +245,6 @@ export default element('<template is="literal-html">', {
         set: function(value) {
             const internals = Internals(this);
             internals.datas.push(value);
-            // Flag data as having come from the data property
-            internals.hasData = true;
         }
     }
 });
