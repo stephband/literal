@@ -112,13 +112,16 @@ function parseData(value) {
         value ;
 }
 
-function getDataFromDataset(dataset) {
+function getDataFromDataset(datas, dataset) {
     const keys   = Object.keys(dataset);
     const values = Object.values(dataset);
 
-    return values
+    if (!keys.length) { return; }
+
+    datas.push(values
         .map(parseData)
-        .reduce((data, value, i) => (data[keys[i]] = value, data), {}) ;
+        .reduce((data, value, i) => (data[keys[i]] = value, data), {})
+    );
 }
 
 // tag, template, lifecycle, properties, log
@@ -172,7 +175,7 @@ export default element('<template is="literal-html">', {
 
         // If src or data was not set use data found in dataset
         if (!promise && !replaced) {
-            datas.push(getDataFromDataset(this.dataset));
+            getDataFromDataset(datas, this.dataset);
         }
     }
 }, {
