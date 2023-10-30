@@ -92,7 +92,6 @@ export default {
     src: {
         attribute: function(value) {
             const internal = getInternals(this);
-
             internal.src = import(rewriteURL(value)).catch((e) => {
                 throw new Error('<' + internal.tag + '> not defined, failed to fetch src "' + value + '" ' + e.message);
             });

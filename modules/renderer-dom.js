@@ -75,7 +75,6 @@ function updateDOM(first, last, contents) {
 
     while (++c < contents.length - 1) {
         object = contents[c];
-
         if (typeof object === 'string') {
             // If there's a text node (but not last) lined up, populate it
             if (isTextNode(node) && node !== last) {
