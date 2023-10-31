@@ -52,11 +52,9 @@ Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a
 **/
 
 import element, { getInternals as Internals } from '../../dom/modules/element.js';
-
-import lifecycle       from '../modules/lifecycle.js';
-//import properties, { addLoading, removeLoading } from '../modules/properties.js';
 import getTemplate     from '../modules/get-template.js';
 import requestTemplate from '../modules/request-template.js';
+import lifecycle       from './modules/lifecycle.js';
 
 const assign = Object.assign;
 

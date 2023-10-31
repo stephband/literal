@@ -37,6 +37,7 @@ import { pathSeparator } from './constants.js';
 const assign = Object.assign;
 const keys   = Object.keys;
 const cache  = {};
+const nodes  = [];
 
 
 /*
@@ -185,33 +186,31 @@ assign(TemplateRenderer.prototype, {
         //console.log(this.constructor.name + '#' + this.id + '.render()');
 
         const data = this.data;
-
         if (!data) {
-            // Remove all but the first node to the renderer's content fragment
-            const nodes = [];
+            // Remove all but the last node to the renderer's content fragment
+            nodes.length = 0;
             let node = this.first;
 
             while (node !== this.last) {
-                node = node.nextSibling;
                 nodes.push(node);
+                node = node.nextSibling;
             }
 
-            this.content.append.apply(this.content, nodes);
+            this.content.prepend.apply(this.content, nodes);
             return nodes.length;
         }
 
         // Render the contents (synchronously)
-        this.mutations = 0;
-        this.contents.forEach((renderer) => {
+        this.mutations = this.contents.reduce((mutations, renderer) => {
             renderer.data = data;
-            this.mutations += renderer.update().mutations
-        });
+            return mutations + renderer.update().mutations;
+        }, 0);
 
-        // If this.first is not in the content fragment, it must be in the
+        // If this.last is not in the content fragment, it must be in the
         // parent DOM being used as a marker. It's time for its freshly rendered
         // brethren to join it.
-        if (this.content.firstChild && this.first !== this.content.firstChild) {
-            this.first.after(this.content);
+        if (this.content.lastChild && this.last !== this.content.lastChild) {
+            this.last.before(this.content);
             ++this.mutations;
         }
 
@@ -225,13 +224,13 @@ assign(TemplateRenderer.prototype, {
     **/
     remove: function() {
         // Can't remove if we're already removed
-        if (this.content.firstChild === this.first) {
+        if (this.content.lastChild === this.last) {
             return 0;
         }
 
         // Remove first to last and all nodes in between to .content fragment
         const nodes = getNodeRange(this.first, this.last);
-        this.content.append.apply(this.content, nodes);
+        this.content.prepend.apply(this.content, nodes);
         return nodes.length;
     },
 
@@ -240,7 +239,12 @@ assign(TemplateRenderer.prototype, {
     Removes rendered content from the DOM and inserts arguments in its place.
     **/
     replaceWith: function() {
-        this.first.before.apply(this.first, arguments);
+        // Can't replace if we're removed
+        if (this.content.lastChild === this.last) {
+            return 0;
+        }
+
+        this.last.after.apply(this.last, arguments);
         return this.remove();
     },
 

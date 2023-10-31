@@ -83,6 +83,8 @@ function updateDOM(first, last, contents) {
             }
             // Otherwise insert a new text node
             else {
+                // Ooooo wait doesnt this mess everything up?
+                //console.log(c, 'ARE YOU SURE? THIS WILL CHANGE renderer.first!');
                 node.before(object);
             }
         }
@@ -90,24 +92,32 @@ function updateDOM(first, last, contents) {
         // If a renderer's nodes are already in the right place in the DOM,
         // skip over them by setting node to object.last
         else if (object instanceof TemplateRenderer && node === object.first) {
+console.log(c, 'TEMPLATE RENDERERs NODES ALREADY IN RIGHT PLACE IN DOM');
             node = object.last.nextSibling;
         }
 
         // If node is object, move right on
         else if (node === object) {
-            console.log('DO WE GET HERE EVER? Not sure the logics right, it just feels like the right thing to do.');
-            if (node !== last) {
-                node = node.nextSibling;
+console.log(c, 'DO WE GET HERE EVER? Not sure the logics right, it just feels like the right thing to do.');
+            if (window.DEBUG && node === last) {
+                throw new Error('Last node should never be found in contents');
             }
+
+            node = node.nextSibling;
         }
 
         // Object is not in sync with the DOM
         else {
-            // Remove template or node from wherever it currently is
-            if (object.remove) {
-                count += (object.remove() || 0);
+            if (window.DEBUG && c === 0) {
+                throw new Error('We should never be in here on c = 0');
             }
 
+            // Remove template or node from wherever it currently is
+            if (object.remove) {
+console.log(c, 'OBJECT.REMOVE()', object);
+                count += (object.remove() || 0);
+            }
+console.log(c, 'ERR HELLO?');
             // And put it here
             node.before(toContent(object));
             ++count;
@@ -118,6 +128,7 @@ function updateDOM(first, last, contents) {
     while (node && node !== last) {
         const n = node;
         node = node.nextSibling;
+console.log(c, 'REMOVE NODE');
         n.remove();
         ++count;
     }
@@ -129,15 +140,17 @@ function updateDOM(first, last, contents) {
 
 export default function DOMRenderer(source, template, path, node, name, message, parameters) {
     Renderer.call(this, source, library, assign({}, parameters, {
-        // If path is empty node is a direct child of a template, but if not
-        // element should be set to this text node's parent
+        // If path is empty...
         element: !path.includes(pathSeparator) ?
+            // node is a direct child of a template...
             parameters.element :
+            // but if not element should be set to this text node's parent.
             node.parentNode,
 
         include: (url, data) => (data === undefined ?
             // Partial application if called with url only
             (data) => include(url, data, parameters) :
+            // Include immediately when data is defined
             include(url, data, parameters)
         ),
 
@@ -150,7 +163,6 @@ export default function DOMRenderer(source, template, path, node, name, message,
     this.first    = node;
     this.last     = document.createTextNode('');
     this.contents = [];
-
     this.first.after(this.last);
 }
 
@@ -181,8 +193,9 @@ assign(DOMRenderer.prototype, Renderer.prototype, {
             composeDOM(this.contents, arguments[n]);
             pushContents(this.contents, strings[n]);
         }
-
+console.log('>> RENDER', !!this.last.parentNode, this.template, this.contents);
         this.mutations = updateDOM(this.first, this.last, this.contents);
+console.log('<< RENDER', !!this.last.parentNode, this.template, this.contents);
         return this;
     },
 

@@ -215,6 +215,7 @@ export default function Renderer(source, scope, parameters, message, fn) {
     this.observers = {};
     this.status    = 'idle';
 
+    // An instance function rather than a method for some reason ... do we detach it somewhere?
     this.cue = (value) => {
         stopObservers(this.observers);
         cue(this);

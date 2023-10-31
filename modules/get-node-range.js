@@ -1,6 +1,8 @@
 
+const nodes = [];
+
 export default function getNodeRange(first, last) {
-    const nodes = [];
+    nodes.length = 0;
     let node = first;
 
     while (node !== last) {

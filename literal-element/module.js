@@ -44,30 +44,6 @@ That may now be authored:
 <p>Current time: <dom-clock interval="3"></dom-clock></p>
 **/
 
-
-
-/*
-
-### The `loading` attribute
-
-Custom elements defined by `literal-element` have a read-only boolean `loading`
-attribute. This is enabled when the shadow DOM contains assets – stylesheets –
-that must be loaded:
-
-```html
-<template is="literal-element" tag="my-element">
-    <link href="path/to/stylesheet.css" rel="stylesheet" />
-    ...
-</template>
-```
-
-The `loading` attribute provides a hook to avoid a flash of unstyled content
-(which can happen between the time of element upgrade and the time the
-stylesheets finish loading) or to provide a loading indicator.
-
-*/
-
-
 import element    from '../../dom/modules/element.js';
 import lifecycle  from './modules/lifecycle.js';
 import properties from './modules/properties.js';
