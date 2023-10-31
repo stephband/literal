@@ -74,6 +74,10 @@ function updateDOM(first, last, contents) {
     let object, count = 0;
 
     while (++c < contents.length - 1) {
+        if (window.DEBUG && !node.parentNode) {
+            throw new Error('Impossible Error. Node appears to be unattached. How, though? ' + c);
+        }
+
         object = contents[c];
         if (typeof object === 'string') {
             // If there's a text node (but not last) lined up, populate it
@@ -83,8 +87,6 @@ function updateDOM(first, last, contents) {
             }
             // Otherwise insert a new text node
             else {
-                // Ooooo wait doesnt this mess everything up?
-                //console.log(c, 'ARE YOU SURE? THIS WILL CHANGE renderer.first!');
                 node.before(object);
             }
         }
@@ -92,13 +94,12 @@ function updateDOM(first, last, contents) {
         // If a renderer's nodes are already in the right place in the DOM,
         // skip over them by setting node to object.last
         else if (object instanceof TemplateRenderer && node === object.first) {
-console.log(c, 'TEMPLATE RENDERERs NODES ALREADY IN RIGHT PLACE IN DOM');
             node = object.last.nextSibling;
         }
 
         // If node is object, move right on
         else if (node === object) {
-console.log(c, 'DO WE GET HERE EVER? Not sure the logics right, it just feels like the right thing to do.');
+            console.log(c, 'DO WE EVEN EVER GET HERE? Not sure the logics right, it just feels like the right thing to do.');
             if (window.DEBUG && node === last) {
                 throw new Error('Last node should never be found in contents');
             }
@@ -108,27 +109,25 @@ console.log(c, 'DO WE GET HERE EVER? Not sure the logics right, it just feels li
 
         // Object is not in sync with the DOM
         else {
-            if (window.DEBUG && c === 0) {
-                throw new Error('We should never be in here on c = 0');
-            }
-
             // Remove template or node from wherever it currently is
             if (object.remove) {
-console.log(c, 'OBJECT.REMOVE()', object);
                 count += (object.remove() || 0);
             }
-console.log(c, 'ERR HELLO?');
+
             // And put it here
             node.before(toContent(object));
             ++count;
         }
     }
 
-    // Remove unused nodes up until last
+    // Remove unused nodes, not including first and last
+    node = node === first ?
+        node.nextSibling :
+        node ;
+
     while (node && node !== last) {
         const n = node;
         node = node.nextSibling;
-console.log(c, 'REMOVE NODE');
         n.remove();
         ++count;
     }
@@ -193,9 +192,8 @@ assign(DOMRenderer.prototype, Renderer.prototype, {
             composeDOM(this.contents, arguments[n]);
             pushContents(this.contents, strings[n]);
         }
-console.log('>> RENDER', !!this.last.parentNode, this.template, this.contents);
+
         this.mutations = updateDOM(this.first, this.last, this.contents);
-console.log('<< RENDER', !!this.last.parentNode, this.template, this.contents);
         return this;
     },
 
