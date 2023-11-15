@@ -63,8 +63,9 @@ function stopStreams(streams) {
 }
 
 function toParams(params, value) {
-    params[params.length] = value;
-    params.length += 1;
+    const l = params.length;
+    params[l] = value;
+    params.length = l + 1;
     return params;
 }
 
