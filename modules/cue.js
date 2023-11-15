@@ -12,13 +12,13 @@ function render(renderers) {
     if (window.DEBUG && window.DEBUG.literal !== false) {
         t0 = window.performance.now() / 1000;
         mutations = 0;
-        group('update',
+        /*group('update',
             t0.toFixed(3) + 's – '
             // renderers
             + renderers.length + ' renderer' + (renderers.length === 1 ? '' : 's'),
             //
             '#ff9433'
-        );
+        );*/
     }
 
     let n = -1;
@@ -52,7 +52,7 @@ function render(renderers) {
             log('render took longer than a frame (16.6667ms) ' + ((t1 - t0) * 1000).toPrecision(3) + 'ms', '', '', '', '#ba4029');
         }
 
-        groupEnd();
+        //groupEnd();
     }
 
     cued = undefined;

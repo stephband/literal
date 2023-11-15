@@ -23,7 +23,7 @@ export default function LatestStream() {
 LatestStream.prototype = assign(create(Stream.prototype), {
     pipe: function(output) {
         pipe(this, output);
-        if (this.value !== undefined) { output.push(value); }
+        if (this.value !== undefined) { output.push(this.value); }
         delete this.push;
         return output;
     }

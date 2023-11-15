@@ -1,33 +1,33 @@
 
 /**
-DOMRenderer()
+TextRenderer(source, node, path, parameters, message)
 Constructs an object responsible for rendering to a text node. If the result of
 processing the literal content is more DOM content this renderer will insert
 that DOM after the text node.
 **/
 
-import include           from './library/include.js';
-import library           from './library-dom.js';
-import toText            from './to-text.js';
+import isTextNode        from '../../../dom/modules/is-text-node.js';
+import include           from '../library/include.js';
+import library           from '../library-dom.js';
+import toText            from '../to-text.js';
+import removeNodes       from '../remove-nodes.js';
+import TemplateRenderer  from '../renderer-template.js';
+import { pathSeparator } from '../constants.js';
+import print             from '../library/print.js';
 import Renderer          from './renderer.js';
-import removeNodes       from './remove-nodes.js';
-import TemplateRenderer  from './renderer-template.js';
-import { pathSeparator } from './constants.js';
-import print             from './library/print.js';
-import isTextNode from '../../dom/modules/is-text-node.js';
 
+const A      = Array.prototype;
 const assign = Object.assign;
+
 
 function stop(node) {
     node && typeof node === 'object' && node.stop && node.stop();
 }
 
 function toRenderer(value) {
-    return (value && typeof value === 'object') ?
-        value instanceof Node ? value :
-        value instanceof TemplateRenderer ? value :
-        toText(value) :
-    toText(value) ;
+    return value instanceof TemplateRenderer ? value :
+           value instanceof Node ? value :
+           toText(value) ;
 }
 
 function pushContents(contents, object) {
@@ -68,76 +68,94 @@ function toContent(object) {
         object ;
 }
 
-function updateDOM(first, last, contents) {
-    let node = first;
-    let c    = -1;
-    let object, count = 0;
+function indexOf(node) {
+    // Get the index of a DOM node
+    return A.indexOf.apply(node.parentNode.childNodes, arguments);
+}
 
-    while (++c < contents.length - 1) {
-        if (window.DEBUG && !node.parentNode) {
-            throw new Error('Impossible Error. Node appears to be unattached. How, though? ' + c);
+function updateDOM(first, last, objects) {
+    // Sanity check
+    if (window.DEBUG) {
+        if (first === last) {
+            throw new Error('`first` and `last` are the same node');
         }
 
-        object = contents[c];
+        if (first.parentNode !== last.parentNode) {
+            throw new Error('`first` and `last` are not siblings');
+        }
+
+        const children = first.parentNode.childNodes;
+        const iFirst   = A.indexOf.call(children, first);
+        const iLast    = A.indexOf.call(children, last);
+        if (iFirst > iLast) {
+            throw new Error('`last` is not after `first`, first: ' + iFirst + ' last: ' + iLast);
+        }
+    }
+
+    //console.log(0, 'updateDOM', first.textContent, last.textContent, objects, nLast);
+    const nLast = objects.length - 1;
+
+    // Render first object. `objects[0]` is always a string. `first` is a
+    // text node.
+    let count = setNodeValue(first, objects[0]);
+    let node  = first.nextSibling;
+    let n     = 0;
+
+    while (++n < nLast) {
+        const object = objects[n];
+
+        // Is object a string
         if (typeof object === 'string') {
-            // If there's a text node (but not last) lined up, populate it
-            if (isTextNode(node) && node !== last) {
+            // If node is a text node, use it.
+            if (node !== last && isTextNode(node)) {
                 count += setNodeValue(node, object);
                 node = node.nextSibling;
             }
-            // Otherwise insert a new text node
+            // ...otherwise insert a text node
             else {
                 node.before(object);
             }
+            continue;
         }
 
-        // If a renderer's nodes are already in the right place in the DOM,
-        // skip over them by setting node to object.last
-        else if (object instanceof TemplateRenderer && node === object.first) {
+        // Is object a TemplateRenderer with nodes already in this DOM
+        if (object instanceof TemplateRenderer && (node === object.first || node === object.last)) {
+            // Skip over nodes handled by the renderer
             node = object.last.nextSibling;
+            continue;
         }
 
-        // If node is object, move right on
-        else if (node === object) {
-            console.log(c, 'DO WE EVEN EVER GET HERE? Not sure the logics right, it just feels like the right thing to do.');
-            if (window.DEBUG && node === last) {
-                throw new Error('Last node should never be found in contents');
-            }
-
+        // If node and object are the same thing. Could happen, I suppose, if
+        // a template expression returns a cached node on successive renders.
+        if (node === object) {
             node = node.nextSibling;
+            continue;
         }
 
-        // Object is not in sync with the DOM
-        else {
-            // Remove template or node from wherever it currently is
-            if (object.remove) {
-                count += (object.remove() || 0);
-            }
-
-            // And put it here
-            node.before(toContent(object));
-            ++count;
+        // Remove template or node from wherever it currently is
+        if (object.remove) {
+            count += (object.remove() || 0);
         }
-    }
 
-    // Remove unused nodes, not including first and last
-    node = node === first ?
-        node.nextSibling :
-        node ;
-
-    while (node && node !== last) {
-        const n = node;
-        node = node.nextSibling;
-        n.remove();
+        // And put it here
+        node.before(toContent(object));
         ++count;
     }
 
-    // Set last text node, contents[-1] is always a string
-    count += setNodeValue(last, contents[c]);
-    return count;
+    // Remove unused nodes up to last
+    while (node !== last) {
+        const nd = node;
+        node = node.nextSibling;
+        nd.remove();
+        ++count;
+    }
+
+    // Render last object. Where objects is less than 1 item long empty `last`,
+    // otherwise render last object into `last`.
+    return count + setNodeValue(last, nLast < 1 ? null : objects[nLast]);
 }
 
-export default function DOMRenderer(source, template, path, node, name, message, parameters) {
+export default function TextRenderer(source, node, path, parameters, message) {
     Renderer.call(this, source, library, assign({}, parameters, {
         // If path is empty...
         element: !path.includes(pathSeparator) ?
@@ -156,16 +174,14 @@ export default function DOMRenderer(source, template, path, node, name, message,
         print: (...args) => print(this, ...args)
     }), message);
 
-    this.template = template;
+    this.contents = [];
     this.path     = path;
-    this.node     = node;
     this.first    = node;
     this.last     = document.createTextNode('');
-    this.contents = [];
     this.first.after(this.last);
 }
 
-assign(DOMRenderer.prototype, Renderer.prototype, {
+assign(TextRenderer.prototype, Renderer.prototype, {
     push: function() {
         // Preemptively stop all nodes, they are about to be updated
         this.contents.forEach(stop);
@@ -187,7 +203,6 @@ assign(DOMRenderer.prototype, Renderer.prototype, {
 
         this.contents.length = 0;
         this.contents.push(strings[n]);
-
         while (strings[++n] !== undefined) {
             composeDOM(this.contents, arguments[n]);
             pushContents(this.contents, strings[n]);

@@ -1,8 +1,8 @@
 
-import library       from './library-dom.js';
-import Renderer      from './renderer.js';
+import library       from '../library-dom.js';
 import composeString from './compose-string.js';
 import names         from './property-names.js';
+import Renderer      from './renderer.js';
 
 const assign = Object.assign;
 
@@ -33,12 +33,10 @@ function setAttribute(node, name, value) {
     return 1;
 }
 
-export default function AttributeRenderer(source, template, path, node, name, message, parameters) {
+export default function AttributeRenderer(source, node, path, name, parameters, message) {
     Renderer.call(this, source, library, assign({}, parameters, { element: node }), message);
-
-    this.template = template;
-    this.path     = path;
     this.node     = node;
+    this.path     = path;
     this.name     = name;
 }
 

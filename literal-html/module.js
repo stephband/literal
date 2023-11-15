@@ -128,8 +128,10 @@ function getDataFromDataset(datas, dataset) {
 export default element('<template is="literal-html">', {
     construct: function() {
         const internals = Internals(this);
-        internals.datas    = new LatestStream();
-        internals.renderer = new TemplateRenderer(this, {
+        internals.initialised = false;
+        internals.pushed      = false;
+        internals.datas       = new LatestStream();
+        internals.renderer    = new TemplateRenderer(this, {
             root:    document.documentElement,
             body:    document.body,
             host:    this,
@@ -140,41 +142,46 @@ export default element('<template is="literal-html">', {
 
     connect: function(shadow) {
         const internals = Internals(this);
+
+        // If already initialised do nothing
+        if (internals.initialised) { return; }
+        internals.initialised = true;
+
         const { datas, renderer } = internals;
-
-        let replaced = false;
-        let promise;
-
         const push = (data) => {
             renderer.push(data);
-            if (!replaced) {
-                this.replaceWith(renderer.content);
-                replaced = true;
-            }
+
+            // If already pushed do nothing
+            if (internals.pushed) { return; }
+            internals.pushed = true;
+
+            // First push replaces DOM content
+            this.replaceWith(renderer.content);
         };
 
         datas.each((promiseOrData) => {
             // Cancel existing promise of data
-            if (promise) {
-                promise.cancelled = true;
-                promise = undefined;
+            if (internals.promise) {
+                internals.promise.cancelled = true;
+                internals.promise = undefined;
             }
 
+            // If it's a promise
             if (promiseOrData.then) {
-                // Set promise
-                const p = promise = promiseOrData.then((data) => {
+                // Set internals.promise
+                const p = internals.promise = promiseOrData.then((data) => {
+                    // If already cancelled do nothing
                     if (p.cancelled) { return; }
                     push(data);
                 });
-
-                return;
             }
-
-            push(promiseOrData);
+            else {
+                push(promiseOrData);
+            }
         });
 
         // If src or data was not set use data found in dataset
-        if (!promise && !replaced) {
+        if (!internals.promise && !internals.pushed) {
             getDataFromDataset(datas, this.dataset);
         }
     }

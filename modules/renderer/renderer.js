@@ -1,19 +1,19 @@
 
-import { remove } from '../../fn/modules/remove.js';
-import Stream     from '../../fn/modules/stream/stream.js';
-import observe    from '../../fn/observer/observe.js';
-import { Observer, getTarget } from '../../fn/observer/observer.js';
-import Gets       from '../../fn/observer/gets.js';
+import { remove } from '../../../fn/modules/remove.js';
+import Stream     from '../../../fn/modules/stream/stream.js';
+import observe    from '../../../fn/observer/observe.js';
+import { Observer, getTarget } from '../../../fn/observer/observer.js';
+import Gets       from '../../../fn/observer/gets.js';
 
-import compile    from './compile.js';
-import toText     from './to-text.js';
-import { cue, uncue } from './cue.js';
+import compile    from '../compile.js';
+import toText     from '../to-text.js';
+import { cue, uncue } from '../cue.js';
 
 const assign = Object.assign;
 const keys   = Object.keys;
 const values = Object.values;
 
-let CURRENTRENDERER;
+let currentrenderer;
 
 /**
 data
@@ -23,8 +23,12 @@ When it mutates, the DOM re-renders.
 
 /**
 this
-The current renderer. Normally you wouldn't reference this unless you want to
-print information about the template renderer itself.
+The current renderer. Normally you wouldn't reference this in a Literal template
+unless you want to print information about the template renderer itself.
+
+```js
+${ this.renderCount }
+```
 **/
 
 // Observers
@@ -86,27 +90,6 @@ function toValues(values, record) {
 
     return values;
 }
-
-
-/*
-function toRecords(records, record) {
-    const last = records[records.length - 1];
-console.log('Records', last, record, last === record);
-    // Check for paths traversed while getting to the end of the
-    // path - is this path an extension of the last?
-    if (last && (last.path.length < record.path.length) && record.path.startsWith(last.path)) {
-console.log('REMOVE');
-        --records.length;
-    }
-
-    if (!(records.find((r) => r.path === record.path))) {
-console.log('ADD', record);
-        records.push(record);
-    }
-
-    return records;
-}
-*/
 
 function renderValue(renderer, args, values, n, object, isRender = false) {
     if (object && typeof object === 'object') {
@@ -191,12 +174,12 @@ function observeData(observers, values, data, renderer) {
 
 
 /**
-Renderer(source, render)
+Renderer(source, scope, parameters, message)
 Takes a `source` string or optionally a compiled `render` function and creates
 a consumer stream.
 **/
 
-export default function Renderer(source, scope, parameters, message, fn) {
+export default function Renderer(source, scope, parameters, message = '', fn) {
     this.literal = typeof source === 'string' ?
         // data will be the observer proxy of DATA, which we set in .update()
         compile(source, scope, 'data, DATA' + (parameters ? ', ' + keys(parameters).join(', ') : ''), message) :
@@ -220,8 +203,9 @@ export default function Renderer(source, scope, parameters, message, fn) {
         stopObservers(this.observers);
         cue(this);
     };
-
+/*
     this.consume = fn;
+*/
 }
 
 assign(Renderer.prototype, {
@@ -230,8 +214,8 @@ assign(Renderer.prototype, {
             throw new Error('Renderer is rendering, cannot .push() data');
         }
 
-        if (this.status === 'stopped') {
-            throw new Error('Renderer is stopped, cannot .push() data');
+        if (this.status === 'done') {
+            throw new Error('Renderer is done, cannot .push() data');
         }
 
         data = Observer(data);
@@ -260,10 +244,10 @@ assign(Renderer.prototype, {
 
         // Filter out gets from sub-renderers by keeping track of
         // current renderer
-        const previousrenderer = CURRENTRENDERER;
-        CURRENTRENDERER = this;
+        const previousrenderer = currentrenderer;
+        currentrenderer = this;
 
-        const records = Gets(data).filter(() => CURRENTRENDERER === this) ;
+        const records = Gets(data).filter(() => currentrenderer === this) ;
         const values  = records.reduce(toValues, {});
 
         // literal the template. Todo: note that we are potentially leaving
@@ -275,7 +259,7 @@ assign(Renderer.prototype, {
                 this.literal.apply(this, this.getParameters());
             }
             catch(e) {
-                e.message += " in " + this.template + " " + this.message;
+                e.message += this.message;
                 throw e;
             }
         }
@@ -290,7 +274,7 @@ assign(Renderer.prototype, {
         // observer proxies are shared by all observers. We're not going there.
         records.stop();
         observeData(observers, values, data, this);
-        CURRENTRENDERER = previousrenderer;
+        currentrenderer = previousrenderer;
         this.status = this.status === 'rendering' ? 'idle' : this.status ;
         return this;
     },
@@ -305,7 +289,7 @@ assign(Renderer.prototype, {
         this.render.apply(this, arguments);
         return this;
     },
-
+/*
     render: function(strings) {
         let n = 0;
         let string = strings[n];
@@ -318,14 +302,13 @@ assign(Renderer.prototype, {
         this.consume(string);
         return this;
     },
-
+*/
     stop: function() {
         uncue(this);
         stopObservers(this.observers);
         stopPromises(this.promises);
         stopStreams(this.streams);
-        this.status = 'stopped';
-        Stream.prototype.stop.apply(this);
+        Stream.prototype.stop.apply(this); // Sets this.status = 'done'
         --Renderer.count;
         return this;
     },

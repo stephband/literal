@@ -1,8 +1,8 @@
 
-import overload from '../../fn/modules/overload.js';
-import library  from './library-dom.js';
+import overload from '../../../fn/modules/overload.js';
+import library  from '../library-dom.js';
+import toText   from '../to-text.js';
 import Renderer from './renderer.js';
-import toText   from './to-text.js';
 
 const A      = Array.prototype;
 const assign = Object.assign;
@@ -45,16 +45,14 @@ function updateTokens(list, cached, tokens, count) {
     return count;
 }
 
-export default function TokensRenderer(source, template, path, node, name, message, parameters) {
+export default function TokensRenderer(source, node, path, name, parameters, message) {
     Renderer.call(this, source, library, assign({}, parameters, { element: node }), message);
-
-    this.template = template;
-    this.path     = path;
-    this.node     = node;
-    this.name     = name;
-    this.list     = getTokenList(node, name);
-    this.tokens   = nothing;
-    this.renders  = 0;
+    this.path        = path;
+    this.node        = node;
+    this.name        = name;
+    this.list        = getTokenList(node, name);
+    this.tokens      = nothing;
+    this.renderCount = 0;
 
     // Empty the tokens until it is rendered to avoid code in literals
     // being interpreted as tokens
@@ -66,7 +64,7 @@ assign(TokensRenderer.prototype, Renderer.prototype, {
         let mutations = 0;
 
         // Set permanent tokens on first render only
-        if (++this.renders === 1) {
+        if (++this.renderCount === 1) {
             const tokens = strings
                 .join(' ')
                 .trim();

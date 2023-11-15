@@ -1,8 +1,8 @@
 
-import overload      from '../../fn/modules/overload.js';
-import trigger       from '../../dom/modules/trigger.js';
-import config        from './config.js';
-import library       from './library-dom.js';
+import overload      from '../../../fn/modules/overload.js';
+import trigger       from '../../../dom/modules/trigger.js';
+import config        from '../config.js';
+import library       from '../library-dom.js';
 import Renderer      from './renderer.js';
 import composeString from './compose-string.js';
 import composeNumber from './compose-number.js';
@@ -11,8 +11,12 @@ const assign = Object.assign;
 
 
 /**
-ValueRenderer()
-Constructs an object responsible for rendering to a plain text attribute.
+ValueRenderer(source, node, path, name, parameters, message)
+Constructs an object responsible for rendering from a value attribute to a
+value property.
+
+Parameter `name` is redundant, but here for symmetry with other cloneable
+renderers.
 **/
 
 const types = {
@@ -85,13 +89,11 @@ const compose = overload((value, type) => type, {
     'default':    composeString
 });
 
-export default function ValueRenderer(source, template, path, node, name, message, parameters) {
+export default function ValueRenderer(source, node, path, name, parameters, message) {
     Renderer.call(this, source, library, assign({}, parameters, { element: node }), message);
-
-    this.template = template;
-    this.path     = path;
-    this.node     = node;
-    this.name     = 'value';
+    this.name    = 'value';
+    this.node    = node;
+    this.path    = path;
 }
 
 assign(ValueRenderer.prototype, Renderer.prototype, {

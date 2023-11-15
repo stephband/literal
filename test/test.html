@@ -72,36 +72,37 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
 </head>
 
 <body>
-    <!--section title="Loading">
-        <h3 class="text-03">Loading <span class="test-count">(4 tests)</span></h3>
-        <literal-include src="#test" id="data-never">
-            <pre>✔ Default content</pre>
-        </literal-include>
-        <literal-include src="#test" data="./test/test.json"></literal-include>
-        <literal-include src="#test" data-one="One" data-two="Two" data-three="Three"></literal-include>
-        <literal-include src="#test" data-one="./test/test.json" data-two="./test/test.json"></literal-include>
-        <literal-include src="#test" data="./test/test-bad.json"></literal-include>
-        <literal-include src="#test" id="data-later"></literal-include>
-    </section-->
+    <section>
+        <h3 class="text-03">Data <span class="test-count">(5 tests)</span></h3>
+        <template is="literal-html" src="./test.json">${ include("#test", data) }</template>
+        <hr/>
+        <template is="literal-html" data-one="One" data-two="Two" data-three="Three">${ include("#test", data) }</template>
+        <hr/>
+        <template is="literal-html" data-one="./test.json" data-two="./test.json">${ include("#test", data) }</template>
+        <hr/>
+        <template is="literal-html" src="./test/test-bad.json">${ include("#test", data) }</template>
+        <hr/>
+        <template is="literal-html" id="data-later">${ include("#test", data) }</template>
+    </section>
 
-    <section title="Values">
+    <section>
         <h3 class="text-03">Values <span class="test-count">(1 test)</span></h3>
 
-        <template id="values-template">
-            <p>This is how various values are rendered in a <code>&lt;template&gt;</code>:</p>
+        <template is="literal-html" data="{}">
+            <p>This is how various types are rendered in a <code>&lt;template&gt;</code>:</p>
             <dl style="display: grid; grid-template-columns: min-content 1fr; text-align: left;">
-                <dt>String</dt>    <dd>${ 'hello' }</dd>
+                <dt>Array</dt>     <dd>${ [0, 1, 2, 3] }</dd>
+                <dt>Boolean</dt>   <dd>${ true }, ${ false }</dd>
+                <dt>Function</dt>  <dd>${ function fn(param) {} }</dd>
+                <dt>arrow</dt>     <dd>${ (param) => {} }</dd>
                 <dt>Number</dt>    <dd>${ 123.45 }</dd>
                 <dt>Infinity</dt>  <dd>${ Infinity }, ${ -Infinity }</dd>
-                <dt>boolean</dt>   <dd>${ true }, ${ false }</dd>
-                <dt>function</dt>  <dd>${ function fn(param) {} }</dd>
-                <dt>arrow</dt>     <dd>${ (param) => {} }</dd>
-                <dt>array</dt>     <dd>${ [0, 1, 2, 3] }</dd>
-                <dt>object</dt>    <dd>${ { property: 'hello' } }</dd>
+                <dt>Object</dt>    <dd>${ { property: 'hello' } }</dd>
+                <dt>String</dt>    <dd>${ 'hello' }</dd>
+                <dt>Symbol</dt>    <dd>${ Symbol('symbol') }</dd>
+                <dt>undefined</dt> <dd>${ undefined }</dd>
                 <dt>NaN</dt>       <dd>${ NaN }</dd>
                 <dt>null</dt>      <dd>${ null }</dd>
-                <dt>symbol</dt>    <dd>${ Symbol('symbol') }</dd>
-                <dt>undefined</dt> <dd>${ undefined }</dd>
             </dl>
 
             <p>Boolean attributes:</p>
@@ -125,27 +126,23 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
             <input type="number" value="  ${ 5 } " />
         </template>
 
-        <literal-include src="#values-template" data='{ "a": 4 }'></literal-include>
-
-        <hr/>
+        <template is="literal-html" data="{}"
+            ><p>${ '✔ No space for text' }</p
+        ></template>
     </section>
 
-    <!--section title="Binding">
+    <hr/>
+
+    <section title="Binding">
         <h3 class="text-03">Live binding <span class="test-count">(4 tests)</span></h3>
 
-        <template id="clock-template">
+        <template is="literal-html" src="./test-clock.js">
             <p>Time since load: ${ parseInt(data.time, 10) }</p>
         </template>
 
-        <literal-include src="#clock-template" data="./test/test-clock.js"></literal-include>
-
         <hr/>
 
-        <literal-include src="#clock-template" data="./test/test-clock.js"></literal-include>
-
-        <hr/>
-
-        <template id="even-template">
+        <!--template id="even-template">
             <p>Even: ${ parseInt(data.time, 10) }</p>
         </template>
 
@@ -153,15 +150,13 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
             <p>Odd:  ${ parseInt(data.time, 10) }</p>
         </template>
 
-        <template id="evenodd-template">
+        <template is="literal-html" src="./test-clock.js">
             ${ include(parseInt(data.time, 10) % 2 === 0 ? '#even-template' : '#odd-template', data) }
         </template>
 
-        <literal-include src="#evenodd-template" data="./test/test-clock.js"></literal-include>
+        <hr/-->
 
-        <hr/>
-
-        <template id="numbers-template">
+        <template is="literal-html" src="./test-clock.js">
             <label class="block">Number</label>
             <input type="number" value="${ parseInt(data.time, 10) }" />
 
@@ -200,21 +195,13 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
                 <option value="9">Nine</option>
             </select>
         </template>
-
-        <literal-include src="#numbers-template" data="./test/test-clock.js"></literal-include>
-
-        <hr/>
     </section>
 
-    <section title="Loops">
-        <literal-include src="#item-list" id="test-list">
-            Default
-        </literal-include>
-    </section-->
+    <hr/>
 
     <script type="module">
     import test        from "../../fn/modules/test.js";
-    import Renderer     from '../modules/renderer.js';
+    import Renderer     from '../modules/renderer/renderer.js';
     import { Observer } from '../../fn/observer/observer.js';
 /*
     const keys = Object.keys;
@@ -409,8 +396,9 @@ import TemplateRenderer from './modules/renderer-template.js';
     });
 
 */
+
     import { urls } from '../module.js';
-    import '../literal-include/module.js';
+    import '../literal-html/module.js';
 
     urls({
         './my-arse-is-on-fire': './test/tracks.json'

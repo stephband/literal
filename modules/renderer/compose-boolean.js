@@ -1,5 +1,5 @@
 
-import sum from '../../fn/modules/sum.js';
+import sum from '../../../fn/modules/sum.js';
 
 export default function composeBoolean(values) {
     values = Array.from(values);

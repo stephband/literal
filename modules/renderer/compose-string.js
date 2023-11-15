@@ -1,9 +1,5 @@
-import toText from './to-text.js';
-/*
-const isPromise = (object) => (object
-    && typeof object === 'object'
-    && object.then);
-*/
+import toText from '../to-text.js';
+
 const reduce = (values) => values.reduce((output, value) => (
     // Ignore undefined and empty strings
     value === '' || value === undefined ?
@@ -15,19 +11,9 @@ function stringify(value, string, render) {
     return value && typeof value === 'object' ? (
         // If expression returns an array with promises
         value.find ?
-            /*value.find(isPromise) ?
-                // Resolve promises and join to string
-                Promise
-                .all(value)
-                .then((strings) => (
-                    string === '' ?
-                        reduce(strings.map(render)) :
-                        string + reduce(strings.map(render))
-                )) :*/
-            // Otherwise join to string immediately
             string + reduce(value.map(toText)) :
-        // pass any other value to render
-        string + toText(value)
+            // pass any other value to render
+            string + toText(value)
     ) :
     string + toText(value) ;
 }

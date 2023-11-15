@@ -24,13 +24,15 @@ renderer
 ```
 **/
 
+
+import overload          from '../../fn/modules/overload.js';
 import Stream            from '../../fn/modules/stream/stream.js';
-import { Observer as Data } from '../../fn/observer/observer.js';
 import identify          from '../../dom/modules/identify.js';
 import isTextNode        from '../../dom/modules/is-text-node.js';
-import compileNode       from './compile-node.js';
+import compileNode       from './renderer/compile-node.js';
 import removeNodes       from './remove-nodes.js';
 import getNodeRange      from './get-node-range.js';
+import Data              from './data.js';
 import { cue, uncue }    from './cue.js';
 import { pathSeparator } from './constants.js';
 
@@ -39,6 +41,10 @@ const keys   = Object.keys;
 const cache  = {};
 const nodes  = [];
 
+
+function dataIsNull() {
+    return this.data === null;
+}
 
 /*
 TemplateRenderer
@@ -79,9 +85,9 @@ function isMarkerNode(node) {
 function prepareContent(content) {
     // Due to the way HTML is usually written the vast majority of templates
     // start and end with a text node, usually containing some white space
-    // and new lines. The renderer uses these as delimiters for the start and
-    // end of templated content – where it can. If the template does NOT start
-    // or end with a text node, we insert text nodes where needed.
+    // and new lines. TemplateRenderer uses these as delimiters for the start
+    // and end of templated content – where it can. If the template does NOT
+    // start or end with a text node, we insert text nodes where needed.
     const first = content.childNodes[0];
     const last  = content.childNodes[content.childNodes.length - 1];
 
@@ -96,10 +102,8 @@ function prepareContent(content) {
 
 function cloneRenderer(renderer) {
     // `this` is the parent templateRenderer of the new renderer
-    const node = getDescendant(renderer.path, this.content);
-
-    //source, template, path, node, name, message, parameters
-    const clone = new renderer.constructor(renderer.literal, renderer.template, renderer.path, node, renderer.name, '', this.parameters) ;
+    const node  = getDescendant(renderer.path, this.content);
+    const clone = new renderer.constructor(renderer.literal, node, renderer.path, renderer.name, this.parameters, renderer.message) ;
 
     // Stop clone when template renderer stops
     this.done(clone);
@@ -107,19 +111,15 @@ function cloneRenderer(renderer) {
 }
 
 export default function TemplateRenderer(template, parameters) {
-    const id = identify(template) ;
+    const id       = identify(template) ;
+    const renderer = cache[id];
 
     this.template   = template;
     this.parameters = parameters;
 
-    // If the template is already compiled and cached...
-    const renderer = cache[id];
-
-    // clone it
+    // The template is already compiled and cached. Clone it.
     if (renderer) {
-        this.content   = renderer.template.content ?
-            renderer.template.content.cloneNode(true) :
-            renderer.template.cloneNode(true) ;
+        this.content   = renderer.template.content.cloneNode(true);
         this.first     = this.content.childNodes[0];
         this.last      = this.content.childNodes[this.content.childNodes.length - 1];
         this.contents  = renderer.contents.map(cloneRenderer, this);
@@ -142,17 +142,12 @@ export default function TemplateRenderer(template, parameters) {
     the renderer's DOM nodes.
     **/
 
-    if (this.template.content) {
-        prepareContent(this.template.content);
-        this.content = this.template.content.cloneNode(true);
-    }
-    else {
-        this.content = this.template.cloneNode(true) ;
-    }
-
+    prepareContent(this.template.content);
+    this.content  = this.template.content.cloneNode(true);
     this.first    = this.content.childNodes[0];
     this.last     = this.content.childNodes[this.content.childNodes.length - 1];
-    this.contents = compileNode([], this.content, '#' + template.id, '', parameters, '');
+    this.message  = '#' + id + ' > ';
+    this.contents = compileNode([], this.content, '', parameters, this.message);
 
     // Stop child when template renderer stops
     this.contents.forEach((renderer) => this.done(renderer));
@@ -160,8 +155,8 @@ export default function TemplateRenderer(template, parameters) {
 
 assign(TemplateRenderer.prototype, {
     push: function(object) {
-        if (this.status === 'stopped') {
-            throw new Error('Renderer is stopped, cannot .push() data');
+        if (this.status === 'done') {
+            throw new Error('Renderer is done, cannot .push() data');
         }
 
         const data = Data(object) || object;
@@ -182,11 +177,11 @@ assign(TemplateRenderer.prototype, {
         this.update();
     },
 
-    update: function() {
-        //console.log(this.constructor.name + '#' + this.id + '.render()');
+    update: overload(dataIsNull, {
+        true: function() {
+            //console.log(this.constructor.name + (this.id ? '#' + this.id : '') + '.render()');
+            const data = this.data;
 
-        const data = this.data;
-        if (!data) {
             // Remove all but the last node to the renderer's content fragment
             nodes.length = 0;
             let node = this.first;
@@ -198,24 +193,30 @@ assign(TemplateRenderer.prototype, {
 
             this.content.prepend.apply(this.content, nodes);
             return nodes.length;
+        },
+
+        false: function() {
+            //console.log(this.constructor.name + (this.id ? '#' + this.id : '') + '.render()');
+            const data = this.data;
+
+            // Render the contents (synchronously)
+            this.mutations = this.contents.reduce((mutations, renderer) => {
+                renderer.data = data;
+                mutations = mutations + renderer.update().mutations;
+                return mutations;
+            }, 0);
+
+            // If this.last is not in the content fragment, it must be in the
+            // parent DOM being used as a marker. It's time for its freshly rendered
+            // brethren to join it.
+            if (this.content.lastChild && this.last !== this.content.lastChild) {
+                this.last.before(this.content);
+                ++this.mutations;
+            }
+
+            return this;
         }
-
-        // Render the contents (synchronously)
-        this.mutations = this.contents.reduce((mutations, renderer) => {
-            renderer.data = data;
-            return mutations + renderer.update().mutations;
-        }, 0);
-
-        // If this.last is not in the content fragment, it must be in the
-        // parent DOM being used as a marker. It's time for its freshly rendered
-        // brethren to join it.
-        if (this.content.lastChild && this.last !== this.content.lastChild) {
-            this.last.before(this.content);
-            ++this.mutations;
-        }
-
-        return this;
-    },
+    }),
 
     /**
     .remove()
@@ -254,8 +255,7 @@ assign(TemplateRenderer.prototype, {
     **/
     stop: function() {
         uncue(this);
-        this.status = 'stopped';
-        Stream.prototype.stop.apply(this);
+        Stream.prototype.stop.apply(this); // Sets this.status = 'done'
         return this;
     },
 

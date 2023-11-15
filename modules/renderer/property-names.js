@@ -1,9 +1,7 @@
-/**
-setProperty(node, name, value)/
-**/
 
-// Readonly properties cannot be set, obviously. Marking them as this name
-// means AttributeRenderer does not try to set them as properties. Crude.
+// A map of attribute names to property names for attribute renderers. Readonly
+// properties of an element cannot be set, obviously. Marking them as null means
+// AttributeRenderer does not try to set them as properties.
 export default {
     'accept-charset': 'acceptCharset',
     accesskey:       'accessKey',
@@ -13,14 +11,14 @@ export default {
     colspan:         'colSpan',
     datetime:        'dateTime',
     'for':           'htmlFor',    // <label>
-    form:            null,         // Readonly, mark as null
+    form:            null,         // Readonly
     formaction:      'formAction', // <input>
     formenctype:     'formEnctype',
     formmethod:      'formMethod',
     formnovalidate:  'formNoValidate',
     formtarget:      'formTarget',
     frameborder:     'frameBorder',
-    href:            null,         // <use href> is readonly, mark as null
+    href:            null,         // <use href> is readonly
     httpequiv:       'httpEquiv',
     longdesc:        'longDesc',
     maxlength:       'maxLength',
@@ -38,8 +36,8 @@ export default {
     usemap:          'useMap',
     valign:          'vAlign',
     valuetype:       'valueType',   // <object>
-    viewbox:         null,          // Readonly, mark as null
-    viewBox:         null,          // Readonly, mark as null
+    viewbox:         null,          // Readonly
+    viewBox:         null,          // Readonly
     cx:              null,
     cy:              null,
     r:               null

@@ -20,17 +20,17 @@ Where a documentation comment is found, returns a token object of the form:
 
 ```
 {
-    id:       unique id for this token object
-    type:     type of comment, one of 'attribute', 'constructor', 'element',
-              'function', 'method', 'part', 'property', 'selector', 'string',
-              'text', 'var'
-    name:     name of attribute, property, function, element or class
+    id:           unique id for this token object
+    type:         type of comment, one of `'attribute'`, `'constructor'`,
+                  `'element'`, `'function'`, `'method'`, `'part'`, `'property'`,
+                  `'selector'`, `'string'`, `'text'`, `'var'`
+    name:         name of attribute, property, function, element or class
     title:
-    postfix:  syntax characters that follow declaration
+    postfix:      syntax characters that follow declaration
     defaultValue: default value
-    params:   where `type` is method or function, list of parameters
-    body:     body of comment, code highlighted
-    examples: array of html code examples found in comment body, unhighlighted
+    params:       where `type` is `'method'` or `'function'`, list of parameters
+    body:         body of comment, code highlighted
+    examples:     array of html code examples found in comment body, unhighlighted
 }
 ```
 **/
