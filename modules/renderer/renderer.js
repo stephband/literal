@@ -190,14 +190,13 @@ export default function Renderer(source, scope, parameters, message = ''/*, fn*/
     this.id         = ++Renderer.count;
     this.parameters = parameters;
     this.message    = message;
+    this.observers  = {};
+    this.status     = 'idle';
 
     // Parameters have at least length 2 because (data, DATA)
     this.params = parameters ?
         values(parameters).reduce(toParams, { length: 2 }) :
         { length: 2 } ;
-
-    this.observers = {};
-    this.status    = 'idle';
 
     // An instance function rather than a method for some reason ... do we detach it somewhere?
     this.cue = (value) => {

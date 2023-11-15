@@ -1,0 +1,134 @@
+<head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Stephen" />
+    <meta name="description" content="Documentation for Literal. Literal puts JS into your HTML. Literal defines a custom include element that parses and renders templates written as JS Literals, in a small library under 15kB minified and gzipped." />
+    <meta name="viewport" content="width=device-width" />
+
+    <link rel="stylesheet" href="../literal-include/module.css" />
+
+    <script>
+        window.DEBUG = true;
+    </script>
+
+    <style>
+        .block {
+            display: block;
+        }
+
+        [data-before]::before {
+            content: attr(data-before);
+        }
+
+        .class-before::before {
+            content: attr(class);
+        }
+
+        :not(:checked) + .unchecked-before::before {
+            content: '✔ Input is unchecked'
+        }
+
+        :checked + .checked-before::before {
+            content: '✔ Input is checked'
+        }
+    </style>
+
+    <template id="attributes" data-checked>
+        <pre data-before="${ data.attribute }"></pre>
+        <pre class="class-before ${ data.class }"></pre>
+        <pre hidden="${ data.boolean }">✔ Boolean is false</pre>
+        <input type="text" value="${ data.value }" />
+        <input type="checkbox" checked="${ checked }" />
+        <pre class="unchecked-before"></pre>
+        <pre>${ data.text }<br/>${ data.node }<br/>${ data.fragment }</pre>
+    </template>
+
+    <template id="stream">
+        <pre hidden="${ data.stream }">✔ Stream of booleans is rendered (if this is flashing)</pre>
+        <!--pre hidden="${ data.nope }">✔ Should be permanently shown</pre-->
+    </template>
+
+    <template id="includee">
+        <pre>✔ Template included</pre>
+    </template>
+
+    <template id="includer">
+        ${ include('#includee', data) }
+    </template>
+
+    <template id="item">
+        <pre>${ this.constructor.name } - ${ data.label }</pre>
+    </template>
+
+    <template id="item-list">
+        <h3>Test</h3>
+        ${ data.items.map(include('#item')) }
+    </template>
+
+    <template id="test">
+        <pre>${ data.one === 'One' ? '✔' : '' } ${ data.one }
+${ data.two === 'Two' ? '✔' : '' } ${ data.two }
+${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
+    </template>
+</head>
+
+<body>
+    <script type="module">
+    import test         from "../../fn/modules/test.js";
+    import Renderer     from '../modules/renderer/renderer.js';
+    import { Observer } from '../../fn/observer/observer.js';
+    import { urls }     from '../module.js';
+
+    urls({
+        './my-arse-is-on-fire': './test/tracks.json'
+    });
+
+/*
+    const literal = document.getElementById('data-later');
+    literal.data = { one: '✔ One', two: '✔ Two', three: '✔ Three' };
+
+    const element = document.getElementById('test-list');
+    element.data = { items: [{ label: 'Thing' }, { label: 'Other' }] };
+
+    Object.assign(element.data, {
+        items: [{ label: 'One' }, { label: 'Two' }]
+    });
+*/
+    </script>
+
+    <template id="track-li">
+        <li>
+            <a class="doctext-09" href="${ data.name }" download="${ data.name }" title="${ data.name }">${ data.name }</small></a>
+        </li>
+    </template>
+
+    <template id="tracks-list">
+        <ul class="tracks-list list">${ data.map(include('#track-li')) }</ul>
+    </template>
+
+    <template id="tracks">
+        ${ data.reduce((lists, file) => {
+            const last      = lists[lists.length - 1];
+            const extension = (/\.(\w+)$/.exec(file.name) || [])[1];
+
+            file.extension = extension;
+            file.date      = file.name.slice(0, 10);
+
+            if (!last || last[last.length - 1].date !== file.date) {
+                lists.push([file]);
+            }
+            else {
+                last.push(file);
+            }
+
+            return lists;
+        }, [])
+        .reverse()
+        .map(include('#tracks-list')) }
+    </template>
+
+    <section class="block @0-x1 @0-3x @1-6x @2-x2 @0-x-stretch">
+        <literal-include src="#tracks" data="./my-arse-is-on-fire"></literal-include>
+    </section>
+
+    <script type="module"></script>
+</body>

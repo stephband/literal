@@ -1,0 +1,327 @@
+<head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Stephen" />
+    <meta name="description" content="Documentation for Literal. Literal puts JS into your HTML. Literal defines a custom include element that parses and renders templates written as JS Literals, in a small library under 15kB minified and gzipped." />
+    <meta name="viewport" content="width=device-width" />
+
+    <link rel="stylesheet" href="../literal-include/module.css" />
+
+    <script>
+        window.DEBUG = true;
+    </script>
+
+    <style>
+        .block {
+            display: block;
+        }
+
+        [data-before]::before {
+            content: attr(data-before);
+        }
+
+        .class-before::before {
+            content: attr(class);
+        }
+
+        :not(:checked) + .unchecked-before::before {
+            content: '✔ Input is unchecked'
+        }
+
+        :checked + .checked-before::before {
+            content: '✔ Input is checked'
+        }
+    </style>
+
+    <template id="attributes" data-checked>
+        <pre data-before="${ data.attribute }"></pre>
+        <pre class="class-before ${ data.class }"></pre>
+        <pre hidden="${ data.boolean }">✔ Boolean is false</pre>
+        <input type="text" value="${ data.value }" />
+        <input type="checkbox" checked="${ checked }" />
+        <pre class="unchecked-before"></pre>
+        <pre>${ data.text }<br/>${ data.node }<br/>${ data.fragment }</pre>
+    </template>
+
+    <template id="stream">
+        <pre hidden="${ data.stream }">✔ Stream of booleans is rendered (if this is flashing)</pre>
+        <!--pre hidden="${ data.nope }">✔ Should be permanently shown</pre-->
+    </template>
+
+    <template id="includee">
+        <pre>✔ Template included</pre>
+    </template>
+
+    <template id="includer">
+        ${ include('#includee', data) }
+    </template>
+
+    <template id="item">
+        <pre>${ this.constructor.name } - ${ data.label }</pre>
+    </template>
+
+    <template id="item-list">
+        <h3>Test</h3>
+        ${ data.items.map(include('#item')) }
+    </template>
+
+    <template id="test">
+        <pre>${ data.one === 'One' ? '✔' : '' } ${ data.one }
+${ data.two === 'Two' ? '✔' : '' } ${ data.two }
+${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
+    </template>
+</head>
+
+<body>
+    <script type="module">
+    import test        from "../../fn/modules/test.js";
+    import Renderer     from '../modules/renderer/renderer.js';
+    import { Observer } from '../../fn/observer/observer.js';
+/*
+    const keys = Object.keys;
+
+    test("Renderer()", [
+        'Hail ',
+        ['x', 'b'],
+        'Hail Bob',
+        ['x', 'b'],
+        'Hail Mike',
+        ['x', 'a'],
+        'Hail Mary',
+        ['x', 'a'],
+        'Hail Ceasar',
+        ['x', 'a'],
+        'done',
+        [],
+        'Error'
+    ], function(expects, done) {
+        // source, scope, parameters, errorstring, fn
+        const renderer = new Renderer('Hail ${ data.x ? data.a : data.b }', {}, {}, 'TEST', (string) =>
+            expects(string)
+        );
+
+        const data = Observer({});
+
+        // Hail
+        renderer
+        .done(() => expects('done'))
+        .push(data);
+
+        Promise
+        .resolve()
+        .then(() => {
+            // Test for keys being observed
+            expects(keys(renderer.observers));
+
+            // Hail Bob
+            data.b = 'Does nothing becuase immediately followed by ...';
+            data.b = 'Bob';
+        })
+        .then(() => {
+            // Test for keys being observed
+            expects(keys(renderer.observers));
+
+            // Hail Mike
+            data.a = 'Mike';
+            data.x = true;
+        })
+        .then(() => {
+            // Test for keys being observed
+            expects(keys(renderer.observers));
+
+            // Hail Mary
+            data.a = 'Mary';
+        })
+        .then(() => {
+            // Test for keys being observed
+            expects(keys(renderer.observers));
+
+            // Hail Ceasar
+            renderer.push({ x: true, a: 'Ceasar' });
+        })
+        .then(() => {
+            // Test for keys being observed
+            expects(keys(renderer.observers));
+
+            // Stop
+            renderer.stop();
+        })
+        .then(() => {
+            // Test for keys being observed
+            expects(keys(renderer.observers));
+
+            // Causes error
+            renderer.push({ x: false });
+        })
+        .catch((e) => {
+            // Error received
+            expects(e.constructor.name);
+        })
+        .finally(done);
+    });
+
+/*
+    test("Renderer() Allow recueing from renderer.push() inside template", function(equals, done) {
+        const expected = [
+            'Hail ',
+            'Hail Mary'
+        ];
+
+        const renderer = new Renderer('Hail ${ data.x ? data.a : (this.push({ x: true, a: "Mary" })) }', {}, {}, '', null, (string) =>
+            equals(expected.shift(), string)
+        );
+
+        const data = Observer({ a: 'Mary' });
+
+        // Hail
+        renderer
+        .done(() => equals(0, expected.length))
+        .push(data);
+
+        Promise
+        .resolve()
+        .then(() => {
+            // Test for keys being observed
+            expects(keys(renderer.observers));
+
+            renderer.stop();
+        })
+        .finally(done);
+    }, 4);
+*/
+/*
+    test("Renderer() Allow recueing from data.prop = x inside template", function(equals, done) {
+        const expected = [
+            'Hail true',
+            'Hail Mary'
+        ];
+
+        const renderer = new Renderer('Hail ${ data.x ? data.a : (data.x = true) }', {}, {}, '', null, (string) =>
+            equals(expected.shift(), string)
+        );
+
+        const data = Observer({ a: 'Mary' });
+
+        // Hail
+        renderer
+        .done(() => equals(0, expected.length))
+        .push(data);
+
+        Promise
+        .resolve()
+        .then(() => {
+            // Test for keys being observed
+            expects(keys(renderer.observers));
+            renderer.stop();
+        })
+        .finally(done);
+    }, 4);
+*/
+/*
+import create           from '../dom/modules/create.js';
+import Stream           from '../fn/modules/stream.js';
+import IntervalStream   from '../fn/modules/stream/interval-stream.js';
+import TemplateRenderer from './modules/renderer-template.js';
+
+    test("TemplateRenderer() primitive properties", [], function(equals, done) {
+        const template = document.getElementById('attributes');
+        const renderer = new TemplateRenderer(template, { element: document.body });
+        const data = {
+            attribute: '✔ Attribute is rendered',
+            class:     '✔ Class is rendered',
+            boolean:   false,
+            value:     '✔ Value is rendered',
+            checked:   false,
+            text:      '✔ Text is rendered',
+            node:      create('text', '✔ Text node is rendered'),
+            fragment:  create('fragment', '✔ Fragment is rendered')
+        };
+
+        renderer.push(data);
+        document.body.append(renderer.first);
+        done();
+    });
+
+    test("TemplateRenderer() include", [], function(equals, done) {
+        const template = document.getElementById('includer');
+        const renderer = new TemplateRenderer(template, { element: document.body });
+        const data = {};
+        renderer.push(data);
+        document.body.append(renderer.first);
+        done();
+    });
+
+    test("TemplateRenderer() looped include", [], function(equals, done) {
+        const template = document.getElementById('item-list');
+        const renderer = new TemplateRenderer(template, { element: document.body });
+        const data = { items: [{ label: 'one' }, { label: 'two' }, { label: 'three' }] };
+        renderer.push(data);
+        document.body.append(renderer.first);
+        done();
+    });
+
+    test("TemplateRenderer() stream property", [],  function(equals, done) {
+        const template = document.getElementById('stream');
+        const renderer = new TemplateRenderer(template, { element: document.body });
+        const data = { stream: (new IntervalStream(0.4)).scan((value) => !value) };
+        renderer.push(data);
+        document.body.append(renderer.first);
+        done();
+    });
+
+*/
+
+    import { urls } from '../module.js';
+    import '../literal-html/module.js';
+
+    urls({
+        './my-arse-is-on-fire': './test/tracks.json'
+    });
+
+/*
+        const literal = document.getElementById('data-later');
+        literal.data = { one: '✔ One', two: '✔ Two', three: '✔ Three' };
+
+        const element = document.getElementById('test-list');
+        element.data = { items: [{ label: 'Thing' }, { label: 'Other' }] };
+
+        Object.assign(element.data, {
+            items: [{ label: 'One' }, { label: 'Two' }]
+        });
+*/
+    </script>
+
+    <template id="track-li">
+        <li>
+            <a class="doctext-09" href="${ data.name }" download="${ data.name }" title="${ data.name }">${ data.name }</small></a>
+        </li>
+    </template>
+
+    <template id="tracks-list">
+        <ul class="tracks-list list">${ data.map(include('#track-li')) }</ul>
+    </template>
+
+    <template id="tracks">
+        ${ data.reduce((lists, file) => {
+            const last      = lists[lists.length - 1];
+            const extension = (/\.(\w+)$/.exec(file.name) || [])[1];
+
+            file.extension = extension;
+            file.date      = file.name.slice(0, 10);
+
+            if (!last || last[last.length - 1].date !== file.date) {
+                lists.push([file]);
+            }
+            else {
+                last.push(file);
+            }
+
+            return lists;
+        }, [])
+        .reverse()
+        .map(include('#tracks-list')) }
+    </template>
+
+    <section class="block @0-x1 @0-3x @1-6x @2-x2 @0-x-stretch">
+        <literal-include src="#tracks" data="./my-arse-is-on-fire"></literal-include>
+    </section>
+</body>
