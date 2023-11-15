@@ -143,10 +143,11 @@ export default function TemplateRenderer(template, parameters) {
     **/
 
     prepareContent(this.template.content);
+
     this.content  = this.template.content.cloneNode(true);
     this.first    = this.content.childNodes[0];
     this.last     = this.content.childNodes[this.content.childNodes.length - 1];
-    this.message  = '#' + id + ' > ';
+    this.message  = '#' + id + ' - ';
     this.contents = compileNode([], this.content, '', parameters, this.message);
 
     // Stop child when template renderer stops
