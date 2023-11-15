@@ -1,12 +1,12 @@
 
-import { remove }     from '../../../fn/modules/remove.js';
-import Stream         from '../../../fn/modules/stream/stream.js';
-import observe        from '../../../fn/observer/observe.js';
+import { remove }       from '../../../fn/modules/remove.js';
+import Stream, { stop } from '../../../fn/modules/stream/stream.js';
+import observe          from '../../../fn/observer/observe.js';
 import { Observer, getTarget } from '../../../fn/observer/observer.js';
-import Gets           from '../../../fn/observer/gets.js';
-import compile        from '../compile.js';
-import { cue, uncue } from './cue.js';
-import toText         from './to-text.js';
+import Gets             from '../../../fn/observer/gets.js';
+import compile          from '../compile.js';
+import { cue, uncue }   from './cue.js';
+import toText           from './to-text.js';
 
 const assign = Object.assign;
 const keys   = Object.keys;
@@ -32,7 +32,7 @@ ${ this.renderCount }
 
 // Observers
 
-function stop(object) {
+function stopObject(object) {
     object.stop();
 }
 
@@ -57,7 +57,7 @@ function stopPromises(promises) {
 
 function stopStreams(streams) {
     if (!streams) { return; }
-    streams.forEach(stop);
+    streams.forEach(stopObject);
     streams.length = 0;
 }
 
@@ -307,7 +307,8 @@ assign(Renderer.prototype, {
         stopObservers(this.observers);
         stopPromises(this.promises);
         stopStreams(this.streams);
-        Stream.prototype.stop.apply(this); // Sets this.status = 'done'
+        // Stop stream. Sets this.status = 'done'.
+        stop(this);
         --Renderer.count;
         return this;
     },
