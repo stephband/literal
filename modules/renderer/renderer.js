@@ -14,6 +14,7 @@ const values = Object.values;
 
 let currentrenderer;
 
+
 /**
 data
 The main object passed into the template carrying data. This object is special.
