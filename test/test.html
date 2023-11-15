@@ -117,11 +117,11 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
         <hr/>
 
         <template id="even-template">
-            <p>Even: ${ parseInt(data.time, 10) }</p>
+            <p>${ parseInt(data.time, 10) } - even</p>
         </template>
 
         <template id="odd-template">
-            <p>Odd:  ${ parseInt(data.time, 10) }</p>
+            <p>${ parseInt(data.time, 10) } - odd</p>
         </template>
 
         <template is="literal-html" src="./test-clock.js">
