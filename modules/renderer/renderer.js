@@ -1,12 +1,12 @@
 
-import { remove }     from '../../../fn/modules/remove.js';
-import Stream         from '../../../fn/modules/stream/stream.js';
-import observe        from '../../../fn/observer/observe.js';
+import { remove }       from '../../../fn/modules/remove.js';
+import Stream, { stop } from '../../../fn/modules/stream/stream.js';
+import observe          from '../../../fn/observer/observe.js';
 import { Observer, getTarget } from '../../../fn/observer/observer.js';
-import Gets           from '../../../fn/observer/gets.js';
-import compile        from '../compile.js';
-import { cue, uncue } from './cue.js';
-import toText         from './to-text.js';
+import Gets             from '../../../fn/observer/gets.js';
+import compile          from '../compile.js';
+import { cue, uncue }   from './cue.js';
+import toText           from './to-text.js';
 
 const assign = Object.assign;
 const keys   = Object.keys;
@@ -32,12 +32,12 @@ ${ this.renderCount }
 
 // Observers
 
-function stop(object) {
+function callStop(object) {
     object.stop();
 }
 
-function setStopped(object) {
-    object.stopped = true;
+function setCancelled(object) {
+    object.cancelled = true;
 }
 
 function stopObservers(observers) {
@@ -51,13 +51,13 @@ function stopObservers(observers) {
 
 function stopPromises(promises) {
     if (!promises) { return; }
-    promises.forEach(setStopped);
+    promises.forEach(setCancelled);
     promises.length = 0;
 }
 
 function stopStreams(streams) {
     if (!streams) { return; }
-    streams.forEach(stop);
+    streams.forEach(callStop);
     streams.length = 0;
 }
 
@@ -101,7 +101,7 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
             values[n] = '';
             target.then((value) => {
                 // You can't stop a promise, but we can flag it to be ignored
-                if (target.stopped) { return; }
+                if (target.cancelled) { return; }
                 remove(promises, target);
                 return renderValue(renderer, args, values, n, value, true);
             });
@@ -307,7 +307,8 @@ assign(Renderer.prototype, {
         stopObservers(this.observers);
         stopPromises(this.promises);
         stopStreams(this.streams);
-        Stream.prototype.stop.apply(this); // Sets this.status = 'done'
+        // Stop stream. Sets this.status = 'done'.
+        stop(this);
         --Renderer.count;
         return this;
     },

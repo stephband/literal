@@ -142,7 +142,7 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
 
         <hr/>
 
-        <!--template id="even-template">
+        <template id="even-template">
             <p>Even: ${ parseInt(data.time, 10) }</p>
         </template>
 
@@ -154,7 +154,7 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
             ${ include(parseInt(data.time, 10) % 2 === 0 ? '#even-template' : '#odd-template', data) }
         </template>
 
-        <hr/-->
+        <hr/>
 
         <template is="literal-html" src="./test-clock.js">
             <label class="block">Number</label>

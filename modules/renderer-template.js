@@ -26,7 +26,7 @@ renderer
 
 
 import overload          from '../../fn/modules/overload.js';
-import Stream            from '../../fn/modules/stream/stream.js';
+import Stream, { stop }  from '../../fn/modules/stream/stream.js';
 import identify          from '../../dom/modules/identify.js';
 import isTextNode        from '../../dom/modules/is-text-node.js';
 import compileNode       from './renderer/compile-node.js';
@@ -256,7 +256,7 @@ assign(TemplateRenderer.prototype, {
     **/
     stop: function() {
         uncue(this);
-        Stream.prototype.stop.apply(this); // Sets this.status = 'done'
+        stop(this);
         return this;
     },
 
