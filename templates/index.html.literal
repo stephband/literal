@@ -91,7 +91,7 @@
 
     <section class="x1 4x @2-x2 x-stretch" id="template-expressions">
         ${ (await comments(
-            '../modules/to-text.js'
+            '../modules/renderer/to-text.js'
         )).map((doc) => include('../documentation/templates/entry.literal', doc)) }
     </section>
 

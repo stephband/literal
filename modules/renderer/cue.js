@@ -1,5 +1,5 @@
 
-import { log, group, groupEnd } from './log.js';
+import { log, group, groupEnd } from '../log.js';
 
 const renderers = [];
 const promise   = Promise.resolve(renderers);

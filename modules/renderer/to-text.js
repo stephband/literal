@@ -1,4 +1,8 @@
 
+import id       from '../../../fn/modules/id.js';
+import overload from '../../../fn/modules/overload.js';
+import toType   from '../../../fn/modules/to-type.js';
+
 /**
 Template expressions
 
@@ -142,9 +146,6 @@ render text whenever the stream emits an array of strings.
 </table>
 **/
 
-import id       from '../../fn/modules/id.js';
-import overload from '../../fn/modules/overload.js';
-import toType   from '../../fn/modules/to-type.js';
 
 // Matches the arguments list in the result of fn.toString()
 const rarrowents = /\s*(\([\w,\s]*\))/;

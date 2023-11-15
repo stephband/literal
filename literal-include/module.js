@@ -149,11 +149,13 @@ export default element('literal-include', lifecycle, {
             // wait? Because we are not in the DOM yet, and if we want a
             // loading icon to transition in the transition must begin after
             // we are already in the DOM.
+            /*
             addLoading(this);
             requestTemplate(value).then((template) => {
                 internal.templates.push(template);
                 removeLoading(this);
             });
+            */
         }
     }
 });

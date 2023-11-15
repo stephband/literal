@@ -54,14 +54,15 @@ const compileAttributeByName = overload(get('localName'), {
         if (window.DEBUG) { console.log('Todo: compile datetime attribute'); }
     },
 
-    // Special workaround attribute used in cases where ${} cannot be added
-    // directly to the HTML, such as in <tbody> or <tr>
+    // Workaround attribute used in cases where ${} cannot be added directly to
+    // HTML, such as in <tbody> or <tr>
     'inner-html': (attribute, path, source, parameters, message) => {
         const node = attribute.ownerElement;
         node.removeAttribute(attribute.localName);
         return new TextRenderer(decode(source), node, path, parameters, message);
     },
 
+    // Todo: remove deprecation error...
     'inner-content': () => {
         throw new Error('Attribute inner-content renamed as inner-html');
     },

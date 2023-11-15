@@ -289,7 +289,7 @@ const add = overload(toAddType, {
 render(array, param)
 **/
 
-import renderString        from '../modules/to-text.js';
+import renderString        from '../modules/renderer/to-text.js';
 
 const join = (strings) => strings.join('');
 const isPromise = (object) => object && object.then;

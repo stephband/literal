@@ -1,4 +1,5 @@
-import toText from '../to-text.js';
+
+import toText from './to-text.js';
 
 const reduce = (values) => values.reduce((output, value) => (
     // Ignore undefined and empty strings

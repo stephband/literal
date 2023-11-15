@@ -24,12 +24,10 @@ function resolveData(value) {
 
 const onerror = window.DEBUG ?
     (e, element) => {
-        /*removeLoading(element); */
         element.replaceWith(print(e));
         throw e;
     } :
     (e, element) => {
-       /* removeLoading(element); */
         throw e;
     } ;
 
@@ -55,8 +53,7 @@ export default {
                     .resolve(value)
                     .then(requestData)
                     .then((data) => dataoutput.push(data))
-                    .catch((e)   => onerror(e, marker, privates))
-                    /*.finally(()  => removeLoading(this));*/
+                    .catch((e)   => onerror(e, marker, privates));
                 }
                 else {
                     dataoutput.push(JSON.parse(value));
@@ -99,13 +96,5 @@ export default {
                 }, {}))
             );
         }
-    },
-
-    /*connect: function(shadow) {
-        setLoadingAsync(this);
-    },*/
-
-    /*load: function(shadow) {
-        removeLoading(this);
-    }*/
+    }
 };

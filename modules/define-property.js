@@ -6,7 +6,6 @@ import overload             from '../../fn/modules/overload.js';
 import TokenList            from '../../dom/modules/element/token-list.js';
 import updateTokenList      from '../../dom/modules/element/update-token-list.js';
 import { getInternals }     from '../../dom/modules/element.js';
-/*import { addLoading, removeLoading } from './properties.js';*/
 import requestData          from './request-data.js';
 
 const rpath   = /^\.*\/|^https?:\/\//;
@@ -21,7 +20,6 @@ const resolveAndAssign = overload((name, element, value) => typeof value, {
             requestData(value)
             .then((object) => internals.data[name] = object)
             .catch((error) => console.error(error));
-            //.finally(() => removeLoading(element));
         }
         else {
             internals.data[name] = JSON.parse(value);

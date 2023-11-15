@@ -1,7 +1,7 @@
 
 import overload from '../../../fn/modules/overload.js';
 import library  from '../library-dom.js';
-import toText   from '../to-text.js';
+import toText   from './to-text.js';
 import Renderer from './renderer.js';
 
 const A      = Array.prototype;

@@ -1,13 +1,12 @@
 
-import { remove } from '../../../fn/modules/remove.js';
-import Stream     from '../../../fn/modules/stream/stream.js';
-import observe    from '../../../fn/observer/observe.js';
+import { remove }     from '../../../fn/modules/remove.js';
+import Stream         from '../../../fn/modules/stream/stream.js';
+import observe        from '../../../fn/observer/observe.js';
 import { Observer, getTarget } from '../../../fn/observer/observer.js';
-import Gets       from '../../../fn/observer/gets.js';
-
-import compile    from '../compile.js';
-import toText     from '../to-text.js';
-import { cue, uncue } from '../cue.js';
+import Gets           from '../../../fn/observer/gets.js';
+import compile        from '../compile.js';
+import { cue, uncue } from './cue.js';
+import toText         from './to-text.js';
 
 const assign = Object.assign;
 const keys   = Object.keys;
@@ -179,7 +178,7 @@ Takes a `source` string or optionally a compiled `render` function and creates
 a consumer stream.
 **/
 
-export default function Renderer(source, scope, parameters, message = '', fn) {
+export default function Renderer(source, scope, parameters, message = ''/*, fn*/) {
     this.literal = typeof source === 'string' ?
         // data will be the observer proxy of DATA, which we set in .update()
         compile(source, scope, 'data, DATA' + (parameters ? ', ' + keys(parameters).join(', ') : ''), message) :
