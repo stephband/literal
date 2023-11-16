@@ -52,7 +52,6 @@ export default function TokensRenderer(source, node, path, name, parameters, mes
     this.name        = name;
     this.list        = getTokenList(node, name);
     this.tokens      = nothing;
-    this.renderCount = 0;
 
     // Empty the tokens until it is rendered to avoid code in literals
     // being interpreted as tokens
@@ -64,7 +63,7 @@ assign(TokensRenderer.prototype, Renderer.prototype, {
         let mutations = 0;
 
         // Set permanent tokens on first render only
-        if (++this.renderCount === 1) {
+        if (this.renderCount === 1) {
             const tokens = strings
                 .join(' ')
                 .trim();

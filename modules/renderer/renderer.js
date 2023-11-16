@@ -23,11 +23,13 @@ When it mutates, the DOM re-renders.
 
 /**
 this
-The current renderer. Normally you wouldn't reference this in a Literal template
-unless you want to print information about the template renderer itself.
+The current renderer. Normally you wouldn't reference `this` in a template,
+unless you want to print information about the renderer of the current text
+or attribute.
 
-```js
-${ this.renderCount }
+```html
+Renderer render count: ${ this.renderCount }
+Renderer id:           ${ this.id }
 ```
 **/
 
@@ -203,6 +205,8 @@ export default function Renderer(source, scope, parameters, message = ''/*, fn*/
         stopObservers(this.observers);
         cue(this);
     };
+
+    this.renderCount = 0;
 /*
     this.consume = fn;
 */
@@ -256,6 +260,7 @@ assign(Renderer.prototype, {
         // Yes probably. A voire.
         if (window.DEBUG) {
             try {
+                ++this.renderCount;
                 this.literal.apply(this, this.getParameters());
             }
             catch(e) {
@@ -264,6 +269,7 @@ assign(Renderer.prototype, {
             }
         }
         else {
+            ++this.renderCount;
             this.literal.apply(this, this.getParameters());
         }
 
