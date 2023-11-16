@@ -50,6 +50,7 @@ import nothing              from '../../fn/modules/nothing.js';
 import get                  from '../../fn/modules/get-path.js';
 import set                  from '../../fn/modules/set-path.js';
 import noop                 from '../../fn/modules/noop.js';
+import remove               from '../../fn/modules/remove.js';
 import slugify              from '../../fn/modules/slugify.js';
 import sum                  from '../../fn/modules/sum.js';
 import last                 from '../../fn/modules/last.js';
@@ -195,6 +196,7 @@ const library = {
     round: (value, n = 1) => Math.round(value / n) * n,
 
     paramify,
+    remove,
     set,
     slugify,
     Stream,

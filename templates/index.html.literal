@@ -61,6 +61,7 @@
             '../../fn/modules/normalise.js',
             '../../fn/modules/nothing.js',
             '../../fn/modules/overload.js',
+            '../../fn/modules/remove.js',
             '../../fn/modules/slugify.js',
             //'../../fn/modules/stream.js',
             '../../fn/modules/sum.js',
