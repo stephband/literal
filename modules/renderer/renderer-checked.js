@@ -1,10 +1,10 @@
 
-import isDefined      from '../../../fn/modules/is-defined.js';
-import trigger        from '../../../dom/modules/trigger.js';
-import config         from '../config.js';
-import library        from '../library-dom.js';
-import composeBoolean from './compose-boolean.js';
-import Renderer       from './renderer.js';
+import isDefined         from '../../../fn/modules/is-defined.js';
+import trigger           from '../../../dom/modules/trigger.js';
+import config            from '../config.js';
+import library           from '../library-dom.js';
+import composeBoolean    from './compose-boolean.js';
+import AttributeRenderer from './renderer-attribute.js';
 
 const assign  = Object.assign;
 
@@ -48,19 +48,15 @@ function setChecked(node, value, hasValue) {
     return 1;
 }
 
-export default function CheckedRenderer(source, node, path, name, parameters, message) {
-    Renderer.call(this, source, library, assign({}, parameters, { element: node }), message);
-    this.node     = node;
-    this.path     = path;
-    this.name     = 'checked';
+export default function CheckedRenderer(source, node, path, parameters, message) {
+    AttributeRenderer.apply(this, arguments);
     this.hasValue = isDefined(node.getAttribute('value'));
-
     // Negate the effects of having template content in the checked attribute -
     // resetting the form sets it back to attribute state
     node.removeAttribute('checked');
 }
 
-assign(CheckedRenderer.prototype, Renderer.prototype, {
+assign(CheckedRenderer.prototype, AttributeRenderer.prototype, {
     render: function(strings) {
         const value = composeBoolean(arguments);
         this.mutations = setChecked(this.node, value, this.hasValue);

@@ -1,8 +1,8 @@
 
-import library        from '../library-dom.js';
-import composeBoolean from './compose-boolean.js';
-import names          from './property-names.js';
-import Renderer       from './renderer.js';
+import library           from '../library-dom.js';
+import composeBoolean    from './compose-boolean.js';
+import names             from './property-names.js';
+import AttributeRenderer from './renderer-attribute.js';
 
 const assign = Object.assign;
 
@@ -33,17 +33,12 @@ export function setBooleanProperty(node, name, value) {
     return 1;
 }
 
-export default function BooleanRenderer(source, node, path, name, parameters, message) {
-    Renderer.call(this, source, library, assign({}, parameters, { element: node }), message);
-    this.node     = node;
-    this.path     = path;
-    this.name     = name;
-
-    // Remove the boolean until it is processed
+export default function BooleanRenderer(source, attribute, path, parameters, message) {
+    AttributeRenderer.apply(this, arguments);
     node.removeAttribute(name);
 }
 
-assign(BooleanRenderer.prototype, Renderer.prototype, {
+assign(BooleanRenderer.prototype, AttributeRenderer.prototype, {
     render: function(strings) {
         const value = composeBoolean(arguments);
         this.mutations = setBooleanProperty(this.node, this.name, value);

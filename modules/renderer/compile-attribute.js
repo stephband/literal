@@ -17,7 +17,7 @@ compileAttributes(renderers, attribute, path, debug)
 **/
 
 const compileBoolean = (attribute, path, source, parameters, message) =>
-    new BooleanRenderer(source, attribute.ownerElement, path, attribute.localName, parameters, message);
+    new BooleanRenderer(source, attribute, path, parameters, message);
 
 const compileAttributeByName = overload(get('localName'), {
     async:          compileBoolean,
@@ -45,10 +45,10 @@ const compileAttributeByName = overload(get('localName'), {
     //default:        compileBoolean,
 
     checked: (attribute, path, source, parameters, message) =>
-        new CheckedRenderer(source, attribute.ownerElement, path, 'checked', parameters, message),
+        new CheckedRenderer(source, attribute, path, parameters, message),
 
     class: (attribute, path, source, parameters, message) =>
-        new TokensRenderer(source, attribute.ownerElement, path, 'class', parameters, message),
+        new TokensRenderer(source, attribute, path, parameters, message),
 
     datetime: function compileDatetime(attribute, path, source, parameters, debug) {
         if (window.DEBUG) { console.log('Todo: compile datetime attribute'); }
@@ -68,10 +68,10 @@ const compileAttributeByName = overload(get('localName'), {
     },
 
     value: (attribute, path, source, parameters, message) =>
-        new ValueRenderer(source, attribute.ownerElement, path, 'value', parameters, message),
+        new ValueRenderer(source, attribute, path, parameters, message),
 
     default: (attribute, path, source, parameters, message) =>
-        new AttributeRenderer(source, attribute.ownerElement, path, attribute.localName, parameters, message)
+        new AttributeRenderer(source, attribute, path, parameters, message)
 });
 
 export default function compileAttribute(renderers, attribute, path, parameters, message = '') {

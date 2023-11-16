@@ -40,7 +40,7 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
 </head>
 
 <body>
-    <section>
+    <!--section>
         <h3 class="text-03">Data <span class="test-count">(5 tests)</span></h3>
         <template is="literal-html" src="./test.json">${ include("#test", data) }</template>
         <hr/>
@@ -114,21 +114,23 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
             <p>Time since load: ${ parseInt(data.time, 10) }</p>
         </template>
 
-        <hr/>
+        <hr/-->
 
         <template id="even-template">
-            <p>${ parseInt(data.time, 10) } - even</p>
+            <p>${ parseInt(data.time, 10) } - even - ${ function() {
+                    if (!element) { throw new Error('ARSE') }
+                }(), !!element }</p>
         </template>
 
         <template id="odd-template">
-            <p>${ parseInt(data.time, 10) } - odd</p>
+            <p>${ parseInt(data.time, 10) } - odd - ${ !!element }</p>
         </template>
 
         <template is="literal-html" src="./test-clock.js">
             ${ include(parseInt(data.time, 10) % 2 === 0 ? '#even-template' : '#odd-template', data) }
         </template>
 
-        <hr/>
+        <!--hr/>
 
         <template is="literal-html" src="./test-clock.js">
             <label class="block">Number</label>
@@ -171,7 +173,7 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
         </template>
     </section>
 
-    <hr/>
+    <hr/-->
 
     <script type="module">
     import '../literal-html/module.js';
