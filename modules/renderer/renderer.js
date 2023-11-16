@@ -2,9 +2,9 @@
 import { remove }       from '../../../fn/modules/remove.js';
 import Stream, { stop } from '../../../fn/modules/stream/stream.js';
 import observe          from '../../../fn/observer/observe.js';
-import { Observer, getTarget } from '../../../fn/observer/observer.js';
 import Gets             from '../../../fn/observer/gets.js';
 import compile          from '../compile.js';
+import Data             from '../data.js';
 import { cue, uncue }   from './cue.js';
 import toText           from './to-text.js';
 
@@ -97,7 +97,7 @@ function toValues(values, record) {
 function renderValue(renderer, args, values, n, object, isRender = false) {
     if (object && typeof object === 'object') {
         // Avoid having property gets registered as observers
-        const target = getTarget(object);
+        const target = Data.getObject(object);
 
         // Is target a Promise?
         if (target.then) {
@@ -222,7 +222,7 @@ assign(Renderer.prototype, {
             throw new Error('Renderer is done, cannot .push() data');
         }
 
-        data = Observer(data);
+        data = Data(data);
         if (this.data === data) { return; }
 
         this.data = data;
@@ -232,7 +232,7 @@ assign(Renderer.prototype, {
     getParameters: function() {
         const parameters = this.params;
         parameters[0] = this.data;
-        parameters[1] = getTarget(this.data);
+        parameters[1] = Data.getObject(this.data);
         return parameters;
     },
 

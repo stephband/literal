@@ -53,17 +53,16 @@ cloning of template instances without retraversing their DOMs looking for
 literal attributes and text.
 */
 
-function child(parent, index) {
+function getChild(element, index) {
     return /^[a-zA-Z]/.test(index) ?
-        parent :
-        parent.childNodes[index] ;
+        element.getAttributeNode(index) :
+        element.childNodes[index] ;
 }
 
 function getDescendant(path, root) {
     // If path is empty return root
-    const p = path && path.split(pathSeparator);
     return path ?
-        p.reduce(child, root) :
+        path.split(pathSeparator).reduce(getChild, root) :
         root ;
 }
 
@@ -103,9 +102,9 @@ function prepareContent(content) {
 function cloneRenderer(renderer) {
     // `this` is the parent templateRenderer of the new renderer
     const node  = getDescendant(renderer.path, this.content);
-    const clone = new renderer.constructor(renderer.literal, node, renderer.path, renderer.name, this.parameters, renderer.message) ;
+    const clone = new renderer.constructor(renderer.literal, node, renderer.path, this.parameters, renderer.message) ;
 
-    // Stop clone when template renderer stops
+    // Stop clone when parent template renderer stops
     this.done(clone);
     return clone;
 }

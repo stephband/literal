@@ -1,11 +1,11 @@
 
-import overload      from '../../../fn/modules/overload.js';
-import trigger       from '../../../dom/modules/trigger.js';
-import config        from '../config.js';
-import library       from '../library-dom.js';
-import Renderer      from './renderer.js';
-import composeString from './compose-string.js';
-import composeNumber from './compose-number.js';
+import overload          from '../../../fn/modules/overload.js';
+import trigger           from '../../../dom/modules/trigger.js';
+import config            from '../config.js';
+import library           from '../library-dom.js';
+import AttributeRenderer from './renderer-attribute.js';
+import composeString     from './compose-string.js';
+import composeNumber     from './compose-number.js';
 
 const assign = Object.assign;
 
@@ -67,9 +67,6 @@ function setValue(node, value) {
         return 0;
     }
 
-    // Here's how we did it for number
-    //if (value === (node.value === '' ? null : +node.value)) { return 0; }
-
     const count = setProperty(node, value);
 
     // Optional event hook
@@ -89,14 +86,11 @@ const compose = overload((value, type) => type, {
     'default':    composeString
 });
 
-export default function ValueRenderer(source, node, path, name, parameters, message) {
-    Renderer.call(this, source, library, assign({}, parameters, { element: node }), message);
-    this.name    = 'value';
-    this.node    = node;
-    this.path    = path;
+export default function ValueRenderer(source, node, path, parameters, message) {
+    AttributeRenderer.apply(this, arguments);
 }
 
-assign(ValueRenderer.prototype, Renderer.prototype, {
+assign(ValueRenderer.prototype, AttributeRenderer.prototype, {
     render: function() {
         const value = compose(arguments, this.node.type);
         this.mutations = setValue(this.node, value);

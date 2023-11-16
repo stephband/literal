@@ -84,20 +84,17 @@ const compileNode = overload((renderers, node) => toType(node), {
 
     'text': (renderers, node, path, parameters, message = '') => {
         const string = node.nodeValue;
+        if (!isLiteral(string)) { return renderers; }
 
-        if (isLiteral(string)) {
-            const source = decode(string);
-
-            if (window.DEBUG) {
-                message += '<'
-                    + parameters.element.tagName.toLowerCase()
-                    + '>'
-                    + truncate(32, source) ;
-            }
-
-            renderers.push(new TextRenderer(source, node, path, parameters, message));
+        const source = decode(string);
+        if (window.DEBUG) {
+            message += '<'
+                + parameters.element.tagName.toLowerCase()
+                + '>'
+                + truncate(32, source) ;
         }
 
+        renderers.push(new TextRenderer(source, node, path, parameters, message));
         return renderers;
     },
 
