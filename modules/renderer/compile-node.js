@@ -22,9 +22,9 @@ function compileChildren(renderers, node, path, parameters, message = '') {
 
     if (children) {
         let n = -1;
-
         while(children[++n]) {
-            compileNode(renderers, children[n], path ? path + pathSeparator + n : '' + n, parameters, message);
+            path = path ? path + pathSeparator + n : '' + n ;
+            compileNode(renderers, children[n], path, parameters, message);
         }
     }
 
@@ -39,11 +39,14 @@ compileAttributes(renderers, node, path, parameters, message)
 function compileAttributes(renderers, node, path, parameters, message = '') {
     // Attributes may be removed during parsing so copy the list before looping
     const attributes = Array.from(node.attributes);
-    var n = -1, attribute;
+    let n = -1, attribute;
 
     while (attribute = attributes[++n]) {
+        path + pathSeparator + attribute.localName;
         compileAttribute(renderers, attribute, path, parameters, message);
     }
+
+    return renderers;
 }
 
 
@@ -56,10 +59,8 @@ const compileElement = overload((renderers, node) => node.tagName.toLowerCase(),
     'defs': id,
 
     // Do not parse the inner DOM of scripts
-    'script': (renderers, node, path, parameters, message) => {
-        compileAttributes(renderers, node, path, parameters, message);
-        return renderers;
-    },
+    'script': (renderers, node, path, parameters, message) =>
+        compileAttributes(renderers, node, path, parameters, message),
 
     // Ignore templates
     'template': id,
@@ -84,7 +85,9 @@ const compileNode = overload((renderers, node) => toType(node), {
 
     'text': (renderers, node, path, parameters, message = '') => {
         const string = node.nodeValue;
-        if (!isLiteral(string)) { return renderers; }
+        if (!isLiteral(string)) {
+            return renderers;
+        }
 
         const source = decode(string);
         if (window.DEBUG) {

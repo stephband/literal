@@ -36,6 +36,11 @@ function setAttribute(node, name, value) {
 export default function AttributeRenderer(source, attribute, path, parameters, message) {
     const params = assign({}, parameters, { element: attribute.ownerElement });
     Renderer.call(this, source, library, params, message);
+
+if (!attribute.ownerElement) {
+    debugger;
+}
+
     this.node     = attribute.ownerElement;
     this.name     = attribute.localName;
     this.path     = path;
