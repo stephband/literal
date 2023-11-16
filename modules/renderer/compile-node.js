@@ -23,8 +23,7 @@ function compileChildren(renderers, node, path, parameters, message = '') {
     if (children) {
         let n = -1;
         while(children[++n]) {
-            path = path ? path + pathSeparator + n : '' + n ;
-            compileNode(renderers, children[n], path, parameters, message);
+            compileNode(renderers, children[n], path ? path + pathSeparator + n : '' + n, parameters, message);
         }
     }
 
@@ -42,8 +41,7 @@ function compileAttributes(renderers, node, path, parameters, message = '') {
     let n = -1, attribute;
 
     while (attribute = attributes[++n]) {
-        path + pathSeparator + attribute.localName;
-        compileAttribute(renderers, attribute, path, parameters, message);
+        compileAttribute(renderers, attribute, path + pathSeparator + attribute.localName, parameters, message);
     }
 
     return renderers;

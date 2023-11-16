@@ -41,9 +41,9 @@ if (!attribute.ownerElement) {
     debugger;
 }
 
-    this.node     = attribute.ownerElement;
-    this.name     = attribute.localName;
-    this.path     = path;
+    this.node = attribute.ownerElement;
+    this.name = attribute.localName;
+    this.path = path;
 }
 
 assign(AttributeRenderer.prototype, Renderer.prototype, {
