@@ -4,7 +4,7 @@ export default function getTemplate(src) {
     const template    = document.getElementById(id);
 
     if (!template) {
-        throw new Error('Template "' + src + '" not found');
+        throw new Error('Template ' + src + ' not found');
     }
 
     return template;
