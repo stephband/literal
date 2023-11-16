@@ -48,12 +48,10 @@ function setChecked(node, value, hasValue) {
     return 1;
 }
 
-export default function CheckedRenderer(source, node, path, parameters, message) {
+export default function CheckedRenderer(source, attribute, path, parameters, message) {
     AttributeRenderer.apply(this, arguments);
-    this.hasValue = isDefined(node.getAttribute('value'));
-    // Negate the effects of having template content in the checked attribute -
-    // resetting the form sets it back to attribute state
-    node.removeAttribute('checked');
+    this.hasValue = isDefined(this.node.getAttribute('value'));
+    this.node.removeAttribute(this.name);
 }
 
 assign(CheckedRenderer.prototype, AttributeRenderer.prototype, {

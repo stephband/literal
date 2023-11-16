@@ -47,14 +47,13 @@ function updateTokens(list, cached, tokens, count) {
 
 export default function TokensRenderer(source, node, path, parameters, message) {
     AttributeRenderer.apply(this, arguments);
-
-    this.list        = getTokenList(node, name);
+    this.list        = getTokenList(this.node, this.name);
     this.tokens      = nothing;
     this.renderCount = 0;
 
     // Empty the tokens until it is rendered to avoid code in literals
-    // being interpreted as tokens
-    node.setAttribute(name, '');
+    // being interpreted as tokens.
+    this.node.setAttribute(this.name, '');
 }
 
 assign(TokensRenderer.prototype, AttributeRenderer.prototype, {
