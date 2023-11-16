@@ -117,7 +117,7 @@ export default function TemplateRenderer(template, parameters) {
     this.template   = template;
     this.parameters = parameters;
 
-    // The template is already compiled and cached. Clone it.
+    // The template is already compiled and cached. Clone and return it.
     if (renderer) {
         this.content   = renderer.template.content.cloneNode(true);
         this.first     = this.content.childNodes[0];
@@ -134,7 +134,6 @@ export default function TemplateRenderer(template, parameters) {
 
     /**
     .content
-
     A fragment that initially contains the renderer's DOM nodes. On creation of
     a renderer they are in an unrendered state. They are guaranteed to be in a
     rendered state on resolution of the first render(). The fragment may be
