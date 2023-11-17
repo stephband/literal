@@ -3,7 +3,7 @@ import id                from '../../../fn/modules/id.js';
 import overload          from '../../../fn/modules/overload.js';
 import toType            from '../../../dom/modules/to-type.js';
 import decode            from '../../../dom/modules/decode.js';
-import isLiteral         from '../is-literal.js';
+import isLiteralString   from '../is-literal-string.js';
 import { pathSeparator } from './constants.js';
 import truncate          from './truncate.js';
 import compileAttribute  from './compile-attribute.js';
@@ -83,7 +83,7 @@ const compileNode = overload((renderers, node) => toType(node), {
 
     'text': (renderers, node, path, parameters, message = '') => {
         const string = node.nodeValue;
-        if (!isLiteral(string)) {
+        if (!isLiteralString(string)) {
             return renderers;
         }
 

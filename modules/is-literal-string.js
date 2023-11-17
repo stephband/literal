@@ -4,6 +4,6 @@
 
 const rliteral = /\$\{/;
 
-export default function isLiteral(string) {
+export default function isLiteralString(string) {
     return string && rliteral.test(string);
 }

@@ -175,10 +175,10 @@ Contents
 - <a href="#template-functions">Literal template functions</a>
 */
 
+export { compiled }            from './modules/renderer/compile.js';
 export { default as config }   from './modules/config.js';
 export { default as observe }  from '../fn/observer/observe.js';
 export { default as Data }     from './modules/data.js';
 export { default as Renderer } from './modules/renderer-template.js';
 export { default as scope }    from './modules/scope.js';
-export { compiled }            from './modules/compile.js';
 export { urls }                from './modules/urls.js';

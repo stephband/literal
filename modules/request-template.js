@@ -4,7 +4,7 @@ import { requestGet } from '../../dom/modules/request.js';
 
 export default cache(function requestTemplate(url) {
     return requestGet(url).then((fragment) => {
-        // If the URL had a hash, search for element witht he id of the hash
+        // If the URL has a hash, search for element with the id of the hash
         const location = new URL(url, window.location);
         const element  = location.hash ?
             fragment.querySelector(location.hash) :

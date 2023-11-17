@@ -2,7 +2,7 @@
 import get               from '../../../fn/modules/get.js';
 import overload          from '../../../fn/modules/overload.js';
 import decode            from '../../../dom/modules/decode.js';
-import isLiteral         from '../is-literal.js';
+import isLiteralString   from '../is-literal-string.js';
 import AttributeRenderer from './renderer-attribute.js';
 import BooleanRenderer   from './renderer-boolean.js';
 import CheckedRenderer   from './renderer-checked.js';
@@ -76,7 +76,7 @@ const compileAttributeByName = overload(get('localName'), {
 
 export default function compileAttribute(renderers, attribute, path, parameters, message = '') {
     const source = attribute.value;
-    if (!isLiteral(source)) { return; }
+    if (!isLiteralString(source)) { return; }
 
     if (window.DEBUG) {
         message += '<'

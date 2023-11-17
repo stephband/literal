@@ -3,7 +3,7 @@ import { remove }       from '../../../fn/modules/remove.js';
 import Stream, { stop } from '../../../fn/modules/stream/stream.js';
 import observe          from '../../../fn/observer/observe.js';
 import Gets             from '../../../fn/observer/gets.js';
-import compile          from '../compile.js';
+import compile          from './compile.js';
 import Data             from '../data.js';
 import { cue, uncue }   from './cue.js';
 import toText           from './to-text.js';
