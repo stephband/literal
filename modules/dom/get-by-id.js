@@ -1,5 +1,5 @@
 
-export default function getTemplate(src) {
+export default function getById(src) {
     const id          = src.slice(1);
     const template    = document.getElementById(id);
 

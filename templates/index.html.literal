@@ -14,7 +14,7 @@
 
     <section class="x1 4x @2-x2 x-stretch" id="template-scope">
         ${ include('../documentation/templates/entry.literal', (await comments(
-            '../modules/library.js'
+            '../modules/scope.js'
         ))[0]) }
     </section>
 
@@ -33,8 +33,8 @@
         <h3>Streams</h3>
 
         ${ (await comments(
-            '../modules/library.js',
-            '../modules/library-dom.js',
+            '../modules/scope.js',
+            '../modules/scope-dom.js',
             '../../fn/modules/stream.js',
             //'../fn/observer/observe.js',
         ))
@@ -68,11 +68,11 @@
             //'../fn/observer/observe.js',
             '../../dom/modules/delegate.js',
             '../../dom/modules/trigger.js',
-            '../modules/library.js',
-            '../modules/library-dom.js',
-            '../modules/library/include.js',
-            '../modules/library/paramify.js',
-            '../modules/library/print.js'
+            '../modules/scope.js',
+            '../modules/scope-dom.js',
+            '../modules/scope/include.js',
+            '../modules/scope/paramify.js',
+            '../modules/scope/print.js'
         ))
         .filter((doc) => (doc.type === 'function' || doc.type === 'constructor'))
         .filter((entry) => !['Stream.of', 'Stream.from', 'Stream.combine', 'Stream.merge', 'clock', 'events', 'observe'].includes(entry.name))

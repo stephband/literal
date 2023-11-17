@@ -29,12 +29,12 @@ import overload          from '../../fn/modules/overload.js';
 import Stream, { stop }  from '../../fn/modules/stream/stream.js';
 import identify          from '../../dom/modules/identify.js';
 import isTextNode        from '../../dom/modules/is-text-node.js';
+import { pathSeparator } from './renderer/constants.js';
 import compileNode       from './renderer/compile-node.js';
 import { cue, uncue }    from './renderer/cue.js';
-import removeNodes       from './remove-nodes.js';
-import getNodeRange      from './get-node-range.js';
+import removeNodes       from './dom/remove-nodes.js';
+import getNodeRange      from './dom/get-node-range.js';
 import Data              from './data.js';
-import { pathSeparator } from './constants.js';
 
 const assign = Object.assign;
 const keys   = Object.keys;

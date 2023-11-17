@@ -62,7 +62,7 @@ import observe              from '../../fn/observer/observe.js';
 import Stream               from '../../fn/modules/stream.js';
 import Frames          from '../../fn/modules/stream/frames-stream.js';
 
-import paramify        from './library/paramify.js';
+import paramify        from './scope/paramify.js';
 
 const library = {
     /**

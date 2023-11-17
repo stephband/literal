@@ -1,6 +1,6 @@
 
 import compileFn  from '../../fn/modules/compile.js';
-import { indent } from './constants.js';
+import { indent } from './renderer/constants.js';
 import { log }    from './log.js';
 
 

@@ -4,7 +4,7 @@ import * as path from "https://deno.land/std@0.110.0/path/mod.ts";
 // Absolute path to module
 const moduleAbs = path.dirname(path.fromFileUrl(import.meta.url));
 
-import base        from '../modules/library.js';
+import base        from '../modules/scope.js';
 
 import capture     from '../../fn/modules/capture.js';
 import { addDate } from '../../fn/modules/date.js';

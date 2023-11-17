@@ -2,7 +2,7 @@
 import overload          from '../../../fn/modules/overload.js';
 import trigger           from '../../../dom/modules/trigger.js';
 import config            from '../config.js';
-import library           from '../library-dom.js';
+import library           from '../scope-dom.js';
 import AttributeRenderer from './renderer-attribute.js';
 import composeString     from './compose-string.js';
 import composeNumber     from './compose-number.js';
@@ -70,8 +70,8 @@ function setValue(node, value) {
     const count = setProperty(node, value);
 
     // Optional event hook
-    if (config.changeEvent) {
-        trigger(config.changeEvent, node);
+    if (config.updateEvent) {
+        trigger(config.updateEvent, node);
     }
 
     // Return DOM mod count

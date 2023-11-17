@@ -1,6 +1,6 @@
 
 import overload          from '../../../fn/modules/overload.js';
-import library           from '../library-dom.js';
+import library           from '../scope-dom.js';
 import toText            from './to-text.js';
 import AttributeRenderer from './renderer-attribute.js';
 

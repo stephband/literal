@@ -5,7 +5,7 @@ import create                    from '../../dom/modules/create.js';
 import element, { getInternals } from '../../dom/modules/element.js';
 import toPrefetchPromise         from '../../dom/modules/element/to-prefetch-promise.js';
 import defineProperty            from './define-property.js';
-import getTemplate               from './get-template.js';
+import getById                   from './dom/get-by-id.js';
 import TemplateRenderer          from './renderer-template.js';
 
 const assign  = Object.assign;
@@ -73,7 +73,7 @@ export default function defineElement(tag, src, lifecycle = {}, props, scope = {
     }
 
     const template = typeof src === 'string' ?
-        getTemplate(src) :
+        getById(src) :
         src;
 
     return element(tag, {

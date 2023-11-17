@@ -1,5 +1,5 @@
 
-import library       from '../library-dom.js';
+import library       from '../scope-dom.js';
 import composeString from './compose-string.js';
 import names         from './property-names.js';
 import Renderer      from './renderer.js';

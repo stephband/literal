@@ -7,12 +7,12 @@ that DOM after the text node.
 **/
 
 import isTextNode        from '../../../dom/modules/is-text-node.js';
-import include           from '../library/include.js';
-import library           from '../library-dom.js';
-import removeNodes       from '../remove-nodes.js';
+import include           from '../scope/include.js';
+import library           from '../scope-dom.js';
+import removeNodes       from '../dom/remove-nodes.js';
 import TemplateRenderer  from '../renderer-template.js';
-import { pathSeparator } from '../constants.js';
-import print             from '../library/print.js';
+import print             from '../scope/print.js';
+import { pathSeparator } from './constants.js';
 import toText            from './to-text.js';
 import Renderer          from './renderer.js';
 

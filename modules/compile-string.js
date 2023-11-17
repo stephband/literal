@@ -1,7 +1,7 @@
 
 // Todo: This script used by bolt/elements/slide-show... can we refactor that out?
 
-import library from './library.js';
+import library from './scope.js';
 import compile from './compile.js';
 
 /**

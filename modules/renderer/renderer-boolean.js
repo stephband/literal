@@ -1,5 +1,5 @@
 
-import library           from '../library-dom.js';
+import library           from '../scope-dom.js';
 import composeBoolean    from './compose-boolean.js';
 import names             from './property-names.js';
 import AttributeRenderer from './renderer-attribute.js';

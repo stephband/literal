@@ -20,7 +20,7 @@ ${ data.array.map(include('#list-item')) }
 
 import { getTarget }    from '../../../fn/observer/observer.js';
 import TemplateRenderer from '../renderer-template.js';
-import getTemplate      from '../get-template.js';
+import getById          from '../dom/get-by-id.js';
 import requestTemplate  from '../request-template.js';
 import requestData      from '../request-data.js';
 
@@ -43,7 +43,7 @@ export default function include(src, data, parameters) {
     const object = getTarget(data);
 
     if (/^#/.test(src)) {
-        const template = getTemplate(src);
+        const template = getById(src);
         const dataRequest = typeof object === 'string' ? requestData(object) :
             object && object.then ? object :
             null;

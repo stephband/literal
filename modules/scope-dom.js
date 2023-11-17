@@ -7,7 +7,7 @@ import request                 from '../../dom/modules/request.js';
 import { trigger }             from '../../dom/modules/trigger.js';
 import { px, em, rem, vw, vh } from '../../dom/modules/parse-length.js';
 import validate                from '../../dom/modules/validate.js';
-import library                 from './library.js';
+import library                 from './scope.js';
 
 
 // Export a library with DOM functions.

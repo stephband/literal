@@ -88,7 +88,7 @@ import element, { getInternals as Internals } from '../../dom/modules/element.js
 import LatestStream     from '../modules/latest-stream.js';
 import requestData      from '../modules/request-data.js';
 import TemplateRenderer from '../modules/renderer-template.js';
-import print            from '../modules/library/print.js';
+import print            from '../modules/scope/print.js';
 
 const assign  = Object.assign;
 const rpath   = /^(\.+|https?:\/)?\//;

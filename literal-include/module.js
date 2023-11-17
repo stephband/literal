@@ -52,7 +52,7 @@ Both `data` and `data-` attributes also accept URLs. A URL is used to fetch a
 **/
 
 import element, { getInternals as Internals } from '../../dom/modules/element.js';
-import getTemplate     from '../modules/get-template.js';
+import getById         from '../modules/dom/get-by-id.js';
 import requestTemplate from '../modules/request-template.js';
 import lifecycle       from './modules/lifecycle.js';
 
@@ -139,7 +139,7 @@ export default element('literal-include', lifecycle, {
             const internal = Internals(this);
 
             if (/^#/.test(value)) {
-                const template = getTemplate(value);
+                const template = getById(value);
                 internal.templates.push(template);
                 return;
             }

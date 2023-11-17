@@ -2,7 +2,7 @@
 import read    from './read.js';
 import compile from './compile.js';
 import include from './include.js';
-import library, { prependComment } from './library.js';
+import library, { prependComment } from './scope.js';
 import { rewriteURLs } from './url.js';
 
 

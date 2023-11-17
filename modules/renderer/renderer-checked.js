@@ -2,7 +2,7 @@
 import isDefined         from '../../../fn/modules/is-defined.js';
 import trigger           from '../../../dom/modules/trigger.js';
 import config            from '../config.js';
-import library           from '../library-dom.js';
+import library           from '../scope-dom.js';
 import composeBoolean    from './compose-boolean.js';
 import AttributeRenderer from './renderer-attribute.js';
 
@@ -40,8 +40,8 @@ function setChecked(node, value, hasValue) {
     node.checked = checked;
 
     // Optional event hook
-    if (config.changeEvent) {
-        trigger(config.changeEvent, node);
+    if (config.updateEvent) {
+        trigger(config.updateEvent, node);
     }
 
     // Return DOM mod count

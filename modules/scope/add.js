@@ -1,4 +1,4 @@
-import { register } from '../library.js';
+import { register } from '../scope.js';
 
 /**
 add(number|date|time)

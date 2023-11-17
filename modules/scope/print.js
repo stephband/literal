@@ -23,7 +23,7 @@ Renders as:
 Messages should be styled with the print stylesheet:
 
 ```css
-@import "http://stephen.band/literal/modules/library/print.css";
+@import "http://stephen.band/literal/modules/scope/print.css";
 ```-->
 
 

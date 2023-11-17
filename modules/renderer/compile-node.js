@@ -4,7 +4,7 @@ import overload          from '../../../fn/modules/overload.js';
 import toType            from '../../../dom/modules/to-type.js';
 import decode            from '../../../dom/modules/decode.js';
 import isLiteral         from '../is-literal.js';
-import { pathSeparator } from '../constants.js';
+import { pathSeparator } from './constants.js';
 import truncate          from './truncate.js';
 import compileAttribute  from './compile-attribute.js';
 import TextRenderer      from './renderer-text.js';
