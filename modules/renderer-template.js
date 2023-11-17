@@ -32,7 +32,7 @@ import isTextNode        from '../../dom/modules/is-text-node.js';
 import { pathSeparator } from './renderer/constants.js';
 import compileNode       from './renderer/compile-node.js';
 import { cue, uncue }    from './renderer/cue.js';
-import removeNodes       from './dom/remove-nodes.js';
+import removeNodeRange       from './dom/remove-node-range.js';
 import getNodeRange      from './dom/get-node-range.js';
 import Data              from './data.js';
 

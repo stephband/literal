@@ -9,7 +9,7 @@ that DOM after the text node.
 import isTextNode        from '../../../dom/modules/is-text-node.js';
 import include           from '../scope/include.js';
 import library           from '../scope-dom.js';
-import removeNodes       from '../dom/remove-nodes.js';
+import removeNodeRange       from '../dom/remove-node-range.js';
 import TemplateRenderer  from '../renderer-template.js';
 import print             from '../scope/print.js';
 import { pathSeparator } from './constants.js';

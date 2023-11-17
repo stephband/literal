@@ -1,5 +1,5 @@
 
-export default function removeNodes(first, last) {
+export default function removeNodeRange(first, last) {
     // Remove last to first and all nodes in between
     let node  = last;
     let count = 0;
