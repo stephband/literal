@@ -27,6 +27,7 @@ renderer
 
 import overload          from '../../fn/modules/overload.js';
 import Stream, { stop }  from '../../fn/modules/stream/stream.js';
+import create            from '../../dom/modules/create.js';
 import identify          from '../../dom/modules/identify.js';
 import isTextNode        from '../../dom/modules/is-text-node.js';
 import { pathSeparator } from './renderer/constants.js';
@@ -91,11 +92,11 @@ function prepareContent(content) {
     const last  = content.childNodes[content.childNodes.length - 1];
 
     if (!first || !isMarkerNode(first)) {
-        content.prepend(document.createTextNode(''));
+        content.prepend(create('text'));
     }
 
     if (!last || !isMarkerNode(last)) {
-        content.append(document.createTextNode(''));
+        content.append(create('text'));
     }
 }
 
