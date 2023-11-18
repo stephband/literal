@@ -2,7 +2,13 @@
 // A map of attribute names to property names for attribute renderers. Readonly
 // properties of an element cannot be set, obviously. Marking them as null means
 // AttributeRenderer does not try to set them as properties.
+
+// Todo: this prevents use of custom elements that may have different
+// definitions of these property names. We should use feature detection or
+// check the attributes against their element's tag name..
+
 export default {
+    // HTML
     'accept-charset': 'acceptCharset',
     accesskey:       'accessKey',
     cellpadding:     'cellPadding',
@@ -36,8 +42,14 @@ export default {
     usemap:          'useMap',
     valign:          'vAlign',
     valuetype:       'valueType',   // <object>
-    viewbox:         null,          // Readonly
-    viewBox:         null,          // Readonly
+
+    // SVG
+    viewbox:         null,
+    viewBox:         null,
+    x:               null,
+    y:               null,
+    dx:              null,
+    dy:              null,
     cx:              null,
     cy:              null,
     r:               null
