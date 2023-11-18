@@ -113,8 +113,10 @@ export default function TemplateRenderer(template, parameters) {
     const id       = identify(template) ;
     const renderer = cache[id];
 
-    this.template   = template;
     this.parameters = parameters;
+    this.template   = template.content ?
+        template :
+        { content: create('fragment', template.childNodes, template) } ;
 
     // The template is already compiled and cached. Clone and return it.
     if (renderer) {
