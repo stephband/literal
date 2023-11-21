@@ -16,7 +16,7 @@ Constructs an object responsible for rendering to a plain text attribute.
 function isWritableProperty(name, object) {
     const descriptor = getDescriptor(object, name);
     return descriptor ?
-        // Accessor property or value property
+        // Accessor property with setter or writable value property
         descriptor.set || descriptor.writable :
         // We know name in object at this point so property must be defined
         // somewhere, ergo we don't risk running out of prototypes. I think.
@@ -56,10 +56,10 @@ export default function AttributeRenderer(source, attribute, path, parameters, m
     const params = assign({}, parameters, { element: attribute.ownerElement });
     Renderer.call(this, source, library, params, message);
 
-    this.node = attribute.ownerElement;
-    this.name = attribute.localName;
-    this.path = path;
-    this.prop = this.name in names ? names[this.name] : this.name ;
+    this.node     = attribute.ownerElement;
+    this.name     = attribute.localName;
+    this.path     = path;
+    this.prop     = this.name in names ? names[this.name] : this.name ;
     this.writable = isWritable(this.name, this.node);
 }
 
