@@ -42,6 +42,7 @@ export default function include(src, data, parameters) {
     // parent renderer
     const object = getTarget(data);
 
+    // Template is in document
     if (/^#/.test(src)) {
         const template = getById(src);
         const dataRequest = typeof object === 'string' ? requestData(object) :
@@ -59,6 +60,7 @@ export default function include(src, data, parameters) {
         return push(template, object || {}, parameters);
     }
 
+    // Template is external to document
     const templateRequest = requestTemplate(src);
     const dataRequest = typeof object === 'string' ? requestData(object) :
         object && object.then ? object :
