@@ -7,12 +7,12 @@ import request                 from '../../dom/modules/request.js';
 import { trigger }             from '../../dom/modules/trigger.js';
 import { px, em, rem, vw, vh } from '../../dom/modules/parse-length.js';
 import validate                from '../../dom/modules/validate.js';
-import library                 from './scope.js';
 import create                  from '../../dom/modules/create.js';
+import location                from '../../dom/modules/location.js';
+import navigate                from '../../dom/modules/navigate.js';
+import scope                   from './scope.js';
 
-
-// Export a library with DOM functions.
-
+// Extend scope with DOM functions.
 export default Object.assign({
     create,
     delegate,
@@ -83,12 +83,27 @@ export default Object.assign({
 
     isValid,
 
+    /** location
+    An observable wrapper around `window.location` that may be used as a router.
+    TODO: better description!
+    **/
+    location,
+
+    /** navigate(url)
+    Navigate to a url, alerting the history API where pertinent. Takes optional
+    parameters:
+    ```
+    navigate(url, state, scroll)
+    ```
+    TODO: better description!
+    **/
+    navigate,
+
     /**
     rect(element)
     A shortcut for `element.getBoundingClientRectangle()`. Returns a DOMRect
     object with `left`, `top`, `width` and `height` properties.
     **/
-
     rect,
 
     /**
@@ -125,4 +140,4 @@ export default Object.assign({
     rem,
     vw,
     vh
-}, library);
+}, scope);
