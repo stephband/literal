@@ -44,7 +44,7 @@ export default {
     - `:number`  – a string attribute, number property
     - `:string`  – a string attribute, string property
     - `:tokens`  – a string attribute, TokenList property
-    - `:src`     – a string attribute, object property
+    - `:src`     – a url attribute, object property
 
     Attribute values are available inside the template scope as properties of
     `data`:

@@ -33,7 +33,7 @@ import isTextNode        from '../../dom/modules/is-text-node.js';
 import { pathSeparator } from './renderer/constants.js';
 import compileNode       from './renderer/compile-node.js';
 import { cue, uncue }    from './renderer/cue.js';
-import removeNodeRange       from './dom/remove-node-range.js';
+import removeNodeRange   from './dom/remove-node-range.js';
 import getNodeRange      from './dom/get-node-range.js';
 import Data              from './data.js';
 
@@ -49,7 +49,7 @@ function dataIsNull() {
 
 /*
 TemplateRenderer
-Descendant paths are stored in the form `"#id 1:12:3:attribute"`, enabling fast
+Descendant paths are stored in the form `"#id>1>12>3>attribute"`, enabling fast
 cloning of template instances without retraversing their DOMs looking for
 literal attributes and text.
 */

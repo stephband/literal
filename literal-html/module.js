@@ -116,7 +116,9 @@ function getDataFromDataset(datas, dataset) {
     const keys   = Object.keys(dataset);
     const values = Object.values(dataset);
 
-    if (!keys.length) { return; }
+    // Do this if you don't want templats to render before they are explicitly
+    // assigned data
+    //if (!keys.length) { return; }
 
     datas.push(values
         .map(parseData)
@@ -148,35 +150,13 @@ export default element('<template is="literal-html">', {
         internals.initialised = true;
 
         const { datas, renderer } = internals;
-        const push = (data) => {
-            renderer.push(data);
+        datas.each((object) => {
+            renderer.push(object);
 
-            // If already pushed do nothing
-            if (internals.pushed) { return; }
-            internals.pushed = true;
-
-            // First push replaces DOM content
-            this.replaceWith(renderer.content);
-        };
-
-        datas.each((promiseOrData) => {
-            // Cancel existing promise of data
-            if (internals.promise) {
-                internals.promise.cancelled = true;
-                internals.promise = undefined;
-            }
-
-            // If it's a promise
-            if (promiseOrData.then) {
-                // Set internals.promise
-                const p = internals.promise = promiseOrData.then((data) => {
-                    // If already cancelled do nothing
-                    if (p.cancelled) { return; }
-                    push(data);
-                });
-            }
-            else {
-                push(promiseOrData);
+            // Replace DOM content on first push
+            if (!internals.pushed) {
+                internals.pushed = true;
+                this.replaceWith(renderer.content);
             }
         });
 
@@ -188,7 +168,7 @@ export default element('<template is="literal-html">', {
 }, {
     /**
     src=""
-    A path to a JSON file, or JS module exporting data to be rendered.
+    A path to a JSON file or JS module exporting data to be rendered.
 
     ```html
     <template is="literal-html" src="./data.json">...</template>
@@ -203,24 +183,45 @@ export default element('<template is="literal-html">', {
     **/
 
     src: {
-        attribute: function(value) { this.src = value; },
-        get: function() { this.src; },
-        set: function(value) {
+        attribute: function(url) {
+            this.src = url;
+        },
+
+        get: function() {
+            return Internals(this).src;
+        },
+
+        set: function(url) {
             const internals = Internals(this);
-            internals.datas.push(
-                requestData(value).catch((e) => onerror(e, this))
-            );
+            internals.src = url;
+
+            // Cancel existing promise of data
+            if (internals.promise) {
+                internals.promise.cancelled = true;
+                internals.promise = undefined;
+            }
+
+            // Set internals.promise
+            const p = internals.promise = requestData(url)
+            .then((data) => {
+                if (!p.cancelled) {
+                    this.data = data;
+                }
+            })
+            .catch((e) => onerror(e, this));
         }
     },
 
+
     /**
     data-*=""
-    If there is no `src` attribute, literal makes a data object from the dataset
-    properties. So `data-count="3"` is rendered in the template with `${ data.count }`.
+    If there is no `src` or `data` attribute literal populates `data` object
+    from the dataset properties. So `data-count="3"` may be used in the template
+    with `${ data.count }`.
 
-    Oh, by the way, if the template _does_ have a `src` attribute, the dataset
-    proper can still be accessed in (the usual way)[https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dataset],
-    `${ element.dataset.count }`.
+    (If the template _does_ have a `src` attribute, the dataset proper can still
+    be accessed in (the usual way)[https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dataset],
+    with `${ element.dataset.count }`.)
     **/
 
     /**
@@ -252,9 +253,9 @@ export default element('<template is="literal-html">', {
                 null ;
         },
 
-        set: function(value) {
+        set: function(object) {
             const internals = Internals(this);
-            internals.datas.push(value);
+            internals.datas.push(object);
         }
     }
 });
