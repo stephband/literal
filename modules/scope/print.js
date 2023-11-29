@@ -53,6 +53,7 @@ export default window.DEBUG ? function print(object) {
     let html = '';
 
     if (object instanceof Error) {
+        console.error(object);
         pre.setAttribute('class', 'literal-print-error literal-print');
         html += '<strong>' + object.constructor.name + '</strong>';
         html += '<code>' + object.message + '</code>';
