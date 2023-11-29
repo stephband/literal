@@ -42,15 +42,16 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
 <body>
     <section>
         <h3 class="text-03">Data <span class="test-count">(5 tests)</span></h3>
+        <h4 class="text-04">Source attribute src="*.json"</h4>
         <template is="literal-html" src="./test.json">${ include("#test", data) }</template>
-        <hr/>
-        <template is="literal-html" data-one="One" data-two="Two" data-three="Three">${ include("#test", data) }</template>
-        <hr/>
-        <template is="literal-html" data-one="./test.json" data-two="./test.json">${ include("#test", data) }</template>
-        <hr/>
+        <h4 class="text-04">Source attribute src="does-not-exist"</h4>
         <template is="literal-html" src="./test/test-bad.json">${ include("#test", data) }</template>
-        <hr/>
-        <template is="literal-html" id="data-later">${ include("#test", data) }</template>
+        <h4 class="text-04">Dataset data-*="&hellip;"</h4>
+        <template is="literal-html" data-one="One" data-two="Two" data-three="Three">${ include("#test", data) }</template>
+        <h4 class="text-04">Data attribute data="{&hellip;}"</h4>
+        <template is="literal-html" data='{"one":"One","two":"Two","three":"Three"}'>${ include("#test", data) }</template>
+        <h4 class="text-04">Instanitation with no data</h4>
+        <template is="literal-html" id="data-later">${ include("#test", { one: 'One', two: 'Two', three: 'Three' }) }</template>
     </section>
 
     <section>
