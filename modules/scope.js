@@ -206,7 +206,7 @@ const library = {
     translate(key)
 
     Looks up an alternative value stored by `key` in a `window.translations`
-    object, if it exists. A super simple translation mechanism, but requires
+    object, if it exists. A super simple translation mechanism that requires
     `window.translations` to be an object.
 
     ```js
@@ -215,7 +215,7 @@ const library = {
     **/
     translate: function translate(key) {
         if (window.DEBUG && !window.translations) {
-            throw new Error('translate() - no window.translations object found');
+            console.warn('Literal translate() - no `window.translations` object');
         }
 
         return window.translations && window.translations[key] || key;
