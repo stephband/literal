@@ -255,7 +255,7 @@ export default element('<template is="literal-html">', {
 
         set: function(object) {
             const internals = Internals(this);
-            internals.datas.push(object);
+            internals.datas.push(object || null);
         }
     }
 });

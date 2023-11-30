@@ -13,7 +13,7 @@ import navigate                from '../../dom/modules/navigate.js';
 import scope                   from './scope.js';
 
 // Extend scope with DOM functions.
-export default Object.assign({
+export default Object.assign(scope, {
     create,
     delegate,
 
@@ -140,4 +140,4 @@ export default Object.assign({
     rem,
     vw,
     vh
-}, scope);
+});
