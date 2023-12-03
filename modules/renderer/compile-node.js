@@ -92,7 +92,7 @@ const compileNode = overload((renderers, node) => toType(node), {
             message += '<'
                 + parameters.element.tagName.toLowerCase()
                 + '>'
-                + truncate(32, source) ;
+                + truncate(72, source) ;
         }
 
         renderers.push(new TextRenderer(source, node, path, parameters, message));

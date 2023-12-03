@@ -81,7 +81,7 @@ export default function compileAttribute(renderers, attribute, path, parameters,
     if (window.DEBUG) {
         message += '<'
             + attribute.ownerElement.tagName.toLowerCase() + ' '
-            + attribute.localName + '="' + truncate(32, source)
+            + attribute.localName + '="' + truncate(72, source)
             + '">' ;
     }
 
