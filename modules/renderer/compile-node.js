@@ -64,9 +64,12 @@ const compileElement = overload((renderers, node) => node.tagName.toLowerCase(),
     'template': id,
 
     'default': (renderers, node, path, parameters, message) => {
-        // Children first means inner DOM to outer DOM
-        compileAttributes(renderers, node, path, parameters, message);
+        // Children first means inner DOM to outer DOM, which allows select,
+        // for example, to pick up the correct option value. If we decide to
+        // change this order we should still make sure value attribute is
+        // rendered after children for this reason.
         compileChildren(renderers, node, path, assign({}, parameters, { element: node }), message);
+        compileAttributes(renderers, node, path, parameters, message);
         return renderers;
     }
 });
