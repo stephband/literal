@@ -164,12 +164,13 @@ export default function TextRenderer(source, node, path, parameters, message) {
             // but if not element should be set to this text node's parent.
             node.parentNode,
 
-        include: (url, data) => (data === undefined ?
-            // Partial application if called with url only
-            (data) => include(url, data, parameters) :
-            // Include immediately when data is defined
-            include(url, data, parameters)
-        ),
+        include: function(url, data) {
+            return arguments.length === 1 ?
+                // Partial application if called with url only
+                (data) => include(url, data, parameters) :
+                // Include immediately when data is defined
+                include(url, data, parameters);
+        },
 
         print: (...args) => print(this, ...args)
     }), message);
