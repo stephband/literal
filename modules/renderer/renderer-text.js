@@ -156,6 +156,7 @@ function updateDOM(first, last, objects) {
 }
 
 export default function TextRenderer(source, node, path, parameters, message) {
+    if (!node) { throw new Error('Node UNDEFINED  ' + path + '    ' + message) }
     Renderer.call(this, source, library, assign({}, parameters, {
         // If path is empty...
         element: !path.includes(pathSeparator) ?

@@ -40,7 +40,7 @@ export const group = window.DEBUG ?
 export const groupCollapsed = window.DEBUG ?
     function log($1, $2, color = colors.green) {
         console.groupCollapsed((grouped ? '%c      %c' : '%cLiteral %c') + $1 + ' %c' + $2,
-            'color: ' + (colors.grey) + '; font-weight: 600;',
+            'color: ' + (colors.grey) + '; font-weight: 300;',
             'color: ' + (colors[color] || color) + '; font-weight: 300;',
             'color: ' + (colors.grey) + '; font-weight: 300;'
         );

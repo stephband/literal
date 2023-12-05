@@ -182,7 +182,7 @@ Takes a `source` string or optionally a compiled `render` function and creates
 a consumer stream.
 **/
 
-export default function Renderer(source, scope, parameters, message = ''/*, fn*/) {
+export default function Renderer(source, scope, parameters, message = '') {
     this.literal = typeof source === 'string' ?
         // data will be the observer proxy of DATA, which we set in .update()
         compile(source, scope, 'data, DATA' + (parameters ? ', ' + keys(parameters).join(', ') : ''), message) :
@@ -264,7 +264,8 @@ assign(Renderer.prototype, {
                 this.literal.apply(this, this.getParameters());
             }
             catch(e) {
-                e.message += this.message;
+                // TODO: add template id to error message
+                e.message += '\n    in ' + this.message;
                 throw e;
             }
         }

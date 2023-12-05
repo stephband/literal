@@ -152,7 +152,7 @@ export default function TemplateRenderer(template, parameters) {
     this.content  = this.template.content.cloneNode(true);
     this.first    = this.content.childNodes[0];
     this.last     = this.content.childNodes[this.content.childNodes.length - 1];
-    this.message  = '';//#' + id + ' - ';
+    this.message  = '#' + id;
 
     if (window.DEBUG) { groupCollapsed('compile', '#' + id, 'yellow'); }
     this.contents = compileNode([], this.content, '', parameters, this.message);

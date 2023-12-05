@@ -23,6 +23,26 @@ function compileChildren(renderers, node, path, parameters, message = '') {
     if (children) {
         let n = -1;
         while(children[++n]) {
+            // Templates are treated as pass-through to their `.content`, ie, they
+            // don't count as nested elements in the render tree. This is to
+            // facilitate render content in contexts such as in `<tbody>` or `<tr>`
+            // where you cannot author text nodes directly. Wrap html in a
+            // `<template>`, which is allowed in any context, and this sees through
+            // them.
+            //
+            // TODO I don't understand why this works. The template is only
+            // removed from this instance, subsequent instances have it so their
+            // paths must be wrong, yet it appears to behave. Test.
+            //
+            // We may want this functionality to be opt-in with some kind of
+            // attribute on the template or something. This problem first
+            // encountered on blondel.ch.
+            if (children[n].content) {
+                const template = children[n];
+                template.before(template.content);
+                template.remove();
+            }
+
             compileNode(renderers, children[n], path ? path + pathSeparator + n : '' + n, parameters, message);
         }
     }
@@ -60,16 +80,17 @@ const compileElement = overload((renderers, node) => node.tagName.toLowerCase(),
     'script': (renderers, node, path, parameters, message) =>
         compileAttributes(renderers, node, path, parameters, message),
 
-    // Ignore templates
+    // Ignore templates. They have already been flattened into content anyway.
     'template': id,
 
+    // Compiling children first means inner DOM to outer DOM, which allows
+    // `<select>`, for example, to pick up the correct option value. If we
+    // decide to change this order we should still make sure value attribute
+    // is rendered after children for this reason.
     'default': (renderers, node, path, parameters, message) => {
-        // Children first means inner DOM to outer DOM, which allows select,
-        // for example, to pick up the correct option value. If we decide to
-        // change this order we should still make sure value attribute is
-        // rendered after children for this reason.
-        compileChildren(renderers, node, path, assign({}, parameters, { element: node }), message);
-        compileAttributes(renderers, node, path, parameters, message);
+        const params = assign({}, parameters, { element: node });
+        compileChildren(renderers, node, path, params, message);
+        compileAttributes(renderers, node, path, params, message);
         return renderers;
     }
 });
@@ -92,10 +113,11 @@ const compileNode = overload((renderers, node) => toType(node), {
 
         const source = decode(string);
         if (window.DEBUG) {
-            message += '<'
-                + parameters.element.tagName.toLowerCase()
-                + '>'
-                + truncate(72, source) ;
+            message = truncate(64, '<'
+                + parameters.element.tagName.toLowerCase() + '>'
+                + source.trim()
+                + '</' + parameters.element.tagName.toLowerCase() + '>')
+                + ' (' + message + ')' ;
         }
 
         renderers.push(new TextRenderer(source, node, path, parameters, message));

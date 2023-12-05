@@ -79,10 +79,11 @@ export default function compileAttribute(renderers, attribute, path, parameters,
     if (!isLiteralString(source)) { return; }
 
     if (window.DEBUG) {
-        message += '<'
+        message = truncate(64, '<'
             + attribute.ownerElement.tagName.toLowerCase() + ' '
-            + attribute.localName + '="' + truncate(72, source)
-            + '">' ;
+            + attribute.localName + '="' + source
+            + '">')
+            + ' (' + message + ')' ;
     }
 
     renderers.push(compileAttributeByName(attribute, path, source, parameters, message));
