@@ -36,6 +36,7 @@ import { cue, uncue }    from './renderer/cue.js';
 import removeNodeRange   from './dom/remove-node-range.js';
 import getNodeRange      from './dom/get-node-range.js';
 import Data              from './data.js';
+import { groupCollapsed, groupEnd } from './log.js';
 
 const assign = Object.assign;
 const keys   = Object.keys;
@@ -151,8 +152,11 @@ export default function TemplateRenderer(template, parameters) {
     this.content  = this.template.content.cloneNode(true);
     this.first    = this.content.childNodes[0];
     this.last     = this.content.childNodes[this.content.childNodes.length - 1];
-    this.message  = '#' + id + ' - ';
+    this.message  = '';//#' + id + ' - ';
+
+    if (window.DEBUG) { groupCollapsed('compile', '#' + id, 'yellow'); }
     this.contents = compileNode([], this.content, '', parameters, this.message);
+    if (window.DEBUG) { groupEnd(); }
 
     // Stop child when template renderer stops
     this.contents.forEach((renderer) => this.done(renderer));

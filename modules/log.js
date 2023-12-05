@@ -4,10 +4,8 @@ import noop from '../../fn/modules/noop.js';
 const colors = {
     'aqua':   '#00a8a9',
     'blue':   '#3a8ab0',
-    //'green':  '#d8cd17',
     'green':  '#B6BD00',
-    'yellow': '#eac60c',
-    //'orange': '#ffa000',
+    'yellow': '#DDB523',
     orange:   '#ff9433',
     'red':    '#ff003a',
     'grey':   '#81868f',

@@ -34,7 +34,7 @@ export default function compile(source, scope, parameters, message = '') {
             compile.count    += 1;
 
             // Log this compile
-            log('compile', (t1 - t0).toPrecision(3) + 'ms – ' + message, undefined, undefined, '#DDB523');
+            log('compile', (t1 - t0).toPrecision(3) + 'ms – ' + message, undefined, undefined, 'yellow');
 
             return compiled[key] = fn;
         }
