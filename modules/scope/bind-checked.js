@@ -8,25 +8,24 @@ import { observe } from '../data.js';
 export default function bindChecked(element, data, path, to, from, setChecked) {
     const attribute = element.getAttribute('value');
     const defined   = isDefined(attribute);
+
     const inputs = events('input', element)
-        // Parse as type
-        .map(defined ?
-            (e) => (e.target.checked ? attribute : undefined) :
-            (e) => (e.target.checked)
-        )
         // Transform
-        .map(from)
+        .map(defined ?
+            (e) => from(e.target.checked ? attribute : undefined) :
+            (e) => from(e.target.checked)
+        )
         // Set value on data
         .each(set(path, data));
 
     return observe(path, data)
         // Transform
         .map(to)
-        // Set checked on input
+        // Set checked on input, bypassing usual renderer.compose()
         .each(defined ?
             (value) => setChecked(element, v + '' === attribute) :
             (value) => setChecked(element, !!value)
         )
-        // Unbind inputs when observe stream is stopped
+        // Unbind events when observe stream is stopped
         .done(inputs);
 }

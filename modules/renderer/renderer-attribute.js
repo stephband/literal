@@ -19,7 +19,8 @@ function isWritableProperty(name, object) {
         // Accessor property with setter or writable value property
         descriptor.set || descriptor.writable :
         // We know name in object at this point so property must be defined
-        // somewhere, ergo we don't risk running out of prototypes. I think.
+        // somewhere, ergo we don't risk running out of prototypes when
+        // recursing up the prototype chain. I think.
         isWritableProperty(name, getPrototype(object)) ;
 }
 
@@ -65,8 +66,8 @@ export default function AttributeRenderer(source, attribute, path, parameters, m
 
 assign(AttributeRenderer.prototype, Renderer.prototype, {
     render: function() {
-        const value = composeString(arguments);
-        this.mutations = setAttribute(this.node, this.name, this.prop, this.writable, value);
+        this.value     = composeString(arguments);
+        this.mutations = setAttribute(this.node, this.name, this.prop, this.writable, this.value);
         return this;
     }
 });
