@@ -2,7 +2,7 @@
 import isDefined         from '../../../fn/modules/is-defined.js';
 import trigger           from '../../../dom/modules/trigger.js';
 import config            from '../config.js';
-import library           from '../scope-dom.js';
+import bindChecked       from '../scope/bind-checked.js';
 import composeBoolean    from './compose-boolean.js';
 import AttributeRenderer from './renderer-attribute.js';
 
@@ -49,8 +49,14 @@ function setChecked(node, value, hasValue) {
 }
 
 export default function CheckedRenderer(source, attribute, path, parameters, message) {
-    AttributeRenderer.apply(this, arguments);
+    AttributeRenderer.call(this, source, attribute, path, assign({
+        // TODO: Experimental!
+        bind: (path, to = id, from = id) => bindChecked(this.node, this.data, path, to, from, setChecked)
+    }, parameters), message);
+
+    // Flag whether element has a value attribute
     this.hasValue = isDefined(this.node.getAttribute('value'));
+    // Remove checked attribute to prevent flash of unrendered checkiness
     this.node.removeAttribute(this.name);
 }
 

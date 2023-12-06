@@ -2,7 +2,7 @@
 import overload          from '../../../fn/modules/overload.js';
 import trigger           from '../../../dom/modules/trigger.js';
 import config            from '../config.js';
-import library           from '../scope-dom.js';
+import bindValue         from '../scope/bind-value.js';
 import AttributeRenderer from './renderer-attribute.js';
 import composeString     from './compose-string.js';
 import composeNumber     from './compose-number.js';
@@ -86,8 +86,11 @@ const compose = overload((value, type) => type, {
     'default':    composeString
 });
 
-export default function ValueRenderer(source, node, path, parameters, message) {
-    AttributeRenderer.apply(this, arguments);
+export default function ValueRenderer(source, attribute, path, parameters, message) {
+    AttributeRenderer.call(this, source, attribute, path, assign({
+        // TODO: Experimental!
+        bind: (path, to = id, from = id) => bindValue(this.node, this.data, path, to, from, setValue)
+    }, parameters), message);
 }
 
 assign(ValueRenderer.prototype, AttributeRenderer.prototype, {
