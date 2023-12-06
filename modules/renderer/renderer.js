@@ -287,8 +287,19 @@ assign(Renderer.prototype, {
     },
 
     compose: function(strings) {
-        let n = 0;
+        // Flag the literal as containing exactly 1 expression optionally
+        // surrounded by whitespace, which allows for some optimisations
+        // further down the line, particularly for attribute renderers. We
+        // need only do this on first render.
+        if (this.singleExpression === undefined) {
+            this.singleExpression = strings.length === 2
+                && !/\S/.test(strings[0])
+                && !/\S/.test(strings[1]) ;
+        }
 
+        // Loop over strings[1] to end, evaluate argument that precedes
+        // each string, collapsing them to primitives
+        let n = 0;
         while (strings[++n] !== undefined) {
             renderValue(this, arguments, arguments, n, arguments[n]);
         }

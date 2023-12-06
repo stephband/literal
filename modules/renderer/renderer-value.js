@@ -64,11 +64,11 @@ function setValue(node, value) {
     // Avoid updating with the same value. Support node values of any type to
     // support custom elements (like <range-control>), as well as values that
     // are always strings
-    if (value === node.value || (value + '') === node.value) {
+    if (value + '' === node.value) {
         return 0;
     }
 
-    const count = setProperty(node, value);
+    setProperty(node, value);
 
     // Optional event hook
     if (config.updateEvent) {
@@ -76,7 +76,7 @@ function setValue(node, value) {
     }
 
     // Return DOM mod count
-    return count;
+    return 1;
 }
 
 const compose = overload((value, type) => type, {
@@ -95,9 +95,16 @@ export default function ValueRenderer(source, attribute, path, parameters, messa
 }
 
 assign(ValueRenderer.prototype, AttributeRenderer.prototype, {
-    render: function() {
-        const value = compose(arguments, this.node.type);
-        this.mutations = setValue(this.node, value);
+    render: function(strings) {
+        if (this.singleExpression) {
+            // Don't bother evaluating empty space in attributes
+            this.value = arguments[1];
+        }
+        else {
+            this.value = compose(arguments, this.node.type);
+        }
+
+        this.mutations = setValue(this.node, this.value);
         return this;
     }
 });

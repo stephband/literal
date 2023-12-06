@@ -66,7 +66,10 @@ export default function AttributeRenderer(source, attribute, path, parameters, m
 
 assign(AttributeRenderer.prototype, Renderer.prototype, {
     render: function() {
-        this.value     = composeString(arguments);
+        // TODO: This may be dangerous. Test with promises and arrays and the like
+        this.value = this.singleExpression ?
+            arguments[1] :
+            composeString(arguments) ;
         this.mutations = setAttribute(this.node, this.name, this.prop, this.writable, this.value);
         return this;
     }
