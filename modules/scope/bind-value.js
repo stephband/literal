@@ -18,19 +18,19 @@ function fromTypedValue(e) {
 }
 
 export default function bindValue(element, data, path, to, from, setValue) {
+    console.warn('Literal: you are using the function bind(). This is experimental and the API may change.');
+
     const inputs = events('input', element)
         // Parse as type
         .map(fromTypedValue)
         // Transform
         .map(from)
-        .map((o) => (console.log('EVENT', o), o))
         // Set value on data
         .each(set(path, data));
 
     return observe(path, data)
         // Transform
         .map(to)
-        .map((o) => (console.log('OBSERVE', o), o))
         // Set value on input, bypassing usual renderer.compose()
         .each((value) => setValue(element, value))
         // Unbind events when observe stream is stopped

@@ -1,4 +1,5 @@
 
+import id                from '../../../fn/modules/id.js';
 import isDefined         from '../../../fn/modules/is-defined.js';
 import trigger           from '../../../dom/modules/trigger.js';
 import config            from '../config.js';

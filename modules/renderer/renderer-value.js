@@ -1,4 +1,5 @@
 
+import id                from '../../../fn/modules/id.js';
 import overload          from '../../../fn/modules/overload.js';
 import trigger           from '../../../dom/modules/trigger.js';
 import config            from '../config.js';
