@@ -11,3 +11,5 @@ export function fn() {
     this.title = "Constructed named module export";
     this.params = Array.prototype.slice.apply(arguments);
 }
+
+export const arrayOfObjects = [{ text: 'One' }, { text: 'Two' }, { text: 'Three' }];

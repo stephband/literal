@@ -26,7 +26,7 @@ events('input', document.body)
 
 function getElementValue(element) {
     return $value in element ? element[$value] :
-        value in element ? element.value :
+        'value' in element ? element.value :
         element.getAttribute('value') || undefined ;
 }
 
@@ -115,9 +115,25 @@ function setElementValue(element, value) {
 }
 
 export const setValue = overload(get('type'), {
-//    'select-one':      (element, value) => {},
+    'select-one': (element, value) => {
+        // Where value is a primitive set it directly
+        if (typeof value === 'string' || typeof value === 'number') {
+            return setElementValue(element, value);
+        }
+
+        // Otherwise look for a matching option and select that
+        const option = A.find.call(element.options, (option) => value === getElementValue(option));
+        if (option && !option.selected) {
+            option.selected = true;
+            return 1;
+        }
+
+        return 0;
+    },
+
 //    'select-multiple': (element, value) => {},
-    'default':         setElementValue
+
+    'default': setElementValue
 });
 
 

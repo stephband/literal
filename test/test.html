@@ -108,6 +108,21 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
 
     <hr/>
 
+    <section title="forms">
+        <h3 class="text-03">Forms</h3>
+        <template is="literal-html" src="./test.js#arrayOfObjects">
+            <label class="block">Select an object</label>
+            <select value="${ data[0] }">
+                <option value="${ data[0] }">${ data[0].text }</option>
+                <option value="${ data[1] }">${ data[1].text }</option>
+                <option value="${ data[2] }">${ data[2].text }</option>
+            </select>
+            ${ events('input', element).map((e) => getValue(e.target)) }
+        </template>
+    </section>
+
+    <hr/>
+
     <section title="Binding">
         <h3 class="text-03">Live binding <span class="test-count">(4 tests)</span></h3>
 
@@ -170,6 +185,20 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
                 <option value="7">Seven</option>
                 <option value="8">Eight</option>
                 <option value="9">Nine</option>
+            </select>
+
+            <label class="block">Selected when equal to value 0-9</label>
+            <select value="${ parseInt(data.time, 10) }">
+                <option value="${ 0 }">Zero</option>
+                <option value="${ 1 }">One</option>
+                <option value="${ 2 }">Two</option>
+                <option value="${ 3 }">Three</option>
+                <option value="${ 4 }">Four</option>
+                <option value="${ 5 }">Five</option>
+                <option value="${ 6 }">Six</option>
+                <option value="${ 7 }">Seven</option>
+                <option value="${ 8 }">Eight</option>
+                <option value="${ 9 }">Nine</option>
             </select>
         </template>
     </section>
