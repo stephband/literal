@@ -1,4 +1,5 @@
 
+import get               from '../../../fn/modules/get.js';
 import id                from '../../../fn/modules/id.js';
 import overload          from '../../../fn/modules/overload.js';
 import trigger           from '../../../dom/modules/trigger.js';
@@ -7,8 +8,11 @@ import bindValue         from '../scope/bind-value.js';
 import AttributeRenderer from './renderer-attribute.js';
 import composeString     from './compose-string.js';
 import composeNumber     from './compose-number.js';
+import toText            from './to-text.js';
 
+const A      = Array.prototype;
 const assign = Object.assign;
+const $value = Symbol('literal-value');
 
 
 /**
@@ -27,56 +31,93 @@ const types = {
 
 
 /**
-setProperty(node, name, value)/
+getValue(element)
+Returns value of element.
 **/
 
-function setProperty(node, value) {
-    // Bit of an edge case, but where we have a custom element that has not
-    // been upgraded yet, but it gets a property defined on its prototype when
-    // it does upgrade, setting the property on the instance now will mask the
-    // ultimate get/set definition on the prototype when it does arrive.
-    //
-    // So don't, if property is not in node. Set the attribute, it will be
-    // picked up on upgrade. MEH.
-    if (value === null) {
-        throw new Error('VALUE');
-    }
-
-    //console.log('VALUE', value);
-    node.value = value;
-
-    // Return DOM mutation count
-    return 1;
+function getElementValue(element) {
+    return $value in element ? element[$value] :
+        value in element ? element.value :
+        element.getAttribute('value') || undefined ;
 }
 
-function setValue(node, value) {
+export const getValue = overload(get('type'), {
+    // If element is a <select> return value of selected <option>
+    'select-one': (element) => (
+        element.selectedIndex > -1 ?
+            getElementValue(element.options[element.selectedIndex]) :
+            undefined
+    ),
+
+    // If element is a <select multiple> return an array of values
+    'select-multiple': (element) => A.filter
+        .call(element.options, get('selected'))
+        .map(getElementValue),
+
+    // Otherwise return value of element
+    'default': getElementValue
+});
+
+
+/**
+setValue(element, value)
+Sets value on element.
+**/
+
+export function setValue(element, value) {
     // Don't render into focused nodes, it makes the cursor jump to the
     // end of the field, and we should cede control to the user anyway
-    if (document.activeElement === node) {
+    if (document.activeElement === element) {
         return 0;
     }
 
-    const type = types[node.type];
-    value = type === undefined ? value :
-        typeof value === type ? value :
-        null ;
-
-    // Avoid updating with the same value. Support node values of any type to
-    // support custom elements (like <range-control>), as well as values that
-    // are always strings
-    if (value + '' === node.value) {
+    // If value is already set on $value expando do nothing
+    if ($value in element && element[$value] === value) {
         return 0;
     }
 
-    setProperty(node, value);
+    // Refuse to set value that does not conform to input type
+    const type = typeof value;
+    const expectedType = types[element.type];
+    if (expectedType && type !== expectedType) {
+        return 0;
+    }
+
+    // Set object value as a $value expando
+    element[$value] = value;
+
+    // Convert to string with Literal's text rendering rules
+    const string = toText(value);
+
+    // Avoid updating DOM with the same value.
+    if (string === element.value) {
+        return 0;
+    }
+
+    // Bit of an edge case, but where we have a custom element that has not
+    // been upgraded yet, but will have a value property defined on its
+    // prototype when it does upgrade, setting value on the instance now will
+    // mask the ultimate get/set definition on the prototype.
+    if (value in element) {
+        element.value = string;
+    }
+    // So don't, if property is not in node. Set the attribute, it will be
+    // picked up on upgrade.
+    else {
+        element.setAttribute('value', string);
+    }
 
     // Optional event hook
     if (config.updateEvent) {
-        trigger(config.updateEvent, node);
+        trigger(config.updateEvent, element);
     }
 
     // Return DOM mod count
     return 1;
+}
+
+function removeValue(element) {
+    delete element[$value];
 }
 
 const compose = overload((value, type) => type, {
@@ -106,5 +147,12 @@ assign(ValueRenderer.prototype, AttributeRenderer.prototype, {
 
         this.mutations = setValue(this.node, this.value);
         return this;
+    },
+
+    stop: function() {
+        // Guard against memory leaks by cleaning up $value expando when
+        // the renderer is done.
+        removeValue(this.node);
+        return AttributeRenderer.prototype.stop.apply(this, arguments);
     }
 });

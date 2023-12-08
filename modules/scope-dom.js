@@ -10,6 +10,7 @@ import validate                from '../../dom/modules/validate.js';
 import create                  from '../../dom/modules/create.js';
 import location                from '../../dom/modules/location.js';
 import navigate                from '../../dom/modules/navigate.js';
+import { getValue }            from './renderer/renderer-value.js';
 import scope                   from './scope.js';
 
 // Extend scope with DOM functions.
@@ -80,6 +81,14 @@ export default Object.assign(scope, {
     templates.
     **/
     frame: window.requestAnimationFrame,
+
+    /** getValue(element)
+    Literal provides a mechanism for setting and getting values of any type
+    on elements with a `value` attribute. Where `element.value` always returns
+    a string (on uncustomised DOM elements, at least), getValue(element)
+    returns the set by a Literal template *before* it was coerced to a string.
+    **/
+    getValue,
 
     isValid,
 
