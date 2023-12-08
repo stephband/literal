@@ -4,6 +4,7 @@ import id                from '../../../fn/modules/id.js';
 import overload          from '../../../fn/modules/overload.js';
 import trigger           from '../../../dom/modules/trigger.js';
 import config            from '../config.js';
+import scope             from '../scope-dom.js';
 import bindValue         from '../scope/bind-value.js';
 import AttributeRenderer from './renderer-attribute.js';
 import composeString     from './compose-string.js';
@@ -30,9 +31,19 @@ const types = {
 };
 
 
-/**
-getValue(element)
-Returns value of element.
+/** getValue(element)
+
+Literal provides a mechanism for setting and getting values of any type
+on elements with `value`. Where `element.value` always returns a string
+(on uncustomised DOM elements, at least), getValue(element) returns the
+value set by a Literal template *before* it was coerced to a string. If
+no such value is set it falls back to returning the string.
+
+```
+events('input', document.body)
+.map((e) => getValue(e.target))
+.each(console.log);
+```
 **/
 
 function getElementValue(element) {
@@ -41,7 +52,7 @@ function getElementValue(element) {
         element.getAttribute('value') || undefined ;
 }
 
-export const getValue = overload(get('type'), {
+const getValue = overload(get('type'), {
     // If element is a <select> return value of selected <option>
     'select-one': (element) => (
         element.selectedIndex > -1 ?
@@ -64,7 +75,7 @@ setValue(element, value)
 Sets value on element.
 **/
 
-export function setValue(element, value) {
+function setValue(element, value) {
     // Don't render into focused nodes, it makes the cursor jump to the
     // end of the field, and we should cede control to the user anyway
     if (document.activeElement === element) {
@@ -156,3 +167,5 @@ assign(ValueRenderer.prototype, AttributeRenderer.prototype, {
         return AttributeRenderer.prototype.stop.apply(this, arguments);
     }
 });
+
+assign(scope, { getValue });

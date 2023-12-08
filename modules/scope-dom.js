@@ -8,9 +8,7 @@ import { trigger }             from '../../dom/modules/trigger.js';
 import { px, em, rem, vw, vh } from '../../dom/modules/parse-length.js';
 import validate                from '../../dom/modules/validate.js';
 import create                  from '../../dom/modules/create.js';
-import location                from '../../dom/modules/location.js';
 import navigate                from '../../dom/modules/navigate.js';
-import { getValue }            from './renderer/renderer-value.js';
 import scope                   from './scope.js';
 
 // Extend scope with DOM functions.
@@ -73,7 +71,6 @@ export default Object.assign(scope, {
     automatically when the renderer is stopped, so normally there is no need to
     worry about managing them.
     **/
-
     events,
 
     /** frame(fn)
@@ -82,21 +79,7 @@ export default Object.assign(scope, {
     **/
     frame: window.requestAnimationFrame,
 
-    /** getValue(element)
-    Literal provides a mechanism for setting and getting values of any type
-    on elements with a `value` attribute. Where `element.value` always returns
-    a string (on uncustomised DOM elements, at least), getValue(element)
-    returns the set by a Literal template *before* it was coerced to a string.
-    **/
-    getValue,
-
     isValid,
-
-    /** location
-    An observable wrapper around `window.location` that may be used as a router.
-    TODO: better description!
-    **/
-    location,
 
     /** navigate(url)
     Navigate to a url, alerting the history API where pertinent. Takes optional

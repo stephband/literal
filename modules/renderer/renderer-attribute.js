@@ -1,5 +1,5 @@
 
-import library       from '../scope-dom.js';
+import scope         from '../scope-dom.js';
 import composeString from './compose-string.js';
 import names         from './property-names.js';
 import Renderer      from './renderer.js';
@@ -55,7 +55,7 @@ function setAttribute(node, name, prop, writable, value) {
 
 export default function AttributeRenderer(source, attribute, path, parameters, message) {
     const params = assign({}, parameters, { element: attribute.ownerElement });
-    Renderer.call(this, source, library, params, message);
+    Renderer.call(this, source, scope, params, message);
 
     this.node     = attribute.ownerElement;
     this.name     = attribute.localName;
