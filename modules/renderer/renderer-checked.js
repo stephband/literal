@@ -6,6 +6,8 @@ import config            from '../config.js';
 import bindChecked       from '../scope/bind-checked.js';
 import composeBoolean    from './compose-boolean.js';
 import AttributeRenderer from './renderer-attribute.js';
+import { getValue }      from './value.js';
+
 
 const assign  = Object.assign;
 
@@ -19,26 +21,27 @@ function toString(value) {
     return '' + value;
 }
 
-function setChecked(node, value, hasValue) {
+function setChecked(element, value, hasValueAttribute) {
         // Value may be a boolean in which case we use it directly
     const checked = typeof value === 'boolean' ? value :
         // If the element has a value attribute defined, we compare against it
-        hasValue ?
+        hasValueAttribute ?
             // Is value an array of values? It's important to include this here,
             // at least for checkboxes, of which multiple may be checked. It
             // cuts down on tag parsing in lists of inputs.
-            node.type === 'checkbox' && value && value.map ?
-                value.map(toString).includes(node.value) :
+            element.type === 'checkbox' && value && value.map ?
+                value.map(toString).includes(getValue(element)) :
                 // Or a string or a number?
-                value + '' === node.value :
+                value + '' === element.value :
         // Otherwise treat value as a boolean
         !!value ;
 
-    if (checked === node.checked) {
+    // Avoid updating the DOM unnecessarily
+    if (checked === element.checked) {
         return 0;
     }
 
-    node.checked = checked;
+    element.checked = checked;
 
     // Optional event hook
     if (config.updateEvent) {
@@ -57,14 +60,21 @@ export default function CheckedRenderer(source, attribute, path, parameters, mes
 
     // Flag whether element has a value attribute
     this.hasValue = isDefined(this.node.getAttribute('value'));
-    // Remove checked attribute to prevent flash of unrendered checkiness
+    // Remove checked attribute to prevent Flash Of Unrendered Checkiness
     this.node.removeAttribute(this.name);
 }
 
 assign(CheckedRenderer.prototype, AttributeRenderer.prototype, {
     render: function(strings) {
-        const value = composeBoolean(arguments);
-        this.mutations = setChecked(this.node, value, this.hasValue);
+        if (this.singleExpression) {
+            // Don't bother evaluating empty space in attributes
+            this.value = arguments[1];
+        }
+        else {
+            this.value = composeBoolean(arguments);
+        }
+
+        this.mutations = setChecked(this.node, this.value, this.hasValue);
         return this;
     }
 });

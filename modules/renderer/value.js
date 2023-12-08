@@ -62,7 +62,7 @@ const types = {
     'range':  'number'
 };
 
-export function setValue(element, value) {
+function setElementValue(element, value) {
     // Don't render into focused nodes, it makes the cursor jump to the
     // end of the field, and we should cede control to the user anyway
     if (document.activeElement === element) {
@@ -113,6 +113,12 @@ export function setValue(element, value) {
     // Return DOM mod count
     return 1;
 }
+
+export const setValue = overload(get('type'), {
+//    'select-one':      (element, value) => {},
+//    'select-multiple': (element, value) => {},
+    'default':         setElementValue
+});
 
 
 /**
