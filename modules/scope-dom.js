@@ -9,6 +9,7 @@ import { px, em, rem, vw, vh } from '../../dom/modules/parse-length.js';
 import validate                from '../../dom/modules/validate.js';
 import create                  from '../../dom/modules/create.js';
 import navigate                from '../../dom/modules/navigate.js';
+import { getValue }            from './renderer/value.js';
 import scope                   from './scope.js';
 
 // Extend scope with DOM functions.
@@ -78,6 +79,11 @@ export default Object.assign(scope, {
     templates.
     **/
     frame: window.requestAnimationFrame,
+
+    /** getValue(element)
+    TODO
+    **/
+    getValue,
 
     isValid,
 
