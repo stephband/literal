@@ -239,7 +239,6 @@ export default element('<template is="literal-html">', {
     data: {
         attribute: function(json) {
             try {
-                console.log('ATTRIBUTE', json);
                 this.data = JSON.parse(json);
             }
             catch(e) {
