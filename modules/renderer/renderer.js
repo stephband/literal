@@ -132,7 +132,6 @@ function observeData(observers, records, data, renderer) {
     }
 }
 
-
 function renderValue(renderer, args, values, n, object, isRender = false) {
     if (object && typeof object === 'object') {
         // Avoid having property gets registered as observers
