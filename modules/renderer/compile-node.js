@@ -83,6 +83,28 @@ const compileElement = overload((renderers, node) => node.tagName.toLowerCase(),
     // Ignore templates. They have already been flattened into content anyway.
     'template': id,
 
+    // A textarea does not have children but its textContent becomes its value
+    'textarea': (renderers, element, path, parameters, message) => {
+        const params = assign({}, parameters, { element: element });
+
+        // TODO: this is a workaround for the fact that textarea value must be
+        // read from textContent. Transfer textContent to a value attribute
+        // and literal treats it like any other input.
+        element.setAttribute('value', element.textContent);
+        element.textContent = '';
+
+        compileAttributes(renderers, element, path, params, message);
+
+        // TODO: Normally, we might do it like this, but this is failing
+        // cloning of AttributeRenderer
+        /*compileAttribute(renderers, {
+            ownerElement: element,
+            localName:    'value',
+            value:        element.textContent
+        }, path + pathSeparator + 'value', parameters, message);*/
+        return renderers;
+    },
+
     // Compiling children first means inner DOM to outer DOM, which allows
     // `<select>`, for example, to pick up the correct option value. If we
     // decide to change this order we should still make sure value attribute
