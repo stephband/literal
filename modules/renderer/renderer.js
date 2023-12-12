@@ -12,6 +12,7 @@ const assign = Object.assign;
 const keys   = Object.keys;
 const values = Object.values;
 
+let id = 0;
 let currentrenderer;
 
 
@@ -132,7 +133,6 @@ function observeData(observers, records, data, renderer) {
     }
 }
 
-
 function renderValue(renderer, args, values, n, object, isRender = false) {
     if (object && typeof object === 'object') {
         // Avoid having property gets registered as observers
@@ -207,7 +207,7 @@ export default function Renderer(source, scope, parameters, message = '') {
         // source is assumed to be the compiled function
         source ;
 
-    this.id         = ++Renderer.count;
+    this.id         = ++id;
     this.parameters = parameters;
     this.message    = message;
     this.observers  = {};
@@ -225,6 +225,11 @@ export default function Renderer(source, scope, parameters, message = '') {
     };
 
     this.renderCount = 0;
+
+    // Track the number of active renderers
+    if (window.DEBUG) {
+        ++Renderer.count;
+    }
 /*
     this.consume = fn;
 */
@@ -304,8 +309,19 @@ assign(Renderer.prototype, {
         // observer proxies are shared by all observers. We're not going there.
         this.records.stop();
 
-        let n = 0;
+        // Flag the literal as containing exactly 1 expression optionally
+        // surrounded by whitespace, which allows for some optimisations
+        // further down the line, particularly for attribute renderers. We
+        // need only do this on first render.
+        if (this.singleExpression === undefined) {
+            this.singleExpression = strings.length === 2
+                && !/\S/.test(strings[0])
+                && !/\S/.test(strings[1]) ;
+        }
 
+        // Loop over strings[1] to end, evaluate argument that precedes
+        // each string, collapsing them to primitives
+        let n = 0;
         while (strings[++n] !== undefined) {
             renderValue(this, arguments, arguments, n, arguments[n]);
         }
@@ -334,13 +350,18 @@ assign(Renderer.prototype, {
         stopStreams(this.streams);
         // Stop stream. Sets this.status = 'done'.
         stop(this);
-        --Renderer.count;
+        if (window.DEBUG) {
+            --Renderer.count;
+        }
         return this;
     },
 
     done: Stream.prototype.done
 });
 
-assign(Renderer, {
-    count: 0
-});
+if (window.DEBUG) {
+    assign(Renderer, {
+        // Track number of active renderers
+        count: 0
+    });
+}

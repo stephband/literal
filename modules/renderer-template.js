@@ -57,7 +57,15 @@ literal attributes and text.
 
 function getChild(element, index) {
     return /^[a-zA-Z]/.test(index) ?
-        element.getAttributeNode(index) :
+        // `index` is a an attribute name. It may happen that an attribute of
+        // this name does not exist on element. For <textarea>, for example,
+        // the value is read from textContent but we need an attribute object
+        // for the ValueRenderer.
+        element.getAttributeNode(index) || {
+            ownerElement: element,
+            localName:    index
+        } :
+        // `index` is a child index.
         element.childNodes[index] ;
 }
 
@@ -118,10 +126,7 @@ export default function TemplateRenderer(template, parameters) {
     this.parameters = parameters;
     this.template   = template.content ?
         template :
-        {
-            id:      template.id,
-            content: create('fragment', template.childNodes, template)
-        } ;
+        { id, content: create('fragment', template.childNodes, template) } ;
 
     // The template is already compiled and cached. Clone and return it.
     if (renderer) {

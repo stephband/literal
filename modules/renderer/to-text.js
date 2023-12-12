@@ -154,15 +154,15 @@ const rarguments = /function(?:\s+\w+)?\s*(\([\w,\s]*\))/;
 const toText = overload(toType, {
     'boolean': id,
 
-    // Print function and parameters
     'function': (value) => (
+        // Print function name and parameters
         value.prototype ?
             (value.name || 'function') + (rarguments.exec(value.toString()) || [])[1] :
             (rarrowents.exec(value.toString()) || [])[1] + ' ⇒ {…}'
     ),
 
-    // Convert NaN to empty string and Infinity to ∞ symbol
     'number': (value) => (
+        // Convert NaN to empty string and Infinity to ∞ symbol
         Number.isNaN(value) ? '' :
         Number.isFinite(value) ? value :
         value < 0 ? '-∞' : '∞'
