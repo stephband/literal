@@ -45,7 +45,7 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
 
 <body>
     <section>
-        <!--template id="option">
+        <template id="option">
             <option value="${ DATA.value }">${ DATA.text }</option>
         </template>
 
@@ -57,28 +57,23 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
                 ${ data.things.map(({ id, label }) => include('#option', { value: id, text: label })) }
                 ${ events('input', element).each((e) => data.thing = Number(element.value)) }
             </select>
-        </template-->
+        </template>
     </section>
 
     <section>
         <h3 class="text-03">&lt;textarea&gt;</h3>
-
-        <template id="input[type=text]">
-            <input value="${ data.property }" />
-        </template>
 
         <template id="textarea">
             <textarea>${ data.property }</textarea>
         </template>
 
         <template is="literal-html" src="./test.json">
-            <!--${ include('#input[type=text]', data.object) }-->
             ${ include('#textarea', data.object) }
             ${ setTimeout(() => data.object = { property: this.renderCount }, 2000), '' }
         </template>
     </section>
 
-    <!--section>
+    <section>
         <h3 class="text-03">Data <span class="test-count">(5 tests)</span></h3>
         <h4 class="text-04">Source attribute src="*.json"</h4>
         <template is="literal-html" src="./test.json">${ include("#test", data) }</template>
@@ -239,7 +234,7 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
                 <option value="${ 9 }">Nine</option>
             </select>
         </template>
-    </section-->
+    </section>
 
     <hr/>
 
