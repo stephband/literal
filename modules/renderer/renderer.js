@@ -12,6 +12,7 @@ const assign = Object.assign;
 const keys   = Object.keys;
 const values = Object.values;
 
+let id = 0;
 let currentrenderer;
 
 
@@ -127,7 +128,7 @@ function observeData(observers, records, data, renderer) {
     // Create observers for remaining paths
     for (path in values) {
         // Ignore methods
-        observers[path] = observe(path /*+ (typeof values[path] === 'object' ? '.' : '')*/, data, values[path])
+        observers[path] = observe(path + (typeof values[path] === 'object' ? '.' : ''), data, values[path])
             .each(renderer.cue);
     }
 }
@@ -206,7 +207,7 @@ export default function Renderer(source, scope, parameters, message = '') {
         // source is assumed to be the compiled function
         source ;
 
-    this.id         = ++Renderer.count;
+    this.id         = ++id;
     this.parameters = parameters;
     this.message    = message;
     this.observers  = {};
@@ -224,6 +225,11 @@ export default function Renderer(source, scope, parameters, message = '') {
     };
 
     this.renderCount = 0;
+
+    // Track the number of active renderers
+    if (window.DEBUG) {
+        ++Renderer.count;
+    }
 /*
     this.consume = fn;
 */
@@ -344,13 +350,18 @@ assign(Renderer.prototype, {
         stopStreams(this.streams);
         // Stop stream. Sets this.status = 'done'.
         stop(this);
-        --Renderer.count;
+        if (window.DEBUG) {
+            --Renderer.count;
+        }
         return this;
     },
 
     done: Stream.prototype.done
 });
 
-assign(Renderer, {
-    count: 0
-});
+if (window.DEBUG) {
+    assign(Renderer, {
+        // Track number of active renderers
+        count: 0
+    });
+}

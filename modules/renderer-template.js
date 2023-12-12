@@ -55,20 +55,16 @@ cloning of template instances without retraversing their DOMs looking for
 literal attributes and text.
 */
 
-function createAttribute(name, element) {
-    const attribute = document.createAttribute(name);
-    element.setAttributeNode(attribute);
-    return attribute;
-}
-
 function getChild(element, index) {
     return /^[a-zA-Z]/.test(index) ?
         // `index` is a an attribute name. It may happen that an attribute of
         // this name does not exist on element. For <textarea>, for example,
-        // the value is read from textContent but we need the attribute to make
-        // the ValueRenderer function. TODO: have a think about it, we should
-        // not have to piss about like this.
-        element.getAttributeNode(index) || createAttribute(index, element) :
+        // the value is read from textContent but we need an attribute object
+        // for the ValueRenderer.
+        element.getAttributeNode(index) || {
+            ownerElement: element,
+            localName:    index
+        } :
         // `index` is a child index.
         element.childNodes[index] ;
 }

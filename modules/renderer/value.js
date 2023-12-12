@@ -96,7 +96,7 @@ function setElementValue(element, value) {
     // been upgraded yet, but will have a value property defined on its
     // prototype when it does upgrade, setting value on the instance now will
     // mask the ultimate get/set definition on the prototype.
-    if (value in element) {
+    if ('value' in element) {
         element.value = string;
     }
     // So don't, if property is not in node. Set the attribute, it will be

@@ -37,13 +37,12 @@ export default function ValueRenderer(source, attribute, path, parameters, messa
 
 assign(ValueRenderer.prototype, AttributeRenderer.prototype, {
     render: function(strings) {
-        if (this.singleExpression) {
-            // Don't bother evaluating empty space in attributes
-            this.value = arguments[1];
-        }
-        else {
-            this.value = compose(arguments, this.node.type);
-        }
+        this.value = this.singleExpression ?
+            // Don't evaluate empty space in attributes with a single expression
+            arguments[1] :
+            compose(arguments, this.node.type) ;
+
+        //console.trace('ValueRenderer.render()', this.value);
 
         this.mutations = setValue(this.node, this.value);
         return this;
