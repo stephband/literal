@@ -168,7 +168,6 @@ const library = {
     TODO: warning, this function is probably going to be renamed as `mutations()`,
     `updates()` or `changes()`.
     **/
-
     observe,
 
     /**
