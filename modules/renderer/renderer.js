@@ -127,9 +127,7 @@ function observeData(observers, records, data, renderer) {
 
     // Create observers for remaining paths
     for (path in values) {
-        // Ignore methods
-        observers[path] = observe(path + (typeof values[path] === 'object' ? '.' : ''), data, values[path])
-            .each(renderer.cue);
+        observers[path] = observe(path, data, values[path]).each(renderer.cue);
     }
 }
 
