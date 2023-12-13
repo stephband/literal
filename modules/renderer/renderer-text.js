@@ -202,14 +202,12 @@ assign(TextRenderer.prototype, Renderer.prototype, {
 
     render: function(strings) {
         let n = 0;
-
         this.contents.length = 0;
         this.contents.push(strings[n]);
         while (strings[++n] !== undefined) {
             composeDOM(this.contents, arguments[n]);
             pushContents(this.contents, strings[n]);
         }
-
         this.mutations = updateDOM(this.first, this.last, this.contents);
         return this;
     },

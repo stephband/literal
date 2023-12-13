@@ -60,7 +60,7 @@ import overload             from '../../fn/modules/overload.js';
 import { Observer, notify } from '../../fn/observer/observer.js';
 import observe              from '../../fn/observer/observe.js';
 import Stream               from '../../fn/modules/stream.js';
-import Frames          from '../../fn/modules/stream/frames-stream.js';
+import ClockStream          from '../../fn/modules/stream/clock-stream.js';
 
 import paramify        from './scope/paramify.js';
 
@@ -138,7 +138,7 @@ const library = {
     </template>
     **/
 
-    clock: (duration) => new Frames(duration),
+    clock: (duration) => new ClockStream(duration),
 
     /** keys(object)
     Alias of `Object.keys()`.
