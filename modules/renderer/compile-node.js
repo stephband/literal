@@ -92,6 +92,7 @@ const compileElement = overload((renderers, node) => node.tagName.toLowerCase(),
             localName:    'value',
             value:        element.textContent
         }, path + pathSeparator + 'value', parameters, message);
+        element.textContent = '';
         return renderers;
     },
 
