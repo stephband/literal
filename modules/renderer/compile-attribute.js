@@ -13,7 +13,7 @@ import truncate          from './truncate.js';
 
 
 /**
-compileAttributes(renderers, attribute, path, debug)
+compileAttributes(renderers, element, attribute, path, parameters, message)
 **/
 
 const constructors = {
@@ -70,4 +70,5 @@ export default function compileAttribute(renderers, element, attribute, path, pa
 
     const Constructor = constructors[name] || AttributeRenderer;
     renderers.push(new Constructor(source, element, name, path, parameters, message));
+    return renderers;
 }
