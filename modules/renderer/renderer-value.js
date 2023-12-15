@@ -31,7 +31,7 @@ const compose = overload((value, type) => type, {
 export default function ValueRenderer(source, element, name, path, parameters, message) {
     AttributeRenderer.call(this, source, element, name, path, assign({
         // TODO: Experimental!
-        bind: (path, object, to = id, from = id) => bindValue(this.element, object, path, to, from, setValue)
+        bind: (path, object, to = id, from = id) => bindValue(element, object, path, to, from, setValue)
     }, parameters), message);
 }
 
