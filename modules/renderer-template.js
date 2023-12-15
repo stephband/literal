@@ -1,6 +1,6 @@
 
 /**
-TemplateRenderer(template, parameters)
+TemplateRenderer(template, context, parameters)
 
 Import the `TemplateRenderer` constructor:
 
@@ -56,18 +56,17 @@ literal attributes and text.
 */
 
 function getChild(element, index) {
-    return /^[a-zA-Z]/.test(index) ?
-        // `index` is a an attribute name. Return the element
-        element :
-        // `index` is a child index.
-        element.childNodes[index] ;
+    return element.childNodes[index] ;
 }
 
-function getDescendant(path, root) {
+function getDescendant(path, context, node) {
+    const pathArray = path.split(pathSeparator);
+    --pathArray.length;
+
     // If path is empty return root
     return path ?
-        path.split(pathSeparator).reduce(getChild, root) :
-        root ;
+        pathArray.reduce(getChild, node) :
+        context ;
 }
 
 function isMarkerNode(node) {
@@ -104,24 +103,20 @@ function prepareContent(content) {
 }
 
 function cloneRenderer(renderer) {
-    // `this` is the parent templateRenderer of the new renderer
-    const node  = getDescendant(renderer.path, this.content);
-    const clone = renderer.constructor.name === 'TextRenderer' ?
-        // TEMP
-        new renderer.constructor(renderer.literal, node, renderer.path, this.parameters, renderer.message) :
-        // The new way of cloning
-        renderer.clone(node, this.parameters) ;
-
+    // `this` is the controlling TemplateRenderer of the clone
+    const element = getDescendant(renderer.path, this.context, this.content);
+    const clone   = renderer.clone(element, this.parameters) ;
     // Stop clone when parent template renderer stops
     this.done(clone);
     return clone;
 }
 
-export default function TemplateRenderer(template, parameters) {
+export default function TemplateRenderer(template, context, parameters) {
     const id       = identify(template) ;
     const renderer = cache[id];
 
     this.parameters = parameters;
+    this.context    = context;
     this.template   = template.content ?
         template :
         { id, content: create('fragment', template.childNodes, template) } ;
@@ -158,7 +153,7 @@ export default function TemplateRenderer(template, parameters) {
     this.message  = '#' + id;
 
     if (window.DEBUG) { groupCollapsed('compile', '#' + id, 'yellow'); }
-    this.contents = compileNode([], this.content, '', parameters, this.message);
+    this.contents = compileNode([], context, this.content, '', parameters, this.message);
     if (window.DEBUG) { groupEnd(); }
 
     // Stop child when template renderer stops

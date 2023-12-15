@@ -50,7 +50,7 @@ const constructors = {
     // HTML, such as in <tbody> or <tr>
     'inner-html': function(source, element, name, path, parameters, message) {
         element.removeAttribute(name);
-        return new TextRenderer(decode(source), element, path, parameters, message);
+        return new TextRenderer(decode(source), element, element.childNodes[0], path, parameters, message);
     }
 };
 

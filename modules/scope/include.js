@@ -24,20 +24,20 @@ import getById          from '../dom/get-by-id.js';
 import requestTemplate  from '../request-template.js';
 import requestData      from '../request-data.js';
 
-function push(template, data, parameters) {
-    const renderer = new TemplateRenderer(template, parameters);
+function push(template, data, element, parameters) {
+    const renderer = new TemplateRenderer(template, element, parameters);
     renderer.push(data);
     return renderer;
 }
 
-function pipe(template, data, parameters) {
-    const renderer = new TemplateRenderer(template, parameters);
+function pipe(template, data, element, parameters) {
+    const renderer = new TemplateRenderer(template, element, parameters);
     data.each((data) => renderer.push(data));
     renderer.done(data);
     return renderer;
 }
 
-export default function include(src, data, parameters) {
+export default function include(src, data, element, parameters) {
     // Operate on target to be sure we are not registering gets in
     // parent renderer
     const object = getTarget(data);
@@ -50,14 +50,14 @@ export default function include(src, data, parameters) {
             null;
 
         if (dataRequest) {
-            return dataRequest.then((data) => push(template, data, parameters));
+            return dataRequest.then((data) => push(template, data, element, parameters));
         }
 
         if (object && object.pipe) {
-            return pipe(template, object, parameters);
+            return pipe(template, object, element, parameters);
         }
 
-        return push(template, object || {}, parameters);
+        return push(template, object || {}, element, parameters);
     }
 
     // Template is external to document
@@ -69,13 +69,13 @@ export default function include(src, data, parameters) {
     if (object && object.pipe) {
         return templateRequest
         .then((template) =>
-            pipe(template, data, parameters)
+            pipe(template, data, element, parameters)
         );
     }
 
     return Promise
     .all([templateRequest, dataRequest])
-    .then(([template, data]) => push(template, data, parameters));
+    .then(([template, data]) => push(template, data, element, parameters));
 }
 
 

@@ -155,23 +155,17 @@ function updateDOM(first, last, objects) {
     return count + setNodeValue(last, nLast < 1 ? null : objects[nLast]);
 }
 
-export default function TextRenderer(source, node, path, parameters, message) {
-    if (!node) { throw new Error('Node UNDEFINED  ' + path + '    ' + message) }
+export default function TextRenderer(source, context, node, path, parameters, message) {
+    // Normally `context` is a parentElement, but where we are parsing a
+    // fragment it should be a target element that we are rendering into
 
-        // Where path is empty...
-    const element = !path.includes(pathSeparator) ?
-        // node is a direct child of a template...
-        parameters.element :
-        // but if not element should be set to this text node's parent.
-        node.parentNode ;
-
-    Renderer.call(this, source, library, element, assign({}, parameters, {
+    Renderer.call(this, source, library, context, assign({}, parameters, {
         include: function(url, data) {
             return arguments.length === 1 ?
                 // Partial application if called with url only
-                (data) => include(url, data, parameters) :
+                (data) => include(url, data, context, parameters) :
                 // Include immediately when data is defined
-                include(url, data, parameters);
+                include(url, data, context, parameters);
         },
 
         print: (...args) => print(this, ...args)
@@ -220,12 +214,19 @@ assign(TextRenderer.prototype, Renderer.prototype, {
     },
 
     clone: function(element, parameters) {
+        const index = /\d+$/.exec(this.path)[0];
+        const first = element.childNodes[index];
+
+        // TODO: this will not be necessary when we end up cloning already
+        // preprepared fragments
+        const last  = document.createTextNode('');
+        first.after(last);
+        // ---------------------
+
         return assign(Renderer.prototype.clone.apply(this, arguments), {
             contents: [],
-            //path:     path,
-            //first:    node,
-            //last:     document.createTextNode('')
-            //first.after(this.last)
+            first:    first,
+            last:     last
         });
     }
 });

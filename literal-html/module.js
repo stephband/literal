@@ -133,12 +133,11 @@ export default element('<template is="literal-html">', {
         internals.initialised = false;
         internals.pushed      = false;
         internals.datas       = new LatestStream();
-        internals.renderer    = new TemplateRenderer(this, {
+        internals.renderer    = new TemplateRenderer(this, this.parentElement, {
             root:    document.documentElement,
             body:    document.body,
             host:    this,
-            shadow:  undefined,
-            element: this.parentElement
+            shadow:  undefined
         });
     },
 

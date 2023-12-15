@@ -72,7 +72,7 @@ export default {
         })
         .each((state) => {
             const { template, data } = state;
-            const renderer = privates.renderer = new TemplateRenderer(template, {
+            const renderer = privates.renderer = new TemplateRenderer(template, template.parentElement, {
                 body: document.body,
                 element: marker.parentElement,
                 root: document.documentElement

@@ -79,9 +79,8 @@ export default function defineElement(tag, src, lifecycle = {}, props, scope = {
     return element(tag, {
         construct: function(shadow) {
             const internals = getInternals(this);
-            const renderer  = internals.renderer = new TemplateRenderer(template, assign({}, scope, {
+            const renderer  = internals.renderer = new TemplateRenderer(template, this, assign({}, scope, {
                 body:     document.body,
-                element:  this,
                 host:     this,
                 root:     document.documentElement,
                 shadow:   shadow

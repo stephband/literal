@@ -14,11 +14,11 @@ const assign = Object.assign;
 
 
 /*
-compileChildren(renderers, node, path, parameters, message)
+compileChildren(renderers, context, element, path, parameters, message)
 */
 
-function compileChildren(renderers, node, path, parameters, message = '') {
-    const children = node.childNodes;
+function compileChildren(renderers, context, element, path, parameters, message = '') {
+    const children = element.childNodes;
 
     if (children) {
         let n = -1;
@@ -43,7 +43,7 @@ function compileChildren(renderers, node, path, parameters, message = '') {
                 template.remove();
             }
 
-            compileNode(renderers, children[n], path ? path + pathSeparator + n : '' + n, parameters, message);
+            compileNode(renderers, context, children[n], path ? path + pathSeparator + n : '' + n, parameters, message);
         }
     }
 
@@ -72,23 +72,20 @@ function compileAttributes(renderers, element, path, parameters, message = '') {
 compileElement(renderers, node, path, parameters, message)
 */
 
-const compileElement = overload((renderers, node) => node.tagName.toLowerCase(), {
-    // Ignore SVG <defs>, which we consider as inert as an HTML <template>
-    'defs': id,
-
-    // Do not parse the inner DOM of scripts
-    'script': (renderers, node, path, parameters, message) =>
-        compileAttributes(renderers, node, path, parameters, message),
-
-    // Ignore templates. They have already been flattened into content anyway.
+const compileElement = overload((renderers, element) => element.tagName.toLowerCase(), {
+    // Ignore <defs> and <template>, which we consider as inert. Templates
+    // should have already been flattened into content anyway, in
+    // compileChildren()
+    'defs':     id,
     'template': id,
 
-    // A textarea does not have children but its textContent becomes its value
+    // Do not parse the inner DOM of scripts
+    'script':   compileAttributes,
+
     'textarea': (renderers, element, path, parameters, message) => {
-        const params = assign({}, parameters, { element: element });
-        compileAttributes(renderers, element, path, params, message);
+        // A textarea does not have children but its textContent becomes its value
+        compileAttributes(renderers, element, path, parameters, message);
         compileAttribute(renderers, element, {
-            //ownerElement: element,
             localName:    'value',
             value:        element.textContent
         }, path + pathSeparator + 'value', parameters, message);
@@ -96,14 +93,16 @@ const compileElement = overload((renderers, node) => node.tagName.toLowerCase(),
         return renderers;
     },
 
-    // Compiling children first means inner DOM to outer DOM, which allows
-    // `<select>`, for example, to pick up the correct option value. If we
-    // decide to change this order we should still make sure value attribute
-    // is rendered after children for this reason.
-    'default': (renderers, node, path, parameters, message) => {
-        const params = assign({}, parameters, { element: node });
-        compileChildren(renderers, node, path, params, message);
-        compileAttributes(renderers, node, path, params, message);
+    'default': (renderers, element, path, parameters, message) => {
+        // Compiling children first means inner DOM to outer DOM, which allows
+        // `<select>`, for example, to pick up the correct option value. If we
+        // decide to change this order we should still make sure value attribute
+        // is rendered after children for this reason.
+        //
+        // Context is the element itself in this case as we know element is
+        // not a fragment.
+        compileChildren(renderers, element, element, path, parameters, message);
+        compileAttributes(renderers, element, path, parameters, message);
         return renderers;
     }
 });
@@ -113,12 +112,35 @@ const compileElement = overload((renderers, node) => node.tagName.toLowerCase(),
 compileNode(renderers, node, path, parameters, message)
 **/
 
-const compileNode = overload((renderers, node) => toType(node), {
+const toNodeType = window.DEBUG ?
+    (renderers, context, node) => {
+        if (toType(context) === 'fragment') {
+            throw new Error('context should never be a fragment');
+        }
+
+        if (!context) {
+            throw new Error('context should never be ' + context);
+        }
+
+        return toType(node);
+    } :
+    (renderers, context, node) => toType(node) ;
+
+const compileNode = overload(toNodeType, {
     'comment':  id,
+    'doctype':  id,
+    'document': compileChildren,
     'element':  compileElement,
     'fragment': compileChildren,
 
-    'text': (renderers, node, path, parameters, message = '') => {
+    'element': (renderers, context, element, path, parameters, message = '') =>
+        compileElement(renderers, element, path, parameters, message = ''),
+
+    'text': (renderers, parent, node, path, parameters, message = '') => {
+        if (toType(parent) === 'fragment') {
+            throw new Error('parent should never be a document fragment');
+        }
+
         const string = node.nodeValue;
         if (!isLiteralString(string)) {
             return renderers;
@@ -127,23 +149,18 @@ const compileNode = overload((renderers, node) => toType(node), {
         const source = decode(string);
         if (window.DEBUG) {
             message = truncate(64, '<'
-                + parameters.element.tagName.toLowerCase() + '>'
+                + parent.tagName.toLowerCase() + '>'
                 + source.trim()
-                + '</' + parameters.element.tagName.toLowerCase() + '>')
+                + '</' + parent.tagName.toLowerCase() + '>')
                 + ' (' + message + ')' ;
         }
 
-        renderers.push(new TextRenderer(source, node, path, parameters, message));
+        renderers.push(new TextRenderer(source, parent, node, path, parameters, message));
         return renderers;
     },
 
-    'doctype': id,
-
-    'document': (renderers, document, path, parameters, message = '') =>
-        compileElement(renderers, document.documentElement, path, parameters, message),
-
     'default': () => {
-        throw new Error('Node not compileable');
+        throw new Error('Literal: Cannot compile node');
     }
 });
 
