@@ -53,16 +53,13 @@ function setAttribute(node, name, prop, writable, value) {
     return 1;
 }
 
-export default function AttributeRenderer(source, attribute, path, parameters, message) {
-    const params = assign({}, parameters, { element: attribute.ownerElement });
-    Renderer.call(this, source, scope, params, message);
-
-    this.element  = attribute.ownerElement;
-    this.name     = attribute.localName;
+export default function AttributeRenderer(source, element, name, path, parameters, message) {
+    Renderer.call(this, source, scope, element, parameters, message);
+    this.name     = name;
     this.path     = path;
     this.prop     = this.name in names ? names[this.name] : this.name ;
     this.writable = isWritable(this.name, this.element);
-
+/*
     if (window.DEBUG) {
         Object.defineProperty(this, 'node', {
             get: function() {
@@ -73,6 +70,7 @@ export default function AttributeRenderer(source, attribute, path, parameters, m
             enumerable: true
         });
     }
+*/
 }
 
 assign(AttributeRenderer.prototype, Renderer.prototype, {
@@ -85,7 +83,7 @@ assign(AttributeRenderer.prototype, Renderer.prototype, {
         return this;
     },
 
-    clone: function(element) {
+    clone: function(element, parameters) {
         return assign(Renderer.prototype.clone.apply(this, arguments), {
             name:     this.name,
             prop:     this.prop,

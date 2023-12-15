@@ -57,14 +57,8 @@ literal attributes and text.
 
 function getChild(element, index) {
     return /^[a-zA-Z]/.test(index) ?
-        // `index` is a an attribute name. It may happen that an attribute of
-        // this name does not exist on element. For <textarea>, for example,
-        // the value is read from textContent but we need an attribute object
-        // for the ValueRenderer.
-        element.getAttributeNode(index) || {
-            ownerElement: element,
-            localName:    index
-        } :
+        // `index` is a an attribute name. Return the element
+        element :
         // `index` is a child index.
         element.childNodes[index] ;
 }
@@ -112,7 +106,11 @@ function prepareContent(content) {
 function cloneRenderer(renderer) {
     // `this` is the parent templateRenderer of the new renderer
     const node  = getDescendant(renderer.path, this.content);
-    const clone = new renderer.constructor(renderer.literal, node, renderer.path, this.parameters, renderer.message) ;
+    const clone = renderer.constructor.name === 'TextRenderer' ?
+        // TEMP
+        new renderer.constructor(renderer.literal, node, renderer.path, this.parameters, renderer.message) :
+        // The new way of cloning
+        renderer.clone(node, this.parameters) ;
 
     // Stop clone when parent template renderer stops
     this.done(clone);

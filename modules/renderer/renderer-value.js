@@ -28,8 +28,8 @@ const compose = overload((value, type) => type, {
     'default':    composeString
 });
 
-export default function ValueRenderer(source, attribute, path, parameters, message) {
-    AttributeRenderer.call(this, source, attribute, path, assign({
+export default function ValueRenderer(source, element, name, path, parameters, message) {
+    AttributeRenderer.call(this, source, element, name, path, assign({
         // TODO: Experimental!
         bind: (path, to = id, from = id) => bindValue(this.element, this.data, path, to, from, setValue)
     }, parameters), message);

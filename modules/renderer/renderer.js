@@ -201,30 +201,29 @@ Takes a `source` string or optionally a compiled `render` function and creates
 a consumer stream.
 **/
 
-export default function Renderer(source, scope, parameters, message = '') {
+export default function Renderer(source, scope, element, parameters, message = '') {
     this.literal = typeof source === 'string' ?
         // data will be the observer proxy of DATA, which we set in .update()
-        compile(source, scope, 'data, DATA' + (parameters ? ', ' + keys(parameters).join(', ') : ''), message) :
+        compile(source, scope, 'data, DATA, element' + (parameters ? ', ' + keys(parameters).join(', ') : ''), message) :
         // source is assumed to be the compiled function
         source ;
 
     this.id         = ++id;
-    this.parameters = parameters;
+    this.element    = element;
+    //this.parameters = parameters;
     this.message    = message;
     this.observers  = {};
     this.status     = 'idle';
 
-    // Parameters have at least length 2 because (data, DATA)
+    // Parameters have at least length 2 because (data, DATA, element)
     this.params = parameters ?
-        values(parameters).reduce(toParams, { length: 2 }) :
-        { length: 2 } ;
+        values(parameters).reduce(toParams, { length: 3 }) :
+        { length: 3 } ;
 
     this.renderCount = 0;
 
     // Track the number of active renderers
-    if (window.DEBUG) {
-        ++Renderer.count;
-    }
+    if (window.DEBUG) { ++Renderer.count; }
 }
 
 assign(Renderer.prototype, {
@@ -254,6 +253,7 @@ assign(Renderer.prototype, {
         const parameters = this.params;
         parameters[0] = this.data;
         parameters[1] = Data.getObject(this.data);
+        parameters[2] = this.element;
         return parameters;
     },
 
@@ -263,7 +263,6 @@ assign(Renderer.prototype, {
 
         stopPromises(this.promises);
         stopStreams(this.streams);
-
         this.status = 'rendering';
 
         // Filter out gets from sub-renderers by keeping track of current renderer
@@ -348,20 +347,18 @@ assign(Renderer.prototype, {
         stopStreams(this.streams);
         // Stop stream. Sets this.status = 'done'.
         stop(this);
-        if (window.DEBUG) {
-            --Renderer.count;
-        }
+
+        if (window.DEBUG) { --Renderer.count; }
+
         return this;
     },
 
     done: Stream.prototype.done,
 
     clone: function(element, parameters) {
-        if (window.DEBUG) {
-            ++Renderer.count;
-        }
+        if (window.DEBUG) { ++Renderer.count; }
 
-        return assign(create(this.prototype), {
+        return assign(create(this.constructor.prototype), {
             id:          ++id,
             element:     element,
             parameters:  parameters,

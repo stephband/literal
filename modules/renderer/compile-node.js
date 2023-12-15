@@ -55,13 +55,13 @@ function compileChildren(renderers, node, path, parameters, message = '') {
 compileAttributes(renderers, node, path, parameters, message)
 */
 
-function compileAttributes(renderers, node, path, parameters, message = '') {
+function compileAttributes(renderers, element, path, parameters, message = '') {
     // Attributes may be removed during parsing so copy the list before looping
-    const attributes = Array.from(node.attributes);
+    const attributes = Array.from(element.attributes);
     let n = -1, attribute;
 
     while (attribute = attributes[++n]) {
-        compileAttribute(renderers, attribute, path + pathSeparator + attribute.localName, parameters, message);
+        compileAttribute(renderers, element, attribute, path + pathSeparator + attribute.localName, parameters, message);
     }
 
     return renderers;
@@ -87,8 +87,8 @@ const compileElement = overload((renderers, node) => node.tagName.toLowerCase(),
     'textarea': (renderers, element, path, parameters, message) => {
         const params = assign({}, parameters, { element: element });
         compileAttributes(renderers, element, path, params, message);
-        compileAttribute(renderers, {
-            ownerElement: element,
+        compileAttribute(renderers, element, {
+            //ownerElement: element,
             localName:    'value',
             value:        element.textContent
         }, path + pathSeparator + 'value', parameters, message);

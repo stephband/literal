@@ -31,9 +31,9 @@ export function setBooleanProperty(node, name, prop, writable, value) {
     return 1;
 }
 
-export default function BooleanRenderer(source, attribute, path, parameters, message) {
+export default function BooleanRenderer(source, element, name, path, parameters, message) {
     AttributeRenderer.apply(this, arguments);
-    this.element.removeAttribute(this.name);
+    this.element.removeAttribute(name);
 }
 
 assign(BooleanRenderer.prototype, AttributeRenderer.prototype, {

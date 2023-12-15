@@ -1,5 +1,5 @@
 
-import get               from '../../../fn/modules/get.js';
+import arg               from '../../../fn/modules/arg.js';
 import overload          from '../../../fn/modules/overload.js';
 import decode            from '../../../dom/modules/decode.js';
 import isLiteralString   from '../is-literal-string.js';
@@ -16,75 +16,58 @@ import truncate          from './truncate.js';
 compileAttributes(renderers, attribute, path, debug)
 **/
 
-const compileBoolean = (attribute, path, source, parameters, message) =>
-    new BooleanRenderer(source, attribute, path, parameters, message);
+const constructors = {
+    async:          BooleanRenderer,
+    autofocus:      BooleanRenderer,
+    autoplay:       BooleanRenderer,
+    controls:       BooleanRenderer,
+    defer:          BooleanRenderer,
+    disabled:       BooleanRenderer,
+    formnovalidate: BooleanRenderer,
+    hidden:         BooleanRenderer,
+    ismap:          BooleanRenderer,
+    itemscope:      BooleanRenderer,
+    loop:           BooleanRenderer,
+    multiple:       BooleanRenderer,
+    muted:          BooleanRenderer,
+    nomodule:       BooleanRenderer,
+    novalidate:     BooleanRenderer,
+    open:           BooleanRenderer,
+    readonly:       BooleanRenderer,
+    required:       BooleanRenderer,
+    reversed:       BooleanRenderer,
+    selected:       BooleanRenderer,
+    default:        BooleanRenderer,
+    checked:        CheckedRenderer,
+    class:          TokensRenderer,
+    value:          ValueRenderer,
 
-const compileAttributeByName = overload(get('localName'), {
-    async:          compileBoolean,
-    autofocus:      compileBoolean,
-    autoplay:       compileBoolean,
-    controls:       compileBoolean,
-    defer:          compileBoolean,
-    disabled:       compileBoolean,
-    formnovalidate: compileBoolean,
-    hidden:         compileBoolean,
-    ismap:          compileBoolean,
-    itemscope:      compileBoolean,
-    loop:           compileBoolean,
-    multiple:       compileBoolean,
-    muted:          compileBoolean,
-    nomodule:       compileBoolean,
-    novalidate:     compileBoolean,
-    open:           compileBoolean,
-    readonly:       compileBoolean,
-    required:       compileBoolean,
-    reversed:       compileBoolean,
-    selected:       compileBoolean,
-    // TODO: Default is a boolean attribute, but we cant use the key 'default'
-    // here because of overload() signature. Uh-oh.
-    //default:        compileBoolean,
-
-    checked: (attribute, path, source, parameters, message) =>
-        new CheckedRenderer(source, attribute, path, parameters, message),
-
-    class: (attribute, path, source, parameters, message) =>
-        new TokensRenderer(source, attribute, path, parameters, message),
-
-    datetime: function compileDatetime(attribute, path, source, parameters, debug) {
-        if (window.DEBUG) { console.log('Todo: compile datetime attribute'); }
+    datetime: function(source, element, name, path, parameters, message) {
+        if (window.DEBUG) { console.log('Literal TODO: compile datetime attribute'); }
     },
 
     // Workaround attribute used in cases where ${} cannot be added directly to
     // HTML, such as in <tbody> or <tr>
-    'inner-html': (attribute, path, source, parameters, message) => {
-        const node = attribute.ownerElement;
-        node.removeAttribute(attribute.localName);
-        return new TextRenderer(decode(source), node, path, parameters, message);
-    },
+    'inner-html': function(source, element, name, path, parameters, message) {
+        element.removeAttribute(name);
+        return new TextRenderer(decode(source), element, path, parameters, message);
+    }
+};
 
-    // Todo: remove deprecation error...
-    'inner-content': () => {
-        throw new Error('Attribute inner-content renamed as inner-html');
-    },
-
-    value: (attribute, path, source, parameters, message) =>
-        new ValueRenderer(source, attribute, path, parameters, message),
-
-    default: (attribute, path, source, parameters, message) =>
-        new AttributeRenderer(source, attribute, path, parameters, message)
-});
-
-export default function compileAttribute(renderers, attribute, path, parameters, message = '') {
+export default function compileAttribute(renderers, element, attribute, path, parameters, message = '') {
+    const name   = attribute.localName;
     const source = attribute.value;
+
     if (!isLiteralString(source)) { return; }
 
     if (window.DEBUG) {
         message = truncate(64, '<'
-            + attribute.ownerElement.tagName.toLowerCase() + ' '
-            + attribute.localName + '="' + source
+            + element.tagName.toLowerCase() + ' '
+            + name + '="' + source
             + '">')
             + ' (' + message + ')' ;
     }
 
-    renderers.push(compileAttributeByName(attribute, path, source, parameters, message));
+    const Constructor = constructors[name] || AttributeRenderer;
+    renderers.push(new Constructor(source, element, name, path, parameters, message));
 }

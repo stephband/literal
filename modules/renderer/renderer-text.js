@@ -157,14 +157,15 @@ function updateDOM(first, last, objects) {
 
 export default function TextRenderer(source, node, path, parameters, message) {
     if (!node) { throw new Error('Node UNDEFINED  ' + path + '    ' + message) }
-    Renderer.call(this, source, library, assign({}, parameters, {
-        // If path is empty...
-        element: !path.includes(pathSeparator) ?
-            // node is a direct child of a template...
-            parameters.element :
-            // but if not element should be set to this text node's parent.
-            node.parentNode,
 
+        // Where path is empty...
+    const element = !path.includes(pathSeparator) ?
+        // node is a direct child of a template...
+        parameters.element :
+        // but if not element should be set to this text node's parent.
+        node.parentNode ;
+
+    Renderer.call(this, source, library, element, assign({}, parameters, {
         include: function(url, data) {
             return arguments.length === 1 ?
                 // Partial application if called with url only
@@ -216,5 +217,15 @@ assign(TextRenderer.prototype, Renderer.prototype, {
         this.contents.forEach(stop);
         this.contents.length = 0;
         return Renderer.prototype.stop.apply(this);
+    },
+
+    clone: function(element, parameters) {
+        return assign(Renderer.prototype.clone.apply(this, arguments), {
+            contents: [],
+            //path:     path,
+            //first:    node,
+            //last:     document.createTextNode('')
+            //first.after(this.last)
+        });
     }
 });
