@@ -8,7 +8,6 @@ import composeBoolean    from './compose-boolean.js';
 import AttributeRenderer from './renderer-attribute.js';
 import { getValue }      from './value.js';
 
-
 const assign  = Object.assign;
 
 
@@ -55,7 +54,7 @@ function setChecked(element, value, hasValueAttribute) {
 export default function CheckedRenderer(source, attribute, path, parameters, message) {
     AttributeRenderer.call(this, source, attribute, path, assign({
         // TODO: Experimental!
-        bind: (path, to = id, from = id) => bindChecked(this.node, this.data, path, to, from, setChecked)
+        bind: (path, object, to = id, from = id) => bindChecked(this.node, object, path, to, from, setChecked)
     }, parameters), message);
 
     // Flag whether element has a value attribute
