@@ -31,7 +31,7 @@ const compose = overload((value, type) => type, {
 export default function ValueRenderer(source, attribute, path, parameters, message) {
     AttributeRenderer.call(this, source, attribute, path, assign({
         // TODO: Experimental!
-        bind: (path, to = id, from = id) => bindValue(this.node, this.data, path, to, from, setValue)
+        bind: (path, to = id, from = id) => bindValue(this.element, this.data, path, to, from, setValue)
     }, parameters), message);
 }
 
@@ -40,18 +40,18 @@ assign(ValueRenderer.prototype, AttributeRenderer.prototype, {
         this.value = this.singleExpression ?
             // Don't evaluate empty space in attributes with a single expression
             arguments[1] :
-            compose(arguments, this.node.type) ;
+            compose(arguments, this.element.type) ;
 
         //console.trace('ValueRenderer.render()', this.value);
 
-        this.mutations = setValue(this.node, this.value);
+        this.mutations = setValue(this.element, this.value);
         return this;
     },
 
     stop: function() {
         // Guard against memory leaks by cleaning up $value expando when
         // the renderer is done.
-        removeValue(this.node);
+        removeValue(this.element);
         return AttributeRenderer.prototype.stop.apply(this, arguments);
     }
 });

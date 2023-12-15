@@ -64,12 +64,12 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
         <h3 class="text-03">&lt;textarea&gt;</h3>
 
         <template id="textarea">
-            <textarea>${ data.property }</textarea>
+            <textarea name="property">${ data.property }</textarea>
+            ${ events('change', element).each((e) => set(e.target.name, data, e.target.value)) }
         </template>
 
         <template is="literal-html" src="./test.json">
-            ${ include('#textarea', data.object) }
-            ${ setTimeout(() => data.object = { property: this.renderCount }, 2000), '' }
+            ${ window.data = data, include('#textarea', data.object) }
         </template>
     </section>
 

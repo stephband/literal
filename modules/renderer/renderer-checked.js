@@ -55,13 +55,13 @@ function setChecked(element, value, hasValueAttribute) {
 export default function CheckedRenderer(source, attribute, path, parameters, message) {
     AttributeRenderer.call(this, source, attribute, path, assign({
         // TODO: Experimental!
-        bind: (path, to = id, from = id) => bindChecked(this.node, this.data, path, to, from, setChecked)
+        bind: (path, to = id, from = id) => bindChecked(this.element, this.data, path, to, from, setChecked)
     }, parameters), message);
 
     // Flag whether element has a value attribute
-    this.hasValue = isDefined(this.node.getAttribute('value'));
+    this.hasValue = isDefined(this.element.getAttribute('value'));
     // Remove checked attribute to prevent Flash Of Unrendered Checkiness
-    this.node.removeAttribute(this.name);
+    this.element.removeAttribute(this.name);
 }
 
 assign(CheckedRenderer.prototype, AttributeRenderer.prototype, {
@@ -74,7 +74,13 @@ assign(CheckedRenderer.prototype, AttributeRenderer.prototype, {
             this.value = composeBoolean(arguments);
         }
 
-        this.mutations = setChecked(this.node, this.value, this.hasValue);
+        this.mutations = setChecked(this.element, this.value, this.hasValue);
         return this;
+    },
+
+    clone: function(element) {
+        return assign(AttributeRenderer.prototype.clone.apply(this, arguments), {
+            hasValue: this.hasValue
+        });
     }
 });

@@ -9,6 +9,7 @@ import { cue, uncue }   from './cue.js';
 import toText           from './to-text.js';
 
 const assign = Object.assign;
+const create = Object.create;
 const keys   = Object.keys;
 const values = Object.values;
 
@@ -127,7 +128,9 @@ function observeData(observers, records, data, renderer) {
 
     // Create observers for remaining paths
     for (path in values) {
-        observers[path] = observe(path, data, values[path]).each(renderer.cue);
+        // Ignore methods
+        observers[path] = observe(path + (typeof values[path] === 'object' ? '.' : ''), data, values[path])
+            .each(() => renderer.cue());
     }
 }
 
@@ -216,24 +219,21 @@ export default function Renderer(source, scope, parameters, message = '') {
         values(parameters).reduce(toParams, { length: 2 }) :
         { length: 2 } ;
 
-    // An instance function rather than a method for some reason ... do we detach it somewhere?
-    this.cue = (value) => {
-        stopObservers(this.observers);
-        cue(this);
-    };
-
     this.renderCount = 0;
 
     // Track the number of active renderers
     if (window.DEBUG) {
         ++Renderer.count;
     }
-/*
-    this.consume = fn;
-*/
 }
 
 assign(Renderer.prototype, {
+    cue: function(value) {
+        stopObservers(this.observers);
+        cue(this);
+        return this;
+    },
+
     push: function(data) {
         if (this.status === 'rendering') {
             throw new Error('Renderer is rendering, cannot .push() data');
@@ -275,8 +275,8 @@ assign(Renderer.prototype, {
 
         // literalise the template. Todo: note that we are potentially leaving
         // observers live here, if any data is set during render we may trigger
-        // a further render... not what we want. Do we need to pause observers?
-        // Yes probably. A voire.
+        // a further render... which could cause an infinite loop. Not what we
+        // want. Do we need to pause observers? Yes probably. A voire.
         if (window.DEBUG) {
             try {
                 ++this.renderCount;
@@ -354,7 +354,26 @@ assign(Renderer.prototype, {
         return this;
     },
 
-    done: Stream.prototype.done
+    done: Stream.prototype.done,
+
+    clone: function(element, parameters) {
+        if (window.DEBUG) {
+            ++Renderer.count;
+        }
+
+        return assign(create(this.prototype), {
+            id:          ++id,
+            element:     element,
+            parameters:  parameters,
+            literal:     this.literal,
+            path:        this.path,
+            message:     this.message,
+            observers:   {},
+            status:      'idle',
+            params:      this.params,
+            renderCount: 0
+        });
+    }
 });
 
 if (window.DEBUG) {

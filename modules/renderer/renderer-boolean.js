@@ -33,13 +33,13 @@ export function setBooleanProperty(node, name, prop, writable, value) {
 
 export default function BooleanRenderer(source, attribute, path, parameters, message) {
     AttributeRenderer.apply(this, arguments);
-    this.node.removeAttribute(this.name);
+    this.element.removeAttribute(this.name);
 }
 
 assign(BooleanRenderer.prototype, AttributeRenderer.prototype, {
     render: function(strings) {
         const value = composeBoolean(arguments);
-        this.mutations = setBooleanProperty(this.node, this.name, this.prop, this.writable, value);
+        this.mutations = setBooleanProperty(this.element, this.name, this.prop, this.writable, value);
         return this;
     }
 });

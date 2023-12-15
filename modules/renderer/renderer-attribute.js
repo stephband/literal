@@ -57,11 +57,22 @@ export default function AttributeRenderer(source, attribute, path, parameters, m
     const params = assign({}, parameters, { element: attribute.ownerElement });
     Renderer.call(this, source, scope, params, message);
 
-    this.node     = attribute.ownerElement;
+    this.element  = attribute.ownerElement;
     this.name     = attribute.localName;
     this.path     = path;
     this.prop     = this.name in names ? names[this.name] : this.name ;
-    this.writable = isWritable(this.name, this.node);
+    this.writable = isWritable(this.name, this.element);
+
+    if (window.DEBUG) {
+        Object.defineProperty(this, 'node', {
+            get: function() {
+                console.trace('renderer.node is now renderer.element');
+                return this.element;
+            },
+
+            enumerable: true
+        });
+    }
 }
 
 assign(AttributeRenderer.prototype, Renderer.prototype, {
@@ -70,7 +81,15 @@ assign(AttributeRenderer.prototype, Renderer.prototype, {
         this.value = this.singleExpression ?
             arguments[1] :
             composeString(arguments) ;
-        this.mutations = setAttribute(this.node, this.name, this.prop, this.writable, this.value);
+        this.mutations = setAttribute(this.element, this.name, this.prop, this.writable, this.value);
         return this;
+    },
+
+    clone: function(element) {
+        return assign(Renderer.prototype.clone.apply(this, arguments), {
+            name:     this.name,
+            prop:     this.prop,
+            writable: this.writable
+        });
     }
 });
