@@ -86,6 +86,9 @@ h1 + pre,      .text-01 + pre,
 h1 + ul,       .text-01 + ul,
 h1 + .text-08, .text-01 + .text-08 { margin-top: 2.1em; }
 
+h2 + h3,       .text-02 + h3,
+h2 + .text-03, .text-02 + .text-03 { margin-top: 1.05em; }
+
 h5 + p,        .text-05 + p,
 h5 + pre,      .text-05 + pre,
 h5 + ul,       .text-05 + ul,

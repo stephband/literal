@@ -11,6 +11,8 @@ with **JS literal expressions** and renders them with a
 - [Repository on github.com](https://github.com/stephband/literal/)
 
 
+## Overview
+
 ### `<template is="literal-html">`
 
 A `literal-html` template is replaced in the DOM with its own rendered content.
