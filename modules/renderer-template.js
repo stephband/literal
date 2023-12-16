@@ -59,11 +59,10 @@ function getChild(element, index) {
     return element.childNodes[index] ;
 }
 
-function getElement(path, context, node) {
-    // If path is empty return root
-    return path ?
-        path.split(pathSeparator).reduce(getChild, node) :
-        context ;
+function getElement(path, node) {
+    return path
+        .split(pathSeparator)
+        .reduce(getChild, node) ;
 }
 
 function isMarkerNode(node) {
@@ -100,23 +99,27 @@ function prepareContent(content) {
 }
 
 function compileContent(content, message) {
-    // COMPILE RENDERERS
     if (window.DEBUG) { groupCollapsed('compile', message, 'yellow'); }
     prepareContent(content);
-    const path = '';
-    const renderers = compileNode([], content, path, message);
+    const renderers = compileNode([], content, '', message);
     if (window.DEBUG) { groupEnd(); }
     return renderers;
 }
 
-function createRenderer(renderer) {
-    // `this` is the TemplateRenderer for the clone
-    const element = getElement(renderer.path, this.context, this.content);
-    const clone   = renderer.create(element, this.parameters) ;
+function createRenderer(Renderer) {
+    // `this` is the TemplateRenderer
+    const renderer = Renderer.path ?
+        // Where `.path` exists find the element at the end of the path
+        Renderer.create(getElement(Renderer.path, this.content), this.parameters) :
+        // Where `.path` is an empty string we are dealing with the `.content`
+        // fragment, which must be rendered into the `.context` element. Only a
+        // TextRenderer can have an empty path.
+        Renderer.create(this.context, this.parameters, this.content) ;
+
     // Stop clone when parent template renderer stops
-    this.done(clone);
-    console.log('CREATE', clone);
-    return clone;
+    this.done(renderer);
+    //console.log('CREATE', renderer);
+    return renderer;
 }
 
 export default function TemplateRenderer(template, context, parameters) {

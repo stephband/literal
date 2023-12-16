@@ -179,10 +179,12 @@ assign(TextRenderer.prototype, Renderer.prototype, {
         let n = 0;
         this.contents.length = 0;
         this.contents.push(strings[n]);
+
         while (strings[++n] !== undefined) {
             composeDOM(this.contents, arguments[n]);
             pushContents(this.contents, strings[n]);
         }
+
         this.mutations = updateDOM(this.first, this.last, this.contents);
         return this;
     },
@@ -193,11 +195,9 @@ assign(TextRenderer.prototype, Renderer.prototype, {
         return Renderer.prototype.stop.apply(this);
     },
 
-    create: function(element, parameters) {
-        if (!element.parentElement) {
-            throw new Error('Weee eeesss not in da DOM muthafucka')
-        }
-
+    create: function(element, parameters, fragment = element) {
+        // Fragment may be the source fragment containing the first and last
+        // text nodes, which are then rendered into element.
         return assign(Renderer.prototype.create.call(this, element, assign({}, parameters, {
             // Parameters
             include: function(url, data) {
@@ -211,8 +211,8 @@ assign(TextRenderer.prototype, Renderer.prototype, {
         })), {
             // Renderer properties
             contents: [],
-            first:    element.childNodes[this.name],
-            last:     element.childNodes[this.name + 1]
+            first:    fragment.childNodes[this.name],
+            last:     fragment.childNodes[this.name + 1]
         });
     }
 });
