@@ -27,6 +27,7 @@
 @import './classes/github.css';
 
 @import './elements/a.css';
+@import './elements/ul.css';
 @import './elements/body.css';
 @import './elements/code.css';
 @import './elements/details-toggle.css';
