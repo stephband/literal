@@ -80,9 +80,7 @@ export default function defineElement(tag, src, lifecycle = {}, props, scope = {
         construct: function(shadow) {
             const internals = getInternals(this);
             const renderer  = internals.renderer = new TemplateRenderer(template, this, assign({}, scope, {
-                body:     document.body,
                 host:     this,
-                root:     document.documentElement,
                 shadow:   shadow
             }));
 

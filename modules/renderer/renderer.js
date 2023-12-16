@@ -202,7 +202,7 @@ a consumer stream.
 **/
 
 export default function Renderer(path, name, source, scope, paramstring, message = '') {
-    this.literal = compile(source, scope, 'data, DATA, root, body, element' + (paramstring ? ', ' + paramstring : ''), message);
+    this.literal = compile(source, scope, 'data, DATA, element' + (paramstring ? ', ' + paramstring : ''), message);
     this.path    = path;
     this.name    = name;
     this.message = message;
@@ -349,10 +349,10 @@ assign(Renderer.prototype, {
             observers:   {},
             status:      'idle',
             params:      parameters ?
-                // Parameters have at least length 5 because
-                // (data, DATA, root, body, element)
-                values(parameters).reduce(toParams, { length: 5 }) :
-                { length: 5 },
+                // Parameters have at least length 3 because
+                // (data, DATA, element)
+                values(parameters).reduce(toParams, { length: 3 }) :
+                { length: 3 },
             renderCount: 0
         });
     }

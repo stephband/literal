@@ -14,6 +14,9 @@ import scope                   from './scope.js';
 
 // Extend scope with DOM functions.
 export default Object.assign(scope, {
+    root: document.documentElement,
+    body: document.body,
+
     create,
     delegate,
 
