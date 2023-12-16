@@ -56,7 +56,7 @@ export default function CheckedRenderer(source, element, name, path, paramstring
     // Flag whether element has a value attribute
     this.hasValue = isDefined(element.getAttribute('value'));
     // Remove checked attribute to prevent Flash Of Unrendered Checkiness
-    this.element.removeAttribute(name);
+    element.removeAttribute(name);
 }
 
 assign(CheckedRenderer.prototype, AttributeRenderer.prototype, {
@@ -82,5 +82,13 @@ assign(CheckedRenderer.prototype, AttributeRenderer.prototype, {
         return assign(AttributeRenderer.prototype.clone.call(this, element, parameters), {
             hasValue: this.hasValue
         });
+    },
+
+    create: function(element, parameters) {
+        return AttributeRenderer.prototype.create.call(this, element, assign({
+            // Parameters
+            bind: (path, object, to=id, from=id) =>
+                bindChecked(element, object, path, to, from, setChecked)
+        }, parameters));
     }
 });

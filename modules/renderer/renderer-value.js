@@ -57,5 +57,13 @@ assign(ValueRenderer.prototype, AttributeRenderer.prototype, {
             // TODO: Experimental!
             bind: (path, object, to = id, from = id) => bindValue(element, object, path, to, from, setValue)
         }, parameters));
+    },
+
+    create: function(element, parameters) {
+        return AttributeRenderer.prototype.create.call(this, element, assign({
+            // Parameters
+            bind: (path, object, to = id, from = id) =>
+                bindValue(element, object, path, to, from, setValue)
+        }, parameters));
     }
 });

@@ -210,11 +210,11 @@ export default function Renderer(source, scope, paramstring, message = '') {
         // source is assumed to be the compiled function
         source ;
 
-    this.id         = ++id;
+    //this.id         = ++id;
     this.message    = message;
-    this.observers  = {};
-    this.status     = 'idle';
-    this.renderCount = 0;
+    //this.observers  = {};
+    //this.status     = 'idle';
+    //this.renderCount = 0;
 
     // Track the number of active renderers
     if (window.DEBUG) { ++Renderer.count; }
@@ -361,6 +361,21 @@ assign(Renderer.prototype, {
             literal:     this.literal,
             path:        this.path,
             message:     this.message,
+            observers:   {},
+            status:      'idle',
+            params:      parameters ?
+                // Parameters have at least length 5 because
+                // (data, DATA, root, body, element)
+                values(parameters).reduce(toParams, { length: 5 }) :
+                { length: 5 },
+            renderCount: 0
+        });
+    },
+
+    create: function(element, parameters) {
+        return assign(create(this), {
+            id:          ++id,
+            element:     element,
             observers:   {},
             status:      'idle',
             params:      parameters ?

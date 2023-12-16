@@ -153,12 +153,13 @@ function updateDOM(first, last, objects) {
 export default function TextRenderer(source, node, path, index, message) {
     if (typeof path !== 'string') { throw new Error('Arse') };
     Renderer.call(this, source, library, 'include, print', message);
-    this.contents = [];
-    this.path     = path;
-    this.name     = index;
-    this.first    = node;
-    this.last     = document.createTextNode('');
-    node.after(this.last);
+    //this.contents = [];
+    this.path  = path;
+    this.name  = index;
+    //this.first = node;
+    //this.last  = document.createTextNode('');
+    //node.after(this.last);
+    node.after(document.createTextNode(''));
 
     console.log('TextRenderer', '"' + this.path + '"', '"' + this.name + '"');
 }
@@ -212,6 +213,25 @@ assign(TextRenderer.prototype, Renderer.prototype, {
         });
 
         return assign(Renderer.prototype.clone.call(this, element, parameters), {
+            contents: [],
+            first:    element.childNodes[this.name],
+            last:     element.childNodes[this.name + 1]
+        });
+    },
+
+    create: function(element, parameters) {
+        return assign(Renderer.prototype.create.call(this, element, assign({}, parameters, {
+            // Parameters
+            include: function(url, data) {
+                return arguments.length === 1 ?
+                    // Partial application if called with url only
+                    (data) => include(url, data, element, parameters) :
+                    // Include immediately when data is defined
+                    include(url, data, element, parameters);
+            },
+            print: (...args) => print(this, ...args)
+        })), {
+            // Renderer properties
             contents: [],
             first:    element.childNodes[this.name],
             last:     element.childNodes[this.name + 1]

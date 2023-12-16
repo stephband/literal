@@ -46,8 +46,8 @@ function updateTokens(list, cached, tokens, count) {
 
 export default function TokensRenderer(source, element, name, path, paramstring, message) {
     AttributeRenderer.apply(this, arguments);
-    this.list        = getTokenList(element, name);
-    this.tokens      = nothing;
+    //this.list   = getTokenList(element, name);
+    //this.tokens = nothing;
 
     // Empty the tokens until it is rendered to avoid code in literals
     // being interpreted as tokens.
@@ -85,6 +85,14 @@ assign(TokensRenderer.prototype, AttributeRenderer.prototype, {
 
     clone: function(element) {
         return assign(AttributeRenderer.prototype.clone.apply(this, arguments), {
+            list:   getTokenList(element, this.name),
+            tokens: nothing
+        });
+    },
+
+    create: function(element, parameters) {
+        return assign(AttributeRenderer.prototype.create.apply(this, arguments), {
+            // Renderer properties
             list:   getTokenList(element, this.name),
             tokens: nothing
         });

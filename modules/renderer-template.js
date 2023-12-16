@@ -112,7 +112,7 @@ function compileContent(content, message) {
 function createRenderer(renderer) {
     // `this` is the TemplateRenderer for the clone
     const element = getElement(renderer.path, this.context, this.content);
-    const clone   = renderer.clone(element, this.parameters) ;
+    const clone   = renderer.create(element, this.parameters) ;
     // Stop clone when parent template renderer stops
     this.done(clone);
     console.log('CLONE', clone);

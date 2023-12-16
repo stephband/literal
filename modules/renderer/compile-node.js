@@ -19,7 +19,8 @@ compileChildren(renderers, element, path, message)
 */
 
 function compileChildren(renderers, element, path, message = '') {
-    // Children may mutate during compile, we don't want to compile added nodes
+    // Children may mutate during compile, and we only want to compile
+    // current children
     const children = Array.from(element.childNodes);
 
     if (children) {
@@ -32,11 +33,7 @@ function compileChildren(renderers, element, path, message = '') {
             // `<template>`, which is allowed in any context, and this sees through
             // them.
             //
-            // TODO I don't understand why this works. The template is only
-            // removed from this instance, subsequent instances have it so their
-            // paths must be wrong, yet it appears to behave. Test.
-            //
-            // We may want this functionality to be opt-in with some kind of
+            // TODO We may want this functionality to be opt-in with some kind of
             // attribute on the template or something. This problem first
             // encountered on blondel.ch.
             if (children[n].content) {
@@ -76,8 +73,7 @@ compileElement(renderers, node, path, message)
 
 const compileElement = overload((renderers, element) => element.tagName.toLowerCase(), {
     // Ignore <defs> and <template>, which we consider as inert. Templates
-    // should have already been flattened into content anyway, in
-    // compileChildren()
+    // should have already been flattened into content anyway in compileChildren()
     'defs':     id,
     'template': id,
 
@@ -100,9 +96,6 @@ const compileElement = overload((renderers, element) => element.tagName.toLowerC
         // `<select>`, for example, to pick up the correct option value. If we
         // decide to change this order we should still make sure value attribute
         // is rendered after children for this reason.
-        //
-        // Context is the element itself in this case as we know element is
-        // not a fragment.
         compileChildren(renderers, element, path, message);
         compileAttributes(renderers, element, path, message);
         return renderers;
