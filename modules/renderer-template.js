@@ -1,6 +1,6 @@
 
 /**
-TemplateRenderer(template, context, parameters)
+TemplateRenderer(template, element, parameters)
 
 Import the `TemplateRenderer` constructor:
 
@@ -112,23 +112,17 @@ function createRenderer(Renderer) {
         // Where `.path` exists find the element at the end of the path
         Renderer.create(getElement(Renderer.path, this.content), this.parameters) :
         // Where `.path` is an empty string we are dealing with the `.content`
-        // fragment, which must be rendered into the `.context` element. Only a
+        // fragment, which must be rendered into the `.element` element. Only a
         // TextRenderer can have an empty path.
-        Renderer.create(this.context, this.parameters, this.content) ;
+        Renderer.create(this.element, this.parameters, this.content) ;
 
     // Stop clone when parent template renderer stops
     this.done(renderer);
-    //console.log('CREATE', renderer);
     return renderer;
 }
 
-export default function TemplateRenderer(template, context, parameters) {
-    const id       = identify(template) ;
-    const renderer = cache[id];
-
-    // TEMP: currently needed for compile, but should factor out
-    this.parameters = parameters;
-    this.context    = context;
+export default function TemplateRenderer(template, element = template.parentElement, parameters = {}) {
+    const id = identify(template) ;
 
     const content = template.content
         || create('fragment', template.childNodes, template) ;
@@ -136,10 +130,12 @@ export default function TemplateRenderer(template, context, parameters) {
     const renderers = cache[id]
         || (cache[id] = compileContent(content, '#' + id)) ;
 
-    this.content  = content.cloneNode(true);
-    this.first    = this.content.childNodes[0];
-    this.last     = this.content.childNodes[this.content.childNodes.length - 1];
-    this.contents = renderers.map(createRenderer, this);
+    this.element    = element;
+    this.parameters = parameters;
+    this.content    = content.cloneNode(true);
+    this.first      = this.content.childNodes[0];
+    this.last       = this.content.childNodes[this.content.childNodes.length - 1];
+    this.contents   = renderers.map(createRenderer, this);
 }
 
 assign(TemplateRenderer.prototype, {
@@ -243,8 +239,7 @@ assign(TemplateRenderer.prototype, {
     **/
     stop: function() {
         uncue(this);
-        stop(this);
-        return this;
+        return stop(this);
     },
 
     done: Stream.prototype.done
