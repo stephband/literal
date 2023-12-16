@@ -11,7 +11,7 @@ with **JS literal expressions** and renders them with a
 - [Repository on github.com](https://github.com/stephband/literal/)
 
 
-## Overview
+## Literal templates
 
 ### `<template is="literal-html">`
 
