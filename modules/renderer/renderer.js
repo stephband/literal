@@ -221,11 +221,11 @@ assign(Renderer.prototype, {
     },
 
     push: function(data) {
-        if (this.status === 'rendering') {
+        if (window.DEBUG && this.status === 'rendering') {
             throw new Error('Renderer is rendering, cannot .push() data');
         }
 
-        if (this.status === 'done') {
+        if (window.DEBUG && this.status === 'done') {
             throw new Error('Renderer is done, cannot .push() data');
         }
 

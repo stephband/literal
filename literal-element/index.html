@@ -36,7 +36,7 @@
 
 <body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
     <header class="x1 4x @2-x2 x-stretch">
-        <h1 class="text-01">Literal <span class="text-06">0.6.5</span></h1>
+        <h1 class="text-01">Literal <span class="text-06">0.8.0</span></h1>
     </header>
 
     
@@ -106,7 +106,8 @@ rules for custom element names (ie. it must contain a dash).</p>
     <p>Defines attributes of the new custom element as a list of names:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">attributes</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>previous next<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>play-list<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
 </code></pre>
-<p>Attributes may be given a type. A typed attribute defines both an attribute
+<p>Attribute contents are available on the <code>data</code> object in the template.
+Attributes may be given a type. A typed attribute defines both an attribute
 and a property of the new custom element. The type defines the behaviour of
 the attribute and type of value of the property:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">attributes</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>loop:boolean controls:tokens<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>play-list<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
@@ -117,7 +118,7 @@ the attribute and type of value of the property:</p>
 <li><code>:number</code>  – a string attribute, number property</li>
 <li><code>:string</code>  – a string attribute, string property</li>
 <li><code>:tokens</code>  – a string attribute, TokenList property</li>
-<li><code>:src</code>     – a string attribute, object property</li>
+<li><code>:src</code>     – a url attribute, object property</li>
 </ul>
 <p>Attribute values are available inside the template scope as properties of
 <code>data</code>:</p>
@@ -131,7 +132,7 @@ the attribute and type of value of the property:</p>
 
 
 
-<details-toggle class="attribute-details-toggle" id="attribute-src-1">
+<details-toggle class="attribute-details-toggle" id="attribute-src">
     <h4 class="attribute-text text-05" slot="summary">
         <code class="token language-html">src</code>
     </h4>
@@ -347,7 +348,7 @@ scope.</p>
 </nav>
 
     
-<hr class="x1 4x @2-x2 x-stretch" />
+<hr class="x1 4x @2-x2 x-stretch" style="margin-top: 4.2em;" />
 
 <div class="x1 4x @2-x2 x-stretch y-start">
     <p class="text-10">

@@ -45,19 +45,19 @@
 
 <body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
     <header class="x1 4x @2-x2 x-stretch">
-        <h1 class="text-01">Literal <span class="text-06">0.6.5</span></h1>
+        <h1 class="text-01">Literal <span class="text-06">0.8.0</span></h1>
     </header>
 
     <section class="x1 4x @2-x2 x-stretch" id="template-scope">
         
 
 <h2 class="text-02" id="template-scope">Template scope</h2>
-<p>Literal templates are compiled in a <strong>scope</strong> that contains a number of <strong>objects</strong>
-and <strong>functions</strong> designed for writing concise template <strong>expressions</strong>.</p>
-<p>Expressions are made powerful by Literal’s renderer, which accepts expressions
-that evaluate to a <strong>string</strong> or other <strong>primitive</strong>, a <strong>DOM node</strong> or <strong>fragment</strong>,
-an <strong>array</strong> of values, another <strong>renderer</strong>, or even an asynchronous value in a
-<strong>promise</strong> or a <strong>stream</strong>.</p>
+<p>Literal templates are compiled in a <strong>scope</strong> that contains a number of
+<strong>objects</strong> and <strong>functions</strong> designed for writing concise template
+<strong>expressions</strong>.</p>
+<p>Expressions are made powerful by Literal’s renderer, which renders <strong>strings</strong>
+or other <strong>primitives</strong>, <strong>arrays</strong> of values, <strong>promises</strong> or <strong>streams</strong>,
+<strong>DOM nodes</strong> and <strong>fragments</strong>, and even other <strong>renderers</strong>.</p>
 <p>The <code>data</code> object carries data for rendering.</p>
 <pre><code class="language-js">$<span class="token punctuation">{</span> data <span class="token punctuation">}</span>
 </code></pre>
@@ -85,7 +85,7 @@ $<span class="token punctuation">{</span> data<span class="token punctuation">.<
 
         
 
-<details-toggle class="selector-details-toggle" id="selector-data">
+<details-toggle class="selector-details-toggle" id="selector-data-1">
     <h4 class="selector-text text-05" slot="summary">
         <code class=" language-css"> data</code>
     </h4>
@@ -102,8 +102,12 @@ When it mutates, the DOM re-renders.</p>
         <code class=" language-css"> this</code>
     </h4>
 
-    <p>The current renderer. Normally you wouldn’t reference this unless you want to
-print information about the template renderer itself.</p>
+    <p>The current renderer. Normally you wouldn’t reference <code>this</code> in a template
+unless you want to print information about the renderer of the current text
+or attribute.</p>
+<pre><code class="language-html">Renderer render count: ${ this.renderCount }
+Renderer id:           ${ this.id }
+</code></pre>
 
 </details-toggle>
 
@@ -272,9 +276,11 @@ also set on streamed objects:</p>
 <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 <p>By default immutable – the stream emits new objects – it can be made to
-mutate and emit the <code>inputs</code> object by passing an options object with
+emit a mutated <code>inputs</code> object instead, by passing an options object with
 <code>mutable</code> set to <code>true</code> as a second parameter. This can help minimise
-garbage collection when dealing with large streams.</p>
+garbage collection when dealing with large streams, but emitted objects
+are only valid to be consumed synchronously, as the next emitted object is
+actually the same object.</p>
 <pre><code class="language-js">Stream
 <span class="token punctuation">.</span><span class="token function">combine</span><span class="token punctuation">(</span><span class="token punctuation">{</span> a<span class="token operator">:</span> stream<span class="token punctuation">,</span> b<span class="token operator">:</span> promise <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> mutable<span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
 <span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">object</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
@@ -298,14 +304,32 @@ array or other object as output.</p>
         <code class=" language-js">Stream.from(<span class="param">source</span>)</code>
     </h4>
 
-    <p>Creates a stream from <code>source</code>, which may be a pipeable (an object with
-<code>.pipe()</code> and <code>.stop()</code> methods), an array (or array-like), or a promise.</p>
+    <p>Creates a stream from <code>source</code>, which may be an <strong>array</strong> (or array-like),
+a <strong>promise</strong>, a <strong>function</strong>, a <strong>producer</strong> (an object with <code>.pipe()</code> and
+<code>.stop()</code> methods), or an <strong>object</strong> of streams, promises or values.</p>
 
 </details-toggle>
 
 
 
 <details-toggle class="constructor-details-toggle" id="constructor-stream-merge">
+    <h4 class="constructor-text text-05" slot="summary">
+        <code class=" language-js">Stream.merge(<span class="param">stream1</span>, <span class="param">stream2</span>, <span class="param">…</span>)</code>
+    </h4>
+
+    <p>Creates a stream by merging values from any number of input streams into a
+single output stream. Values are emitted in the time order they are received
+from inputs.</p>
+<pre><code class="language-js">Stream<span class="token punctuation">.</span><span class="token function">merge</span><span class="token punctuation">(</span>stream1<span class="token punctuation">,</span> stream2<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">each</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">value</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">{</span>
+    <span class="token comment">// value is from stream1 or stream 2</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+
+</details-toggle>
+
+
+
+<details-toggle class="constructor-details-toggle" id="constructor-stream-merge-1">
     <h4 class="constructor-text text-05" slot="summary">
         <code class=" language-js">Stream.merge(<span class="param">stream1</span>, <span class="param">stream2</span>, <span class="param">…</span>)</code>
     </h4>
@@ -494,6 +518,17 @@ dot-notation. Where a path does not lead to a value, returns <code>undefined</co
 
 
 
+<details-toggle class="function-details-toggle" id="function-getvalue-1">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">getValue(<span class="param">element</span>)</code>
+    </h4>
+
+    <p>TODO</p>
+
+</details-toggle>
+
+
+
 <details-toggle class="function-details-toggle" id="function-id">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">id(<span class="param">value</span>)</code>
@@ -568,6 +603,21 @@ of <code>selector</code> object are strictly equal to the same properties of <co
 Note that <code>object</code> may have more properties than <code>selector</code>.</p>
 <pre><code><span class="token keyword">const</span> vegetarian <span class="token operator">=</span> menu<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token function">matches</span><span class="token punctuation">(</span><span class="token punctuation">{</span> vegetable<span class="token operator">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
+
+</details-toggle>
+
+
+
+<details-toggle class="function-details-toggle" id="function-navigate-1">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">navigate(<span class="param">url</span>)</code>
+    </h4>
+
+    <p>Navigate to a url, alerting the history API where pertinent. Takes optional
+parameters:</p>
+<pre><code><span class="token function">navigate</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> state<span class="token punctuation">,</span> scroll<span class="token punctuation">)</span>
+</code></pre>
+<p>TODO: better description!</p>
 
 </details-toggle>
 
@@ -671,6 +721,17 @@ object with <code>left</code>, <code>top</code>, <code>width</code> and <code>he
 
 
 
+<details-toggle class="function-details-toggle" id="function-remove">
+    <h4 class="function-text text-05" slot="summary">
+        <code class=" language-js">remove(<span class="param">array</span>, <span class="param">value</span>)</code>
+    </h4>
+
+    <p>Remove <code>value</code> from <code>array</code>. Where <code>value</code> is not in <code>array</code>, does nothing.</p>
+
+</details-toggle>
+
+
+
 <details-toggle class="function-details-toggle" id="function-request-1">
     <h4 class="function-text text-05" slot="summary">
         <code class=" language-js">request(<span class="param">method</span>, <span class="param">url</span>)</code>
@@ -745,7 +806,7 @@ otherwise it is sent as a request body.)</p>
     </h4>
 
     <p>Looks up an alternative value stored by <code>key</code> in a <code>window.translations</code>
-object, if it exists. A super simple translation mechanism, but requires
+object, if it exists. A super simple translation mechanism that requires
 <code>window.translations</code> to be an object.</p>
 <pre><code class="language-js">$<span class="token punctuation">{</span> <span class="token function">translate</span><span class="token punctuation">(</span><span class="token string">'Go to homepage'</span><span class="token punctuation">)</span> <span class="token punctuation">}</span>
 </code></pre>
@@ -1185,7 +1246,7 @@ render text whenever the stream emits an array of strings.</p>
 </nav>
 
     
-<hr class="x1 4x @2-x2 x-stretch" />
+<hr class="x1 4x @2-x2 x-stretch" style="margin-top: 4.2em;" />
 
 <div class="x1 4x @2-x2 x-stretch y-start">
     <p class="text-10">

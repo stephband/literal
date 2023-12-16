@@ -1,10 +1,10 @@
 {
     "title": "Get up",
     "tasks": [{
-        "text": "Stop the alarm"
+        "text": "Wake up"
     }, {
-        "text": "Comb your hair"
+        "text": "Get out of bed"
     }, {
-        "text": "Brush your teeth"
+        "text": "Drag a comb across your head"
     }]
 }

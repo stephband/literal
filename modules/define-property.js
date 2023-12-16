@@ -121,7 +121,7 @@ export default overload((name, descriptor) => typeof descriptor, {
         }),
 
         default: (name, type) => {
-            if (type === 'url' || type === 'import') {
+            if (window.DEBUG && (type === 'url' || type === 'import')) {
                 throw new SyntaxError('Literal type deprecated in attribute definition "' + name + ':' + type + '", should be "' + name + ':src", "' + name + ':module" or "' + name + ':json"');
             }
 

@@ -1,13 +1,13 @@
 
 /** Template scope
 
-Literal templates are compiled in a **scope** that contains a number of **objects**
-and **functions** designed for writing concise template **expressions**.
+Literal templates are compiled in a **scope** that contains a number of
+**objects** and **functions** designed for writing concise template
+**expressions**.
 
-Expressions are made powerful by Literal's renderer, which accepts expressions
-that evaluate to a **string** or other **primitive**, a **DOM node** or **fragment**,
-an **array** of values, another **renderer**, or even an asynchronous value in a
-**promise** or a **stream**.
+Expressions are made powerful by Literal's renderer, which renders **strings**
+or other **primitives**, **arrays** of values, **promises** or **streams**,
+**DOM nodes** and **fragments**, and even other **renderers**.
 
 The `data` object carries data for rendering.
 
