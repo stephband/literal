@@ -1,8 +1,14 @@
 
 # Literal <span class="text-06">0.8.0</span>
 
-Literal enhances **HTML `<template>`s** with **JS literal expressions** and
-renders them with a **data binding DOM&nbsp;renderer**.
+Literal is a DOM-first templating library that enhances **HTML `<template>`s**
+with **JS literal expressions** and renders them with a
+**data binding DOM&nbsp;renderer**.
+
+- [`<template is="literal-html">` documentation](https://stephen.band/literal/literal-html/)
+- [`<template is="literal-element">` documentation](https://stephen.band/literal/literal-element/)
+- [Scope and expressions](https://stephen.band/literal/templates/)
+- [Repository on github.com](https://github.com/stephband/literal/)
 
 
 ### `<template is="literal-html">`
