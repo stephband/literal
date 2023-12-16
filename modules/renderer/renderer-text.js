@@ -151,7 +151,7 @@ function updateDOM(first, last, objects) {
 }
 
 export default function TextRenderer(path, index, source, node, message) {
-    Renderer.call(this, path, index, source, library, 'include, print', message);
+    Renderer.call(this, path, index, source, library, message);
     // Insert text node. When renderer is created with cloned DOM, clone of
     // `node` is assigned to `renderer.first` and the clone of this new text
     // node is assigned as `renderer.last`.
@@ -159,6 +159,34 @@ export default function TextRenderer(path, index, source, node, message) {
 }
 
 assign(TextRenderer.prototype, Renderer.prototype, {
+    parameterNames: ['data', 'DATA', 'element', 'host', 'shadow', 'include', 'print'],
+
+    create: function(element, parameters, fragment = element) {
+        // Fragment may be the source fragment containing the first and last
+        // text nodes, which are then rendered into element, or it may default
+        // to element.
+
+        const params = assign({}, parameters, {
+            // Parameters
+            include: function(url, data) {
+                return arguments.length === 1 ?
+                    // Partial application if called with url only
+                    (data) => include(url, data, element, parameters) :
+                    // Include immediately when data is defined
+                    include(url, data, element, parameters);
+            },
+
+            print: (...args) => print(this, ...args)
+        });
+
+        return assign(Renderer.prototype.create.call(this, element, params), {
+            // Renderer properties
+            contents: [],
+            first:    fragment.childNodes[this.name],
+            last:     fragment.childNodes[this.name + 1]
+        });
+    },
+
     push: function() {
         // Preemptively stop all nodes, they are about to be updated
         this.contents.forEach(stop);
@@ -193,26 +221,5 @@ assign(TextRenderer.prototype, Renderer.prototype, {
         this.contents.forEach(stop);
         this.contents.length = 0;
         return Renderer.prototype.stop.apply(this);
-    },
-
-    create: function(element, parameters, fragment = element) {
-        // Fragment may be the source fragment containing the first and last
-        // text nodes, which are then rendered into element.
-        return assign(Renderer.prototype.create.call(this, element, assign({}, parameters, {
-            // Parameters
-            include: function(url, data) {
-                return arguments.length === 1 ?
-                    // Partial application if called with url only
-                    (data) => include(url, data, element, parameters) :
-                    // Include immediately when data is defined
-                    include(url, data, element, parameters);
-            },
-            print: (...args) => print(this, ...args)
-        })), {
-            // Renderer properties
-            contents: [],
-            first:    fragment.childNodes[this.name],
-            last:     fragment.childNodes[this.name + 1]
-        });
     }
 });

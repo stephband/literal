@@ -51,8 +51,8 @@ function setChecked(element, value, hasValueAttribute) {
     return 1;
 }
 
-export default function CheckedRenderer(path, name, source, element, paramstring, message) {
-    AttributeRenderer.call(this, path, 'checked', source, element, 'bind', message);
+export default function CheckedRenderer(path, name, source, element, message) {
+    AttributeRenderer.call(this, path, 'checked', source, element, message);
     // Flag whether element has a value attribute
     this.hasValue = isDefined(element.getAttribute('value'));
     // Remove checked attribute to prevent Flash Of Unrendered Checkiness
@@ -60,6 +60,16 @@ export default function CheckedRenderer(path, name, source, element, paramstring
 }
 
 assign(CheckedRenderer.prototype, AttributeRenderer.prototype, {
+    parameterNames: ['data', 'DATA', 'element', 'host', 'shadow', 'bind'],
+
+    create: function(element, parameters) {
+        return AttributeRenderer.prototype.create.call(this, element, assign({
+            // Parameters
+            bind: (path, object, to=id, from=id) =>
+                bindChecked(element, object, path, to, from, setChecked)
+        }, parameters));
+    },
+
     render: function(strings) {
         if (this.singleExpression) {
             // Don't bother evaluating empty space in attributes
@@ -71,13 +81,5 @@ assign(CheckedRenderer.prototype, AttributeRenderer.prototype, {
 
         this.mutations = setChecked(this.element, this.value, this.hasValue);
         return this;
-    },
-
-    create: function(element, parameters) {
-        return AttributeRenderer.prototype.create.call(this, element, assign({
-            // Parameters
-            bind: (path, object, to=id, from=id) =>
-                bindChecked(element, object, path, to, from, setChecked)
-        }, parameters));
     }
 });

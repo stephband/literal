@@ -69,6 +69,6 @@ export default function compileAttribute(renderers, element, attribute, path, me
     }
 
     const Constructor = constructors[name] || AttributeRenderer;
-    renderers.push(new Constructor(path, name, source, element, '', message));
+    renderers.push(new Constructor(path, name, source, element, message));
     return renderers;
 }

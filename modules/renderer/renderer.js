@@ -66,13 +66,6 @@ function stopStreams(streams) {
     streams.length = 0;
 }
 
-function toParams(params, value) {
-    const l = params.length;
-    params[l] = value;
-    params.length = l + 1;
-    return params;
-}
-
 function toRecords(records, record) {
     const last = records[records.length - 1];
 
@@ -195,20 +188,32 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
 }
 
 
-/**
-Renderer(path, name, source, scope, parameters, message)
-Takes a `source` string or optionally a compiled `render` function and creates
-a consumer stream.
-**/
+/*
+Renderer(path, name, source, scope, message)
+*/
 
-export default function Renderer(path, name, source, scope, paramstring, message = '') {
-    this.literal = compile(source, scope, 'data, DATA, element' + (paramstring ? ', ' + paramstring : ''), message);
+export default function Renderer(path, name, source, scope, message = '') {
+    this.literal = compile(source, scope, this.parameterNames.join(', '), message);
     this.path    = path;
     this.name    = name;
     this.message = message;
 }
 
 assign(Renderer.prototype, {
+    create: function(element, parameters) {
+        // Track the number of active renderers
+        if (window.DEBUG) { ++Renderer.count; }
+
+        return assign(create(this), {
+            id:          ++id,
+            element:     element,
+            observers:   {},
+            status:      'idle',
+            parameters:  this.parameterNames.map((name) => parameters[name]),
+            renderCount: 0
+        });
+    },
+
     cue: function(value) {
         stopObservers(this.observers);
         cue(this);
@@ -229,16 +234,6 @@ assign(Renderer.prototype, {
 
         this.data = data;
         this.cue();
-    },
-
-    getParameters: function() {
-        const parameters = this.params;
-        parameters[0] = this.data;
-        parameters[1] = Data.getObject(this.data);
-        parameters[2] = document.documentElement;
-        parameters[3] = document.body;
-        parameters[4] = this.element;
-        return parameters;
     },
 
     update: function() {
@@ -310,20 +305,7 @@ assign(Renderer.prototype, {
         this.render.apply(this, arguments);
         return this;
     },
-/*
-    render: function(strings) {
-        let n = 0;
-        let string = strings[n];
 
-        while (strings[++n] !== undefined) {
-            // Append to string
-            string += toText(arguments[n]) + strings[n];
-        }
-
-        this.consume(string);
-        return this;
-    },
-*/
     stop: function() {
         uncue(this);
         stopObservers(this.observers);
@@ -339,22 +321,14 @@ assign(Renderer.prototype, {
 
     done: Stream.prototype.done,
 
-    create: function(element, parameters) {
-        // Track the number of active renderers
-        if (window.DEBUG) { ++Renderer.count; }
+    parameterNames: ['data', 'DATA', 'element', 'host', 'shadow'],
 
-        return assign(create(this), {
-            id:          ++id,
-            element:     element,
-            observers:   {},
-            status:      'idle',
-            params:      parameters ?
-                // Parameters have at least length 3 because
-                // (data, DATA, element)
-                values(parameters).reduce(toParams, { length: 3 }) :
-                { length: 3 },
-            renderCount: 0
-        });
+    getParameters: function() {
+        const parameters = this.parameters;
+        parameters[0] = this.data;
+        parameters[1] = Data.getObject(this.data);
+        parameters[2] = this.element;
+        return parameters;
     }
 });
 

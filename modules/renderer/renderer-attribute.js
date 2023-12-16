@@ -9,7 +9,7 @@ const getDescriptor = Object.getOwnPropertyDescriptor;
 const getPrototype  = Object.getPrototypeOf;
 
 /**
-AttributeRenderer(path, name, source, element, paramstring, message)
+AttributeRenderer(path, name, source, element, message)
 Constructs an object responsible for rendering to a plain text attribute.
 **/
 
@@ -53,7 +53,7 @@ function setAttribute(node, name, property, writable, value) {
     return 1;
 }
 
-export default function AttributeRenderer(path, name, source, element, paramstring, message) {
+export default function AttributeRenderer(path, name, source, element, message) {
     Renderer.apply(this, arguments);
     this.property = name in names ?
         names[name] :

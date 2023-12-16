@@ -34,8 +34,8 @@ function compileChildren(renderers, element, path, message = '') {
             // them.
             //
             // TODO We may want this functionality to be opt-in with some kind of
-            // attribute on the template or something. This problem first
-            // encountered on blondel.ch.
+            // attribute on the template or something. This problem was first
+            // encountered on blondel.ch. Just sayin'.
             if (children[n].content) {
                 const template = children[n];
                 template.before(template.content);
@@ -81,7 +81,7 @@ const compileElement = overload((renderers, element) => element.tagName.toLowerC
     'script':   compileAttributes,
 
     'textarea': (renderers, element, path, message) => {
-        // A textarea does not have children but its textContent becomes its value
+        // A <textarea> does not have children, its textContent becomes its value
         compileAttributes(renderers, element, path, message);
         compileAttribute(renderers, element, {
             localName: 'value',

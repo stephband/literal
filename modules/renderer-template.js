@@ -44,8 +44,8 @@ const cache  = {};
 const nodes  = [];
 
 
-function dataIsNull() {
-    return this.data === null;
+function dataToString() {
+    return this.data + '';
 }
 
 /*
@@ -166,9 +166,8 @@ assign(TemplateRenderer.prototype, {
         this.update();
     },
 
-    update: overload(dataIsNull, {
-        true: function() {
-            //console.log(this.constructor.name + (this.id ? '#' + this.id : '') + '.render()');
+    update: overload(dataToString, {
+        null: function() {
             const data = this.data;
 
             // Remove all but the last node to the renderer's content fragment
@@ -184,7 +183,7 @@ assign(TemplateRenderer.prototype, {
             return nodes.length;
         },
 
-        false: function() {
+        default: function() {
             //console.log(this.constructor.name + (this.id ? '#' + this.id : '') + '.render()');
             const data = this.data;
 
@@ -196,8 +195,8 @@ assign(TemplateRenderer.prototype, {
             }, 0);
 
             // If this.last is not in the content fragment, it must be in the
-            // parent DOM being used as a marker. It's time for its freshly rendered
-            // brethren to join it.
+            // parent DOM being used as a marker. It's time for its freshly
+            // rendered brethren to join it.
             if (this.content.lastChild && this.last !== this.content.lastChild) {
                 this.last.before(this.content);
                 ++this.mutations;
