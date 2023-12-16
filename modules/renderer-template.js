@@ -50,7 +50,7 @@ function dataIsNull() {
 
 /*
 TemplateRenderer
-Descendant paths are stored in the form `"#id>1>12>3>attribute"`, enabling fast
+Descendant paths are stored in the form `"#id>1>12>3"`, enabling fast
 cloning of template instances without retraversing their DOMs looking for
 literal attributes and text.
 */
@@ -59,13 +59,10 @@ function getChild(element, index) {
     return element.childNodes[index] ;
 }
 
-function getDescendant(path, context, node) {
-    const pathArray = path.split(pathSeparator);
-    --pathArray.length;
-
+function getElement(path, context, node) {
     // If path is empty return root
     return path ?
-        pathArray.reduce(getChild, node) :
+        path.split(pathSeparator).reduce(getChild, node) :
         context ;
 }
 
@@ -102,12 +99,23 @@ function prepareContent(content) {
     }
 }
 
-function cloneRenderer(renderer) {
-    // `this` is the controlling TemplateRenderer of the clone
-    const element = getDescendant(renderer.path, this.context, this.content);
+function compileContent(content, message) {
+    // COMPILE RENDERERS
+    if (window.DEBUG) { groupCollapsed('compile', message, 'yellow'); }
+    prepareContent(content);
+    const path = '';
+    const renderers = compileNode([], content, path, message);
+    if (window.DEBUG) { groupEnd(); }
+    return renderers;
+}
+
+function createRenderer(renderer) {
+    // `this` is the TemplateRenderer for the clone
+    const element = getElement(renderer.path, this.context, this.content);
     const clone   = renderer.clone(element, this.parameters) ;
     // Stop clone when parent template renderer stops
     this.done(clone);
+    console.log('CLONE', clone);
     return clone;
 }
 
@@ -115,49 +123,20 @@ export default function TemplateRenderer(template, context, parameters) {
     const id       = identify(template) ;
     const renderer = cache[id];
 
+    // TEMP: currently needed for compile, but should factor out
     this.parameters = parameters;
     this.context    = context;
-    this.template   = template.content ?
-        template :
-        { id, content: create('fragment', template.childNodes, template) } ;
 
-    // The template is already compiled and cached. Clone and return it.
-    if (renderer) {
-        this.content   = renderer.template.content.cloneNode(true);
-        this.first     = this.content.childNodes[0];
-        this.last      = this.content.childNodes[this.content.childNodes.length - 1];
-        this.contents  = renderer.contents.map(cloneRenderer, this);
-        return;
-    }
+    const content = template.content
+        || create('fragment', template.childNodes, template) ;
 
-    cache[id] = this;
+    const renderers = cache[id]
+        || (cache[id] = compileContent(content, '#' + id)) ;
 
-    if (window.DEBUG && !template) {
-        throw new Error('Template id="' + id + '" not found in document');
-    }
-
-    /**
-    .content
-    A fragment that initially contains the renderer's DOM nodes. On creation of
-    a renderer they are in an unrendered state. They are guaranteed to be in a
-    rendered state on resolution of the first render(). The fragment may be
-    inserted into the DOM at any time, at which point it will no longer contain
-    the renderer's DOM nodes.
-    **/
-
-    prepareContent(this.template.content);
-
-    this.content  = this.template.content.cloneNode(true);
+    this.content  = content.cloneNode(true);
     this.first    = this.content.childNodes[0];
     this.last     = this.content.childNodes[this.content.childNodes.length - 1];
-    this.message  = '#' + id;
-
-    if (window.DEBUG) { groupCollapsed('compile', '#' + id, 'yellow'); }
-    this.contents = compileNode([], context, this.content, '', parameters, this.message);
-    if (window.DEBUG) { groupEnd(); }
-
-    // Stop child when template renderer stops
-    this.contents.forEach((renderer) => this.done(renderer));
+    this.contents = renderers.map(createRenderer, this);
 }
 
 assign(TemplateRenderer.prototype, {

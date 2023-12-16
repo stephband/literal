@@ -44,7 +44,7 @@ function updateTokens(list, cached, tokens, count) {
     return count;
 }
 
-export default function TokensRenderer(source, element, name, path, parameters, message) {
+export default function TokensRenderer(source, element, name, path, paramstring, message) {
     AttributeRenderer.apply(this, arguments);
     this.list        = getTokenList(element, name);
     this.tokens      = nothing;

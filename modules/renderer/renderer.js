@@ -201,25 +201,19 @@ Takes a `source` string or optionally a compiled `render` function and creates
 a consumer stream.
 **/
 
-export default function Renderer(source, scope, element, parameters, message = '') {
+export default function Renderer(source, scope, paramstring, message = '') {
+    console.log(this.constructor.name, paramstring);
+
     this.literal = typeof source === 'string' ?
         // data will be the observer proxy of DATA, which we set in .update()
-        compile(source, scope, 'data, DATA, element' + (parameters ? ', ' + keys(parameters).join(', ') : ''), message) :
+        compile(source, scope, 'data, DATA, root, body, element' + (paramstring ? ', ' + paramstring : ''), message) :
         // source is assumed to be the compiled function
         source ;
 
     this.id         = ++id;
-    this.element    = element;
-    //this.parameters = parameters;
     this.message    = message;
     this.observers  = {};
     this.status     = 'idle';
-
-    // Parameters have at least length 2 because (data, DATA, element)
-    this.params = parameters ?
-        values(parameters).reduce(toParams, { length: 3 }) :
-        { length: 3 } ;
-
     this.renderCount = 0;
 
     // Track the number of active renderers
@@ -253,7 +247,9 @@ assign(Renderer.prototype, {
         const parameters = this.params;
         parameters[0] = this.data;
         parameters[1] = Data.getObject(this.data);
-        parameters[2] = this.element;
+        parameters[2] = document.documentElement;
+        parameters[3] = document.body;
+        parameters[4] = this.element;
         return parameters;
     },
 
@@ -367,7 +363,11 @@ assign(Renderer.prototype, {
             message:     this.message,
             observers:   {},
             status:      'idle',
-            params:      this.params,
+            params:      parameters ?
+                // Parameters have at least length 5 because
+                // (data, DATA, root, body, element)
+                values(parameters).reduce(toParams, { length: 5 }) :
+                { length: 5 },
             renderCount: 0
         });
     }

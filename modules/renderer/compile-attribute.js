@@ -13,7 +13,7 @@ import truncate          from './truncate.js';
 
 
 /**
-compileAttributes(renderers, element, attribute, path, parameters, message)
+compileAttributes(renderers, element, attribute, path, message)
 **/
 
 const constructors = {
@@ -42,19 +42,19 @@ const constructors = {
     class:          TokensRenderer,
     value:          ValueRenderer,
 
-    datetime: function(source, element, name, path, parameters, message) {
+    datetime: function(source, element, name, path, message) {
         if (window.DEBUG) { console.log('Literal TODO: compile datetime attribute'); }
     },
 
     // Workaround attribute used in cases where ${} cannot be added directly to
     // HTML, such as in <tbody> or <tr>
-    'inner-html': function(source, element, name, path, parameters, message) {
+    'inner-html': function(source, element, name, path, message) {
         element.removeAttribute(name);
-        return new TextRenderer(decode(source), element, element.childNodes[0], path, parameters, message);
+        return new TextRenderer(decode(source), element.childNodes[0], path, 0, message);
     }
 };
 
-export default function compileAttribute(renderers, element, attribute, path, parameters, message = '') {
+export default function compileAttribute(renderers, element, attribute, path, message = '') {
     const name   = attribute.localName;
     const source = attribute.value;
 
@@ -69,6 +69,6 @@ export default function compileAttribute(renderers, element, attribute, path, pa
     }
 
     const Constructor = constructors[name] || AttributeRenderer;
-    renderers.push(new Constructor(source, element, name, path, parameters, message));
+    renderers.push(new Constructor(source, element, name, path, '', message));
     return renderers;
 }

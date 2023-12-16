@@ -1,6 +1,6 @@
 
 /**
-TextRenderer(source, node, path, parameters, message)
+TextRenderer(source, node, path, index, message)
 Constructs an object responsible for rendering to a text node. If the result of
 processing the literal content is more DOM content this renderer will insert
 that DOM after the text node.
@@ -12,9 +12,10 @@ import library           from '../scope-dom.js';
 import removeNodeRange       from '../dom/remove-node-range.js';
 import TemplateRenderer  from '../renderer-template.js';
 import print             from '../scope/print.js';
-import { pathSeparator } from './constants.js';
+import indexOf           from './index-of.js';
 import toText            from './to-text.js';
 import Renderer          from './renderer.js';
+
 
 const A      = Array.prototype;
 const assign = Object.assign;
@@ -68,11 +69,6 @@ function toContent(object) {
         object ;
 }
 
-function indexOf(node) {
-    // Get the index of a DOM node
-    return A.indexOf.apply(node.parentNode.childNodes, arguments);
-}
-
 function updateDOM(first, last, objects) {
     // Sanity check
     if (window.DEBUG) {
@@ -84,9 +80,8 @@ function updateDOM(first, last, objects) {
             throw new Error('`first` and `last` are not siblings');
         }
 
-        const children = first.parentNode.childNodes;
-        const iFirst   = A.indexOf.call(children, first);
-        const iLast    = A.indexOf.call(children, last);
+        const iFirst   = indexOf(first);
+        const iLast    = indexOf(last);
         if (iFirst > iLast) {
             throw new Error('`last` is not after `first`, first: ' + iFirst + ' last: ' + iLast);
         }
@@ -155,27 +150,17 @@ function updateDOM(first, last, objects) {
     return count + setNodeValue(last, nLast < 1 ? null : objects[nLast]);
 }
 
-export default function TextRenderer(source, context, node, path, parameters, message) {
-    // Normally `context` is a parentElement, but where we are parsing a
-    // fragment it should be a target element that we are rendering into
-
-    Renderer.call(this, source, library, context, assign({}, parameters, {
-        include: function(url, data) {
-            return arguments.length === 1 ?
-                // Partial application if called with url only
-                (data) => include(url, data, context, parameters) :
-                // Include immediately when data is defined
-                include(url, data, context, parameters);
-        },
-
-        print: (...args) => print(this, ...args)
-    }), message);
-
+export default function TextRenderer(source, node, path, index, message) {
+    if (typeof path !== 'string') { throw new Error('Arse') };
+    Renderer.call(this, source, library, 'include, print', message);
     this.contents = [];
     this.path     = path;
+    this.name     = index;
     this.first    = node;
     this.last     = document.createTextNode('');
-    this.first.after(this.last);
+    node.after(this.last);
+
+    console.log('TextRenderer', '"' + this.path + '"', '"' + this.name + '"');
 }
 
 assign(TextRenderer.prototype, Renderer.prototype, {
@@ -213,20 +198,23 @@ assign(TextRenderer.prototype, Renderer.prototype, {
         return Renderer.prototype.stop.apply(this);
     },
 
-    clone: function(element, parameters) {
-        const index = /\d+$/.exec(this.path)[0];
-        const first = element.childNodes[index];
+    clone: function(element, params) {
+        const parameters = assign({}, params, {
+            include: function(url, data) {
+                return arguments.length === 1 ?
+                    // Partial application if called with url only
+                    (data) => include(url, data, element, params) :
+                    // Include immediately when data is defined
+                    include(url, data, element, params);
+            },
 
-        // TODO: this will not be necessary when we end up cloning already
-        // preprepared fragments
-        const last  = document.createTextNode('');
-        first.after(last);
-        // ---------------------
+            print: (...args) => print(this, ...args)
+        });
 
-        return assign(Renderer.prototype.clone.apply(this, arguments), {
+        return assign(Renderer.prototype.clone.call(this, element, parameters), {
             contents: [],
-            first:    first,
-            last:     last
+            first:    element.childNodes[this.name],
+            last:     element.childNodes[this.name + 1]
         });
     }
 });

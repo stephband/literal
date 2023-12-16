@@ -28,11 +28,8 @@ const compose = overload((value, type) => type, {
     'default':    composeString
 });
 
-export default function ValueRenderer(source, element, name, path, parameters, message) {
-    AttributeRenderer.call(this, source, element, name, path, assign({
-        // TODO: Experimental!
-        bind: (path, object, to = id, from = id) => bindValue(element, object, path, to, from, setValue)
-    }, parameters), message);
+export default function ValueRenderer(source, element, name, path, paramstring, message) {
+    AttributeRenderer.call(this, source, element, name, path, 'bind', message);
 }
 
 assign(ValueRenderer.prototype, AttributeRenderer.prototype, {
@@ -53,5 +50,12 @@ assign(ValueRenderer.prototype, AttributeRenderer.prototype, {
         // the renderer is done.
         removeValue(this.element);
         return AttributeRenderer.prototype.stop.apply(this, arguments);
+    },
+
+    clone: function(element, parameters) {
+        return AttributeRenderer.prototype.clone.call(this, element, assign({
+            // TODO: Experimental!
+            bind: (path, object, to = id, from = id) => bindValue(element, object, path, to, from, setValue)
+        }, parameters));
     }
 });

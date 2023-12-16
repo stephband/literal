@@ -134,10 +134,8 @@ export default element('<template is="literal-html">', {
         internals.pushed      = false;
         internals.datas       = new LatestStream();
         internals.renderer    = new TemplateRenderer(this, this.parentElement, {
-            root:    document.documentElement,
-            body:    document.body,
-            host:    this,
-            shadow:  undefined
+            /*host:    this,
+            shadow:  undefined*/
         });
     },
 

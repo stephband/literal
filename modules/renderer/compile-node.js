@@ -5,6 +5,7 @@ import toType            from '../../../dom/modules/to-type.js';
 import decode            from '../../../dom/modules/decode.js';
 import isLiteralString   from '../is-literal-string.js';
 import { pathSeparator } from './constants.js';
+import indexOf           from './index-of.js';
 import truncate          from './truncate.js';
 import compileAttribute  from './compile-attribute.js';
 import TextRenderer      from './renderer-text.js';
@@ -14,11 +15,12 @@ const assign = Object.assign;
 
 
 /*
-compileChildren(renderers, context, element, path, parameters, message)
+compileChildren(renderers, element, path, message)
 */
 
-function compileChildren(renderers, context, element, path, parameters, message = '') {
-    const children = element.childNodes;
+function compileChildren(renderers, element, path, message = '') {
+    // Children may mutate during compile, we don't want to compile added nodes
+    const children = Array.from(element.childNodes);
 
     if (children) {
         let n = -1;
@@ -43,7 +45,7 @@ function compileChildren(renderers, context, element, path, parameters, message 
                 template.remove();
             }
 
-            compileNode(renderers, context, children[n], path ? path + pathSeparator + n : '' + n, parameters, message);
+            compileNode(renderers, children[n], path, message);
         }
     }
 
@@ -52,16 +54,16 @@ function compileChildren(renderers, context, element, path, parameters, message 
 
 
 /*
-compileAttributes(renderers, node, path, parameters, message)
+compileAttributes(renderers, node, path, message)
 */
 
-function compileAttributes(renderers, element, path, parameters, message = '') {
+function compileAttributes(renderers, element, path, message = '') {
     // Attributes may be removed during parsing so copy the list before looping
     const attributes = Array.from(element.attributes);
     let n = -1, attribute;
 
     while (attribute = attributes[++n]) {
-        compileAttribute(renderers, element, attribute, path + pathSeparator + attribute.localName, parameters, message);
+        compileAttribute(renderers, element, attribute, path, message);
     }
 
     return renderers;
@@ -69,7 +71,7 @@ function compileAttributes(renderers, element, path, parameters, message = '') {
 
 
 /*
-compileElement(renderers, node, path, parameters, message)
+compileElement(renderers, node, path, message)
 */
 
 const compileElement = overload((renderers, element) => element.tagName.toLowerCase(), {
@@ -82,18 +84,18 @@ const compileElement = overload((renderers, element) => element.tagName.toLowerC
     // Do not parse the inner DOM of scripts
     'script':   compileAttributes,
 
-    'textarea': (renderers, element, path, parameters, message) => {
+    'textarea': (renderers, element, path, message) => {
         // A textarea does not have children but its textContent becomes its value
-        compileAttributes(renderers, element, path, parameters, message);
+        compileAttributes(renderers, element, path, message);
         compileAttribute(renderers, element, {
-            localName:    'value',
-            value:        element.textContent
-        }, path + pathSeparator + 'value', parameters, message);
+            localName: 'value',
+            value:     element.textContent
+        }, path, message);
         element.textContent = '';
         return renderers;
     },
 
-    'default': (renderers, element, path, parameters, message) => {
+    'default': (renderers, element, path, message) => {
         // Compiling children first means inner DOM to outer DOM, which allows
         // `<select>`, for example, to pick up the correct option value. If we
         // decide to change this order we should still make sure value attribute
@@ -101,46 +103,29 @@ const compileElement = overload((renderers, element) => element.tagName.toLowerC
         //
         // Context is the element itself in this case as we know element is
         // not a fragment.
-        compileChildren(renderers, element, element, path, parameters, message);
-        compileAttributes(renderers, element, path, parameters, message);
+        compileChildren(renderers, element, path, message);
+        compileAttributes(renderers, element, path, message);
         return renderers;
     }
 });
 
 
 /**
-compileNode(renderers, node, path, parameters, message)
+compileNode(renderers, node, path, message)
 **/
 
-const toNodeType = window.DEBUG ?
-    (renderers, context, node) => {
-        if (toType(context) === 'fragment') {
-            throw new Error('context should never be a fragment');
-        }
-
-        if (!context) {
-            throw new Error('context should never be ' + context);
-        }
-
-        return toType(node);
-    } :
-    (renderers, context, node) => toType(node) ;
-
-const compileNode = overload(toNodeType, {
+const compileNode = overload((renderers, node) => toType(node), {
     'comment':  id,
     'doctype':  id,
     'document': compileChildren,
-    'element':  compileElement,
     'fragment': compileChildren,
 
-    'element': (renderers, context, element, path, parameters, message = '') =>
-        compileElement(renderers, element, path, parameters, message = ''),
+    'element': (renderers, element, path, message = '') => {
+        compileElement(renderers, element, (path ? path + pathSeparator : '') + indexOf(element), message = '');
+        return renderers;
+    },
 
-    'text': (renderers, parent, node, path, parameters, message = '') => {
-        if (toType(parent) === 'fragment') {
-            throw new Error('parent should never be a document fragment');
-        }
-
+    'text': (renderers, node, path, message = '') => {
         const string = node.nodeValue;
         if (!isLiteralString(string)) {
             return renderers;
@@ -148,6 +133,7 @@ const compileNode = overload(toNodeType, {
 
         const source = decode(string);
         if (window.DEBUG) {
+            parent = node.parentElement || { tagName: 'template' };
             message = truncate(64, '<'
                 + parent.tagName.toLowerCase() + '>'
                 + source.trim()
@@ -155,7 +141,7 @@ const compileNode = overload(toNodeType, {
                 + ' (' + message + ')' ;
         }
 
-        renderers.push(new TextRenderer(source, parent, node, path, parameters, message));
+        renderers.push(new TextRenderer(source, node, path, indexOf(node), message));
         return renderers;
     },
 

@@ -53,24 +53,13 @@ function setAttribute(node, name, prop, writable, value) {
     return 1;
 }
 
-export default function AttributeRenderer(source, element, name, path, parameters, message) {
-    Renderer.call(this, source, scope, element, parameters, message);
+export default function AttributeRenderer(source, element, name, path, paramstring, message) {
+    Renderer.call(this, source, scope, paramstring, message);
     this.name     = name;
     this.path     = path;
-    this.prop     = this.name in names ? names[this.name] : this.name ;
-    this.writable = isWritable(this.name, this.element);
-/*
-    if (window.DEBUG) {
-        Object.defineProperty(this, 'node', {
-            get: function() {
-                console.trace('renderer.node is now renderer.element');
-                return this.element;
-            },
-
-            enumerable: true
-        });
-    }
-*/
+    this.prop     = name in names ? names[name] : name ;
+    this.writable = isWritable(name, element);
+    console.log('AttributeRenderer', '"' + path + '"', '"' + name + '"');
 }
 
 assign(AttributeRenderer.prototype, Renderer.prototype, {

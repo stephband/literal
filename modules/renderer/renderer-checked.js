@@ -51,12 +51,8 @@ function setChecked(element, value, hasValueAttribute) {
     return 1;
 }
 
-export default function CheckedRenderer(source, element, name, path, parameters, message) {
-    AttributeRenderer.call(this, source, element, name, path, assign({
-        // TODO: Experimental!
-        bind: (path, object, to = id, from = id) => bindChecked(element, object, path, to, from, setChecked)
-    }, parameters), message);
-
+export default function CheckedRenderer(source, element, name, path, paramstring, message) {
+    AttributeRenderer.call(this, source, element, name, path, 'bind', message);
     // Flag whether element has a value attribute
     this.hasValue = isDefined(element.getAttribute('value'));
     // Remove checked attribute to prevent Flash Of Unrendered Checkiness
@@ -77,8 +73,13 @@ assign(CheckedRenderer.prototype, AttributeRenderer.prototype, {
         return this;
     },
 
-    clone: function(element) {
-        return assign(AttributeRenderer.prototype.clone.apply(this, arguments), {
+    clone: function(element, params) {
+        const parameters = assign({
+            // TODO: Experimental!
+            bind: (path, object, to = id, from = id) => bindChecked(element, object, path, to, from, setChecked)
+        }, params);
+
+        return assign(AttributeRenderer.prototype.clone.call(this, element, parameters), {
             hasValue: this.hasValue
         });
     }
