@@ -44,14 +44,11 @@ function updateTokens(list, cached, tokens, count) {
     return count;
 }
 
-export default function TokensRenderer(source, element, name, path, paramstring, message) {
+export default function TokensRenderer(path, name, source, element, paramstring, message) {
     AttributeRenderer.apply(this, arguments);
-    //this.list   = getTokenList(element, name);
-    //this.tokens = nothing;
-
-    // Empty the tokens until it is rendered to avoid code in literals
-    // being interpreted as tokens.
-    this.element.setAttribute(name, '');
+    // Empty the tokens until it is rendered to avoid code in literals being
+    // interpreted as tokens.
+    element.setAttribute(name, '');
 }
 
 assign(TokensRenderer.prototype, AttributeRenderer.prototype, {
@@ -81,13 +78,6 @@ assign(TokensRenderer.prototype, AttributeRenderer.prototype, {
         this.mutations = updateTokens(this.list, this.tokens, tokens, mutations);
         this.tokens    = tokens;
         return this;
-    },
-
-    clone: function(element) {
-        return assign(AttributeRenderer.prototype.clone.apply(this, arguments), {
-            list:   getTokenList(element, this.name),
-            tokens: nothing
-        });
     },
 
     create: function(element, parameters) {

@@ -115,7 +115,7 @@ function createRenderer(renderer) {
     const clone   = renderer.create(element, this.parameters) ;
     // Stop clone when parent template renderer stops
     this.done(clone);
-    console.log('CLONE', clone);
+    console.log('CREATE', clone);
     return clone;
 }
 

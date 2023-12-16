@@ -12,11 +12,9 @@ const assign = Object.assign;
 
 
 /**
-ValueRenderer(source, node, path, name, parameters, message)
+ValueRenderer(path, name, source, element, paramstring, message)
 Constructs an object responsible for rendering from a value attribute to a
-value property.
-
-Parameter `name` is redundant, but here for symmetry with other cloneable
+value property. Parameter `name` is redundant, but here for symmetry with other
 renderers.
 **/
 
@@ -28,8 +26,12 @@ const compose = overload((value, type) => type, {
     'default':    composeString
 });
 
-export default function ValueRenderer(source, element, name, path, paramstring, message) {
-    AttributeRenderer.call(this, source, element, name, path, 'bind', message);
+export default function ValueRenderer(path, name, source, element, paramstring, message) {
+    AttributeRenderer.call(this, path, 'value', source, element, 'bind', message);
+    // Remove value attribute to prevent unrendered value showing up
+    // unexpectedly. This is not strictly necessary, as first render happens
+    // before connection to the DOM.
+    element.removeAttribute('value');
 }
 
 assign(ValueRenderer.prototype, AttributeRenderer.prototype, {
@@ -50,13 +52,6 @@ assign(ValueRenderer.prototype, AttributeRenderer.prototype, {
         // the renderer is done.
         removeValue(this.element);
         return AttributeRenderer.prototype.stop.apply(this, arguments);
-    },
-
-    clone: function(element, parameters) {
-        return AttributeRenderer.prototype.clone.call(this, element, assign({
-            // TODO: Experimental!
-            bind: (path, object, to = id, from = id) => bindValue(element, object, path, to, from, setValue)
-        }, parameters));
     },
 
     create: function(element, parameters) {

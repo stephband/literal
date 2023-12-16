@@ -50,7 +50,7 @@ const constructors = {
     // HTML, such as in <tbody> or <tr>
     'inner-html': function(source, element, name, path, message) {
         element.removeAttribute(name);
-        return new TextRenderer(decode(source), element.childNodes[0], path, 0, message);
+        return new TextRenderer(path, 0, decode(source), element.childNodes[0], message);
     }
 };
 
@@ -69,6 +69,6 @@ export default function compileAttribute(renderers, element, attribute, path, me
     }
 
     const Constructor = constructors[name] || AttributeRenderer;
-    renderers.push(new Constructor(source, element, name, path, '', message));
+    renderers.push(new Constructor(path, name, source, element, '', message));
     return renderers;
 }

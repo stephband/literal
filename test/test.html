@@ -44,7 +44,7 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
 </head>
 
 <body>
-    <section>
+    <!--section>
         <template id="option">
             <option value="${ DATA.value }">${ DATA.text }</option>
         </template>
@@ -58,9 +58,9 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
                 ${ events('input', element).each((e) => data.thing = Number(element.value)) }
             </select>
         </template>
-    </section>
+    </section-->
 
-    <!--section>
+    <section>
         <h3 class="text-03">&lt;textarea&gt;</h3>
 
         <template id="textarea">
@@ -69,9 +69,10 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
         </template>
 
         <template is="literal-html" src="./test.json">
-            ${ window.data = data, include('#textarea', data.object) }
+            ${ data.object }
+            <!--${ window.data = data, include('#textarea', data.object) }-->
         </template>
-    </section-->
+    </section>
 
     <!--section>
         <h3 class="text-03">Data <span class="test-count">(5 tests)</span></h3>

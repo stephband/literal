@@ -9,7 +9,7 @@ const getDescriptor = Object.getOwnPropertyDescriptor;
 const getPrototype  = Object.getPrototypeOf;
 
 /**
-AttributeRenderer()
+AttributeRenderer(path, name, source, element, paramstring, message)
 Constructs an object responsible for rendering to a plain text attribute.
 **/
 
@@ -33,11 +33,11 @@ function isWritable(name, element) {
         false ;
 }
 
-function setAttribute(node, name, prop, writable, value) {
+function setAttribute(node, name, property, writable, value) {
     // Seek and set a matching property
     if (writable) {
-        if (node[prop] !== value) {
-            node[prop] = value;
+        if (node[property] !== value) {
+            node[property] = value;
             return 1;
         }
 
@@ -53,13 +53,12 @@ function setAttribute(node, name, prop, writable, value) {
     return 1;
 }
 
-export default function AttributeRenderer(source, element, name, path, paramstring, message) {
-    Renderer.call(this, source, scope, paramstring, message);
-    this.name     = name;
-    this.path     = path;
-    this.prop     = name in names ? names[name] : name ;
+export default function AttributeRenderer(path, name, source, element, paramstring, message) {
+    Renderer.apply(this, arguments);
+    this.property = name in names ?
+        names[name] :
+        name ;
     this.writable = isWritable(name, element);
-    console.log('AttributeRenderer', '"' + path + '"', '"' + name + '"');
 }
 
 assign(AttributeRenderer.prototype, Renderer.prototype, {
@@ -68,15 +67,7 @@ assign(AttributeRenderer.prototype, Renderer.prototype, {
         this.value = this.singleExpression ?
             arguments[1] :
             composeString(arguments) ;
-        this.mutations = setAttribute(this.element, this.name, this.prop, this.writable, this.value);
+        this.mutations = setAttribute(this.element, this.name, this.property, this.writable, this.value);
         return this;
-    },
-
-    clone: function(element, parameters) {
-        return assign(Renderer.prototype.clone.apply(this, arguments), {
-            name:     this.name,
-            prop:     this.prop,
-            writable: this.writable
-        });
     }
 });

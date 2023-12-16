@@ -11,10 +11,10 @@ BooleanRenderer()
 Constructs an object responsible for rendering to a boolean attribute.
 **/
 
-export function setBooleanProperty(node, name, prop, writable, value) {
+export function setBooleanProperty(node, name, property, writable, value) {
     if (writable) {
-        if (node[prop] !== !!value) {
-            node[prop] = !!value;
+        if (node[property] !== !!value) {
+            node[property] = !!value;
             return 1;
         }
 
@@ -31,15 +31,16 @@ export function setBooleanProperty(node, name, prop, writable, value) {
     return 1;
 }
 
-export default function BooleanRenderer(source, element, name, path, paramstring, message) {
+export default function BooleanRenderer(path, name, source, element, paramstring, message) {
     AttributeRenderer.apply(this, arguments);
-    this.element.removeAttribute(name);
+    // Avoid boolean defaulting to true
+    element.removeAttribute(name);
 }
 
 assign(BooleanRenderer.prototype, AttributeRenderer.prototype, {
     render: function(strings) {
         const value = composeBoolean(arguments);
-        this.mutations = setBooleanProperty(this.element, this.name, this.prop, this.writable, value);
+        this.mutations = setBooleanProperty(this.element, this.name, this.property, this.writable, value);
         return this;
     }
 });

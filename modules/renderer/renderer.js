@@ -196,28 +196,16 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
 
 
 /**
-Renderer(source, scope, parameters, message)
+Renderer(path, name, source, scope, parameters, message)
 Takes a `source` string or optionally a compiled `render` function and creates
 a consumer stream.
 **/
 
-export default function Renderer(source, scope, paramstring, message = '') {
-    console.log(this.constructor.name, paramstring);
-
-    this.literal = typeof source === 'string' ?
-        // data will be the observer proxy of DATA, which we set in .update()
-        compile(source, scope, 'data, DATA, root, body, element' + (paramstring ? ', ' + paramstring : ''), message) :
-        // source is assumed to be the compiled function
-        source ;
-
-    //this.id         = ++id;
-    this.message    = message;
-    //this.observers  = {};
-    //this.status     = 'idle';
-    //this.renderCount = 0;
-
-    // Track the number of active renderers
-    if (window.DEBUG) { ++Renderer.count; }
+export default function Renderer(path, name, source, scope, paramstring, message = '') {
+    this.literal = compile(source, scope, 'data, DATA, root, body, element' + (paramstring ? ', ' + paramstring : ''), message);
+    this.path    = path;
+    this.name    = name;
+    this.message = message;
 }
 
 assign(Renderer.prototype, {
@@ -351,28 +339,10 @@ assign(Renderer.prototype, {
 
     done: Stream.prototype.done,
 
-    clone: function(element, parameters) {
+    create: function(element, parameters) {
+        // Track the number of active renderers
         if (window.DEBUG) { ++Renderer.count; }
 
-        return assign(create(this.constructor.prototype), {
-            id:          ++id,
-            element:     element,
-            parameters:  parameters,
-            literal:     this.literal,
-            path:        this.path,
-            message:     this.message,
-            observers:   {},
-            status:      'idle',
-            params:      parameters ?
-                // Parameters have at least length 5 because
-                // (data, DATA, root, body, element)
-                values(parameters).reduce(toParams, { length: 5 }) :
-                { length: 5 },
-            renderCount: 0
-        });
-    },
-
-    create: function(element, parameters) {
         return assign(create(this), {
             id:          ++id,
             element:     element,

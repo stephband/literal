@@ -150,18 +150,12 @@ function updateDOM(first, last, objects) {
     return count + setNodeValue(last, nLast < 1 ? null : objects[nLast]);
 }
 
-export default function TextRenderer(source, node, path, index, message) {
-    if (typeof path !== 'string') { throw new Error('Arse') };
-    Renderer.call(this, source, library, 'include, print', message);
-    //this.contents = [];
-    this.path  = path;
-    this.name  = index;
-    //this.first = node;
-    //this.last  = document.createTextNode('');
-    //node.after(this.last);
+export default function TextRenderer(path, index, source, node, message) {
+    Renderer.call(this, path, index, source, library, 'include, print', message);
+    // Insert text node. When renderer is created with cloned DOM, clone of
+    // `node` is assigned to `renderer.first` and the clone of this new text
+    // node is assigned as `renderer.last`.
     node.after(document.createTextNode(''));
-
-    console.log('TextRenderer', '"' + this.path + '"', '"' + this.name + '"');
 }
 
 assign(TextRenderer.prototype, Renderer.prototype, {
@@ -199,27 +193,11 @@ assign(TextRenderer.prototype, Renderer.prototype, {
         return Renderer.prototype.stop.apply(this);
     },
 
-    clone: function(element, params) {
-        const parameters = assign({}, params, {
-            include: function(url, data) {
-                return arguments.length === 1 ?
-                    // Partial application if called with url only
-                    (data) => include(url, data, element, params) :
-                    // Include immediately when data is defined
-                    include(url, data, element, params);
-            },
-
-            print: (...args) => print(this, ...args)
-        });
-
-        return assign(Renderer.prototype.clone.call(this, element, parameters), {
-            contents: [],
-            first:    element.childNodes[this.name],
-            last:     element.childNodes[this.name + 1]
-        });
-    },
-
     create: function(element, parameters) {
+        if (!element.parentElement) {
+            throw new Error('Weee eeesss not in da DOM muthafucka')
+        }
+
         return assign(Renderer.prototype.create.call(this, element, assign({}, parameters, {
             // Parameters
             include: function(url, data) {
