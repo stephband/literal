@@ -1,5 +1,4 @@
 
-import scope         from '../scope-dom.js';
 import composeString from './compose-string.js';
 import names         from './property-names.js';
 import Renderer      from './renderer.js';
@@ -53,7 +52,7 @@ function setAttribute(node, name, property, writable, value) {
     return 1;
 }
 
-export default function AttributeRenderer(path, name, source, element, message) {
+export default function AttributeRenderer(path, name, source, message, element) {
     Renderer.apply(this, arguments);
     this.property = name in names ?
         names[name] :

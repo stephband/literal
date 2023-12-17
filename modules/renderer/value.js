@@ -12,7 +12,9 @@ const enhancedTypes = {
     'select-one':      true,
     'select-multiple': true,
     'checkbox':        true,
-    'radio':           true
+    'radio':           true,
+    // <option> does not have .type
+    'undefined':       true
 };
 
 /** getValue(element)

@@ -3,8 +3,9 @@ import { remove }       from '../../../fn/modules/remove.js';
 import Stream, { stop } from '../../../fn/modules/stream/stream.js';
 import observe          from '../../../fn/observer/observe.js';
 import Gets             from '../../../fn/observer/gets.js';
-import compile          from './compile.js';
+import scope            from '../scope-dom.js';
 import Data             from '../data.js';
+import compile          from './compile.js';
 import { cue, uncue }   from './cue.js';
 import toText           from './to-text.js';
 
@@ -189,10 +190,10 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
 
 
 /*
-Renderer(path, name, source, scope, message)
+Renderer(path, name, source, message)
 */
 
-export default function Renderer(path, name, source, scope, message = '') {
+export default function Renderer(path, name, source, message = '') {
     this.literal = compile(source, scope, this.parameterNames.join(', '), message);
     this.path    = path;
     this.name    = name;
@@ -200,6 +201,16 @@ export default function Renderer(path, name, source, scope, message = '') {
 }
 
 assign(Renderer.prototype, {
+    parameterNames: ['data', 'DATA', 'element', 'host', 'shadow'],
+
+    getParameters: function() {
+        const parameters = this.parameters;
+        parameters[0] = this.data;
+        parameters[1] = Data.getObject(this.data);
+        parameters[2] = this.element;
+        return parameters;
+    },
+
     create: function(element, parameters) {
         // Track the number of active renderers
         if (window.DEBUG) { ++Renderer.count; }
@@ -319,17 +330,7 @@ assign(Renderer.prototype, {
         return this;
     },
 
-    done: Stream.prototype.done,
-
-    parameterNames: ['data', 'DATA', 'element', 'host', 'shadow'],
-
-    getParameters: function() {
-        const parameters = this.parameters;
-        parameters[0] = this.data;
-        parameters[1] = Data.getObject(this.data);
-        parameters[2] = this.element;
-        return parameters;
-    }
+    done: Stream.prototype.done
 });
 
 if (window.DEBUG) {

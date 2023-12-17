@@ -150,8 +150,8 @@ function updateDOM(first, last, objects) {
     return count + setNodeValue(last, nLast < 1 ? null : objects[nLast]);
 }
 
-export default function TextRenderer(path, index, source, node, message) {
-    Renderer.call(this, path, index, source, library, message);
+export default function TextRenderer(path, index, source, message, node) {
+    Renderer.apply(this, arguments);
     // Insert text node. When renderer is created with cloned DOM, clone of
     // `node` is assigned to `renderer.first` and the clone of this new text
     // node is assigned as `renderer.last`.

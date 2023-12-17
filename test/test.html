@@ -4,11 +4,11 @@
     <meta name="description" content="Documentation for Literal. Literal puts JS into your HTML. Literal defines a custom include element that parses and renders templates written as JS Literals, in a small library under 15kB minified and gzipped." />
     <meta name="viewport" content="width=device-width" />
 
-    <link rel="stylesheet" href="../literal-include/module.css" />
-
     <script>
         window.DEBUG = true;
     </script>
+
+    <link rel="stylesheet" href="../documentation/classes/clock.css" />
 
     <style>
         body {
@@ -34,6 +34,12 @@
         :checked + .checked-before::before {
             content: '✔ Input is checked'
         }
+
+        label {
+            display: block;
+            margin-top: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
     </style>
 
     <template id="test">
@@ -44,65 +50,204 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
 </head>
 
 <body>
-    <section>
-        <h3 class="text-03">Loops, shared data</h3>
+    <template id="clock-hands">
+        <time class="clock" datetime="${ data.toISOString() }" style="font-size: 1.25rem;">
+            <span class="hour-clock-hand   clock-hand" style="transform: rotate(${ 30 * (data.getHours()   % 12) }deg);">${ data.getHours()   } hours</span>
+            <span class="minute-clock-hand clock-hand" style="transform: rotate(${ 6  * (data.getMinutes() % 60) }deg);">${ data.getMinutes() } minutes</span>
+            <span class="second-clock-hand clock-hand" style="transform: rotate(${ 6  * (data.getSeconds() % 60) }deg);">${ data.getSeconds() } seconds</span>
+        </time>
+    </template>
 
-        <template id="option">
-            <option value="${ DATA.value }">${ DATA.text }</option>
+    <template is="literal-html">
+        ${ clock(1).start().map(() => include('#clock-hands', new Date())) }
+    </template>
+
+
+
+
+
+
+    <template id="option">
+        <option value="${ DATA.value }">${ DATA.label }</option>
+    </template>
+
+    <template id="checkbox">
+        <label style="display:inline-block;">${ DATA.label }</label>
+        <input type="checkbox" name="${ DATA.name }" value="${ DATA.value }" checked="${ get(DATA.name, data.data) === DATA.value }" />
+    </template>
+
+    <template id="radio">
+        <label style="display:inline-block;">${ DATA.label }</label>
+        <input type="radio" name="${ DATA.name }" value="${ DATA.value }" checked="${ get(DATA.name, data.data) === DATA.value }" />
+    </template>
+
+    <form>
+        <h3 class="text-03">Forms</h3>
+
+        <template is="literal-html" src="./test.json">
+            <h4 class="text-04">typeof value = string</h4>
+
+            <label for="text-input">Text</label>
+            <input type="text" name="object.string" value="${ data.object.string }" id="text-input" />
+
+            <label for="email-input">Email</label>
+            <input type="email" name="object.email" value="${ data.object.email }" id="email-input" />
+
+            <label for="search-input">Search</label>
+            <input type="search" name="object.string" value="${ data.object.string }" id="search-input" />
+
+            <label for="tel-input">Tel</label>
+            <input type="tel" name="object.tel" value="${ data.object.tel }" id="tel-input" />
+
+            <label for="time-input">Time</label>
+            <input type="time" name="object.time" value="${ data.object.time }" id="time-input" />
+
+            <label for="url-input">URL</label>
+            <input type="url" name="object.url" value="${ data.object.url }" id="url-input" />
+
+            <label for="required-input">Text [required]</label>
+            <input type="text" name="object.string" value="${ data.object.string }" required id="required-input" />
+
+            <label for="textarea">Textarea</label>
+            <textarea name="object.string" id="textarea">${ data.object.string }</textarea>
+
+            <h4 class="text-04">typeof value = number</h4>
+
+            <label for="number-input">Number</label>
+            <input type="number" name="object.number" value="${ data.object.number }" id="number-input" />
+
+            <label for="range-input">Range</label>
+            <input type="range" name="object.number" value="${ data.object.number }" id="range-input" />
+
+            <h4 class="text-04">select by typeof value = string</h4>
+
+            <label style="display: inline-block;">Checkbox</label>
+            <input type="checkbox" name="selectedObjectLabel" value="${ data.objects[0].label }" checked="${ data.selectedObjectLabel === getValue(element) }" />
+            <input type="checkbox" name="selectedObjectLabel" value="${ data.objects[1].label }" checked="${ data.selectedObjectLabel === getValue(element) }" />
+            <input type="checkbox" name="selectedObjectLabel" value="${ data.objects[2].label }" checked="${ data.selectedObjectLabel === getValue(element) }" />
+
+            <label style="display: inline-block;">Radio</label>
+            <input type="radio" name="selectedObjectLabel" value="${ data.objects[0].label }" checked="${ data.selectedObjectLabel === getValue(element) }" />
+            <input type="radio" name="selectedObjectLabel" value="${ data.objects[1].label }" checked="${ data.selectedObjectLabel === getValue(element) }" />
+            <input type="radio" name="selectedObjectLabel" value="${ data.objects[2].label }" checked="${ data.selectedObjectLabel === getValue(element) }" />
+
+            <label for="select-string" style="display: inline-block;">Select</label>
+            <select name="selectedObjectLabel" value="${ data.selectedObjectLabel }" id="select-string">
+                <option value="${ data.objects[0].label }">${ data.objects[0].label }</option>
+                <option value="${ data.objects[1].label }">${ data.objects[1].label }</option>
+                <option value="${ data.objects[2].label }">${ data.objects[2].label }</option>
+            </select>
+
+            <code>label: ${ data.selectedObjectLabel }</code>
+
+            <h4 class="text-04">select by typeof value = number</h4>
+
+            <label style="display: inline-block;">Checkbox</label>
+            <input type="checkbox" name="selectedObjectId" value="${ data.objects[0].id }" checked="${ data.selectedObjectId === getValue(element) }" />
+            <input type="checkbox" name="selectedObjectId" value="${ data.objects[1].id }" checked="${ data.selectedObjectId === getValue(element) }" />
+            <input type="checkbox" name="selectedObjectId" value="${ data.objects[2].id }" checked="${ data.selectedObjectId === getValue(element) }" />
+
+            <label style="display: inline-block;">Radio</label>
+            <input type="radio" name="selectedObjectId" value="${ data.objects[0].id }" checked="${ data.selectedObjectId === getValue(element) }" />
+            <input type="radio" name="selectedObjectId" value="${ data.objects[1].id }" checked="${ data.selectedObjectId === getValue(element) }" />
+            <input type="radio" name="selectedObjectId" value="${ data.objects[2].id }" checked="${ data.selectedObjectId === getValue(element) }" />
+
+            <label for="select-number" style="display: inline-block;">Select</label>
+            <select name="selectedObjectId" value="${ data.selectedObjectId }" id="select-number">
+                <option value="${ data.objects[0].id }">${ data.objects[0].label }</option>
+                <option value="${ data.objects[1].id }">${ data.objects[1].label }</option>
+                <option value="${ data.objects[2].id }">${ data.objects[2].label }</option>
+            </select>
+
+            <code>id: ${ data.selectedObjectId }</code>
+
+            <h4 class="text-04">select by typeof value = object</h4>
+
+            <label style="display: inline-block;">Checkbox</label>
+            <input type="checkbox" name="selectedObject" value="${ data.objects[0] }" checked="${ data.selectedObject === getValue(element) }" />
+            <input type="checkbox" name="selectedObject" value="${ data.objects[1] }" checked="${ data.selectedObject === getValue(element) }" />
+            <input type="checkbox" name="selectedObject" value="${ data.objects[2] }" checked="${ data.selectedObject === getValue(element) }" />
+
+            <label style="display: inline-block;">Radio</label>
+            <input type="radio" name="selectedObject" value="${ data.objects[0] }" checked="${ data.selectedObject === getValue(element) }" />
+            <input type="radio" name="selectedObject" value="${ data.objects[1] }" checked="${ data.selectedObject === getValue(element) }" />
+            <input type="radio" name="selectedObject" value="${ data.objects[2] }" checked="${ data.selectedObject === getValue(element) }" />
+
+            <label for="select-object" style="display: inline-block;">Select</label>
+            <select value="${ data.selectedObject }" name="selectedObject" id="select-object">
+                <option value="${ data.objects[0] }">${ data.objects[0].label }</option>
+                <option value="${ data.objects[1] }">${ data.objects[1].label }</option>
+                <option value="${ data.objects[2] }">${ data.objects[2].label }</option>
+            </select>
+
+            <code>object: ${ data.selectedObject }</code>
+
+            <h4 class="text-04">select by index</h4>
+
+            <label style="display: inline-block;">Checkbox</label>
+            ${ data.objects.map((object, index) => include('#checkbox', { data, name: 'selectedIndex', value: index, label: object.label })) }
+
+            <label style="display: inline-block;">Radio</label>
+            ${ data.objects.map((object, index) => include('#radio', { data, name: 'selectedIndex', value: index, label: object.label })) }
+
+            <label for="select-index-1" style="display: inline-block;">Select</label>
+            <select id="thing-select" name="selectedIndex" value="${ data.selectedIndex }" id="select-index-1">
+                ${ data.objects.map((data, index) => include('#option', { value: index, label: data.label })) }
+            </select>
+
+            <code>index: ${ data.selectedIndex }</code>
+
+            ${ events('input', element).each((e) => set(e.target.name, data, getValue(e.target))) }
+        </template>
+    </form>
+
+    <form>
+        <template is="literal-html" src="./test.json">
+            <h4 class="text-04">select by index, another form, same data</h4>
+
+            <label style="display: inline-block;">Checkbox</label>
+            ${ data.objects.map((object, index) => include('#checkbox', { data, name: 'selectedIndex', value: index, label: object.label })) }
+
+            <label style="display: inline-block;">Radio</label>
+            ${ data.objects.map((object, index) => include('#radio', { data, name: 'selectedIndex', value: index, label: object.label })) }
+
+            <label for="select-index-1" style="display: inline-block;">Select</label>
+            <select id="thing-select" name="selectedIndex" value="${ data.selectedIndex }" id="select-index-1">
+                ${ data.objects.map((data, index) => include('#option', { value: index, label: data.label })) }
+            </select>
+
+            <code>index: ${ data.selectedIndex }</code>
+
+            ${ events('input', element).each((e) => set(e.target.name, data, getValue(e.target))) }
         </template>
 
         <template is="literal-html" src="./test.json">
-            <pre>${ data.things[data.thing] }</pre>
-        </template>
+            <h4 class="text-04">select by index, another template, same data</h4>
 
-        <template is="literal-html" src="./test.json">
-            <select id="thing-select" value="${ data.things[data.thing].id }">
-                ${ data.things.map(({ id, label }) => include('#option', { value: id, text: label })) }
-                ${ events('input', element).each((e) => data.thing = Number(element.value)) }
+            <label for="select-index-2" style="display: inline-block;">Select</label>
+            <select id="thing-select" name="selectedIndex" value="${ data.selectedIndex }" id="select-index-2">
+                ${ data.objects.map((data, index) => include('#option', { value: index, label: data.label })) }
             </select>
         </template>
+    </form>
 
-        <template is="literal-html" src="./test.json">
-            <select id="thing-select" value="${ data.things[data.thing].id }">
-                ${ data.things.map(({ id, label }) => include('#option', { value: id, text: label })) }
-                ${ events('input', element).each((e) => data.thing = Number(element.value)) }
-            </select>
-        </template>
-    </section>
-
-    <section>
+    <form>
         <h3 class="text-03">bind()</h3>
 
         <template is="literal-html" src="./test.json">
             <label>text</label>
-            <input type="text" value="${ bind('string', data) }" />
+            <input type="text" value="${ bind('object.string', data) }" />
             <label>number</label>
             <input type="number" value="${ bind('object.number', data) }" />
         </template>
-
-        <br/>
 
         <template is="literal-html" src="./test.json">
             <label>text</label>
-            <input type="text" value="${ bind('string', data) }" />
+            <input type="text" value="${ bind('object.string', data) }" />
             <label>number</label>
             <input type="number" value="${ bind('object.number', data) }" />
         </template>
-    </section>
-
-    <section>
-        <h3 class="text-03">&lt;textarea&gt;</h3>
-
-        <template id="textarea">
-            <textarea name="string">${ data.string }</textarea>
-            ${ events('change', element).each((e) => set(e.target.name, data, e.target.value)) }
-        </template>
-
-        <template is="literal-html" src="./test.json">
-            ${ include('#textarea', data.object) }
-            ${ data.object }
-        </template>
-    </section>
+    </form>
 
     <section>
         <h3 class="text-03">Data <span class="test-count">(5 tests)</span></h3>
@@ -168,21 +313,6 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
         <template is="literal-html" data="{}"
             ><p>${ '✔ No space for text' }</p
         ></template>
-    </section>
-
-    <hr/>
-
-    <section title="forms">
-        <h3 class="text-03">Forms</h3>
-        <template is="literal-html" src="./test.js#arrayOfObjects">
-            <label class="block">Select an object</label>
-            <select value="${ data[0] }">
-                <option value="${ data[0] }">${ data[0].text }</option>
-                <option value="${ data[1] }">${ data[1].text }</option>
-                <option value="${ data[2] }">${ data[2].text }</option>
-            </select>
-            ${ events('input', element).map((e) => getValue(e.target)) }
-        </template>
     </section>
 
     <hr/>
@@ -266,8 +396,6 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
             </select>
         </template>
     </section>
-
-    <hr/>
 
     <script type="module">
     import '../literal-html/module.js';

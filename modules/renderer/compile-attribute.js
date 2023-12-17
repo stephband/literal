@@ -42,15 +42,11 @@ const constructors = {
     class:          TokensRenderer,
     value:          ValueRenderer,
 
-    datetime: function(source, element, name, path, message) {
-        if (window.DEBUG) { console.log('Literal TODO: compile datetime attribute'); }
-    },
-
     // Workaround attribute used in cases where ${} cannot be added directly to
     // HTML, such as in <tbody> or <tr>
-    'inner-html': function(source, element, name, path, message) {
+    'inner-html': function(path, name, source, message, element) {
         element.removeAttribute(name);
-        return new TextRenderer(path, 0, decode(source), element.childNodes[0], message);
+        return new TextRenderer(path, 0, decode(source), message, element.childNodes[0]);
     }
 };
 
@@ -69,6 +65,6 @@ export default function compileAttribute(renderers, element, attribute, path, me
     }
 
     const Constructor = constructors[name] || AttributeRenderer;
-    renderers.push(new Constructor(path, name, source, element, message));
+    renderers.push(new Constructor(path, name, source, message, element));
     return renderers;
 }

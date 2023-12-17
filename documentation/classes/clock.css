@@ -1,0 +1,75 @@
+.clock {
+    box-sizing: border-box;
+    position: relative;
+    display: block;
+    width: 5em;
+    height: 5em;
+    border: 0.125em solid black;
+    border-radius: 2.5em;
+}
+
+.clock::before {
+    content: '';
+    position: absolute;
+    box-sizing: border-box;
+    left: 50%;
+    top: 50%;
+    margin-left: -0.15625em;
+    margin-top: -0.15625em;
+    width: 0.3125em;
+    height: 0.3125em;
+    background-color: black;
+    border-radius: 50%;
+}
+
+.clock-hand {
+    box-sizing: border-box;
+    transform-origin: 50% 100%;
+    background-color: black;
+}
+
+.hour-clock-hand {
+    padding-left: 0.3125em;
+    width: 0.3125em;
+    height: 1.5em;
+    margin-left: -0.15625em;
+    border-top-left-radius: 0.125em;
+    border-top-right-radius: 0.125em;
+}
+
+.minute-clock-hand {
+    padding-left: 0.1875em;
+    width: 0.1875em;
+    height: 2.125em;
+    margin-left: -0.09375em;
+    border-top-left-radius: 0.0625em;
+    border-top-right-radius: 0.0625em;
+}
+
+.second-clock-hand {
+    padding-left: 0.0625em;
+    width: 0.0625em;
+    height: 2.25em;
+    margin-left: -0.03125em;
+    background-color: red;
+    border-radius: 0.03125em;
+}
+
+.clock > .clock-hand {
+    position: absolute;
+    left: 50%;
+    top: 0.125em;
+    overflow: hidden;
+}
+
+.clock > .hour-clock-hand {
+    top: 0.875em;
+}
+
+.clock > .minute-clock-hand {
+    top: 0.25em;
+}
+
+.clock > .second-clock-hand {
+    top:  0.125em;
+}

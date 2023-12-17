@@ -203,3 +203,34 @@ More debugging information can be printed to the DOM using the `print()` functio
 </div>
 
 Again, where `window.DEBUG` is not set, nothing is rendered.
+
+
+### A quick example
+
+Turn a `<time>` element into a clock face:
+
+```html
+<template id="clock-hands">
+    <time class="clock" datetime="${ data.toISOString() }">
+        <span class="hour-clock-hand   clock-hand" style="transform: rotate(${ 30 * (data.getHours()   % 12) }deg);">${ data.getHours()   } hours</span>
+        <span class="minute-clock-hand clock-hand" style="transform: rotate(${ 6  * (data.getMinutes() % 60) }deg);">${ data.getMinutes() } minutes</span>
+        <span class="second-clock-hand clock-hand" style="transform: rotate(${ 6  * (data.getSeconds() % 60) }deg);">${ data.getSeconds() } seconds</span>
+    </time>
+</template>
+
+<template is="literal-html">
+    ${ clock(1).start().map(() => include('#clock-hands', new Date())) }
+</template>
+```
+<div class="demo-block block">
+<template id="clock-hands">
+    <time class="clock" datetime="${ data.toISOString() }">
+        <span class="hour-clock-hand   clock-hand" style="transform: rotate(${ 30 * (data.getHours()   % 12) }deg);">${ data.getHours()   } hours</span>
+        <span class="minute-clock-hand clock-hand" style="transform: rotate(${ 6  * (data.getMinutes() % 60) }deg);">${ data.getMinutes() } minutes</span>
+        <span class="second-clock-hand clock-hand" style="transform: rotate(${ 6  * (data.getSeconds() % 60) }deg);">${ data.getSeconds() } seconds</span>
+    </time>
+</template>
+<template is="literal-html">
+    ${ clock(1).start().map(() => include('#clock-hands', new Date())) }
+</template>
+</div>

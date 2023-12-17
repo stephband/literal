@@ -134,7 +134,7 @@ const compileNode = overload((renderers, node) => toType(node), {
                 + ' (' + message + ')' ;
         }
 
-        renderers.push(new TextRenderer(path, indexOf(node), source, node, message));
+        renderers.push(new TextRenderer(path, indexOf(node), source, message, node));
         return renderers;
     },
 

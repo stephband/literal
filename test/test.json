@@ -6,24 +6,29 @@
     "number":    1,
     "array":     [0,1,2,3],
     "object":    {
-        "number":   1,
-        "string":   "string"
+        "number":   0,
+        "string":   "string",
+        "url":      "http://stephen.band/",
+        "date":     "2024-01-01",
+        "time":     "10:00",
+        "email":    "hello@cruncher.ch",
+        "datetime": "2024-01-01T10:00",
+        "tel":      "+41760000000"
     },
+
     "null":      null,
 
-    "things": [{
+    "objects": [{
         "label": "One",
-        "id": 0
-    }, {
-        "label": "Two",
         "id": 1
     }, {
-        "label": "Three",
+        "label": "Two",
         "id": 2
     }, {
-        "label": "Four",
+        "label": "Three",
         "id": 3
-    }],
-
-    "thing": 0
+    }, {
+        "label": "Four",
+        "id": 4
+    }]
 }
