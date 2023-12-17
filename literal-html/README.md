@@ -210,7 +210,7 @@ Again, where `window.DEBUG` is not set, nothing is rendered.
 Turn a `<time>` element into a clock face:
 
 ```html
-<template id="clock-hands">
+<template id="clock-time">
     <time class="clock" datetime="${ data.toISOString() }">
         <span class="hour-clock-hand   clock-hand" style="transform: rotate(${ 30 * (data.getHours()   % 12) }deg);">${ data.getHours()   } hours</span>
         <span class="minute-clock-hand clock-hand" style="transform: rotate(${ 6  * (data.getMinutes() % 60) }deg);">${ data.getMinutes() } minutes</span>
@@ -219,11 +219,11 @@ Turn a `<time>` element into a clock face:
 </template>
 
 <template is="literal-html">
-    ${ clock(1).start().map(() => include('#clock-hands', new Date())) }
+    ${ clock(1).start().map(() => include('#clock-time', new Date())) }
 </template>
 ```
 <div class="demo-block block">
-<template id="clock-hands">
+<template id="clock-time">
     <time class="clock" datetime="${ data.toISOString() }">
         <span class="hour-clock-hand   clock-hand" style="transform: rotate(${ 30 * (data.getHours()   % 12) }deg);">${ data.getHours()   } hours</span>
         <span class="minute-clock-hand clock-hand" style="transform: rotate(${ 6  * (data.getMinutes() % 60) }deg);">${ data.getMinutes() } minutes</span>
@@ -231,6 +231,6 @@ Turn a `<time>` element into a clock face:
     </time>
 </template>
 <template is="literal-html">
-    ${ clock(1).start().map(() => include('#clock-hands', new Date())) }
+    ${ clock(1).start().map(() => include('#clock-time', new Date())) }
 </template>
 </div>
