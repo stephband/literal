@@ -70,6 +70,26 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
         </template>
     </section>
 
+    <section>
+        <h3 class="text-03">bind()</h3>
+
+        <template is="literal-html" src="./test.json">
+            <label>text</label>
+            <input type="text" value="${ bind('string', data) }" />
+            <label>number</label>
+            <input type="number" value="${ bind('number', data) }" />
+        </template>
+
+        <br/>
+
+        <template is="literal-html" src="./test.json">
+            <label>text</label>
+            <input type="text" value="${ bind('string', data) }" />
+            <label>number</label>
+            <input type="number" value="${ bind('number', data) }" />
+        </template>
+    </section>
+
     <!--section>
         <h3 class="text-03">&lt;textarea&gt;</h3>
 

@@ -8,14 +8,20 @@ import toText            from './to-text.js';
 const A      = Array.prototype;
 const $value = Symbol('literal-value');
 
+const enhancedTypes = {
+    'select-one':      true,
+    'select-multiple': true,
+    'checkbox':        true,
+    'radio':           true
+};
 
 /** getValue(element)
 
-Literal provides a mechanism for setting and getting values of any type
-on elements with `value`. Where `element.value` always returns a string
-(on uncustomised DOM elements, at least), getValue(element) returns the
-value set by a Literal template *before* it was coerced to a string. If
-no such value is set it falls back to returning the string.
+Literal provides a mechanism for setting and getting values of any type on
+select, checkbox and radio inputs. Where `input.value` always returns a string
+(on uncustomised DOM elements, at least), getValue(element) returns the value
+set by a Literal template *before* it was coerced to a string. If no such value
+exists it falls back to returning the string.
 
 ```
 events('input', document.body)
@@ -43,12 +49,16 @@ export const getValue = overload(get('type'), {
         .call(element.options, get('selected'))
         .map(getElementValue),
 
-    // Return numeric value ... TODO ?????
-    'number': (element) => element[$value] || Number(element.value),
-    'range':  (element) => element[$value] || Number(element.value),
+    // Otherwise return $value of enhanced element types
+    'checkbox': getElementValue,
+    'radio':    getElementValue,
 
-    // Otherwise return $value of element
-    'default': getElementValue
+    // Or number of numerical types
+    'number':   (element) => Number(element.value),
+    'range':    (element) => Number(element.value),
+
+    // Or just the string value
+    'default':  (element) => element.value
 });
 
 
@@ -64,25 +74,28 @@ const types = {
 
 function setElementValue(element, value) {
     // Don't render into focused nodes, it makes the cursor jump to the
-    // end of the field, and we should cede control to the user anyway
+    // end of the field, and we should cede control to the user
     if (document.activeElement === element) {
         return 0;
     }
 
+    const isEnhanced = enhancedTypes[element.type];
+
     // If value is already set on $value expando do nothing
-    if ($value in element && element[$value] === value) {
+    if (isEnhanced && $value in element && element[$value] === value) {
         return 0;
     }
 
     // Refuse to set value that does not conform to input type
-    const type = typeof value;
     const expectedType = types[element.type];
-    if (expectedType && type !== expectedType) {
+    if (expectedType && typeof value !== expectedType) {
         return 0;
     }
 
-    // Set object value as a $value expando
-    element[$value] = value;
+    // Where input is an enhanced type set object value as a $value expando
+    if (isEnhanced) {
+        element[$value] = value;
+    }
 
     // Convert to string with Literal's text rendering rules
     const string = toText(value);
@@ -95,11 +108,11 @@ function setElementValue(element, value) {
     // Bit of an edge case, but where we have a custom element that has not
     // been upgraded yet, but will have a value property defined on its
     // prototype when it does upgrade, setting value on the instance now will
-    // mask the ultimate get/set definition on the prototype.
+    // mask the ultimate get/set definition on the prototype...
     if ('value' in element) {
         element.value = string;
     }
-    // So don't, if property is not in node. Set the attribute, it will be
+    // ...so don't, if property is not in node. Set the attribute, it will be
     // picked up on upgrade.
     else {
         element.setAttribute('value', string);

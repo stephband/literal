@@ -85,8 +85,9 @@ A named export can be imported using a fragment identifier:
 
 ### Include other templates
 
-Expressions can `include()` other templates by id. Included templates need no
-special attributes but they are nonetheless parsed as Literal templates.
+Expressions can `include()` other templates that are in the DOM by id. Included
+templates need no special attributes but as includes they are nonetheless parsed
+as Literal templates.
 
 ```html
 <template id="todo-li">
