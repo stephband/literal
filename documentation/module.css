@@ -6,6 +6,7 @@
 @import "../../bolt/elements/type.css";
 @import "../../bolt/elements/a.css";
 @import "../../bolt/elements/table.css";
+@import "../../bolt/elements/input.css";
 
 @import "../../bolt/classes/button.css";
 @import "../../bolt/classes/list.css";
@@ -31,3 +32,5 @@
 @import './elements/body.css';
 @import './elements/code.css';
 @import './elements/details-toggle.css';
+
+@import '../debug.css';

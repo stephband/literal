@@ -10,18 +10,9 @@
         <h1 class="text-01">Literal <span class="text-06">0.8.0</span></h1>
     </header>
 
-    ${ include('../documentation/templates/page.literal', (await comments(
-        './module.js'
-    ))) }
-
-    <div class="x1 4x @2-x2 x-stretch y-start">
-        <h2>Literal templates</h2>
-
-        <ul>
-            <li><a href="../templates/#template-scope">Helper functions in the template scope</a></li>
-            <li><a href="../templates/#template-expressions">How template expressions render to the DOM</a></li>
-        </ul>
-    </div>
+    <section class="x1 4x @2-x2 x-stretch">
+        ${ include('./README.md', data) }
+    </section>
 
     ${ include("../templates/nav.literal", "../nav.json") }
     ${ include('../documentation/templates/credit.literal', '../package.json') }
