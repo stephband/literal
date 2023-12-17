@@ -40,3 +40,11 @@ pre,
 code.block {
     white-space: pre;
 }
+
+@media (max-width: 48em) {
+    pre > code {
+        margin-left:  -1.68em;
+        margin-right: -1.68em;
+        width: calc(100% + 1.68em + 1.68em);
+    }
+}

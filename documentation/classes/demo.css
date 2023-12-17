@@ -17,3 +17,11 @@ pre + .demo-block {
     border-top: 0.3em solid var(--slate);
     margin-top: -0.3em;
 }
+
+@media (max-width: 48em) {
+    * > .demo-block {
+        margin-left:  -1.7em;
+        margin-right: -1.7em;
+        width: calc(100% + 2.8em);
+    }
+}
