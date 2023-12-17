@@ -205,7 +205,7 @@ More debugging information can be printed to the DOM using the `print()` functio
 Again, where `window.DEBUG` is not set, nothing is rendered.
 
 
-### A quick example
+### An example
 
 Turn a `<time>` element into a clock face:
 
