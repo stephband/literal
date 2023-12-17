@@ -85,6 +85,36 @@ A named export can be imported using a fragment identifier:
 </div>
 
 
+### Share `data` across templates
+
+Imported data objects are cached. Other templates importing from an identical
+URL share the same `data` object. Changes made to `data` inside a template are
+seen by all templates rendering that data:
+
+```html
+<template is="literal-html" src="../package.json">
+    <label>Title (first template)</label>
+    <input type="text" value="${ bind('title', data) }" />
+</template>
+
+<template is="literal-html" src="../package.json">
+    <label>Title (second template)</label>
+    <input type="text" value="${ bind('title', data) }" />
+</template>
+```
+<div class="demo-block block">
+<template is="literal-html" src="../package.json">
+    <label>Title (first template)</label>
+    <input type="text" value="${ bind('title', data) }" />
+</template>
+
+<template is="literal-html" src="../package.json">
+    <label>Title (second template)</label>
+    <input type="text" value="${ bind('title', data) }" />
+</template>
+</div>
+
+
 ### Include other templates
 
 Expressions can `include()` other templates that are in the DOM by id. Included
@@ -130,36 +160,6 @@ mapping an array of objects to template includes:
 
 Note that the included template `#todo-li` is not removed from the DOM. It is
 recommended to place templates intended as includes in the document `<head>`.
-
-
-### Share `data` across templates
-
-Imported data objects are cached. Other templates importing from an identical
-URL share the same `data` object. Changes made to `data` inside a template are
-seen by all templates rendering that data:
-
-```html
-<template is="literal-html" src="../package.json">
-    <label>Title (first template)</label>
-    <input type="text" value="${ bind('title', data) }" />
-</template>
-
-<template is="literal-html" src="../package.json">
-    <label>Title (second template)</label>
-    <input type="text" value="${ bind('title', data) }" />
-</template>
-```
-<div class="demo-block block">
-<template is="literal-html" src="../package.json">
-    <label>Title (first template)</label>
-    <input type="text" value="${ bind('title', data) }" />
-</template>
-
-<template is="literal-html" src="../package.json">
-    <label>Title (second template)</label>
-    <input type="text" value="${ bind('title', data) }" />
-</template>
-</div>
 
 
 ### Show errors and logs
