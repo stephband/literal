@@ -50,7 +50,7 @@ https://stephen.band/font-size/?breakpoints=417,1440&.text--2=128,144&.text--1=6
 code {
     font-family: MartianMono, Menlo, Monaco, monospace !important;
     font-variation-settings: 'wght' 480, 'wdth' 87.5;
-    font-size: 0.8333333333em;
+    font-size: 0.8em;
 }
 
 .text-00       { font-size: calc(3.83333333rem + 0.74074074vw); line-height: 1.05em;        font-weight: 600; }
