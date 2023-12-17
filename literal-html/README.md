@@ -59,12 +59,12 @@ A `src` attribute pointing to a JS module imports the default export of that
 module:
 
 ```html
-<template is="literal-html" src="../data/clock.js">
+<template is="literal-html" src="../build/data/clock.js">
     <p>${ data.time.toFixed(0) }</p>
 </template>
 ```
 <div class="demo-block block">
-<template is="literal-html" src="../data/clock.js">
+<template is="literal-html" src="../build/data/clock.js">
     <p>${ data.time.toFixed(0) }</p>
 </template>
 </div>
