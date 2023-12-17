@@ -162,33 +162,34 @@ seen by all templates rendering that data:
 </div>
 
 
-### Show errors when data is missing
+### Show errors and logs
 
 If `window.DEBUG = true` at time the element is registered, and the stylesheet
-`./build/debug.css` is imported, a `literal-html` template will render error
-messages when things go wrong. If a `literal-html` template cannot find `src`
-data it is replaced with:
+`./build/debug.css` is imported, some debugging features are available. Compile
+and render times are logged to the console. Open the console now to see compile
+and render logs for the Literal templates on this page.
+
+In addition a `literal-html` template will render some error messages to the
+DOM. If a `literal-html` template cannot find `src` data it is replaced with:
 
 ```html
 <template is="literal-html" src="../does-not-exist.json">
-    <h5>Hello</h5>
+    <h5>Not rendered</h5>
 </template>
 ```
 <div class="demo-block block">
 <template is="literal-html" src="../does-not-exist.json">
-    <h5>Hello</h5>
+    <h5>Not rendered</h5>
 </template>
 </div>
 
 Where `window.DEBUG` is not set, nothing is rendered. Frankly, error messaging
-could be improved, and [maybe you could help](https://github.com/stephband/literal/).
+and could be improved, and [maybe you could help](https://github.com/stephband/literal/).
 
 
 ### Print debug information
 
-If `window.DEBUG = true` at time the element is registered, and the stylesheet
-`./build/debug.css` is imported, debug information about the renderer and its
-data can be printed to the DOM using `print()`:
+More debugging information can be printed to the DOM using the `print()` function:
 
 ```html
 <template is="literal-html" src="../data/cart.js#items">

@@ -174,27 +174,27 @@ seen by all templates rendering that data:</p>
 </div>
 
 
-<h3 id="show-errors-when-data-is-missing">Show errors when data is missing</h3>
+<h3 id="show-errors-and-logs">Show errors and logs</h3>
 <p>If <code>window.DEBUG = true</code> at time the element is registered, and the stylesheet
-<code>./build/debug.css</code> is imported, a <code>literal-html</code> template will render error
-messages when things go wrong. If a <code>literal-html</code> template cannot find <code>src</code>
-data it is replaced with:</p>
+<code>./build/debug.css</code> is imported, some debugging features are available. Compile
+and render times are logged to the console. Open the console now to see compile
+and render logs for the Literal templates on this page.</p>
+<p>In addition a <code>literal-html</code> template will render some error messages to the
+DOM. If a <code>literal-html</code> template cannot find <code>src</code> data it is replaced with:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../does-not-exist.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h5</span><span class="token punctuation">></span></span>Hello<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h5</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h5</span><span class="token punctuation">></span></span>Not rendered<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h5</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 </code></pre>
 <div class="demo-block block">
 <template is="literal-html" src="../does-not-exist.json">
-    <h5>Hello</h5>
+    <h5>Not rendered</h5>
 </template>
 </div>
 
 <p>Where <code>window.DEBUG</code> is not set, nothing is rendered. Frankly, error messaging
-could be improved, and <a href="https://github.com/stephband/literal/">maybe you could help</a>.</p>
+and could be improved, and <a href="https://github.com/stephband/literal/">maybe you could help</a>.</p>
 <h3 id="print-debug-information">Print debug information</h3>
-<p>If <code>window.DEBUG = true</code> at time the element is registered, and the stylesheet
-<code>./build/debug.css</code> is imported, debug information about the renderer and its
-data can be printed to the DOM using <code>print()</code>:</p>
+<p>More debugging information can be printed to the DOM using the <code>print()</code> function:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../data/cart.js#items<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     ${ print(data) }
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
