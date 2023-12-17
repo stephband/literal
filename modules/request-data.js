@@ -43,7 +43,7 @@ requestData('./path/to/module#default("parameter")');
 
 import get            from '../../fn/modules/get.js';
 import overload       from '../../fn/modules/overload.js';
-import cache          from '../../fn/modules/cache.js';
+import cache          from '../../fn/modules/cache-by-key.js';
 import { requestGet } from '../../dom/modules/request.js';
 import { rewriteURL } from './urls.js';
 

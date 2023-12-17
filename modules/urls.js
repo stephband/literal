@@ -1,6 +1,7 @@
 
 const entries = Object.entries;
 const map     = {};
+const cache   = {};
 
 function toMap(urls, [path1, path2]) {
     const url = new URL(path1, window.location);

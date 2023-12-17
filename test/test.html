@@ -45,22 +45,32 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
 
 <body>
     <section>
+        <h3 class="text-03">Loops, shared data</h3>
+
         <template id="option">
             <option value="${ DATA.value }">${ DATA.text }</option>
         </template>
 
         <template is="literal-html" src="./test.json">
-            <pre>
-                ${ data.things[data.thing] }
-            </pre>
-            <select id="thing-select">
+            <pre>${ data.things[data.thing] }</pre>
+        </template>
+
+        <template is="literal-html" src="./test.json">
+            <select id="thing-select" value="${ data.things[data.thing].id }">
+                ${ data.things.map(({ id, label }) => include('#option', { value: id, text: label })) }
+                ${ events('input', element).each((e) => data.thing = Number(element.value)) }
+            </select>
+        </template>
+
+        <template is="literal-html" src="./test.json">
+            <select id="thing-select" value="${ data.things[data.thing].id }">
                 ${ data.things.map(({ id, label }) => include('#option', { value: id, text: label })) }
                 ${ events('input', element).each((e) => data.thing = Number(element.value)) }
             </select>
         </template>
     </section>
 
-    <section>
+    <!--section>
         <h3 class="text-03">&lt;textarea&gt;</h3>
 
         <template id="textarea">
@@ -235,7 +245,7 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
                 <option value="${ 9 }">Nine</option>
             </select>
         </template>
-    </section>
+    </section-->
 
     <hr/>
 

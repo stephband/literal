@@ -11,7 +11,7 @@ rendered content into your HTML.
 
 Importing `literal-html/module.js` registers `<template is="literal-html">` as
 a customised built-in template element. Support is polyfilled in Safari (who
-[refuse to implement customised built-ins](https://github.com/WebKit/standards-positions/issues/97]).
+[refuse to implement customised built-ins](https://github.com/WebKit/standards-positions/issues/97])).
 
 ```html
 <script type="module" src="./build/literal-html/module.js"></script>
@@ -52,23 +52,6 @@ is available inside the template as the `data` object:
 </template>
 </div>
 
-Imported data objects are cached. Other templates importing from an identical
-URL share the same `data` object. Changes made to `data` inside a template are
-seen by all templates rendering that data:
-
-```html
-<template is="literal-html" src="../package.json">
-    <label>Title</label>
-    <input type="text" value="${ bind('title', data) }" />
-</template>
-```
-<div class="demo-block block">
-<template is="literal-html" src="../package.json">
-    <label>Title</label>
-    <input type="text" value="${ bind('title', data) }" />
-</template>
-</div>
-
 
 ### Import a JS module
 
@@ -86,7 +69,7 @@ module:
 </template>
 </div>
 
-Add a fragment identifier to import a named export:
+A named export can be imported using a fragment identifier:
 
 ```html
 <template is="literal-html" src="../build/data/clock.js#something">
@@ -103,26 +86,7 @@ Add a fragment identifier to import a named export:
 ### Include other templates
 
 Expressions can `include()` other templates by id. Included templates need no
-special attributes but are nonetheless parsed as Literal templates.
-
-```html
-<template id="li-template">
-    <li>${ data.text }</li>
-</template>
-
-<template is="literal-html" src="../data/todo.json">
-    <ul>${ data.tasks.map(include('#li-template')) }</ul>
-</template>
-```
-<div class="demo-block block">
-<template id="li-template">
-    <li>${ data.text }</li>
-</template>
-<template is="literal-html" src="../data/todo.json">
-    <ul>${ data.tasks.map(include('#li-template')) }</ul>
-</template>
-</div>
-
+special attributes but they are nonetheless parsed as Literal templates.
 
 ```html
 <template id="todo-li">
@@ -135,6 +99,9 @@ special attributes but are nonetheless parsed as Literal templates.
 </template>
 ```
 <div class="demo-block block">
+<template id="todo-li">
+    <li>${ data.text }</li>
+</template>
 <template is="literal-html">
     <h5>Todo list</h5>
     <ul>${ include('#todo-li', { text: 'Wake up' }) }</ul>
@@ -155,5 +122,35 @@ mapping an array of objects to template includes:
 <template is="literal-html" src="../../data/todo.json">
     <h5>Todo list</h5>
     <ul>${ data.tasks.map(include('#todo-li')) }</ul>
+</template>
+</div>
+
+
+### Share `data` across templates
+
+Imported data objects are cached. Other templates importing from an identical
+URL share the same `data` object. Changes made to `data` inside a template are
+seen by all templates rendering that data:
+
+```html
+<template is="literal-html" src="../package.json">
+    <label>Title</label>
+    <input type="text" value="${ bind('title', data) }" />
+</template>
+
+<template is="literal-html" src="../package.json">
+    <label>Title</label>
+    <input type="text" value="${ bind('title', data) }" />
+</template>
+```
+<div class="demo-block block">
+<template is="literal-html" src="../package.json">
+    <label>Title</label>
+    <input type="text" value="${ bind('title', data) }" />
+</template>
+
+<template is="literal-html" src="../package.json">
+    <label>Title</label>
+    <input type="text" value="${ bind('title', data) }" />
 </template>
 </div>

@@ -121,9 +121,8 @@ export default element('<template is="literal-html">', {
             // Set internals.promise
             const p = internals.promise = requestData(url)
             .then((data) => {
-                if (!p.cancelled) {
-                    this.data = data;
-                }
+                if (p.cancelled) { return; }
+                this.data = data;
             })
             .catch((e) => onerror(e, this));
         }

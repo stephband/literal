@@ -48,7 +48,7 @@ rendered content into your HTML.</p>
 <h3 id="install-literal-html">Install <code>literal-html</code></h3>
 <p>Importing <code>literal-html/module.js</code> registers <code>&lt;template is=&quot;literal-html&quot;&gt;</code> as
 a customised built-in template element. Support is polyfilled in Safari (who
-<a href="https://github.com/WebKit/standards-positions/issues/97%5D">refuse to implement customised built-ins</a>.</p>
+<a href="https://github.com/WebKit/standards-positions/issues/97%5D">refuse to implement customised built-ins</a>).</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>module<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./build/literal-html/module.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
 </code></pre>
 <h3 id="author-a-literal-html-template">Author a <code>literal-html</code> template</h3>
@@ -79,21 +79,6 @@ is available inside the template as the <code>data</code> object:</p>
 </template>
 </div>
 
-<p>Imported data objects are cached. Other templates importing from an identical
-URL share the same <code>data</code> object. Changes made to <code>data</code> inside a template are
-seen by all templates rendering that data:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span><span class="token punctuation">></span></span>Title<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${ bind(<span class="token punctuation">'</span>title<span class="token punctuation">'</span>, data) }<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
-</code></pre>
-<div class="demo-block block">
-<template is="literal-html" src="../package.json">
-    <label>Title</label>
-    <input type="text" value="${ bind('title', data) }" />
-</template>
-</div>
-
 
 <h3 id="import-a-js-module">Import a JS module</h3>
 <p>A <code>src</code> attribute pointing to a JS module imports the default export of that
@@ -108,7 +93,7 @@ module:</p>
 </template>
 </div>
 
-<p>Add a fragment identifier to import a named export:</p>
+<p>A named export can be imported using a fragment identifier:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../build/data/clock.js#something<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>${ data.time }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
@@ -122,25 +107,7 @@ module:</p>
 
 <h3 id="include-other-templates">Include other templates</h3>
 <p>Expressions can <code>include()</code> other templates by id. Included templates need no
-special attributes but are nonetheless parsed as Literal templates.</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>li-template<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>${ data.text }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
-
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../data/todo.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span>${ data.tasks.map(include('#li-template')) }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span>
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
-</code></pre>
-<div class="demo-block block">
-<template id="li-template">
-    <li>${ data.text }</li>
-</template>
-<template is="literal-html" src="../data/todo.json">
-    <ul>${ data.tasks.map(include('#li-template')) }</ul>
-</template>
-</div>
-
-
+special attributes but they are nonetheless parsed as Literal templates.</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>todo-li<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>${ data.text }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
@@ -151,6 +118,9 @@ special attributes but are nonetheless parsed as Literal templates.</p>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 </code></pre>
 <div class="demo-block block">
+<template id="todo-li">
+    <li>${ data.text }</li>
+</template>
 <template is="literal-html">
     <h5>Todo list</h5>
     <ul>${ include('#todo-li', { text: 'Wake up' }) }</ul>
@@ -169,6 +139,33 @@ mapping an array of objects to template includes:</p>
 <template is="literal-html" src="../../data/todo.json">
     <h5>Todo list</h5>
     <ul>${ data.tasks.map(include('#todo-li')) }</ul>
+</template>
+</div>
+
+
+<h3 id="share-data-across-templates">Share <code>data</code> across templates</h3>
+<p>Imported data objects are cached. Other templates importing from an identical
+URL share the same <code>data</code> object. Changes made to <code>data</code> inside a template are
+seen by all templates rendering that data:</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span><span class="token punctuation">></span></span>Title<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${ bind(<span class="token punctuation">'</span>title<span class="token punctuation">'</span>, data) }<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span><span class="token punctuation">></span></span>Title<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${ bind(<span class="token punctuation">'</span>title<span class="token punctuation">'</span>, data) }<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
+</code></pre>
+<div class="demo-block block">
+<template is="literal-html" src="../package.json">
+    <label>Title</label>
+    <input type="text" value="${ bind('title', data) }" />
+</template>
+
+<template is="literal-html" src="../package.json">
+    <label>Title</label>
+    <input type="text" value="${ bind('title', data) }" />
 </template>
 </div>
 
