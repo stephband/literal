@@ -9,9 +9,9 @@ rendered content into your HTML.
 
 ### Install `literal-html`
 
-Importing `literal-html/module.js` registers `<template is="literal-html">` as
-a customised built-in template element. Support is polyfilled in Safari (who
-[refuse to implement customised built-ins](https://github.com/WebKit/standards-positions/issues/97])).
+Importing `./build/literal-html/module.js` from the [repository](https://github.com/stephband/literal/)
+registers `<template is="literal-html">` as a customised built-in template
+element. Support is polyfilled in Safari (who [refuse to implement customised built-ins](https://github.com/WebKit/standards-positions/issues/97])).
 
 ```html
 <script type="module" src="./build/literal-html/module.js"></script>
@@ -59,13 +59,13 @@ A `src` attribute pointing to a JS module imports the default export of that
 module:
 
 ```html
-<template is="literal-html" src="../build/data/clock.js">
-    <p>${ data.time }</p>
+<template is="literal-html" src="../data/clock.js">
+    <p>${ data.time.toFixed(0) }</p>
 </template>
 ```
 <div class="demo-block block">
-<template is="literal-html" src="../build/data/clock.js">
-    <p>${ data.time }</p>
+<template is="literal-html" src="../data/clock.js">
+    <p>${ data.time.toFixed(0) }</p>
 </template>
 </div>
 
@@ -86,8 +86,8 @@ A named export can be imported using a fragment identifier:
 ### Include other templates
 
 Expressions can `include()` other templates that are in the DOM by id. Included
-templates need no special attributes but as includes they are nonetheless parsed
-as Literal templates.
+templates need no special attributes but when included they are parsed as
+Literal templates.
 
 ```html
 <template id="todo-li">
@@ -100,12 +100,12 @@ as Literal templates.
 </template>
 ```
 <div class="demo-block block">
-<template id="todo-li">
-    <li>${ data.text }</li>
-</template>
 <template is="literal-html">
     <h5>Todo list</h5>
     <ul>${ include('#todo-li', { text: 'Wake up' }) }</ul>
+</template>
+<template id="todo-li">
+    <li>${ data.text }</li>
 </template>
 </div>
 
@@ -120,11 +120,14 @@ mapping an array of objects to template includes:
 </template>
 ```
 <div class="demo-block block">
-<template is="literal-html" src="../../data/todo.json">
+<template is="literal-html" src="../data/todo.json">
     <h5>Todo list</h5>
     <ul>${ data.tasks.map(include('#todo-li')) }</ul>
 </template>
 </div>
+
+Note that the included template `#todo-li` is not removed from the DOM. It is
+recommended to place templates intended as includes in the document `<head>`.
 
 
 ### Share `data` across templates
@@ -135,23 +138,44 @@ seen by all templates rendering that data:
 
 ```html
 <template is="literal-html" src="../package.json">
-    <label>Title</label>
+    <label>Title (first template)</label>
     <input type="text" value="${ bind('title', data) }" />
 </template>
 
 <template is="literal-html" src="../package.json">
-    <label>Title</label>
+    <label>Title (second template)</label>
     <input type="text" value="${ bind('title', data) }" />
 </template>
 ```
 <div class="demo-block block">
 <template is="literal-html" src="../package.json">
-    <label>Title</label>
+    <label>Title (first template)</label>
     <input type="text" value="${ bind('title', data) }" />
 </template>
 
 <template is="literal-html" src="../package.json">
-    <label>Title</label>
+    <label>Title (second template)</label>
     <input type="text" value="${ bind('title', data) }" />
 </template>
 </div>
+
+
+### Show errors when data is missing
+
+If `window.DEBUG = true` at time the element is registered, a `literal-html`
+template will render error messages when things go wrong. If a `literal-html`
+template cannot find `src` data it is replaced with:
+
+```html
+<template is="literal-html" src="../does-not-exist.json">
+    <h5>Hello</h5>
+</template>
+```
+<div class="demo-block block">
+<template is="literal-html" src="../does-not-exist.json">
+    <h5>Hello</h5>
+</template>
+</div>
+
+Where `window.DEBUG` is not set, nothing is rendered. Frankly, error messaging
+could be improved, and [maybe you could help](https://github.com/stephband/literal/).
