@@ -19,9 +19,15 @@ pre + .demo-block {
 }
 
 @media (max-width: 48em) {
+    .demo-block {
+        padding-left: 1.4em;
+        padding-right: 1.4em;
+        border-radius: 0;
+    }
+
     * > .demo-block {
-        margin-left:  -1.7em;
-        margin-right: -1.7em;
+        margin-left:  -1.4em;
+        margin-right: -1.4em;
         width: calc(100% + 2.8em);
     }
 }
