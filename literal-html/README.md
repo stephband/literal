@@ -207,7 +207,9 @@ Again, where `window.DEBUG` is not set, nothing is rendered.
 
 ### An example
 
-Turn a `<time>` element into a clock face:
+Turn a `<time>` element into a clock face. Admittedly much of this example is
+getting the CSS right, but the point it demonstrates is the suitability of
+Literal for animating a bit of style:
 
 ```html
 <template id="clock-time">
