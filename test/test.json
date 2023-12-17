@@ -2,10 +2,13 @@
     "one":       "✔ One",
     "two":       2,
     "three":     [3],
-    "string":    "String",
+    "string":    "string",
     "number":    1,
     "array":     [0,1,2,3],
-    "object":    { "property": "value" },
+    "object":    {
+        "number":   1,
+        "string":   "string"
+    },
     "null":      null,
 
     "things": [{

@@ -77,7 +77,7 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
             <label>text</label>
             <input type="text" value="${ bind('string', data) }" />
             <label>number</label>
-            <input type="number" value="${ bind('number', data) }" />
+            <input type="number" value="${ bind('object.number', data) }" />
         </template>
 
         <br/>
@@ -86,21 +86,21 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
             <label>text</label>
             <input type="text" value="${ bind('string', data) }" />
             <label>number</label>
-            <input type="number" value="${ bind('number', data) }" />
+            <input type="number" value="${ bind('object.number', data) }" />
         </template>
     </section>
 
-    <!--section>
+    <section>
         <h3 class="text-03">&lt;textarea&gt;</h3>
 
         <template id="textarea">
-            <textarea name="property">${ data.property }</textarea>
+            <textarea name="string">${ data.string }</textarea>
             ${ events('change', element).each((e) => set(e.target.name, data, e.target.value)) }
         </template>
 
         <template is="literal-html" src="./test.json">
-            ${ data.object }
             ${ include('#textarea', data.object) }
+            ${ data.object }
         </template>
     </section>
 
@@ -265,7 +265,7 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
                 <option value="${ 9 }">Nine</option>
             </select>
         </template>
-    </section-->
+    </section>
 
     <hr/>
 
