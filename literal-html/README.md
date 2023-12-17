@@ -86,7 +86,7 @@ module:
 </template>
 </div>
 
-Use a fragment identifier to import a named export:
+Add a fragment identifier to import a named export:
 
 ```html
 <template is="literal-html" src="../build/data/clock.js#something">
@@ -120,5 +120,40 @@ special attributes but are nonetheless parsed as Literal templates.
 </template>
 <template is="literal-html" src="../data/todo.json">
     <ul>${ data.tasks.map(include('#li-template')) }</ul>
+</template>
+</div>
+
+
+```html
+<template id="todo-li">
+    <li>${ data.text }</li>
+</template>
+
+<template is="literal-html">
+    <h5>Todo list</h5>
+    <ul>${ include('#todo-li', { text: 'Wake up' }) }</ul>
+</template>
+```
+<div class="demo-block block">
+<template is="literal-html">
+    <h5>Todo list</h5>
+    <ul>${ include('#todo-li', { text: 'Wake up' }) }</ul>
+</template>
+</div>
+
+
+The `include(src, data)` function is partially applicable, which is helpful for
+mapping an array of objects to template includes:
+
+```html
+<template is="literal-html" src="../data/todo.json">
+    <h5>Todo list</h5>
+    <ul>${ data.tasks.map(include('#todo-li')) }</ul>
+</template>
+```
+<div class="demo-block block">
+<template is="literal-html" src="../../data/todo.json">
+    <h5>Todo list</h5>
+    <ul>${ data.tasks.map(include('#todo-li')) }</ul>
 </template>
 </div>
