@@ -252,4 +252,4 @@ export default element('<template is="literal-html">', {
             internals.datas.push(object || null);
         }
     }
-});
+}, null, 'stephen.band/literal/');
