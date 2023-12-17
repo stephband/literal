@@ -1,10 +1,6 @@
 
 /**
 print(data)
-
-Where `window.DEBUG` was falsy at the time Literal is imported, `print()` does
-nothing.
-
 Prints an object or objects to the DOM as a debug message.
 
 ```html
@@ -47,7 +43,7 @@ function toHTML(object) {
     }
 }
 
-export default window.DEBUG ? function print(object) {
+export default function print(object) {
     // Print renderer
     const pre = document.createElement('pre');
     let html = '';
@@ -68,4 +64,4 @@ export default window.DEBUG ? function print(object) {
 
     pre.innerHTML = html;
     return pre;
-} : noop ;
+};
