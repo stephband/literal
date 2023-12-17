@@ -39,8 +39,6 @@
 <link rel="stylesheet" href="https://stephen.band/literal/documentation/build/module.css">
 <link rel="preload" as="style" href="https://stephen.band/literal/documentation/build/details-toggle/shadow.css">
 
-
-    <link rel="stylesheet" href="./literal-include/module.css" />
 </head>
 
 <body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
@@ -66,7 +64,7 @@ with <strong>JS literal expressions</strong> and renders them with a
 <li><a href="https://stephen.band/literal/templates/">Scope and expressions</a></li>
 <li><a href="https://github.com/stephband/literal/">Repository on github.com</a></li>
 </ul>
-<h2 id="literal-templates">Literal templates</h2>
+<h2 id="quick-start">Quick start</h2>
 <h3 id="template-isliteral-html"><code>&lt;template is=&quot;literal-html&quot;&gt;</code></h3>
 <p>A <code>literal-html</code> template is replaced in the DOM with its own rendered content.
 HTML <code>&lt;template&gt;</code>s are allowed pretty much anywhere in a document, so
@@ -75,8 +73,6 @@ rendered content into your HTML.</p>
 <p>Import <code>literal-html/module.js</code> to start rendering <code>literal-html</code> templates:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>module<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./build/literal-html/module.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
 </code></pre>
-<script type="module" src="./build/literal-html/module.js"></script>
-
 <p>Every Literal template has a <code>data</code> object. In this example the default export
 of <code>clock.js</code> is imported as <code>data</code> and its <code>time</code> property rendered:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./build/data/clock.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
@@ -133,8 +129,6 @@ file and an array of tasks is mapped to a collection of <code>&lt;li&gt;</code>s
 <p>Import <code>literal-element/module.js</code> to start rendering <code>literal-element</code> elements:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>module<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./build/literal-element/module.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
 </code></pre>
-<script type="module" src="./build/literal-element/module.js"></script>
-
 <p>Here’s a declaration of a bare-bones ‘<code>&lt;my-toggle&gt;</code>‘ element. It is recommended
 to put these in the <code>&lt;head&gt;</code>, but you don’t have to.</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-element<span class="token punctuation">"</span></span> <span class="token attr-name">tag</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>my-toggle<span class="token punctuation">"</span></span> <span class="token attr-name">attributes</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>active:boolean<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
@@ -195,7 +189,6 @@ to put these in the <code>&lt;head&gt;</code>, but you don’t have to.</p>
                 && window.location.hash === element.hash
             ))
             .reduce((previous, t) => {
-                console.log(t);
                 if (t === previous) {
                     return t;
                 }
@@ -221,7 +214,6 @@ to put these in the <code>&lt;head&gt;</code>, but you don’t have to.</p>
                 && window.location.hash === element.hash
             ))
             .reduce((previous, t) => {
-                console.log(t);
                 if (t === previous) {
                     return t;
                 }
@@ -248,7 +240,6 @@ to put these in the <code>&lt;head&gt;</code>, but you don’t have to.</p>
                 && window.location.hash === element.hash
             ))
             .reduce((previous, t) => {
-                console.log(t);
                 if (t === previous) {
                     return t;
                 }
@@ -275,7 +266,6 @@ to put these in the <code>&lt;head&gt;</code>, but you don’t have to.</p>
                 && window.location.hash === element.hash
             ))
             .reduce((previous, t) => {
-                console.log(t);
                 if (t === previous) {
                     return t;
                 }
@@ -302,7 +292,6 @@ to put these in the <code>&lt;head&gt;</code>, but you don’t have to.</p>
                 && window.location.hash === element.hash
             ))
             .reduce((previous, t) => {
-                console.log(t);
                 if (t === previous) {
                     return t;
                 }
@@ -329,7 +318,6 @@ to put these in the <code>&lt;head&gt;</code>, but you don’t have to.</p>
                 && window.location.hash === element.hash
             ))
             .reduce((previous, t) => {
-                console.log(t);
                 if (t === previous) {
                     return t;
                 }
@@ -395,7 +383,8 @@ to put these in the <code>&lt;head&gt;</code>, but you don’t have to.</p>
 
 
     <script type="module">
-        import './literal-element/module.js';
+        import './build/literal-html/module.js';
+        import './build/literal-element/module.js';
     </script>
 </body>
 </html>

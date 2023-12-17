@@ -11,7 +11,7 @@ with **JS literal expressions** and renders them with a
 - [Repository on github.com](https://github.com/stephband/literal/)
 
 
-## Literal templates quick start
+## Quick start
 
 ### `<template is="literal-html">`
 
@@ -25,7 +25,6 @@ Import `literal-html/module.js` to start rendering `literal-html` templates:
 ```html
 <script type="module" src="./build/literal-html/module.js"></script>
 ```
-<script type="module" src="./build/literal-html/module.js"></script>
 
 Every Literal template has a `data` object. In this example the default export
 of `clock.js` is imported as `data` and its `time` property rendered:
@@ -92,7 +91,6 @@ Import `literal-element/module.js` to start rendering `literal-element` elements
 ```html
 <script type="module" src="./build/literal-element/module.js"></script>
 ```
-<script type="module" src="./build/literal-element/module.js"></script>
 
 Here's a declaration of a bare-bones '`<my-toggle>`' element. It is recommended
 to put these in the `<head>`, but you don't have to.

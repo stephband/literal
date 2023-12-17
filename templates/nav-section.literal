@@ -8,7 +8,6 @@
                 && window.location.hash === element.hash
             ))
             .reduce((previous, t) => {
-                console.log(t);
                 if (t === previous) {
                     return t;
                 }
