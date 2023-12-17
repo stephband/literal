@@ -108,9 +108,9 @@ module:</p>
 
 
 <h3 id="share-data-across-templates">Share <code>data</code> across templates</h3>
-<p>Imported data objects are cached. Other templates importing from an identical
-URL share the same <code>data</code> object. Changes made to <code>data</code> inside a template are
-seen by all templates rendering that data:</p>
+<p>Imported data objects are cached. Other templates importing from the same
+resource share the same <code>data</code> object. Changes made to <code>data</code> inside a template
+are seen by all templates rendering that data:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../package.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span><span class="token punctuation">></span></span>Title (first template)<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>label</span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>input</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>text<span class="token punctuation">"</span></span> <span class="token attr-name">value</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${ bind(<span class="token punctuation">'</span>title<span class="token punctuation">'</span>, data) }<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>

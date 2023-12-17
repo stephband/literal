@@ -87,9 +87,9 @@ A named export can be imported using a fragment identifier:
 
 ### Share `data` across templates
 
-Imported data objects are cached. Other templates importing from an identical
-URL share the same `data` object. Changes made to `data` inside a template are
-seen by all templates rendering that data:
+Imported data objects are cached. Other templates importing from the same
+resource share the same `data` object. Changes made to `data` inside a template
+are seen by all templates rendering that data:
 
 ```html
 <template is="literal-html" src="../package.json">
