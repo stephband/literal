@@ -56,7 +56,7 @@ code {
 .text-00       { font-size: calc(3.83333333rem + 0.74074074vw); line-height: 1.05em;        font-weight: 600; }
 .text-01, h1   { font-size: calc(2.55555556rem + 0.49382716vw); line-height: 1.05em;        font-weight: 600; }
 .text-02, h2   { font-size: calc(1.91666667rem + 0.37037037vw); line-height: 1.3125em;      font-weight: 600; }
-.text-03, h3   { font-size: calc(1.53333333rem + 0.2962963vw);  line-height: 1.575em;       font-weight: 600; }
+.text-03, h3   { font-size: calc(1.53333333rem + 0.2962963vw);  line-height: 1.3125em; /* Altered line-height, review */       font-weight: 600; }
 .text-04, h4   { font-size: calc(1.27777778rem + 0.24691358vw); line-height: 1.05em;        font-weight: 600; }
 .text-05, h5   { font-size: calc(1.0952381rem  + 0.21164021vw); line-height: 1.225em;       font-weight: 600; }
 .text-06, h6   { font-size: calc(0.95833333rem + 0.18518519vw); line-height: 1.4em;         font-weight: 600; }

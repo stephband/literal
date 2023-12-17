@@ -7,14 +7,14 @@ HTML `<template>`s are allowed pretty much anywhere in a document, so
 rendered content into your HTML.
 
 
-### Install `literal-html`
+### Register `literal-html`
 
 Importing `./build/literal-html/module.js` from the [repository](https://github.com/stephband/literal/)
 registers `<template is="literal-html">` as a customised built-in template
-element. Support is polyfilled in Safari (who [refuse to implement customised built-ins](https://github.com/WebKit/standards-positions/issues/97])).
+element. (Support is polyfilled in Safari, who [refuse to implement customised built-ins](https://github.com/WebKit/standards-positions/issues/97])).
 
 ```html
-<script type="module" src="./build/literal-html/module.js"></script>
+<script src="https://stephen.band/literal/build/literal-html/module.js" type="module"></script>
 ```
 
 
@@ -72,13 +72,15 @@ module:
 A named export can be imported using a fragment identifier:
 
 ```html
-<template is="literal-html" src="../build/data/clock.js#something">
-    <p>${ data.time }</p>
+<template is="literal-html" src="../data/cart.js#items">
+    <p>Items in cart: ${ data.length }</p>
+    <p>${ data.map((item) => `${ item.quantity } x ${ item.product.name }`).join(', ') }</p>
 </template>
 ```
 <div class="demo-block block">
-<template is="literal-html" src="../build/data/clock.js#somethin">
-    <p>${ data.time }</p>
+<template is="literal-html" src="../data/cart.js#items">
+    <p>Items in cart: ${ data.length }</p>
+    <p>${ data.map((item) => `${ item.quantity } x ${ item.product.name }`).join(', ') }</p>
 </template>
 </div>
 
@@ -162,9 +164,10 @@ seen by all templates rendering that data:
 
 ### Show errors when data is missing
 
-If `window.DEBUG = true` at time the element is registered, a `literal-html`
-template will render error messages when things go wrong. If a `literal-html`
-template cannot find `src` data it is replaced with:
+If `window.DEBUG = true` at time the element is registered, and the stylesheet
+`./build/debug.css` is imported, a `literal-html` template will render error
+messages when things go wrong. If a `literal-html` template cannot find `src`
+data it is replaced with:
 
 ```html
 <template is="literal-html" src="../does-not-exist.json">
@@ -179,3 +182,23 @@ template cannot find `src` data it is replaced with:
 
 Where `window.DEBUG` is not set, nothing is rendered. Frankly, error messaging
 could be improved, and [maybe you could help](https://github.com/stephband/literal/).
+
+
+### Print debug information
+
+If `window.DEBUG = true` at time the element is registered, and the stylesheet
+`./build/debug.css` is imported, debug information about the renderer and its
+data can be printed to the DOM using `print()`:
+
+```html
+<template is="literal-html" src="../data/cart.js#items">
+    ${ print(data) }
+</template>
+```
+<div class="demo-block block">
+<template is="literal-html" src="../data/cart.js#items">
+    ${ print(data) }
+</template>
+</div>
+
+Again, where `window.DEBUG` is not set, nothing is rendered.

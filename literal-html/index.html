@@ -45,11 +45,11 @@
 HTML <code>&lt;template&gt;</code>s are allowed pretty much anywhere in a document, so
 <code>literal-html</code> templates enable you to freely mix islands of dynamically
 rendered content into your HTML.</p>
-<h3 id="install-literal-html">Install <code>literal-html</code></h3>
+<h3 id="register-literal-html">Register <code>literal-html</code></h3>
 <p>Importing <code>./build/literal-html/module.js</code> from the <a href="https://github.com/stephband/literal/">repository</a>
 registers <code>&lt;template is=&quot;literal-html&quot;&gt;</code> as a customised built-in template
-element. Support is polyfilled in Safari (who <a href="https://github.com/WebKit/standards-positions/issues/97%5D">refuse to implement customised built-ins</a>).</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>module<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./build/literal-html/module.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+element. (Support is polyfilled in Safari, who <a href="https://github.com/WebKit/standards-positions/issues/97%5D">refuse to implement customised built-ins</a>).</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://stephen.band/literal/build/literal-html/module.js<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>module<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
 </code></pre>
 <h3 id="author-a-literal-html-template">Author a <code>literal-html</code> template</h3>
 <p>Where no <code>src</code> or <code>data</code> attribute is declared the template is rendered
@@ -94,13 +94,15 @@ module:</p>
 </div>
 
 <p>A named export can be imported using a fragment identifier:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../build/data/clock.js#something<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
-    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>${ data.time }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../data/cart.js#items<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Items in cart: ${ data.length }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>${ data.map((item) => `${ item.quantity } x ${ item.product.name }`).join(', ') }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 </code></pre>
 <div class="demo-block block">
-<template is="literal-html" src="../build/data/clock.js#somethin">
-    <p>${ data.time }</p>
+<template is="literal-html" src="../data/cart.js#items">
+    <p>Items in cart: ${ data.length }</p>
+    <p>${ data.map((item) => `${ item.quantity } x ${ item.product.name }`).join(', ') }</p>
 </template>
 </div>
 
@@ -173,9 +175,10 @@ seen by all templates rendering that data:</p>
 
 
 <h3 id="show-errors-when-data-is-missing">Show errors when data is missing</h3>
-<p>If <code>window.DEBUG = true</code> at time the element is registered, a <code>literal-html</code>
-template will render error messages when things go wrong. If a <code>literal-html</code>
-template cannot find <code>src</code> data it is replaced with:</p>
+<p>If <code>window.DEBUG = true</code> at time the element is registered, and the stylesheet
+<code>./build/debug.css</code> is imported, a <code>literal-html</code> template will render error
+messages when things go wrong. If a <code>literal-html</code> template cannot find <code>src</code>
+data it is replaced with:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../does-not-exist.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h5</span><span class="token punctuation">></span></span>Hello<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h5</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
@@ -188,6 +191,21 @@ template cannot find <code>src</code> data it is replaced with:</p>
 
 <p>Where <code>window.DEBUG</code> is not set, nothing is rendered. Frankly, error messaging
 could be improved, and <a href="https://github.com/stephband/literal/">maybe you could help</a>.</p>
+<h3 id="print-debug-information">Print debug information</h3>
+<p>If <code>window.DEBUG = true</code> at time the element is registered, and the stylesheet
+<code>./build/debug.css</code> is imported, debug information about the renderer and its
+data can be printed to the DOM using <code>print()</code>:</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>../data/cart.js#items<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    ${ print(data) }
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
+</code></pre>
+<div class="demo-block block">
+<template is="literal-html" src="../data/cart.js#items">
+    ${ print(data) }
+</template>
+</div>
+
+<p>Again, where <code>window.DEBUG</code> is not set, nothing is rendered.</p>
 
     </section>
 
