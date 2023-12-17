@@ -7,7 +7,7 @@ with **JS literal expressions** and renders them with a
 
 - [`<template is="literal-html">` documentation](https://stephen.band/literal/literal-html/)
 - [`<template is="literal-element">` documentation](https://stephen.band/literal/literal-element/)
-- [Scope and expressions](https://stephen.band/literal/templates/)
+- [Scope and expressions in Literal templates](https://stephen.band/literal/templates/)
 - [Repository on github.com](https://github.com/stephband/literal/)
 
 
