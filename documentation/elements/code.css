@@ -43,11 +43,11 @@ code.block {
 
 @media (max-width: 48em) {
     pre > code {
-        padding-left:  1.68em;
-        padding-right: 1.68em;
-        margin-left:  -1.68em;
-        margin-right: -1.68em;
-        width: calc(100% + 1.68em + 1.68em);
+        padding-left:  var(--x-gap);
+        padding-right: var(--x-gap);
+        margin-left:   calc(-1 * var(--x-gap));
+        margin-right:  calc(-1 * var(--x-gap));
+        width: calc(100% + var(--x-gap) + var(--x-gap));
         border-radius: 0;
     }
 }

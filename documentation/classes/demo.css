@@ -20,14 +20,14 @@ pre + .demo-block {
 
 @media (max-width: 48em) {
     .demo-block {
-        padding-left: 1.4rem;
-        padding-right: 1.4rem;
+        padding-left:  var(--x-gap);
+        padding-right: var(--x-gap);
         border-radius: 0;
     }
 
     * > .demo-block {
-        margin-left:  -1.4rem;
-        margin-right: -1.4rem;
-        width: calc(100% + 2.8rem);
+        margin-left:  calc(-1 * var(--x-gap));
+        margin-right: calc(-1 * var(--x-gap));
+        width: calc(100% + var(--x-gap) + var(--x-gap));
     }
 }
