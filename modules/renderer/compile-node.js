@@ -142,8 +142,7 @@ const compileNode = overload((renderers, node) => toType(node), {
                 + '</' + parent.tagName.toLowerCase() + '>')
                 + ' (' + message + ')' ;
         }
-// If a text node asks for its own index here, how can that work when fragment text is inserted into a context with nodes before it?
-console.log('INDEX', indexOf(node), node.parentNode);
+
         renderers.push(new TextRenderer(path, indexOf(node), source, message, node));
         return renderers;
     },
