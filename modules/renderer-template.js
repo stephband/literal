@@ -106,7 +106,18 @@ function compileContent(content, message) {
     return renderers;
 }
 
+function compileTemplate(template, id) {
+    const content = template.content
+        || create('fragment', template.childNodes, template) ;
+
+    const renderers = compileContent(content, '#' + id);
+
+    return { id, content, renderers };
+}
+
 function createRenderer(Renderer) {
+    //console.log(Renderer.path, Renderer.name, Renderer.path ? getElement(Renderer.path, this.content) : this.element, this.content);
+
     // `this` is the TemplateRenderer
     const renderer = Renderer.path ?
         // Where `.path` exists find the element at the end of the path
@@ -124,11 +135,8 @@ function createRenderer(Renderer) {
 export default function TemplateRenderer(template, element = template.parentElement, parameters = {}) {
     const id = identify(template) ;
 
-    const content = template.content
-        || create('fragment', template.childNodes, template) ;
-
-    const renderers = cache[id]
-        || (cache[id] = compileContent(content, '#' + id)) ;
+    const { content, renderers } = cache[id]
+        || (cache[id] = compileTemplate(template, id));
 
     this.element    = element;
     this.parameters = parameters;
