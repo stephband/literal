@@ -13,7 +13,7 @@ comments:
 modules:
 	rm -rf ./build
 	deno run --allow-read --allow-env --allow-net --allow-write --allow-run ../fn/deno/make-modules.js build \
-		debug.css \
+		module.css \
 		module.js \
 		data/clock.js \
 		literal-element/module.js \
