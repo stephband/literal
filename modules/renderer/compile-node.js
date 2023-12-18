@@ -26,20 +26,29 @@ function compileChildren(renderers, element, path, message = '') {
     if (children) {
         let n = -1;
         while(children[++n]) {
-            // Templates are treated as pass-through to their `.content`, ie, they
-            // don't count as nested elements in the render tree. This is to
-            // facilitate render content in contexts such as in `<tbody>` or `<tr>`
-            // where you cannot author text nodes directly. Wrap html in a
-            // `<template>`, which is allowed in any context, and this sees through
-            // them.
+            // In HTML it is not possible to write expressions directly in
+            // certain contexts, such as in `<tbody>` or `<tr>`. They are parsed
+            // out by the HTML parser before they become DOM. However, it *is*
+            // acceptable to write `<template>` tags in these contexts. So here
+            // we treat `<template>` as a pass-through to it's own `.content` –
+            // ie, the `<template>` is removed from compiled content and
+            // replaced with its own content.
             //
             // TODO We may want this functionality to be opt-in with some kind of
-            // attribute on the template or something. This problem was first
-            // encountered on blondel.ch. Just sayin'.
+            // attribute on the template or something.
             if (children[n].content) {
                 const template = children[n];
-                template.before(template.content);
-                template.remove();
+                const fragment = template.content;
+
+                // Only do this if the fragment has content (otherwise childNode
+                // index will be 1 short)
+                if (fragment.childNodes.length) {
+                    // Splice out the template, splice in the child nodes
+                    children.splice(n, 1, ...fragment.childNodes);
+                    // Do the same to the DOM
+                    template.before(fragment);
+                    template.remove();
+                }
             }
 
             compileNode(renderers, children[n], path, message);
@@ -133,7 +142,8 @@ const compileNode = overload((renderers, node) => toType(node), {
                 + '</' + parent.tagName.toLowerCase() + '>')
                 + ' (' + message + ')' ;
         }
-
+// If a text node asks for its own index here, how can that work when fragment text is inserted into a context with nodes before it?
+console.log('INDEX', indexOf(node), node.parentNode);
         renderers.push(new TextRenderer(path, indexOf(node), source, message, node));
         return renderers;
     },
