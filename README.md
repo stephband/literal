@@ -1,5 +1,5 @@
 
-# Literal <span class="text-06">0.8.2</span>
+# Literal <span class="text-06">0.8.3</span>
 
 Literal is a DOM-first templating library that enhances **HTML `<template>`s**
 with **JS literal expressions** and renders them with a
