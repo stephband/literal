@@ -14,7 +14,13 @@ export const compiled = {};
 
 // Last param, message, is for logging/throwing message
 export default function compile(source, scope, parameters, message = '') {
-    const code = '\n' + indent + 'return this.compose`' + source + '`;\n';
+    // Hey hey, we are not in 'strict mode' inside compiled functions so we CAN
+    // use with(), handy for accessing template variables of `data`. A small
+    // caveat though: accessing a not-defined property via `with` does not
+    // appear to be reflected in the `data` proxy access records where the
+    // property is not defined. This is bad, because that property won't be
+    // registered for rerendering.
+    const code = '\n' + indent + 'with(data) { return this.compose`' + source + '`; }\n';
 
     // Return cached fn
     // Todo: factor in keys from scope and parameters to make this key truly
