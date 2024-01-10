@@ -2,23 +2,15 @@
 
 import TemplateRenderer, { cache } from './modules/renderer-template.js';
 
-export default function Literal(id) {
-    // TODO: I don't think this works, it replaces whatever template is in the
-    // DOM, it it probably isn't in the DOM if it's cached?
+export default function Literal(template) {
+    // TODO: I don't think this works for accessign existing literal-html renderers,
+    // which is what we want to do. Instead it creates a new renderer...
 
-    const id = typeof id === 'object' ?
-        id.id || '' :
-        id ;
+    template = typeof template === 'string' ?
+        document.getElementById(template) :
+        template ;
 
-    if (cache[id]) {
-        return cache[id].create();
-    }
-
-    const template = typeof id === 'object' ?
-        id :
-        document.getElementById(id) ;
-
-    return new TemplateRenderer(template) ;
+    return new TemplateRenderer(template);
 }
 
 // TODO: Legacy, remove
