@@ -1,6 +1,6 @@
 
 
-import TemplateRenderer, { cache } from './modules/renderer-template.js';
+import TemplateRenderer from './modules/renderer-template.js';
 
 export default function Literal(template) {
     // TODO: I don't think this works for accessign existing literal-html renderers,
