@@ -193,8 +193,8 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
 Renderer(path, name, source, message)
 */
 
-export default function Renderer(path, name, source, message = '', sloppy) {
-    this.literal = compile(source, scope, this.parameterNames.join(', '), message, sloppy);
+export default function Renderer(path, name, source, message = '', options) {
+    this.literal = compile(source, scope, this.parameterNames.join(', '), message, options);
     this.path    = path;
     this.name    = name;
     this.message = message;

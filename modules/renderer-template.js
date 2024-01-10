@@ -40,7 +40,7 @@ import { groupCollapsed, groupEnd } from './log.js';
 
 const assign = Object.assign;
 const keys   = Object.keys;
-export const cache  = {};
+const cache  = {};
 const nodes  = [];
 
 
@@ -137,7 +137,7 @@ export default function TemplateRenderer(template, element = template.parentElem
 
     const { content, renderers } = cache[id]
         || (cache[id] = compileTemplate(template, id, {
-            sloppy: template.hasAttribute('nostrict')
+            nostrict: template.hasAttribute('nostrict')
         }));
 
     this.element    = element;
