@@ -24,20 +24,20 @@ import getById          from '../dom/get-by-id.js';
 import requestTemplate  from '../request-template.js';
 import requestData      from '../request-data.js';
 
-function push(template, data, element, parameters) {
-    const renderer = new TemplateRenderer(template, element, parameters);
+function push(template, data, element, parameters, options) {
+    const renderer = new TemplateRenderer(template, element, parameters, options);
     renderer.push(data);
     return renderer;
 }
 
-function pipe(template, data, element, parameters) {
-    const renderer = new TemplateRenderer(template, element, parameters);
+function pipe(template, data, element, parameters, options) {
+    const renderer = new TemplateRenderer(template, element, parameters, options);
     data.each((data) => renderer.push(data));
     renderer.done(data);
     return renderer;
 }
 
-export default function include(src, data, element, parameters) {
+export default function include(src, data, element, parameters, options) {
     // Operate on target to be sure we are not registering gets in
     // parent renderer
     const object = getTarget(data);
@@ -50,14 +50,14 @@ export default function include(src, data, element, parameters) {
             null;
 
         if (dataRequest) {
-            return dataRequest.then((data) => push(template, data, element, parameters));
+            return dataRequest.then((data) => push(template, data, element, parameters, options));
         }
 
         if (object && object.pipe) {
-            return pipe(template, object, element, parameters);
+            return pipe(template, object, element, parameters, options);
         }
 
-        return push(template, object || {}, element, parameters);
+        return push(template, object || {}, element, parameters, options);
     }
 
     // Template is external to document
@@ -69,7 +69,7 @@ export default function include(src, data, element, parameters) {
     if (object && object.pipe) {
         return templateRequest
         .then((template) =>
-            pipe(template, data, element, parameters)
+            pipe(template, data, element, parameters, options)
         );
     }
 

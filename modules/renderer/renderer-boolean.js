@@ -31,7 +31,7 @@ export function setBooleanProperty(node, name, property, writable, value) {
     return 1;
 }
 
-export default function BooleanRenderer(path, name, source, message, element) {
+export default function BooleanRenderer(path, name, source, message, options, element) {
     AttributeRenderer.apply(this, arguments);
     // Avoid boolean defaulting to true
     element.removeAttribute(name);

@@ -17,6 +17,10 @@ compileAttributes(renderers, element, attribute, path, message)
 **/
 
 const constructors = {
+    class:          TokensRenderer,
+    value:          ValueRenderer,
+    checked:        CheckedRenderer,
+
     async:          BooleanRenderer,
     autofocus:      BooleanRenderer,
     autoplay:       BooleanRenderer,
@@ -38,19 +42,16 @@ const constructors = {
     reversed:       BooleanRenderer,
     selected:       BooleanRenderer,
     default:        BooleanRenderer,
-    checked:        CheckedRenderer,
-    class:          TokensRenderer,
-    value:          ValueRenderer,
 
     // Workaround attribute used in cases where ${} cannot be added directly to
     // HTML, such as in <tbody> or <tr>
-    'inner-html': function(path, name, source, message, element) {
+    'inner-html': function(path, name, source, message, options, element) {
         element.removeAttribute(name);
-        return new TextRenderer(path, 0, decode(source), message, element.childNodes[0]);
+        return new TextRenderer(path, 0, decode(source), message, options, element.childNodes[0]);
     }
 };
 
-export default function compileAttribute(renderers, element, attribute, path, message = '') {
+export default function compileAttribute(renderers, element, attribute, path, message = '', options) {
     const name   = attribute.localName;
     const source = attribute.value;
 
@@ -65,6 +66,6 @@ export default function compileAttribute(renderers, element, attribute, path, me
     }
 
     const Constructor = constructors[name] || AttributeRenderer;
-    renderers.push(new Constructor(path, name, source, message, element));
+    renderers.push(new Constructor(path, name, source, message, options, element));
     return renderers;
 }

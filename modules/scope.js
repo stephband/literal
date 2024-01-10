@@ -43,6 +43,8 @@ import id                   from '../../fn/modules/id.js';
 import by                   from '../../fn/modules/by.js';
 import { clamp }            from '../../fn/modules/clamp.js';
 //import capture         from '../../fn/modules/capture.js';
+import deg                  from '../../fn/modules/to-deg.js';
+import rad                  from '../../fn/modules/to-rad.js';
 import equals               from '../../fn/modules/equals.js';
 import isDefined            from '../../fn/modules/is-defined.js';
 import matches              from '../../fn/modules/matches.js';
@@ -57,12 +59,11 @@ import last                 from '../../fn/modules/last.js';
 import normalise            from '../../fn/modules/normalise.js';
 import denormalise          from '../../fn/modules/denormalise.js';
 import overload             from '../../fn/modules/overload.js';
-import { Observer, notify } from '../../fn/observer/observer.js';
-import observe              from '../../fn/observer/observe.js';
 import Stream               from '../../fn/modules/stream.js';
 import ClockStream          from '../../fn/modules/stream/clock-stream.js';
 
-import paramify        from './scope/paramify.js';
+import Data, { observe } from './data.js';
+import paramify          from './scope/paramify.js';
 
 const library = {
     /**
@@ -79,6 +80,21 @@ const library = {
     ceil: Math.ceil,
 
     clamp,
+
+    /**
+    Data(object)
+
+    Returns the data proxy of `object`. Use this proxy to set properties in a
+    way that can be observed with `observe(path, object)`.
+
+    Normally this is not needed. It's for advanced use. The `data` object in the
+    scope of the template is already a data proxy and mutations to it are
+    observed by the template renderer.
+    **/
+
+    Data,
+
+    deg,
     denormalise,
 
     /** entries(object)
@@ -151,11 +167,6 @@ const library = {
     normalise,
     nothing,
 
-    /* notify(path, object)
-    Force observer to register a mutation at `path` of `object`.
-    */
-    //notify,
-
     /**
     observe(path, object)
     Returns a stream of values at `path` in `object`. Values are sent whenever
@@ -170,18 +181,6 @@ const library = {
     **/
     observe,
 
-    /**
-    Data(object)
-
-    Returns the data proxy of `object`. Use this proxy to set properties in a
-    way that can be observed with `observe(path, object)`.
-
-    Normally this is not needed. It's for advanced use. The `data` object in the
-    scope of the template is already a data proxy and mutations to it are
-    observed by the template renderer.
-    **/
-
-    Data: Observer,
     overload,
 
     /** round(value)
@@ -195,6 +194,7 @@ const library = {
     round: (value, n = 1) => Math.round(value / n) * n,
 
     paramify,
+    rad,
     remove,
     set,
     slugify,

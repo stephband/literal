@@ -1,6 +1,6 @@
 
 /**
-TemplateRenderer(template, element, parameters)
+TemplateRenderer(template, element, parameters, options)
 
 Import the `TemplateRenderer` constructor:
 
@@ -40,7 +40,7 @@ import { groupCollapsed, groupEnd } from './log.js';
 
 const assign = Object.assign;
 const keys   = Object.keys;
-const cache  = {};
+export const cache  = {};
 const nodes  = [];
 
 
@@ -98,19 +98,19 @@ function prepareContent(content) {
     }
 }
 
-function compileContent(content, message) {
+function compileContent(content, message, options) {
     if (window.DEBUG) { groupCollapsed('compile', message, 'yellow'); }
     prepareContent(content);
-    const renderers = compileNode([], content, '', message);
+    const renderers = compileNode([], content, '', message, options);
     if (window.DEBUG) { groupEnd(); }
     return renderers;
 }
 
-function compileTemplate(template, id) {
+function compileTemplate(template, id, options) {
     const content = template.content
         || create('fragment', template.childNodes, template) ;
 
-    const renderers = compileContent(content, '#' + id);
+    const renderers = compileContent(content, '#' + id, options);
 
     return { id, content, renderers };
 }
@@ -136,7 +136,9 @@ export default function TemplateRenderer(template, element = template.parentElem
     const id = identify(template) ;
 
     const { content, renderers } = cache[id]
-        || (cache[id] = compileTemplate(template, id));
+        || (cache[id] = compileTemplate(template, id, {
+            sloppy: template.hasAttribute('nostrict')
+        }));
 
     this.element    = element;
     this.parameters = parameters;

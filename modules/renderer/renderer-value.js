@@ -26,8 +26,8 @@ const compose = overload((value, type) => type, {
     'default':    composeString
 });
 
-export default function ValueRenderer(path, name, source, message, element) {
-    AttributeRenderer.call(this, path, 'value', source, message, element);
+export default function ValueRenderer(path, name, source, message, options, element) {
+    AttributeRenderer.call(this, path, 'value', source, message, options, element);
     // Remove value attribute to prevent unrendered value showing up
     // unexpectedly. This is not strictly necessary, as first render happens
     // before connection to the DOM.

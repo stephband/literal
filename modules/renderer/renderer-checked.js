@@ -51,7 +51,7 @@ function setChecked(element, value, hasValueAttribute) {
     return 1;
 }
 
-export default function CheckedRenderer(path, name, source, message, element) {
+export default function CheckedRenderer(path, name, source, message, options, element) {
     AttributeRenderer.call(this, path, 'checked', source, message, element);
     // Flag whether element has a value attribute
     this.hasValue = isDefined(element.getAttribute('value'));

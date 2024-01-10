@@ -9,7 +9,7 @@ that DOM after the text node.
 import isTextNode        from '../../../dom/modules/is-text-node.js';
 import include           from '../scope/include.js';
 import library           from '../scope-dom.js';
-import removeNodeRange       from '../dom/remove-node-range.js';
+import removeNodeRange   from '../dom/remove-node-range.js';
 import TemplateRenderer  from '../renderer-template.js';
 import print             from '../scope/print.js';
 import indexOf           from './index-of.js';
@@ -150,7 +150,7 @@ function updateDOM(first, last, objects) {
     return count + setNodeValue(last, nLast < 1 ? null : objects[nLast]);
 }
 
-export default function TextRenderer(path, index, source, message, node) {
+export default function TextRenderer(path, index, source, message, options, node) {
     Renderer.apply(this, arguments);
     // Insert text node. When renderer is created with cloned DOM, clone of
     // `node` is assigned to `renderer.first` and the clone of this new text

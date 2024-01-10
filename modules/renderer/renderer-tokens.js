@@ -44,7 +44,7 @@ function updateTokens(list, cached, tokens, count) {
     return count;
 }
 
-export default function TokensRenderer(path, name, source, message, element) {
+export default function TokensRenderer(path, name, source, message, options, element) {
     AttributeRenderer.apply(this, arguments);
     // Empty the tokens attribute until it is rendered to avoid code in
     // literals being interpreted as tokens.
