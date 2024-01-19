@@ -147,21 +147,21 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
             return;
         }
 
-        // Is target a Stream?
+        // Is target a pipeable Stream?
         if (target.pipe) {
             const streams = renderer.streams || (renderer.streams = []);
             values[n] = '';
             // Do not render synchronous values that are in the stream
             // immediately, as they are about to be rendered by the renderer
             let isRender = false;
-            target.each((value) => renderValue(renderer, args, values, n, value, isRender));
+            target.pipe({ push: (value) => renderValue(renderer, args, values, n, value, isRender) });
             isRender = true;
             streams.push(target);
             return;
         }
 
         // Is target a Stream that is already consumed, and therefore does not
-        // have .each()? We still want to stop it when the renderer is
+        // have .pipe()? We still want to stop it when the renderer is
         // destroyed, but we don't want to renderer anything.
         if (Stream.isStream(target)) {
             const streams = renderer.streams || (renderer.streams = []);

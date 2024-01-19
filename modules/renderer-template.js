@@ -42,6 +42,7 @@ const assign = Object.assign;
 const keys   = Object.keys;
 const cache  = {};
 const nodes  = [];
+const defaults = {};
 
 
 function dataToString() {
@@ -132,12 +133,12 @@ function createRenderer(Renderer) {
     return renderer;
 }
 
-export default function TemplateRenderer(template, element = template.parentElement, parameters = {}) {
+export default function TemplateRenderer(template, element = template.parentElement, parameters = {}, options = defaults) {
     const id = identify(template) ;
 
-    const { content, renderers } = cache[id]
-        || (cache[id] = compileTemplate(template, id, {
-            nostrict: template.hasAttribute('nostrict')
+    const { content, renderers } = cache[id] ||
+        (cache[id] = compileTemplate(template, id, {
+            nostrict: options.nostrict || (template.hasAttribute && template.hasAttribute('nostrict'))
         }));
 
     this.element    = element;

@@ -7,7 +7,7 @@ export default function Literal(template) {
     // which is what we want to do. Instead it creates a new renderer...
 
     template = typeof template === 'string' ?
-        document.getElementById(template) :
+        document.getElementById(template.slice(1)) :
         template ;
 
     return new TemplateRenderer(template);
