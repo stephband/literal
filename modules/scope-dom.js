@@ -1,6 +1,7 @@
 
 import delegate                from '../../dom/modules/delegate.js';
 import events                  from '../../dom/modules/events.js';
+import identify                from '../../dom/modules/identify.js';
 import isValid                 from '../../dom/modules/is-valid.js';
 import rect                    from '../../dom/modules/rect.js';
 import request                 from '../../dom/modules/request.js';
@@ -88,6 +89,7 @@ export default Object.assign(scope, {
     **/
     getValue,
 
+    identify,
     isValid,
 
     /** navigate(url)
