@@ -52,7 +52,7 @@ function setChecked(element, value, hasValueAttribute) {
 }
 
 export default function CheckedRenderer(path, name, source, message, options, element) {
-    AttributeRenderer.call(this, path, 'checked', source, message, element);
+    AttributeRenderer.call(this, path, 'checked', source, message, options, element);
     // Flag whether element has a value attribute
     this.hasValue = isDefined(element.getAttribute('value'));
     // Remove checked attribute to prevent Flash Of Unrendered Checkiness
