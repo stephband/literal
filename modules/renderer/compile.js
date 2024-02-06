@@ -65,5 +65,5 @@ export default function compile(source, scope, parameters, message = '', options
     }
 
     // The quick version
-    return compiled[key] = compileFn(scope, parameters, code);
+    return compiled[code] = compileFn(scope, parameters, code);
 }
