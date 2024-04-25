@@ -9,7 +9,7 @@ import { rewriteURLs } from './url.js';
 import { dimyellow } from './log.js';
 
 /**
-build(source, target, data)
+build(source, target, debug)
 **/
 
 export default function build(source, target, debug) {
