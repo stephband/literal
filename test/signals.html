@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="author" content="stephband" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@@stephband" />
+    <meta property="og:url" content="http://stephen.band/literal/" />
+    <meta property="og:title" content="Literal" />
+    <meta property="og:description" content="" />
+    <meta property="og:image" content="" />
+
+    <title>Literal</title>
+
+    <link rel="icon" type="image/png" href="./images/logo-32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="./images/logo-64.png" sizes="64x64">
+    <link rel="icon" type="image/png" href="./images/logo-128.png" sizes="128x128">
+
+    <script title="load">
+    document.documentElement.className += ' js content-loading loading';
+    window.addEventListener('DOMContentLoaded', () => document.documentElement.classList.remove('content-loading'));
+    // Wait for other load handlers to run first - Literal does a few things on
+    // load (eg. data-targetable scrolls) and we want them to run before the loading
+    // class is removed
+    window.addEventListener('load', () => window.requestAnimationFrame(() => document.documentElement.classList.remove('loading')));
+    window.DEBUG = true;
+    </script>
+
+    <link rel="stylesheet" href="../../bolt/elements/html.css" />
+    <link rel="stylesheet" href="../../bolt/elements/input.css" />
+    <link rel="stylesheet" href="../../bolt/elements/label.css" />
+    <link rel="stylesheet" href="../../bolt/classes/text.css" />
+    <link rel="stylesheet" href="../../bolt/classes/atoms.css" />
+    <link rel="stylesheet" href="../../bolt/classes/block.css" />
+    <link rel="stylesheet" href="../../bolt/debug.css" />
+    <link rel="stylesheet" href="../module.css" />
+</head>
+
+<body>
+    <p id="output"></p>
+    <script type="module">
+        import Signal from '../../fn/modules/signal.js';
+
+        const output = document.getElementById('output');
+
+        const a = Signal.of('a');
+        const b = Signal.of('b');
+        const signal = Signal.from(() => `I am some data with values ${ a } and ${ b }.`);
+
+        a.value = 'Bob';
+        console.log(signal.value);
+
+
+        // ---
+
+        let timer;
+
+        function fn(signal) {
+            timer = undefined;
+
+            // Update DOM
+            output.innerHTML = signal.value;
+        }
+
+        signal.observe((signal) => {
+            console.log('Observe change');
+            if (timer !== undefined) return;
+            timer = setTimeout(fn, 1000, signal);
+        });
+
+        // ---
+
+
+        console.log('ALICE');
+        a.value = 'Alice';
+
+        console.log('JIM');
+        a.value = 'Jim';
+
+
+        window.a = a;
+    </script>
+</body>
