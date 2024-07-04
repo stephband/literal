@@ -26,26 +26,28 @@ const compose = overload((value, type) => type, {
     'default':    composeString
 });
 
-export default function ValueRenderer(path, name, source, message, options, element) {
-    AttributeRenderer.call(this, path, 'value', source, message, options, element);
-    // Remove value attribute to prevent unrendered value showing up
-    // unexpectedly. This is not strictly necessary, as first render happens
-    // before connection to the DOM.
-    element.removeAttribute('value');
-}
+export default class ValueRenderer extends AttributeRenderer {
+    static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow', 'bind'];
 
-assign(ValueRenderer.prototype, AttributeRenderer.prototype, {
-    parameterNames: ['data', 'DATA', 'element', 'host', 'shadow', 'bind'],
+    constructor(fn, element, name, parameters) {
+        super(fn, element, 'value', parameters);
+        // Remove value attribute to prevent unrendered value showing up
+        // unexpectedly. This is not strictly necessary, as first render happens
+        // before connection to the DOM.
+        element.removeAttribute('value');
+    }
 
-    create: function(element, parameters) {
+/*
+    create(element, parameters) {
         return AttributeRenderer.prototype.create.call(this, element, assign({
             // Parameters
             bind: (path, object, to = id, from = id) =>
                 bindValue(element, object, path, to, from, setValue)
         }, parameters));
-    },
+    }
+*/
 
-    render: function(strings) {
+    render(strings) {
         this.value = this.singleExpression ?
             // Don't evaluate empty space in attributes with a single expression
             arguments[1] :
@@ -53,12 +55,12 @@ assign(ValueRenderer.prototype, AttributeRenderer.prototype, {
 
         this.mutations = setValue(this.element, this.value);
         return this;
-    },
+    }
 
-    stop: function() {
+    stop() {
         // Guard against memory leaks by cleaning up $value expando when
         // the renderer is done.
         removeValue(this.element);
-        return AttributeRenderer.prototype.stop.apply(this, arguments);
+        return super.stop();
     }
-});
+}

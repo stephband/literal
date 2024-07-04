@@ -66,14 +66,15 @@ cued it is not cued again.
 **/
 
 export function cue(renderer) {
+    if (renderer.status === 'cued') {
+        console.trace('Renderer already cued.');
+        return cued;
+    }
+
     // Create a new batch end promise where required
     if (!cued) {
         cued = promise.then(render);
     }
-
-    // if (renderers.indexOf(renderer) !== -1) {
-    //     console.trace('RENDERER ALREADY IN CUE', 'This is probably not good');
-    // }
 
     renderers.push(renderer);
     renderer.status = 'cued';

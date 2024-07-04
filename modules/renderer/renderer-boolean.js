@@ -31,16 +31,20 @@ export function setBooleanProperty(node, name, property, writable, value) {
     return 1;
 }
 
-export default function BooleanRenderer(path, name, source, message, options, element) {
-    AttributeRenderer.apply(this, arguments);
-    // Avoid boolean defaulting to true
-    element.removeAttribute(name);
-}
 
-assign(BooleanRenderer.prototype, AttributeRenderer.prototype, {
-    render: function(strings) {
+export default class BooleanRenderer extends AttributeRenderer {
+    static parameterNames = AttributeRenderer.parameterNames;
+
+    constructor(fn, element, name, parameters) {
+        super(fn, element, name, parameters);
+
+        // Avoid boolean defaulting to true
+        element.removeAttribute(name);
+    }
+
+    render(strings) {
         const value = composeBoolean(arguments);
         this.mutations = setBooleanProperty(this.element, this.name, this.property, this.writable, value);
         return this;
     }
-});
+}

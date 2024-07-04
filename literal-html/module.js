@@ -10,7 +10,7 @@ import noop             from '../../fn/modules/noop.js';
 import element, { getInternals as Internals } from '../../dom/modules/element.js';
 import LatestStream     from '../modules/latest-stream.js';
 import requestData      from '../modules/request-data.js';
-import TemplateRenderer from '../modules/renderer-template.js';
+import TemplateRenderer from '../modules/template-renderer.js';
 import print            from '../modules/scope/print.js';
 
 const assign  = Object.assign;

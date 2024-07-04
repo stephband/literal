@@ -6,7 +6,7 @@ import element, { getInternals } from '../../dom/modules/element.js';
 import toPrefetchPromise         from '../../dom/modules/element/to-prefetch-promise.js';
 import defineProperty            from './define-property.js';
 import getById                   from './dom/get-by-id.js';
-import TemplateRenderer          from './renderer-template.js';
+import TemplateRenderer          from './template-renderer.js';
 
 const assign  = Object.assign;
 const entries = Object.entries;

@@ -1,14 +1,14 @@
 
 import composeString from './compose-string.js';
 import names         from './property-names.js';
-import Signal        from './signal.js';
+import Renderer      from './renderer.js';
 
 const assign        = Object.assign;
 const getDescriptor = Object.getOwnPropertyDescriptor;
 const getPrototype  = Object.getPrototypeOf;
 
 /**
-AttributeSignal(path, name, source, message, options, element)
+AttributeRenderer(path, name, source, message, options, element)
 Constructs an object responsible for rendering to a plain text attribute.
 **/
 
@@ -52,16 +52,16 @@ function setAttribute(node, name, property, writable, value) {
     return 1;
 }
 
-export default function AttributeSignal(path, name, source, message, options, element) {
-    Signal.apply(this, arguments);
+export default function AttributeRenderer(path, name, source, message, options, element) {
+    Renderer.apply(this, arguments);
     this.property = name in names ?
         names[name] :
         name ;
     this.writable = isWritable(name, element);
 }
 
-assign(AttributeSignal.prototype, Signal.prototype, {
-    invalidate: function() {
+assign(AttributeRenderer.prototype, Renderer.prototype, {
+    render: function() {
         // TODO: This may be dangerous. Test with promises and arrays and the like
         this.value = this.singleExpression ?
             arguments[1] :

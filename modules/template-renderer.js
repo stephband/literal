@@ -5,7 +5,7 @@ TemplateRenderer(template, element, parameters, options)
 Import the `TemplateRenderer` constructor:
 
 ```js
-import TemplateRenderer from './literal/modules/renderer-template.js';
+import TemplateRenderer from './literal/modules/template-renderer.js';
 ```
 
 The `TemplateRenderer` constructor takes a template element (or the `id` of a
@@ -26,7 +26,8 @@ renderer
 
 
 import overload          from '../../fn/modules/overload.js';
-import Stream, { stop }  from '../../fn/modules/stream/stream.js';
+import Data              from '../../fn/modules/signal-data.js';
+//import Stream, { stop }  from '../../fn/modules/stream/stream.js';
 import create            from '../../dom/modules/create.js';
 import identify          from '../../dom/modules/identify.js';
 import isTextNode        from '../../dom/modules/is-text-node.js';
@@ -35,7 +36,6 @@ import compileNode       from './renderer/compile-node.js';
 import { cue, uncue }    from './renderer/cue.js';
 import removeNodeRange   from './dom/remove-node-range.js';
 import getNodeRange      from './dom/get-node-range.js';
-import Data              from './data.js';
 import { groupCollapsed, groupEnd } from './log.js';
 
 const assign = Object.assign;
@@ -99,34 +99,31 @@ function prepareContent(content) {
     }
 }
 
-function compileContent(content, message, options) {
-    if (window.DEBUG) { groupCollapsed('compile', message, 'yellow'); }
-    prepareContent(content);
-    const renderers = compileNode([], content, '', message, options);
-    if (window.DEBUG) { groupEnd(); }
-    return renderers;
-}
-
 function compileTemplate(template, id, options) {
     const content = template.content
         || create('fragment', template.childNodes, template) ;
 
-    const renderers = compileContent(content, '#' + id, options);
+    if (window.DEBUG) { groupCollapsed('compile', '#' + id, 'yellow'); }
+    prepareContent(content);
+    const targets = compileNode(content, '', '#' + id, options);
+    if (window.DEBUG) { groupEnd(); }
 
-    return { id, content, renderers };
+    return { content, targets };
 }
 
-function createRenderer(Renderer) {
+function createRenderer(target) {
     //console.log(Renderer.path, Renderer.name, Renderer.path ? getElement(Renderer.path, this.content) : this.element, this.content);
+    const { Renderer, path, name, fn } = target;
 
     // `this` is the TemplateRenderer
-    const renderer = Renderer.path ?
+    const renderer = path ?
         // Where `.path` exists find the element at the end of the path
-        Renderer.create(getElement(Renderer.path, this.content), this.parameters) :
+        new Renderer(fn, getElement(path, this.content), name, this.parameters) :
         // Where `.path` is an empty string we are dealing with the `.content`
         // fragment, which must be rendered into the `.element` element. Only a
-        // TextRenderer can have an empty path.
-        Renderer.create(this.element, this.parameters, this.content) ;
+        // TextRenderer can have an empty path. A renderer is a signal with
+        // evaluation function `fn`.
+        new Renderer(fn, this.element, name, this.parameters, this.content) ;
 
     // Stop clone when parent template renderer stops
     this.done(renderer);
@@ -136,17 +133,19 @@ function createRenderer(Renderer) {
 export default function TemplateRenderer(template, element = template.parentElement, parameters = {}, options = defaults) {
     const id = identify(template) ;
 
-    const { content, renderers } = cache[id] ||
+    const compiled = cache[id] ||
         (cache[id] = compileTemplate(template, id, {
             nostrict: options.nostrict || (template.hasAttribute && template.hasAttribute('nostrict'))
         }));
 
+    const content = compiled.content.cloneNode(true);
+
+    this.content    = content;
     this.element    = element;
     this.parameters = parameters;
-    this.content    = content.cloneNode(true);
-    this.first      = this.content.childNodes[0];
-    this.last       = this.content.childNodes[this.content.childNodes.length - 1];
-    this.contents   = renderers.map(createRenderer, this);
+    this.first      = content.childNodes[0];
+    this.last       = content.childNodes[content.childNodes.length - 1];
+    this.contents   = compiled.targets.map(createRenderer, this);
 }
 
 assign(TemplateRenderer.prototype, {
@@ -155,7 +154,7 @@ assign(TemplateRenderer.prototype, {
             throw new Error('Renderer is done, cannot .push() data');
         }
 
-        const data = Data(object) || object;
+        const data = Data.of(object) || object;
 
         // Dedup
         if (this.data === data) { return; }
@@ -250,8 +249,8 @@ assign(TemplateRenderer.prototype, {
     **/
     stop: function() {
         uncue(this);
-        return stop(this);
+        return;// stop(this);
     },
 
-    done: Stream.prototype.done
+    done: function() { /* TODO */ }
 });

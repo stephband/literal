@@ -52,16 +52,20 @@ function setAttribute(node, name, property, writable, value) {
     return 1;
 }
 
-export default function AttributeRenderer(path, name, source, message, options, element) {
-    Renderer.apply(this, arguments);
-    this.property = name in names ?
-        names[name] :
-        name ;
-    this.writable = isWritable(name, element);
-}
+export default class AttributeRenderer extends Renderer {
+    static parameterNames = Renderer.parameterNames;
 
-assign(AttributeRenderer.prototype, Renderer.prototype, {
-    render: function() {
+    constructor(fn, element, name, parameters) {
+        super(fn, element, name, parameters);
+
+        this.property = name in names ?
+            names[name] :
+            name ;
+
+        this.writable = isWritable(name, element);
+    }
+
+    render() {
         // TODO: This may be dangerous. Test with promises and arrays and the like
         this.value = this.singleExpression ?
             arguments[1] :
@@ -69,4 +73,4 @@ assign(AttributeRenderer.prototype, Renderer.prototype, {
         this.mutations = setAttribute(this.element, this.name, this.property, this.writable, this.value);
         return this;
     }
-});
+}

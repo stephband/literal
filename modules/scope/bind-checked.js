@@ -3,7 +3,7 @@ import id        from '../../../fn/modules/id.js';
 import isDefined from '../../../fn/modules/is-defined.js';
 import set       from '../../../fn/modules/set.js';
 import events    from '../../../dom/modules/events.js';
-import { observe } from '../data.js';
+//import { observe } from '../data.js';
 
 export default function bindChecked(element, data, path, to, from, setChecked) {
     console.warn('Literal: you are using the function bind(). This is experimental and the API may change.');

@@ -19,7 +19,7 @@ ${ data.array.map(include('#list-item')) }
 **/
 
 import { getTarget }    from '../../../fn/observer/observer.js';
-import TemplateRenderer from '../renderer-template.js';
+import TemplateRenderer from '../template-renderer.js';
 import getById          from '../dom/get-by-id.js';
 import requestTemplate  from '../request-template.js';
 import requestData      from '../request-data.js';

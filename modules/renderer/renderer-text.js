@@ -10,7 +10,7 @@ import isTextNode        from '../../../dom/modules/is-text-node.js';
 import include           from '../scope/include.js';
 import library           from '../scope-dom.js';
 import removeNodeRange   from '../dom/remove-node-range.js';
-import TemplateRenderer  from '../renderer-template.js';
+import TemplateRenderer  from '../template-renderer.js';
 import print             from '../scope/print.js';
 import indexOf           from './index-of.js';
 import toText            from './to-text.js';
@@ -150,25 +150,28 @@ function updateDOM(first, last, objects) {
     return count + setNodeValue(last, nLast < 1 ? null : objects[nLast]);
 }
 
-export default function TextRenderer(path, index, source, message, options, node) {
+
+/*
+function INIT(path, index, source, message, options, node) {
     Renderer.apply(this, arguments);
     // Insert text node. When renderer is created with cloned DOM, clone of
     // `node` is assigned to `renderer.first` and the clone of this new text
     // node is assigned as `renderer.last`.
     node.after(document.createTextNode(''));
 }
+*/
 
-assign(TextRenderer.prototype, Renderer.prototype, {
-    parameterNames: ['data', 'DATA', 'element', 'host', 'shadow', 'include', 'print'],
+export default class TextRenderer extends Renderer {
+    static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow', 'include', 'print'];
 
-    create: function(element, parameters, fragment = element) {
+    constructor(fn, element, name, parameters, fragment = element) {
         // Fragment may be the source fragment containing the first and last
         // text nodes, which are then rendered into element, or it may default
         // to element.
 
         const params = assign({}, parameters, {
             // Parameters
-            include: function(url, data) {
+            include(url, data) {
                 return arguments.length === 1 ?
                     // Partial application if called with url only
                     (data) => include(url, data, element, parameters) :
@@ -179,31 +182,30 @@ assign(TextRenderer.prototype, Renderer.prototype, {
             print: (...args) => print(this, ...args)
         });
 
-        return assign(Renderer.prototype.create.call(this, element, params), {
-            // Renderer properties
-            contents: [],
-            first:    fragment.childNodes[this.name],
-            last:     fragment.childNodes[this.name + 1]
-        });
-    },
+        super(fn, element, name, params);
 
-    push: function() {
+        this.contents = [];
+        this.first    = fragment.childNodes[this.name];
+        this.last     = fragment.childNodes[this.name + 1];
+    }
+
+    push() {
         // Preemptively stop all nodes, they are about to be updated
         this.contents.forEach(stop);
         this.contents.length = 0;
-        return Renderer.prototype.push.apply(this, arguments);
-    },
+        return super.push.apply(this, arguments);
+    }
 
-    update: function() {
+    update() {
         // Stop all nodes, they are about to be recreated. This needs to be done
         // here as well as in push, as update may be called by TemplateRenderer
         // without going through .push() cueing first. (??)
         this.contents.forEach(stop);
         this.contents.length = 0;
-        return Renderer.prototype.update.call(this);
-    },
+        return super.update.call(this);
+    }
 
-    render: function(strings) {
+    render(strings) {
         let n = 0;
         this.contents.length = 0;
         this.contents.push(strings[n]);
@@ -215,11 +217,11 @@ assign(TextRenderer.prototype, Renderer.prototype, {
 
         this.mutations = updateDOM(this.first, this.last, this.contents);
         return this;
-    },
+    }
 
-    stop: function() {
+    stop() {
         this.contents.forEach(stop);
         this.contents.length = 0;
-        return Renderer.prototype.stop.apply(this);
+        return super.stop.apply(this);
     }
-});
+}
