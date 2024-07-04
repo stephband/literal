@@ -7,6 +7,12 @@ const assign        = Object.assign;
 const getDescriptor = Object.getOwnPropertyDescriptor;
 const getPrototype  = Object.getPrototypeOf;
 
+const stats = {
+    attribute: 0,
+    property:  0
+};
+
+
 /**
 AttributeRenderer(path, name, source, message, options, element)
 Constructs an object responsible for rendering to a plain text attribute.
@@ -33,23 +39,26 @@ function isWritable(name, element) {
 }
 
 function setAttribute(node, name, property, writable, value) {
+    stats.attribute = 0;
+    stats.property  = 0;
+
     // Seek and set a matching property
     if (writable) {
         if (node[property] !== value) {
             node[property] = value;
-            return 1;
+            stats.property = 1;
         }
-
-        return 0;
+        return stats;
     }
 
     // If that doesn't work set the attribute
     if (value === node.getAttribute(name)) {
-        return 0;
+        return stats;
     }
 
     node.setAttribute(name, value);
-    return 1;
+    stats.attribute = 1;
+    return stats;
 }
 
 export default class AttributeRenderer extends Renderer {
@@ -57,12 +66,18 @@ export default class AttributeRenderer extends Renderer {
 
     constructor(fn, element, name, parameters) {
         super(fn, element, name, parameters);
+        this.property = name in names ? names[name] : name ;
+        this.writable = name in names ?
+            // If name is listed as null or other falsy in property-names.js,
+            // it is considered readonly. This applies to the `form` attribute.
+            !!names[name] :
+            // Otherwise check property descriptor
+            name in element && isWritableProperty(name, element) ;
 
-        this.property = name in names ?
-            names[name] :
-            name ;
-
-        this.writable = isWritable(name, element);
+        // MOVED TO COMPILE STEP compile-attribute.js.
+        // Avoid errant template literals making booleans default to true,
+        // mangling classes and unnecessarily checking checkboxes.
+        //element.removeAttribute(name);
     }
 
     render() {
@@ -70,7 +85,10 @@ export default class AttributeRenderer extends Renderer {
         this.value = this.singleExpression ?
             arguments[1] :
             composeString(arguments) ;
-        this.mutations = setAttribute(this.element, this.name, this.property, this.writable, this.value);
-        return this;
+
+        const stats = setAttribute(this.element, this.name, this.property, this.writable, this.value);
+        this.mutations = stats.attribute;
+
+        return stats;
     }
 }

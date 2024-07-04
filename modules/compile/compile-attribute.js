@@ -69,5 +69,12 @@ export default function compileAttribute(array, element, attribute, path, messag
         name
     });
 
+    // Avoid errant template literals making booleans default to true, mangling
+    // classes, and unnecessarily checking checkboxes. This has been moved here
+    // from AttributeRenderer, as it seems `new AttributeRenderer()` does not
+    // the attribute to be present, and its optimum to operate on the template
+    // DOM rather than each cloned DOM.
+    element.removeAttribute(name);
+
     return array;
 }

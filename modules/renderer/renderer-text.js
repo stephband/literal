@@ -19,6 +19,11 @@ import Renderer          from './renderer.js';
 
 const A      = Array.prototype;
 const assign = Object.assign;
+const stats  = {
+    add:    0,
+    remove: 0,
+    text:   0
+};
 
 
 function stop(node) {
@@ -55,9 +60,20 @@ function composeDOM(contents, object) {
 }
 
 function setNodeValue(node, value) {
-    if (node.nodeValue !== value) {
-        node.nodeValue = value;
-        return 1;
+    const nodeValue = node.nodeValue;
+
+    // textNode.nodeValue = null actually results in textNode.nodeValue = ''
+    if (nodeValue) {
+        if (nodeValue !== value) {
+            node.nodeValue = value;
+            return 1;
+        }
+    }
+    else {
+        if (value) {
+            node.nodeValue = value;
+            return 1;
+        }
     }
 
     return 0;
@@ -69,7 +85,7 @@ function toContent(object) {
         object ;
 }
 
-function updateDOM(first, last, objects) {
+function updateDOM(stats, first, last, objects) {
     // Sanity check
     if (window.DEBUG) {
         if (first === last) {
@@ -92,10 +108,10 @@ function updateDOM(first, last, objects) {
 
     // Render first object. `objects[0]` is always a string. `first` is a
     // text node.
-    let count = setNodeValue(first, objects[0]);
+    stats.text += setNodeValue(first, objects[0]);
+
     let node  = first.nextSibling;
     let n     = 0;
-
     while (++n < nLast) {
         const object = objects[n];
 
@@ -103,12 +119,13 @@ function updateDOM(first, last, objects) {
         if (typeof object === 'string') {
             // If node is a text node, use it.
             if (node !== last && isTextNode(node)) {
-                count += setNodeValue(node, object);
+                stats.text += setNodeValue(node, object);
                 node = node.nextSibling;
             }
             // ...otherwise insert a text node
             else {
                 node.before(object);
+                ++stats.add;
             }
             continue;
         }
@@ -129,12 +146,12 @@ function updateDOM(first, last, objects) {
 
         // Remove template or node from wherever it currently is
         if (object.remove) {
-            count += (object.remove() || 0);
+            stats.remove += (object.remove() || 0);
         }
 
         // And put it here
         node.before(toContent(object));
-        ++count;
+        ++stats.add;
     }
 
     // Remove unused nodes up to last
@@ -142,24 +159,14 @@ function updateDOM(first, last, objects) {
         const nd = node;
         node = node.nextSibling;
         nd.remove();
-        ++count;
+        ++stats.remove;
     }
 
     // Render last object. Where objects is less than 1 item long empty `last`,
     // otherwise render last object into `last`.
-    return count + setNodeValue(last, nLast < 1 ? null : objects[nLast]);
+    stats.text += setNodeValue(last, nLast < 1 ? null : objects[nLast]);
+    return stats;
 }
-
-
-/*
-function INIT(path, index, source, message, options, node) {
-    Renderer.apply(this, arguments);
-    // Insert text node. When renderer is created with cloned DOM, clone of
-    // `node` is assigned to `renderer.first` and the clone of this new text
-    // node is assigned as `renderer.last`.
-    node.after(document.createTextNode(''));
-}
-*/
 
 export default class TextRenderer extends Renderer {
     static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow', 'include', 'print'];
@@ -215,8 +222,16 @@ export default class TextRenderer extends Renderer {
             pushContents(this.contents, strings[n]);
         }
 
-        this.mutations = updateDOM(this.first, this.last, this.contents);
-        return this;
+        // TEMP, TODO: Make stats a global accumulator that comes from cue()?
+        if (window.DEBUG) {
+            stats.add    = 0;
+            stats.remove = 0;
+            stats.text   = 0;
+        }
+
+        updateDOM(stats, this.first, this.last, this.contents);
+        this.mutations = stats.remove + stats.add + stats.text;
+        return stats;
     }
 
     stop() {

@@ -58,8 +58,6 @@ export default class CheckedRenderer extends AttributeRenderer {
         super(fn, element, 'checked', parameters);
         // Flag whether element has a value attribute
         this.hasValue = isDefined(element.getAttribute('value'));
-        // Remove checked attribute to prevent Flash Of Unrendered Checkiness
-        element.removeAttribute('checked');
     }
 
 /*

@@ -11,23 +11,38 @@
     </script>
 
     <template id="template-1">
-        <h3>template-1</h3>
-        <pre>data-value = ${ data.value }</pre>
+        <h3>#template-1</h3>
+        <pre>
+this.renderCount = ${ this.renderCount }
+data.value = ${ data.value }
+        </pre>
     </template>
 
     <template id="template-2">
-        <h3>template-2</h3>
-        <pre>data.value = ${ data.value }</pre>
+        <h3>#template-2</h3>
+        <pre>
+this.renderCount = ${ this.renderCount }
+data.value = ${ data.value }
+        </pre>
     </template>
 </head>
 
 <body>
     <h1>Test</h1>
     <hr/>
+
     <template is="literal-html" data-state="1" data-value="Hello">
+        ${ window.data = data, '' }
+        <p class="${ 'hello world' }">${ 'Hello world' }</p>
+        ${ include('#template-1', data) }
+    </template>
+    <hr/>
+
+    <!--template is="literal-html" data-state="1" data-value="Hello">
+        ${ window.data = data, '' }
         <h2>Literal template</h2>
         <p class="${ 'hello world' }">${ 'Hello world' }</p>
-        <pre>data = ${ window.data = data }</pre>
+        <pre>data = ${ data }</pre>
         <pre>data.state = ${ data.state }</pre>
         <pre>data.value = ${ data.value }</pre>
         ${ include('#template-1', data) }
@@ -37,32 +52,18 @@
 
     <!--template is="literal-html" data-default="2" data-value="Hello">
         <h2>Literal template</h2>
-
-        ${ Stream.merge(
-            [{ type: 'render', target: { value: data.default } }],
-            events({ type: 'change', select: '[name="test-2"]' }, element)
-        ).map((e) => include('#template-' + e.target.value, data)) }
-
-        <input class="masked" type="radio" name="test-2" value="1" id="test-2-value-1" checked="${ data.default == '1' }" />
+        <input class="masked" type="radio" name="test-2" value="1" id="test-2-value-1" checked="$ { data.default == element.value }" />
         <label class="black-pill-button pill-button button register-btn log-in-btn" for="test-2-value-1">1</label>
-        <input class="masked" type="radio" name="test-2" value="2" id="test-2-value-2" checked="${ data.default == '2' }" />
+        <input class="masked" type="radio" name="test-2" value="2" id="test-2-value-2" checked="$ { data.default == element.value }" />
         <label class="black-pill-button pill-button button register-btn log-in-btn" for="test-2-value-2">2</label>
-    </template>
+        ${
+            console.log(element),
+            events({ type: 'change', select: '[name="test-2"]' }, element)
+            .map((e) => (console.log('CHANGE'), data.default = e.target.value)),
+            'EVENTS'
+        }
 
-    <template is="literal-html" data-default="1" data-value="Hello">
-        <h2>Literal template</h2>
-
-        ${ new Promise((resolve) => setTimeout(() => resolve('Promise of String test'), 400)) }
-
-        ${ Stream.merge(
-            [{ type: 'render', target: { value: data.default } }],
-            events({ type: 'change', select: '[name="test-3"]' }, element)
-        ).map((e) => include('#template-' + e.target.value, data)) }
-
-        <input class="masked" type="radio" name="test-3" value="1" id="test-3-value-1" checked="${ data.default == '1' }" />
-        <label class="black-pill-button pill-button button register-btn log-in-btn" for="test-3-value-1">1</label>
-        <input class="masked" type="radio" name="test-3" value="2" id="test-3-value-2" checked="${ data.default == '2' }" />
-        <label class="black-pill-button pill-button button register-btn log-in-btn" for="test-3-value-2">2</label>
+        ${ include('#template-' + data.default, data) }
     </template-->
 
     <script type="module">

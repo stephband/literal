@@ -26,17 +26,6 @@ const compose = overload((value, type) => type, {
     'default':    composeString
 });
 
-export default class ValueRenderer extends AttributeRenderer {
-    static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow', 'bind'];
-
-    constructor(fn, element, name, parameters) {
-        super(fn, element, 'value', parameters);
-        // Remove value attribute to prevent unrendered value showing up
-        // unexpectedly. This is not strictly necessary, as first render happens
-        // before connection to the DOM.
-        element.removeAttribute('value');
-    }
-
 /*
     create(element, parameters) {
         return AttributeRenderer.prototype.create.call(this, element, assign({
@@ -46,6 +35,13 @@ export default class ValueRenderer extends AttributeRenderer {
         }, parameters));
     }
 */
+
+export default class ValueRenderer extends AttributeRenderer {
+    static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow', 'bind'];
+
+    constructor(fn, element, name, parameters) {
+        super(fn, element, 'value', parameters);
+    }
 
     render(strings) {
         this.value = this.singleExpression ?

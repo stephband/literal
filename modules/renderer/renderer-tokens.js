@@ -1,4 +1,5 @@
 
+import id                from '../../../fn/modules/id.js';
 import overload          from '../../../fn/modules/overload.js';
 import toText            from './to-text.js';
 import AttributeRenderer from './renderer-attribute.js';
@@ -14,8 +15,8 @@ Constructs an object responsible for rendering to a token list attribute such
 as a class attribute.
 **/
 
-const getTokenList = overload((node, name) => name, {
-    'class': (node) => node.classList
+const getTokenList = overload(id, {
+    'class': (name, node) => node.classList
 });
 
 function updateTokens(list, cached, tokens, count) {
@@ -51,12 +52,8 @@ export default class TokensRenderer extends AttributeRenderer {
         super(fn, element, name, parameters);
 
         // Renderer properties
-        this.list   = getTokenList(element, name);
+        this.list   = getTokenList(name, element);
         this.tokens = nothing;
-
-        // Empty the tokens attribute until it is rendered to avoid code in
-        // literals being interpreted as tokens.
-        element.setAttribute(name, '');
     }
 
     render(strings) {

@@ -35,13 +35,6 @@ export function setBooleanProperty(node, name, property, writable, value) {
 export default class BooleanRenderer extends AttributeRenderer {
     static parameterNames = AttributeRenderer.parameterNames;
 
-    constructor(fn, element, name, parameters) {
-        super(fn, element, name, parameters);
-
-        // Avoid boolean defaulting to true
-        element.removeAttribute(name);
-    }
-
     render(strings) {
         const value = composeBoolean(arguments);
         this.mutations = setBooleanProperty(this.element, this.name, this.property, this.writable, value);

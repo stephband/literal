@@ -1,6 +1,6 @@
 
 import { remove }       from '../../../fn/modules/remove.js';
-import Signal           from '../../../fn/modules/signal.js';
+import Signal, { ObserverSignal } from '../../../fn/modules/signal.js';
 import Data             from '../../../fn/modules/signal-data.js';
 import scope            from '../scope-dom.js';
 import { cue, uncue }   from './cue.js';
@@ -223,18 +223,16 @@ export default class Renderer extends Signal {
 
     stop() {
         uncue(this);
-        //stopObservers(this.observers);
         stopPromises(this.promises);
         //stopStreams(this.streams);
-        // Stop stream. Sets this.status = 'done'.
-        //stop(this);
 
         if (window.DEBUG) { --Renderer.count; }
 
-        return this;
+        // Stop signal. Sets this.status = 'done'.
+        return ObserverSignal.prototype.stop.apply(this);
     }
 
-    done() {/* TODO */}
+    done = ObserverSignal.prototype.done;
 }
 
 if (window.DEBUG) {
