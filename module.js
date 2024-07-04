@@ -16,7 +16,7 @@ export default function Literal(template) {
 // TODO: Legacy, remove
 export { TemplateRenderer as Renderer };
 
-export { compiled }          from './modules/renderer/compile.js';
+export { compiled }          from './modules/compile/compile.js';
 export { default as config } from './modules/config.js';
 export { default as Data }   from '../fn/modules/signal-data.js';
 export { default as scope }  from './modules/scope.js';

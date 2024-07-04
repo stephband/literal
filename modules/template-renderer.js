@@ -31,9 +31,9 @@ import Data              from '../../fn/modules/signal-data.js';
 import create            from '../../dom/modules/create.js';
 import identify          from '../../dom/modules/identify.js';
 import isTextNode        from '../../dom/modules/is-text-node.js';
-import { pathSeparator } from './renderer/constants.js';
-import compileNode       from './renderer/compile-node.js';
-import { cue, uncue }    from './renderer/cue.js';
+import { pathSeparator } from './compile/constants.js';
+import compileNode       from './compile.js';
+//import { cue, uncue }    from './renderer/cue.js';
 import removeNodeRange   from './dom/remove-node-range.js';
 import getNodeRange      from './dom/get-node-range.js';
 import { groupCollapsed, groupEnd } from './log.js';
@@ -248,7 +248,7 @@ assign(TemplateRenderer.prototype, {
     Stops renderer.
     **/
     stop: function() {
-        uncue(this);
+        //uncue(this);
         return;// stop(this);
     },
 

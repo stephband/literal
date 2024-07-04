@@ -3,14 +3,14 @@ import id                from '../../../fn/modules/id.js';
 import overload          from '../../../fn/modules/overload.js';
 import toType            from '../../../dom/modules/to-type.js';
 import decode            from '../../../dom/modules/decode.js';
+import indexOf           from '../dom/index-of.js';
+import TextRenderer      from '../renderer/renderer-text.js';
 import isLiteralString   from '../is-literal-string.js';
 import scope             from '../scope-dom.js';
 import compile           from './compile.js';
 import { pathSeparator } from './constants.js';
-import indexOf           from './index-of.js';
 import truncate          from './truncate.js';
 import compileAttribute  from './compile-attribute.js';
-import TextRenderer      from './renderer-text.js';
 
 
 
@@ -168,6 +168,4 @@ const compileNode = overload((targets, node) => toType(node), {
     }*/
 });
 
-export default function(element, path, message, options) {
-    return compileNode([], element, path, message, options);
-}
+export default compileNode;

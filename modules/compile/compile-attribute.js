@@ -4,13 +4,14 @@ import overload          from '../../../fn/modules/overload.js';
 import decode            from '../../../dom/modules/decode.js';
 import isLiteralString   from '../is-literal-string.js';
 import scope             from '../scope-dom.js';
-import compile           from './compile.js';
-import AttributeRenderer from './renderer-attribute.js';
-import BooleanRenderer   from './renderer-boolean.js';
-import CheckedRenderer   from './renderer-checked.js';
-import TokensRenderer    from './renderer-tokens.js';
-import ValueRenderer     from './renderer-value.js';
+import AttributeRenderer from '../renderer/renderer-attribute.js';
+import BooleanRenderer   from '../renderer/renderer-boolean.js';
+import CheckedRenderer   from '../renderer/renderer-checked.js';
+import TokensRenderer    from '../renderer/renderer-tokens.js';
+import ValueRenderer     from '../renderer/renderer-value.js';
 import truncate          from './truncate.js';
+import compile           from './compile.js';
+
 
 
 /**
