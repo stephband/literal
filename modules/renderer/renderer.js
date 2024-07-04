@@ -117,11 +117,15 @@ export default class Renderer extends Signal {
     constructor(fn, element, name, parameters) {
         super(() => fn.apply(this, this.getParameters()));
 
+        // Pick up paremeter names from the constructor, which may have been
+        // overridden on dependent constructors
+        const parameterNames = this.constructor.parameterNames;
+
         this.id          = ++id;
         this.element     = element;
         this.name        = name;
         this.status      = 'idle';
-        this.parameters  = Renderer.parameterNames.map((name) => parameters[name]);
+        this.parameters  = parameterNames.map((name) => parameters[name]);
         this.renderCount = 0;
 
         // Track the number of renderers created

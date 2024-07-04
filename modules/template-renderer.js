@@ -32,10 +32,10 @@ import create            from '../../dom/modules/create.js';
 import identify          from '../../dom/modules/identify.js';
 import isTextNode        from '../../dom/modules/is-text-node.js';
 import { pathSeparator } from './compile/constants.js';
-import compileNode       from './compile.js';
-//import { cue, uncue }    from './renderer/cue.js';
 import removeNodeRange   from './dom/remove-node-range.js';
+import { uncue }         from './renderer/cue.js';
 import getNodeRange      from './dom/get-node-range.js';
+import compileNode       from './compile.js';
 import { groupCollapsed, groupEnd } from './log.js';
 
 const assign = Object.assign;
@@ -105,7 +105,8 @@ function compileTemplate(template, id, options) {
 
     if (window.DEBUG) { groupCollapsed('compile', '#' + id, 'yellow'); }
     prepareContent(content);
-    const targets = compileNode(content, '', '#' + id, options);
+    // compile(fragment, message, options)
+    const targets = compileNode(content, '#' + id, options);
     if (window.DEBUG) { groupEnd(); }
 
     return { content, targets };
@@ -248,7 +249,7 @@ assign(TemplateRenderer.prototype, {
     Stops renderer.
     **/
     stop: function() {
-        //uncue(this);
+        uncue(this);
         return;// stop(this);
     },
 

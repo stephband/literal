@@ -25,6 +25,10 @@
     <template is="literal-html" data-state="1" data-value="Hello">
         <h2>Literal template</h2>
         <p>${ 'Hello' }</p>
+        <pre>data = ${ window.data = data }</pre>
+        <pre>data.state = ${ data.state }</pre>
+        <pre>data.value = ${ data.value }</pre>
+        ${ include('#template-2', data) }
     </template>
 
     <!--template is="literal-html" data-default="2" data-value="Hello">
