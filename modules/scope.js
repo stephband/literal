@@ -60,8 +60,8 @@ import normalise            from '../../fn/modules/normalise.js';
 import denormalise          from '../../fn/modules/denormalise.js';
 import overload             from '../../fn/modules/overload.js';
 import Data                 from '../../fn/modules/signal-data.js';
-import Stream               from '../../fn/modules/stream.js';
-import ClockStream          from '../../fn/modules/stream/clock-stream.js';
+//import Stream               from '../../fn/modules/stream.js';
+//import ClockStream          from '../../fn/modules/stream/clock-stream.js';
 
 import paramify          from './scope/paramify.js';
 
@@ -154,7 +154,7 @@ const library = {
     </template>
     **/
 
-    clock: (duration) => new ClockStream(duration),
+//    clock: (duration) => new ClockStream(duration),
 
     /** keys(object)
     Alias of `Object.keys()`.
@@ -198,7 +198,7 @@ const library = {
     remove,
     set,
     slugify,
-    Stream,
+//    Stream,
     sum,
 
     /**

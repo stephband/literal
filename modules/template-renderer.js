@@ -27,7 +27,6 @@ renderer
 
 import overload          from '../../fn/modules/overload.js';
 import Data              from '../../fn/modules/signal-data.js';
-//import Stream, { stop }  from '../../fn/modules/stream/stream.js';
 import create            from '../../dom/modules/create.js';
 import identify          from '../../dom/modules/identify.js';
 import isTextNode        from '../../dom/modules/is-text-node.js';
