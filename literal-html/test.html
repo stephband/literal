@@ -11,25 +11,29 @@
     </script>
 
     <template id="template-1">
-        <p>Template 1 ${ data.value }</p>
+        <h3>template-1</h3>
+        <pre>data-value = ${ data.value }</pre>
     </template>
 
     <template id="template-2">
-        <p>Template 2</p>
+        <h3>template-2</h3>
+        <pre>data.value = ${ data.value }</pre>
     </template>
 </head>
 
 <body>
-    TEST
-
+    <h1>Test</h1>
+    <hr/>
     <template is="literal-html" data-state="1" data-value="Hello">
         <h2>Literal template</h2>
-        <p>${ 'Hello' }</p>
+        <p class="${ 'hello world' }">${ 'Hello world' }</p>
         <pre>data = ${ window.data = data }</pre>
         <pre>data.state = ${ data.state }</pre>
         <pre>data.value = ${ data.value }</pre>
+        ${ include('#template-1', data) }
         ${ include('#template-2', data) }
     </template>
+    <hr/>
 
     <!--template is="literal-html" data-default="2" data-value="Hello">
         <h2>Literal template</h2>
