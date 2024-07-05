@@ -232,7 +232,9 @@ export default class Renderer extends Signal {
         return ObserverSignal.prototype.stop.apply(this);
     }
 
-    done = ObserverSignal.prototype.done;
+    done() {
+        return ObserverSignal.prototype.done.apply(this, arguments);
+    }
 }
 
 if (window.DEBUG) {

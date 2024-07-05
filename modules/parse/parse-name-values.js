@@ -1,5 +1,5 @@
-import capture from '../../fn/modules/capture.js';
-import last    from '../../fn/modules/last.js';
+import capture from '../../../fn/modules/capture.js';
+import last    from '../../../fn/modules/last.js';
 
 /**
 parseNameValues(array, string)

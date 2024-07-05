@@ -26,14 +26,13 @@ renderer
 
 
 import overload           from '../../fn/modules/overload.js';
-import { ObserverSignal } from '../../fn/modules/signal.js';
 import Data               from '../../fn/modules/signal-data.js';
 import create             from '../../dom/modules/create.js';
 import identify           from '../../dom/modules/identify.js';
 import isTextNode         from '../../dom/modules/is-text-node.js';
 import { pathSeparator }  from './compile/constants.js';
 import removeNodeRange    from './dom/remove-node-range.js';
-import { uncue }          from './renderer/cue.js';
+import Renderer           from './renderer/renderer.js';
 import getNodeRange       from './dom/get-node-range.js';
 import compileNode        from './compile.js';
 import { groupCollapsed, groupEnd } from './log.js';
@@ -248,10 +247,11 @@ assign(TemplateRenderer.prototype, {
     .stop()
     Stops renderer.
     **/
-    stop: function() {
-        uncue(this);
-        return ObserverSignal.prototype.stop.apply(this);
-    },
+    stop: Renderer.prototype.stop,
 
-    done: ObserverSignal.prototype.done
+    /**
+    .done(object)
+    Registers `object.stop()` to be called when this renderer is stopped.
+    **/
+    done: Renderer.prototype.done
 });

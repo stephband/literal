@@ -1,4 +1,4 @@
-import capture from '../../fn/modules/capture.js';
+import capture from '../../../fn/modules/capture.js';
 
 
 /**

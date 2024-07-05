@@ -3,13 +3,13 @@
 Parse files for documentation comments
 */
 
-import capture from '../../fn/modules/capture.js';
-import noop    from '../../fn/modules/noop.js';
-import slugify from '../../fn/modules/slugify.js';
+import capture from '../../../fn/modules/capture.js';
+import noop    from '../../../fn/modules/noop.js';
+import slugify from '../../../fn/modules/slugify.js';
 
 import { parseString } from './parse-string.js';
 import { parseParams } from './parse-params.js';
-import parseMarkdown   from '../deno/parse-markdown.js';
+import parseMarkdown   from '../../deno/parse-markdown.js';
 
 
 const parseParensClose = capture(/^\)\s*/, {}, null);
