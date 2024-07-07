@@ -13,46 +13,47 @@
     <template id="template-1">
         <h3>#template-1</h3>
         <pre>
-this.renderCount = ${ this.renderCount }
-data.value = ${ data.value }
+data.value = (${ this.renderCount }) ${ data.value }
         </pre>
     </template>
 
     <template id="template-2">
         <h3>#template-2</h3>
         <pre>
-this.renderCount = ${ this.renderCount }
-data.value = ${ data.value }
+data.value = (${ this.renderCount }) ${ data.value }
         </pre>
     </template>
 </head>
 
 <body>
     <h1>Test</h1>
-    <hr/>
 
+    <hr/>
     <template is="literal-html" data-state="1" data-value="Hello">
         <h2>is="literal-html"</h2>
+        <p>Render counts in (brackets).</p>
         ${ window.data = data, '' }
         <p class="${ 'hello world' }">${ 'Hello world' }</p>
-        this.renderCount = ${ this.renderCount }
+        (${ this.renderCount })
         ${ include('#template-1', data) }
         ${ include('#template-2', data) }
     </template>
-    <hr/>
 
-    <!--template is="literal-html" data-state="1" data-value="Hello">
+    <hr/>
+    <template is="literal-html" data-state="1" data-value="Hello">
+        <h2>is="literal-html"</h2>
+        <p>Render counts in (brackets).</p>
         ${ window.data = data, '' }
-        <h2>Literal template</h2>
         <p class="${ 'hello world' }">${ 'Hello world' }</p>
-        <pre>data = ${ data }</pre>
-        <pre>data.state = ${ data.state }</pre>
-        <pre>data.value = ${ data.value }</pre>
+        <pre>data = (${ this.renderCount }) ${ data }</pre>
+        <pre>data.state = (${ this.renderCount }) ${ data.state }</pre>
+        <pre>data.value = (${ this.renderCount }) ${ data.value }</pre>
+        (${ this.renderCount })
         ${ include('#template-1', data) }
         ${ include('#template-2', data) }
     </template>
-    <hr/>
 
+    <hr/>
     <!--template is="literal-html" data-default="2" data-value="Hello">
         <h2>Literal template</h2>
         <input class="masked" type="radio" name="test-2" value="1" id="test-2-value-1" checked="$ { data.default == element.value }" />

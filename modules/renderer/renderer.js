@@ -1,6 +1,6 @@
 
 import { remove }       from '../../../fn/modules/remove.js';
-import Signal, { ObserverSignal, evaluate } from '../../../fn/modules/signal.js';
+import Signal, { ObserverSignal } from '../../../fn/modules/signal.js';
 import Data             from '../../../fn/modules/signal-data.js';
 import scope            from '../scope-dom.js';
 import { cue, uncue }   from './cue.js';
@@ -176,7 +176,7 @@ export default class Renderer {
             try {
                 ++this.renderCount;
                 // Evaluation causes DOM render
-                let stats = evaluate(this, this.evaluate);
+                let stats = Signal.evaluate(this, this.evaluate);
             }
             catch(e) {
                 // TODO: add template id to error message
@@ -186,7 +186,7 @@ export default class Renderer {
         }
         else {
             ++this.renderCount;
-            evaluate(this, this.evaluate);
+            Signal.evaluate(this, this.evaluate);
         }
 
         this.status = this.status === 'rendering' ? 'idle' : this.status ;
