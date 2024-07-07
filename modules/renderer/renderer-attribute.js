@@ -3,7 +3,6 @@ import composeString from './compose-string.js';
 import names         from './property-names.js';
 import Renderer      from './renderer.js';
 
-const assign        = Object.assign;
 const getDescriptor = Object.getOwnPropertyDescriptor;
 const getPrototype  = Object.getPrototypeOf;
 
@@ -29,36 +28,17 @@ function isWritableProperty(name, object) {
         isWritableProperty(name, getPrototype(object)) ;
 }
 
-function isWritable(name, element) {
-    // Is property defined in object or in its prototype chain?
-    return name in element ?
-        // Then find out if it can be written to
-        isWritableProperty(name, element) :
-        // Avoid setting any properties on element not already defined
-        false ;
+function setProperty(node, name, value) {
+    // Seek and set a matching property
+    if (node[name] === value) return 0;
+    node[name] = value;
+    return 1;
 }
 
-function setAttribute(node, name, property, writable, value) {
-    stats.attribute = 0;
-    stats.property  = 0;
-
-    // Seek and set a matching property
-    if (writable) {
-        if (node[property] !== value) {
-            node[property] = value;
-            stats.property = 1;
-        }
-        return stats;
-    }
-
-    // If that doesn't work set the attribute
-    if (value === node.getAttribute(name)) {
-        return stats;
-    }
-
+function setAttribute(node, name, value) {
+    if (value === node.getAttribute(name)) return 0;
     node.setAttribute(name, value);
-    stats.attribute = 1;
-    return stats;
+    return 1;
 }
 
 export default class AttributeRenderer extends Renderer {
@@ -86,9 +66,17 @@ export default class AttributeRenderer extends Renderer {
             arguments[1] :
             composeString(arguments) ;
 
-        const stats = setAttribute(this.element, this.name, this.property, this.writable, this.value);
-        this.mutations = stats.attribute;
+        stats.attribute = 0;
+        stats.property  = 0;
 
+        if (this.writable) {
+            stats.property += setProperty(this.element, this.property, this.value);
+        }
+        else {
+            stats.attribute += setAttribute(this.element, this.name, this.value);
+        }
+
+        this.mutations = stats.attribute;
         return stats;
     }
 }

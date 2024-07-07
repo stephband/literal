@@ -1,15 +1,11 @@
 
 import { remove }       from '../../../fn/modules/remove.js';
-import Signal, { ObserverSignal } from '../../../fn/modules/signal.js';
+import Signal, { ObserverSignal, evaluate } from '../../../fn/modules/signal.js';
 import Data             from '../../../fn/modules/signal-data.js';
 import scope            from '../scope-dom.js';
 import { cue, uncue }   from './cue.js';
 import toText           from './to-text.js';
 
-const assign = Object.assign;
-const create = Object.create;
-const keys   = Object.keys;
-const values = Object.values;
 
 let id = 0;
 
@@ -111,17 +107,18 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
 Renderer(path, name, source, message)
 */
 
-export default class Renderer extends Signal {
+export default class Renderer {
     static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow'];
 
     constructor(fn, element, name, parameters) {
-        super(() => fn.apply(this, this.getParameters()));
+        //super(() => fn.apply(this, this.getParameters()));
 
         // Pick up paremeter names from the constructor, which may have been
         // overridden on dependent constructors
         const parameterNames = this.constructor.parameterNames;
 
         this.id          = ++id;
+        this.fn          = fn;
         this.element     = element;
         this.name        = name;
         this.status      = 'idle';
@@ -156,26 +153,30 @@ export default class Renderer extends Signal {
         this.invalidate();
     }
 
+    evaluate() {
+        return this.fn.apply(this, this.getParameters());
+    }
+
     invalidate() {
-        super.invalidate();
+        // A renderer, as a consumer, does not have validity or dependent
+        // signals to invalidate. It does have status.
+        if (this.status === 'done') return this;
+        if (this.status === 'cued') return this;
+
         // Cue .update()
-        if (this.status === 'cued') return;
         cue(this);
+        return this;
     }
 
     update() {
         stopPromises(this.promises);
         this.status = 'rendering';
 
-        // literalise the template. Todo: note that we are potentially leaving
-        // observers live here, if any data is set during render we may trigger
-        // a further render... which could cause an infinite loop. Not what we
-        // want. Do we need to pause observers? Yes probably. A voire.
         if (window.DEBUG) {
             try {
                 ++this.renderCount;
-                // Getting value causes DOM render. I know. A little bizarre.
-                let value = this.value;
+                // Evaluation causes DOM render
+                let stats = evaluate(this, this.evaluate);
             }
             catch(e) {
                 // TODO: add template id to error message
@@ -185,8 +186,7 @@ export default class Renderer extends Signal {
         }
         else {
             ++this.renderCount;
-            // Get rendered something or other
-            let value = this.value;
+            evaluate(this, this.evaluate);
         }
 
         this.status = this.status === 'rendering' ? 'idle' : this.status ;
@@ -238,8 +238,5 @@ export default class Renderer extends Signal {
 }
 
 if (window.DEBUG) {
-    assign(Renderer, {
-        // Track number of active renderers
-        count: 0
-    });
+    Renderer.count = 0;
 }

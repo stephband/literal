@@ -17,7 +17,6 @@ import toText            from './to-text.js';
 import Renderer          from './renderer.js';
 
 
-const A      = Array.prototype;
 const assign = Object.assign;
 const stats  = {
     add:    0,

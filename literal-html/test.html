@@ -33,8 +33,11 @@ data.value = ${ data.value }
 
     <template is="literal-html" data-state="1" data-value="Hello">
         <h2>is="literal-html"</h2>
+        ${ window.data = data, '' }
         <p class="${ 'hello world' }">${ 'Hello world' }</p>
-        ${ window.data = data, include('#template-1', data) }
+        this.renderCount = ${ this.renderCount }
+        ${ include('#template-1', data) }
+        ${ include('#template-2', data) }
     </template>
     <hr/>
 

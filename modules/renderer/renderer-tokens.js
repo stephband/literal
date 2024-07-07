@@ -4,13 +4,11 @@ import overload          from '../../../fn/modules/overload.js';
 import toText            from './to-text.js';
 import AttributeRenderer from './renderer-attribute.js';
 
-const A      = Array.prototype;
-const assign = Object.assign;
-
+const A       = Array.prototype;
 const nothing = [];
 
 /**
-TokensRenderer()
+TokensRenderer(fn, element, name, parameters)
 Constructs an object responsible for rendering to a token list attribute such
 as a class attribute.
 **/

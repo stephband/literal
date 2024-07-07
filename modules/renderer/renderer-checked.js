@@ -8,11 +8,9 @@ import composeBoolean    from './compose-boolean.js';
 import AttributeRenderer from './renderer-attribute.js';
 import { getValue }      from './value.js';
 
-const assign  = Object.assign;
-
 
 /**
-CheckedRenderer()
+CheckedRenderer(fn, element, unused, parameters)
 Constructs an object responsible for rendering to a checked property.
 **/
 

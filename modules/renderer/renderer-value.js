@@ -8,11 +8,9 @@ import composeString     from './compose-string.js';
 import composeNumber     from './compose-number.js';
 import { getValue, setValue, removeValue } from './value.js';
 
-const assign = Object.assign;
-
 
 /**
-ValueRenderer(path, name, source, element, message)
+ValueRenderer(fn, element, unused, parameters)
 Constructs an object responsible for rendering from a value attribute to a
 value property. Parameter `name` is redundant, but here for symmetry with other
 renderers.

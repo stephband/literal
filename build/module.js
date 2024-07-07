@@ -1,6 +1,5 @@
 /* Literal 
-   0.8.2
-   By Stephen Band
-   Built 2023-12-18 13:39 */
+   0.8.3
+   By Stephen Band */
 
-import"./chunk-V7ZXZ57K.js";import{d as a,e as b,l as c,m as d,q as e,s as f,v as g}from"./chunk-JU3YUBZG.js";export{d as Data,g as Renderer,a as compiled,b as config,c as observe,e as scope,f as urls};
+import{a as g}from"./chunk-T2DMYBXK.js";import{d as a,k as b,m as c,p as d,s as e,t as f}from"./chunk-LJ2EOQVP.js";export{a as Data,f as Renderer,e as compiled,b as config,g as default,c as scope,d as urls};
