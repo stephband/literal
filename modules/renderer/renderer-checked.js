@@ -7,6 +7,7 @@ import bindChecked       from '../scope/bind-checked.js';
 import composeBoolean    from './compose-boolean.js';
 import AttributeRenderer from './renderer-attribute.js';
 import { getValue }      from './value.js';
+import { stats }         from './renderer.js';
 
 
 /**
@@ -76,7 +77,6 @@ export default class CheckedRenderer extends AttributeRenderer {
             this.value = composeBoolean(arguments);
         }
 
-        this.mutations = setChecked(this.element, this.value, this.hasValue);
-        return this;
+        stats.property += setChecked(this.element, this.value, this.hasValue);
     }
 }

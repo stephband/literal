@@ -25,16 +25,16 @@ renderer
 **/
 
 
-import overload           from '../../fn/modules/overload.js';
-import Data               from '../../fn/modules/signal-data.js';
-import create             from '../../dom/modules/create.js';
-import identify           from '../../dom/modules/identify.js';
-import isTextNode         from '../../dom/modules/is-text-node.js';
-import { pathSeparator }  from './compile/constants.js';
-import removeNodeRange    from './dom/remove-node-range.js';
-import Renderer           from './renderer/renderer.js';
-import getNodeRange       from './dom/get-node-range.js';
-import compileNode        from './compile.js';
+import overload            from '../../fn/modules/overload.js';
+import Data                from '../../fn/modules/signal-data.js';
+import create              from '../../dom/modules/create.js';
+import identify            from '../../dom/modules/identify.js';
+import isTextNode          from '../../dom/modules/is-text-node.js';
+import { pathSeparator }   from './compile/constants.js';
+import removeNodeRange     from './dom/remove-node-range.js';
+import Renderer, { stats } from './renderer/renderer.js';
+import getNodeRange        from './dom/get-node-range.js';
+import compileNode         from './compile.js';
 import { groupCollapsed, groupEnd } from './log.js';
 
 const assign = Object.assign;
@@ -186,7 +186,7 @@ assign(TemplateRenderer.prototype, {
             }
 
             this.content.prepend.apply(this.content, nodes);
-            return nodes.length;
+            stats.remove += nodes.length;
         },
 
         default: function() {
@@ -194,18 +194,17 @@ assign(TemplateRenderer.prototype, {
             const data = this.data;
 
             // Render the contents (synchronously)
-            this.mutations = this.contents.reduce((mutations, renderer) => {
+            this.contents.forEach((renderer) => {
                 renderer.data = data;
-                mutations = mutations + renderer.update().mutations;
-                return mutations;
-            }, 0);
+                renderer.update();
+            });
 
             // If this.last is not in the content fragment, it must be in the
             // parent DOM being used as a marker. It's time for its freshly
             // rendered brethren to join it.
             if (this.content.lastChild && this.last !== this.content.lastChild) {
                 this.last.before(this.content);
-                ++this.mutations;
+                stats.add += 1;
             }
 
             return this;
@@ -226,6 +225,7 @@ assign(TemplateRenderer.prototype, {
         // Remove first to last and all nodes in between to .content fragment
         const nodes = getNodeRange(this.first, this.last);
         this.content.prepend.apply(this.content, nodes);
+        stats.remove += nodes.length;
         return nodes.length;
     },
 
@@ -240,6 +240,7 @@ assign(TemplateRenderer.prototype, {
         }
 
         this.last.after.apply(this.last, arguments);
+        stats.add += arguments.length;
         return this.remove();
     },
 

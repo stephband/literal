@@ -1,15 +1,10 @@
 
 import composeString from './compose-string.js';
 import names         from './property-names.js';
-import Renderer      from './renderer.js';
+import Renderer, { stats } from './renderer.js';
 
 const getDescriptor = Object.getOwnPropertyDescriptor;
 const getPrototype  = Object.getPrototypeOf;
-
-const stats = {
-    attribute: 0,
-    property:  0
-};
 
 
 /**
@@ -66,17 +61,11 @@ export default class AttributeRenderer extends Renderer {
             arguments[1] :
             composeString(arguments) ;
 
-        stats.attribute = 0;
-        stats.property  = 0;
-
         if (this.writable) {
             stats.property += setProperty(this.element, this.property, this.value);
         }
         else {
             stats.attribute += setAttribute(this.element, this.name, this.value);
         }
-
-        this.mutations = stats.attribute;
-        return stats;
     }
 }

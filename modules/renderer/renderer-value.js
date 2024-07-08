@@ -4,6 +4,7 @@ import overload          from '../../../fn/modules/overload.js';
 import config            from '../config.js';
 import bindValue         from '../scope/bind-value.js';
 import AttributeRenderer from './renderer-attribute.js';
+import { stats }         from './renderer.js';
 import composeString     from './compose-string.js';
 import composeNumber     from './compose-number.js';
 import { getValue, setValue, removeValue } from './value.js';
@@ -47,8 +48,7 @@ export default class ValueRenderer extends AttributeRenderer {
             arguments[1] :
             compose(arguments, this.element.type) ;
 
-        this.mutations = setValue(this.element, this.value);
-        return this;
+        stats.property += setValue(this.element, this.value);
     }
 
     stop() {

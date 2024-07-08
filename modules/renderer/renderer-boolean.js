@@ -1,5 +1,6 @@
 import composeBoolean    from './compose-boolean.js';
 import AttributeRenderer from './renderer-attribute.js';
+import { stats }         from './renderer.js';
 
 
 /**
@@ -32,9 +33,14 @@ export default class BooleanRenderer extends AttributeRenderer {
 
     render(strings) {
         const value = composeBoolean(arguments);
-        this.mutations = this.writable ?
-            setBooleanProperty(this.element, this.property, value) :
-            setBooleanAttribute(this.element, this.name, value) ;
-        return {};
+
+        if (this.writable) {
+            stats.property += setBooleanProperty(this.element, this.property, value);
+        }
+        else {
+            stats.attribute += setBooleanAttribute(this.element, this.name, value) ;
+        }
+
+        return;
     }
 }

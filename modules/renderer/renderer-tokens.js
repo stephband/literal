@@ -3,6 +3,8 @@ import id                from '../../../fn/modules/id.js';
 import overload          from '../../../fn/modules/overload.js';
 import toText            from './to-text.js';
 import AttributeRenderer from './renderer-attribute.js';
+import { stats }         from './renderer.js';
+
 
 const A       = Array.prototype;
 const nothing = [];
@@ -17,7 +19,7 @@ const getTokenList = overload(id, {
     'class': (name, node) => node.classList
 });
 
-function updateTokens(list, cached, tokens, count) {
+function updateTokens(list, cached, tokens, count = 0) {
     // Remove all tokens from cached that are found in new tokens
     let n = cached.length;
     while (n--) {
@@ -64,8 +66,9 @@ export default class TokensRenderer extends AttributeRenderer {
                 .trim();
 
             if (tokens) {
-                this.list.add.apply(this.list, tokens.split(/\s+/));
-                ++mutations;
+                const array = tokens.split(/\s+/);
+                this.list.add.apply(this.list, array);
+                stats.token += array.length;
             }
         }
 
@@ -77,8 +80,7 @@ export default class TokensRenderer extends AttributeRenderer {
             .split(/\s+/)
             .filter((string) => !!string);
 
-        this.mutations = updateTokens(this.list, this.tokens, tokens, mutations);
-        this.tokens    = tokens;
-        return this;
+        stats.token += updateTokens(this.list, this.tokens, tokens);
+        this.tokens = tokens;
     }
 }

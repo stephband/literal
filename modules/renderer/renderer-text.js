@@ -6,23 +6,18 @@ processing the literal content is more DOM content this renderer will insert
 that DOM after the text node.
 **/
 
-import isTextNode        from '../../../dom/modules/is-text-node.js';
-import include           from '../scope/include.js';
-import library           from '../scope-dom.js';
-import indexOf           from '../dom/index-of.js';
-import removeNodeRange   from '../dom/remove-node-range.js';
-import TemplateRenderer  from '../template-renderer.js';
-import print             from '../scope/print.js';
-import toText            from './to-text.js';
-import Renderer          from './renderer.js';
+import isTextNode       from '../../../dom/modules/is-text-node.js';
+import include          from '../scope/include.js';
+import library          from '../scope-dom.js';
+import indexOf          from '../dom/index-of.js';
+import removeNodeRange  from '../dom/remove-node-range.js';
+import TemplateRenderer from '../template-renderer.js';
+import print            from '../scope/print.js';
+import toText           from './to-text.js';
+import Renderer, { stats } from './renderer.js';
 
 
 const assign = Object.assign;
-const stats  = {
-    add:    0,
-    remove: 0,
-    text:   0
-};
 
 
 function stop(node) {
@@ -221,16 +216,7 @@ export default class TextRenderer extends Renderer {
             pushContents(this.contents, strings[n]);
         }
 
-        // TEMP, TODO: Make stats a global accumulator that comes from cue()?
-        if (window.DEBUG) {
-            stats.add    = 0;
-            stats.remove = 0;
-            stats.text   = 0;
-        }
-
         updateDOM(stats, this.first, this.last, this.contents);
-        this.mutations = stats.remove + stats.add + stats.text;
-        return stats;
     }
 
     stop() {

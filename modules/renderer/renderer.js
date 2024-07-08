@@ -7,7 +7,22 @@ import { cue, uncue }   from './cue.js';
 import toText           from './to-text.js';
 
 
+const $stopables = Symbol('stopables');
+
+export const stats = {
+    attribute: 0,
+    property:  0,
+    token:     0,
+    text:      0,
+    remove:    0,
+    add:       0
+};
+
 let id = 0;
+
+function callStop(stopable) {
+    stopable.stop();
+}
 
 
 /**
@@ -176,7 +191,7 @@ export default class Renderer {
             try {
                 ++this.renderCount;
                 // Evaluation causes DOM render
-                let stats = Signal.evaluate(this, this.evaluate);
+                Signal.evaluate(this, this.evaluate);
             }
             catch(e) {
                 // TODO: add template id to error message
@@ -222,18 +237,38 @@ export default class Renderer {
     }
 
     stop() {
+        // Check and set status
+        if (this.status === 'done') return this;
+
+        // Sets status
+        ObserverSignal.prototype.stop.apply(this);
+
         uncue(this);
         stopPromises(this.promises);
         //stopStreams(this.streams);
 
         if (window.DEBUG) { --Renderer.count; }
 
-        // Stop signal. Sets this.status = 'done'.
-        return ObserverSignal.prototype.stop.apply(this);
+        // Call done functions and listeners
+        const stopables = this[$stopables];
+        if (stopables) {
+            this[$stopables] = undefined;
+            stopables.forEach(callStop);
+        }
+
+        return this;
     }
 
-    done() {
-        return ObserverSignal.prototype.done.apply(this, arguments);
+    done(stopable) {
+        // Is stream already stopped? Call listener immediately.
+        if (this.status === 'done') {
+            stopable.stop();
+            return this;
+        }
+
+        const stopables = this[$stopables] || (this[$stopables] = []);
+        stopables.push(stopable);
+        return this;
     }
 }
 
