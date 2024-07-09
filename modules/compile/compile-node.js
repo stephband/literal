@@ -6,7 +6,7 @@ import decode            from '../../../dom/modules/decode.js';
 import indexOf           from '../dom/index-of.js';
 import TextRenderer      from '../renderer/renderer-text.js';
 import isLiteralString   from '../is-literal-string.js';
-import scope             from '../scope-dom.js';
+import scope             from '../scope.js';
 import compile           from './compile.js';
 import { pathSeparator } from './constants.js';
 import truncate          from './truncate.js';

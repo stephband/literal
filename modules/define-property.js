@@ -1,5 +1,5 @@
 
-import { Observer as Data } from '../../fn/observer/observer.js';
+import Data                 from '../../fn/modules/signal-data.js';
 import arg                  from '../../fn/modules/arg.js';
 import nothing              from '../../fn/modules/nothing.js';
 import overload             from '../../fn/modules/overload.js';

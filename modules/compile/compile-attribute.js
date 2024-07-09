@@ -3,7 +3,7 @@ import arg               from '../../../fn/modules/arg.js';
 import overload          from '../../../fn/modules/overload.js';
 import decode            from '../../../dom/modules/decode.js';
 import isLiteralString   from '../is-literal-string.js';
-import scope             from '../scope-dom.js';
+import scope             from '../scope.js';
 import AttributeRenderer from '../renderer/renderer-attribute.js';
 import BooleanRenderer   from '../renderer/renderer-boolean.js';
 import CheckedRenderer   from '../renderer/renderer-checked.js';

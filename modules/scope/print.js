@@ -25,8 +25,8 @@ Messages should be styled with the print stylesheet:
 
 **/
 
-import noop          from '../../../fn/modules/noop.js';
-import { getTarget } from '../../../fn/observer/observer.js';
+import noop from '../../../fn/modules/noop.js';
+import Data from '../../../fn/modules/signal-data.js';
 
 function toHTML(object) {
     // Print different kinds of objects differently
@@ -58,7 +58,7 @@ export default function print(object) {
         let n = -1;
         pre.setAttribute('class', 'literal-print');
         while (arguments[++n] !== undefined) {
-            html += toHTML(getTarget(arguments[n]));
+            html += toHTML(Data.objectOf(arguments[n]));
         }
     }
 

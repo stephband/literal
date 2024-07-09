@@ -18,11 +18,11 @@ ${ data.array.map(include('#list-item')) }
 ```
 **/
 
-import { getTarget }    from '../../../fn/observer/observer.js';
+import Data            from '../../../fn/modules/signal-data.js';
 import LiteralTemplate from '../literal-template.js';
-import getById          from '../dom/get-by-id.js';
-import requestTemplate  from '../request-template.js';
-import requestData      from '../request-data.js';
+import getById         from '../dom/get-by-id.js';
+import requestTemplate from '../request-template.js';
+import requestData     from '../request-data.js';
 
 function push(template, data, element, parameters, options) {
     const renderer = new LiteralTemplate(template, element, parameters, options);
@@ -40,7 +40,7 @@ function pipe(template, data, element, parameters, options) {
 export default function include(src, data, element, parameters, options) {
     // Operate on target to be sure we are not registering gets in
     // parent renderer
-    const object = getTarget(data);
+    const object = Data.objectOf(data);
 
     // Template is in document
     if (/^#/.test(src)) {

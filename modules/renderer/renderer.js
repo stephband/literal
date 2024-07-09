@@ -2,7 +2,7 @@
 import { remove }       from '../../../fn/modules/remove.js';
 import Signal, { ObserverSignal } from '../../../fn/modules/signal.js';
 import Data             from '../../../fn/modules/signal-data.js';
-import scope            from '../scope-dom.js';
+import scope            from '../scope.js';
 import { cue, uncue }   from './cue.js';
 import toText           from './to-text.js';
 
@@ -58,7 +58,7 @@ function stopPromises(promises) {
 function renderValue(renderer, args, values, n, object, isRender = false) {
     if (object && typeof object === 'object') {
         // Avoid having property gets registered as observers
-        const target = Data.object(object);
+        const target = Data.objectOf(object);
 
         // Is target a Promise?
         if (target.then) {
@@ -147,7 +147,7 @@ export default class Renderer {
     getParameters() {
         const parameters = this.parameters;
         parameters[0] = this.data;
-        parameters[1] = Data.object(this.data);
+        parameters[1] = Data.objectOf(this.data);
         parameters[2] = this.element;
         return parameters;
     }

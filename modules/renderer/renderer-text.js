@@ -8,10 +8,9 @@ that DOM after the text node.
 
 import isTextNode       from '../../../dom/modules/is-text-node.js';
 import include          from '../scope/include.js';
-import library          from '../scope-dom.js';
 import indexOf          from '../dom/index-of.js';
 import removeNodeRange  from '../dom/remove-node-range.js';
-import LiteralTemplate from '../literal-template.js';
+import LiteralTemplate  from '../literal-template.js';
 import print            from '../scope/print.js';
 import toText           from './to-text.js';
 import Renderer, { stats } from './renderer.js';

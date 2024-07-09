@@ -1,6 +1,6 @@
 
 import cache                     from '../../fn/modules/cache.js';
-import { Observer as Data }      from '../../fn/observer/observer.js';
+import Data                      from '../../fn/modules/signal-data.js';
 import create                    from '../../dom/modules/create.js';
 import element, { getInternals } from '../../dom/modules/element.js';
 import toPrefetchPromise         from '../../dom/modules/element/to-prefetch-promise.js';

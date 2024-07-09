@@ -1,25 +1,42 @@
 
-import delegate                from '../../dom/modules/delegate.js';
-import events                  from '../../dom/modules/events.js';
-import identify                from '../../dom/modules/identify.js';
-import isValid                 from '../../dom/modules/is-valid.js';
-import rect                    from '../../dom/modules/rect.js';
-import request                 from '../../dom/modules/request.js';
-import { trigger }             from '../../dom/modules/trigger.js';
-import { px, em, rem, vw, vh } from '../../dom/modules/parse-length.js';
-import validate                from '../../dom/modules/validate.js';
-import create                  from '../../dom/modules/create.js';
-import navigate                from '../../dom/modules/navigate.js';
-import { getValue }            from './renderer/value.js';
-import scope                   from './scope.js';
+// Built-ins added to scope with shorter names for template brevity
+
+export const root  = document.documentElement;
+export const body  = document.body;
+export const frame = window.requestAnimationFrame;
+
+
+// This is the base set of scope functions. These functions are already used by
+// literal so they come at no cost to have them in scope by default. Functions
+// not already used by literal should be put in scope-extended.js
+
+export { default as create     } from '../../../dom/modules/create.js';
+export { default as decode     } from '../../../dom/modules/decode.js';
+export { default as identify   } from '../../../dom/modules/identify.js';
+export { default as isTextNode } from '../../../dom/modules/is-text-node.js';
+export { default as parse      } from '../../../dom/modules/parse.js';
+export { default as request    } from '../../../dom/modules/request.js';
+export { default as toNodeType } from '../../../dom/modules/to-type.js';
+export { default as trigger    } from '../../../dom/modules/trigger.js';
+export { getValue }              from '../renderer/value.js';
+
+export function translate(key) {
+    if (window.DEBUG && !window.translations) {
+        console.warn('Literal translate() - no `window.translations` object');
+    }
+
+    return window.translations && window.translations[key] || key;
+}
+
 
 // Extend scope with DOM functions.
-export default Object.assign(scope, {
-    root: document.documentElement,
-    body: document.body,
+//export default Object.assign(scope, {
+    //root: document.documentElement,
+    //body: document.body,
 
-    create,
-    delegate,
+    //create,
+    //decode,
+    //delegate,
 
     /**
     events(type, element)
@@ -76,21 +93,17 @@ export default Object.assign(scope, {
     automatically when the renderer is stopped, so normally there is no need to
     worry about managing them.
     **/
-    events,
+    //events,
 
     /** frame(fn)
     Alias of `window.requestAnimationFrame(fn)`. Aliased for brevity inside
     templates.
     **/
-    frame: window.requestAnimationFrame,
 
     /** getValue(element)
     TODO
     **/
-    getValue,
 
-    identify,
-    isValid,
 
     /** navigate(url)
     Navigate to a url, alerting the history API where pertinent. Takes optional
@@ -100,14 +113,14 @@ export default Object.assign(scope, {
     ```
     TODO: better description!
     **/
-    navigate,
+    //navigate,
 
     /**
     rect(element)
     A shortcut for `element.getBoundingClientRectangle()`. Returns a DOMRect
     object with `left`, `top`, `width` and `height` properties.
     **/
-    rect,
+    //rect,
 
     /**
     request(method, url)
@@ -135,12 +148,4 @@ export default Object.assign(scope, {
     ```
     **/
 
-    request,
-    trigger,
-    validate,
-    px,
-    em,
-    rem,
-    vw,
-    vh
-});
+//});
