@@ -5,10 +5,10 @@ import toType            from '../../../dom/modules/to-type.js';
 import decode            from '../../../dom/modules/decode.js';
 import indexOf           from '../dom/index-of.js';
 import TextRenderer      from '../renderer/renderer-text.js';
-import isLiteralString   from '../is-literal-string.js';
 import scope             from '../scope.js';
 import compile           from './compile.js';
 import { pathSeparator } from './constants.js';
+import isLiteralString   from './is-literal-string.js';
 import truncate          from './truncate.js';
 import compileAttribute  from './compile-attribute.js';
 

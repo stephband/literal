@@ -4,9 +4,9 @@ import * as path from "https://deno.land/std@0.110.0/path/mod.ts";
 // Absolute path to module
 const moduleAbs = path.dirname(path.fromFileUrl(import.meta.url));
 
-import base        from '../modules/scope.js';
+import base        from '../modules/scope/scope-fns.js';
+import fns         from '../modules/scope/scope-fns-ext.js';
 
-import capture     from '../../fn/modules/capture.js';
 import { addDate } from '../../fn/modules/date.js';
 import { addTime } from '../../fn/modules/time.js';
 import exec        from '../../fn/modules/exec.js';
@@ -323,11 +323,9 @@ function render(strings) {
 
 /* Export library */
 
-const library = assign(base, {
+const library = assign(base, fns, {
     add,
-    capture,
     comments,
-    exec,
     include:  include,
     imports:  imports,
     markdown: parseMarkdown,

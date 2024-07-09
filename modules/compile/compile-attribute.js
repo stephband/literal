@@ -2,13 +2,13 @@
 import arg               from '../../../fn/modules/arg.js';
 import overload          from '../../../fn/modules/overload.js';
 import decode            from '../../../dom/modules/decode.js';
-import isLiteralString   from '../is-literal-string.js';
 import scope             from '../scope.js';
 import AttributeRenderer from '../renderer/renderer-attribute.js';
 import BooleanRenderer   from '../renderer/renderer-boolean.js';
 import CheckedRenderer   from '../renderer/renderer-checked.js';
 import TokensRenderer    from '../renderer/renderer-tokens.js';
 import ValueRenderer     from '../renderer/renderer-value.js';
+import isLiteralString   from './is-literal-string.js';
 import truncate          from './truncate.js';
 import compile           from './compile.js';
 
