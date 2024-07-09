@@ -175,8 +175,6 @@ assign(LiteralTemplate.prototype, {
 
     update: overload(dataToString, {
         null: function() {
-            const data = this.data;
-
             // Remove all but the last node to the renderer's content fragment
             nodes.length = 0;
             let node = this.first;
