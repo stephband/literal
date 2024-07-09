@@ -3,7 +3,7 @@ import id     from '../../../fn/modules/id.js';
 import set    from '../../../fn/modules/set-path.js';
 import events from '../../../dom/modules/events.js';
 import { getValue, setValue } from '../renderer/value.js';
-import { observe } from '../data.js';
+//import { observe } from '../data.js';
 
 let warned;
 

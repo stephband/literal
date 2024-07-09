@@ -3,24 +3,25 @@ import arg               from '../../../fn/modules/arg.js';
 import overload          from '../../../fn/modules/overload.js';
 import decode            from '../../../dom/modules/decode.js';
 import isLiteralString   from '../is-literal-string.js';
-import AttributeRenderer from './renderer-attribute.js';
-import BooleanRenderer   from './renderer-boolean.js';
-import CheckedRenderer   from './renderer-checked.js';
-import TokensRenderer    from './renderer-tokens.js';
-import ValueRenderer     from './renderer-value.js';
-import TextRenderer      from './renderer-text.js';
+import scope             from '../scope-dom.js';
+import AttributeRenderer from '../renderer/renderer-attribute.js';
+import BooleanRenderer   from '../renderer/renderer-boolean.js';
+import CheckedRenderer   from '../renderer/renderer-checked.js';
+import TokensRenderer    from '../renderer/renderer-tokens.js';
+import ValueRenderer     from '../renderer/renderer-value.js';
 import truncate          from './truncate.js';
+import compile           from './compile.js';
+
 
 
 /**
-compileAttributes(renderers, element, attribute, path, message)
+compileAttributes(array, element, attribute, path, message)
 **/
 
 const constructors = {
     class:          TokensRenderer,
     value:          ValueRenderer,
     checked:        CheckedRenderer,
-
     async:          BooleanRenderer,
     autofocus:      BooleanRenderer,
     autoplay:       BooleanRenderer,
@@ -41,17 +42,10 @@ const constructors = {
     required:       BooleanRenderer,
     reversed:       BooleanRenderer,
     selected:       BooleanRenderer,
-    default:        BooleanRenderer,
-
-    // Workaround attribute used in cases where ${} cannot be added directly to
-    // HTML, such as in <tbody> or <tr>
-    'inner-html': function(path, name, source, message, options, element) {
-        element.removeAttribute(name);
-        return new TextRenderer(path, 0, decode(source), message, options, element.childNodes[0]);
-    }
+    default:        BooleanRenderer
 };
 
-export default function compileAttribute(renderers, element, attribute, path, message = '', options) {
+export default function compileAttribute(array, element, attribute, path, message = '', options) {
     const name   = attribute.localName;
     const source = attribute.value;
 
@@ -65,7 +59,22 @@ export default function compileAttribute(renderers, element, attribute, path, me
             + ' (' + message + ')' ;
     }
 
-    const Constructor = constructors[name] || AttributeRenderer;
-    renderers.push(new Constructor(path, name, source, message, options, element));
-    return renderers;
+    const Renderer = constructors[name] || AttributeRenderer;
+
+    array.push({
+        Renderer: Renderer,
+        fn: compile(source, scope, Renderer.parameterNames.join(', '), message, options),
+        element,
+        path,
+        name
+    });
+
+    // Avoid errant template literals making booleans default to true, mangling
+    // classes, and unnecessarily checking checkboxes. This has been moved here
+    // from AttributeRenderer, as it seems `new AttributeRenderer()` does not
+    // the attribute to be present, and its optimum to operate on the template
+    // DOM rather than each cloned DOM.
+    element.removeAttribute(name);
+
+    return array;
 }

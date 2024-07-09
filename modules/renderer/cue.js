@@ -1,5 +1,6 @@
 
 import { log, group, groupEnd } from '../log.js';
+import { stats } from './renderer.js';
 
 const renderers = [];
 const promise   = Promise.resolve(renderers);
@@ -7,43 +8,39 @@ const promise   = Promise.resolve(renderers);
 let cued;
 
 function render(renderers) {
-    var t0, mutations;
+    let t0, t1;
 
     if (window.DEBUG && window.DEBUG.literal !== false) {
         t0 = window.performance.now() / 1000;
-        mutations = 0;
-        /*group('update',
-            t0.toFixed(3) + 's – '
-            // renderers
-            + renderers.length + ' renderer' + (renderers.length === 1 ? '' : 's'),
-            //
-            '#ff9433'
-        );*/
+        stats.attribute = 0;
+        stats.property  = 0;
+        stats.token     = 0;
+        stats.text      = 0;
+        stats.add       = 0;
+        stats.remove    = 0;
     }
 
     let n = -1;
     while (renderers[++n] !== undefined) {
         // Allow changes inside template to recue render
-        const stats = renderers[n].update();
-
-        if (window.DEBUG) {
-            if (!stats.mutations && Number.isNaN(stats.mutations)) {
-                throw new Error('Something is not feeding back a mutations count. We should probably tidy up stats anyway.');
-            }
-
-            mutations += stats.mutations;
-        }
+        renderers[n].update();
     }
 
     if (window.DEBUG && window.DEBUG.literal !== false) {
-        const t1              = window.performance.now() / 1000;
+        t1 = window.performance.now() / 1000;
 
         log('render',
             ((t1 - t0) * 1000).toPrecision(3) + 'ms – '
             // renderers
-            + renderers.length + ' renderer' + (renderers.length === 1 ? ', ' : 's, ')
+            + renderers.length + ' renderer updates'
             // mutations
-            + mutations + ' mutation' + (mutations === 1 ? ', ' : 's'),
+            + (stats.remove    ? ', ' + stats.remove    + ' remove'    : '')
+            + (stats.add       ? ', ' + stats.add       + ' add'       : '')
+            + (stats.text      ? ', ' + stats.text      + ' text'      : '')
+            + (stats.property  ? ', ' + stats.property  + ' property'  : '')
+            + (stats.attribute ? ', ' + stats.attribute + ' attribute' : '')
+            + (stats.token     ? ', ' + stats.token     + ' token'     : '')
+            + ' mutations',
             //
             '', '', '#B6BD00'
         );
@@ -51,8 +48,6 @@ function render(renderers) {
         if (t1 - t0 > 0.016666667) {
             log('render took longer than a frame (16.6667ms) ' + ((t1 - t0) * 1000).toPrecision(3) + 'ms', '', '', '', '#ba4029');
         }
-
-        //groupEnd();
     }
 
     cued = undefined;
@@ -66,14 +61,15 @@ cued it is not cued again.
 **/
 
 export function cue(renderer) {
+    if (renderer.status === 'cued') {
+        console.trace('Renderer already cued.');
+        return cued;
+    }
+
     // Create a new batch end promise where required
     if (!cued) {
         cued = promise.then(render);
     }
-
-    // if (renderers.indexOf(renderer) !== -1) {
-    //     console.trace('RENDERER ALREADY IN CUE', 'This is probably not good');
-    // }
 
     renderers.push(renderer);
     renderer.status = 'cued';

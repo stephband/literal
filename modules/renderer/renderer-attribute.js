@@ -1,11 +1,11 @@
 
 import composeString from './compose-string.js';
 import names         from './property-names.js';
-import Renderer      from './renderer.js';
+import Renderer, { stats } from './renderer.js';
 
-const assign        = Object.assign;
 const getDescriptor = Object.getOwnPropertyDescriptor;
 const getPrototype  = Object.getPrototypeOf;
+
 
 /**
 AttributeRenderer(path, name, source, message, options, element)
@@ -23,50 +23,49 @@ function isWritableProperty(name, object) {
         isWritableProperty(name, getPrototype(object)) ;
 }
 
-function isWritable(name, element) {
-    // Is property defined in object or in its prototype chain?
-    return name in element ?
-        // Then find out if it can be written to
-        isWritableProperty(name, element) :
-        // Avoid setting any properties on element not already defined
-        false ;
+function setProperty(node, name, value) {
+    // Seek and set a matching property
+    if (node[name] === value) return 0;
+    node[name] = value;
+    return 1;
 }
 
-function setAttribute(node, name, property, writable, value) {
-    // Seek and set a matching property
-    if (writable) {
-        if (node[property] !== value) {
-            node[property] = value;
-            return 1;
-        }
-
-        return 0;
-    }
-
-    // If that doesn't work set the attribute
-    if (value === node.getAttribute(name)) {
-        return 0;
-    }
-
+function setAttribute(node, name, value) {
+    if (value === node.getAttribute(name)) return 0;
     node.setAttribute(name, value);
     return 1;
 }
 
-export default function AttributeRenderer(path, name, source, message, options, element) {
-    Renderer.apply(this, arguments);
-    this.property = name in names ?
-        names[name] :
-        name ;
-    this.writable = isWritable(name, element);
-}
+export default class AttributeRenderer extends Renderer {
+    static parameterNames = Renderer.parameterNames;
 
-assign(AttributeRenderer.prototype, Renderer.prototype, {
-    render: function() {
+    constructor(fn, element, name, parameters) {
+        super(fn, element, name, parameters);
+        this.property = name in names ? names[name] : name ;
+        this.writable = name in names ?
+            // If name is listed as null or other falsy in property-names.js,
+            // it is considered readonly. This applies to the `form` attribute.
+            !!names[name] :
+            // Otherwise check property descriptor
+            name in element && isWritableProperty(name, element) ;
+
+        // MOVED TO COMPILE STEP compile-attribute.js.
+        // Avoid errant template literals making booleans default to true,
+        // mangling classes and unnecessarily checking checkboxes.
+        //element.removeAttribute(name);
+    }
+
+    render() {
         // TODO: This may be dangerous. Test with promises and arrays and the like
         this.value = this.singleExpression ?
             arguments[1] :
             composeString(arguments) ;
-        this.mutations = setAttribute(this.element, this.name, this.property, this.writable, this.value);
-        return this;
+
+        if (this.writable) {
+            stats.property += setProperty(this.element, this.property, this.value);
+        }
+        else {
+            stats.attribute += setAttribute(this.element, this.name, this.value);
+        }
     }
-});
+}

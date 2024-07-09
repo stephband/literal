@@ -4,66 +4,71 @@
     <meta name="description" content="Documentation for Literal. Literal puts JS into your HTML. Literal defines a custom include element that parses and renders templates written as JS Literals, in a small library under 15kB minified and gzipped." />
     <meta name="viewport" content="width=device-width" />
 
-    <link rel="stylesheet" href="../literal-include/module.css" />
+    <!--link rel="stylesheet" href="./module.css" /-->
 
     <script>
         window.DEBUG = true;
     </script>
 
     <template id="template-1">
-        <p>Template 1 ${ data.value }</p>
+        <h3>#template-1</h3>
+        <pre>
+data.value = (${ this.renderCount }) ${ data.value }
+        </pre>
     </template>
 
     <template id="template-2">
-        <p>Template 2</p>
+        <h3>#template-2</h3>
+        <pre>
+data.value = (${ this.renderCount }) ${ data.value }
+        </pre>
     </template>
 </head>
 
 <body>
-    TEST
+    <h1>Test</h1>
 
+    <hr/>
     <template is="literal-html" data-state="1" data-value="Hello">
-        <h2>Literal template</h2>
-        ${ events({ type: 'change', select: '[name="state"]' }, element)
-            .each((e) => data.state = e.target.value) }
-
-        ${ include('#template-' + data.state, data) }
-
-        <input class="masked" type="radio" name="state" value="1" id="state-1" checked="${ data.state == '1' }" />
-        <label class="black-pill-button pill-button button register-btn log-in-btn" for="state-1">1</label>
-        <input class="masked" type="radio" name="state" value="2" id="state-2" checked="${ data.state == '2' }" />
-        <label class="black-pill-button pill-button button register-btn log-in-btn" for="state-2">2</label>
+        <h2>is="literal-html"</h2>
+        <p>Render counts in (brackets).</p>
+        ${ window.data = data, '' }
+        <p class="${ 'hello world' }">${ 'Hello world' }</p>
+        (${ this.renderCount })
+        ${ include('#template-1', data) }
+        ${ include('#template-2', data) }
     </template>
 
-    <template is="literal-html" data-default="2" data-value="Hello">
+    <hr/>
+    <template is="literal-html" data-state="1" data-value="Hello">
+        <h2>is="literal-html"</h2>
+        <p>Render counts in (brackets).</p>
+        ${ window.data = data, '' }
+        <p class="${ 'hello world' }">${ 'Hello world' }</p>
+        <pre>data = (${ this.renderCount }) ${ data }</pre>
+        <pre>data.state = (${ this.renderCount }) ${ data.state }</pre>
+        <pre>data.value = (${ this.renderCount }) ${ data.value }</pre>
+        (${ this.renderCount })
+        ${ include('#template-1', data) }
+        ${ include('#template-2', data) }
+    </template>
+
+    <hr/>
+    <!--template is="literal-html" data-default="2" data-value="Hello">
         <h2>Literal template</h2>
-
-        ${ Stream.merge(
-            [{ type: 'render', target: { value: data.default } }],
-            events({ type: 'change', select: '[name="test-2"]' }, element)
-        ).map((e) => include('#template-' + e.target.value, data)) }
-
-        <input class="masked" type="radio" name="test-2" value="1" id="test-2-value-1" checked="${ data.default == '1' }" />
+        <input class="masked" type="radio" name="test-2" value="1" id="test-2-value-1" checked="$ { data.default == element.value }" />
         <label class="black-pill-button pill-button button register-btn log-in-btn" for="test-2-value-1">1</label>
-        <input class="masked" type="radio" name="test-2" value="2" id="test-2-value-2" checked="${ data.default == '2' }" />
+        <input class="masked" type="radio" name="test-2" value="2" id="test-2-value-2" checked="$ { data.default == element.value }" />
         <label class="black-pill-button pill-button button register-btn log-in-btn" for="test-2-value-2">2</label>
-    </template>
+        ${
+            console.log(element),
+            events({ type: 'change', select: '[name="test-2"]' }, element)
+            .map((e) => (console.log('CHANGE'), data.default = e.target.value)),
+            'EVENTS'
+        }
 
-    <template is="literal-html" data-default="1" data-value="Hello">
-        <h2>Literal template</h2>
-
-        ${ new Promise((resolve) => setTimeout(() => resolve('Promise of String test'), 400)) }
-
-        ${ Stream.merge(
-            [{ type: 'render', target: { value: data.default } }],
-            events({ type: 'change', select: '[name="test-3"]' }, element)
-        ).map((e) => include('#template-' + e.target.value, data)) }
-
-        <input class="masked" type="radio" name="test-3" value="1" id="test-3-value-1" checked="${ data.default == '1' }" />
-        <label class="black-pill-button pill-button button register-btn log-in-btn" for="test-3-value-1">1</label>
-        <input class="masked" type="radio" name="test-3" value="2" id="test-3-value-2" checked="${ data.default == '2' }" />
-        <label class="black-pill-button pill-button button register-btn log-in-btn" for="test-3-value-2">2</label>
-    </template>
+        ${ include('#template-' + data.default, data) }
+    </template-->
 
     <script type="module">
     import LiteralTemplate from './module.js';

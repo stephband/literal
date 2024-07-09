@@ -6,18 +6,17 @@ processing the literal content is more DOM content this renderer will insert
 that DOM after the text node.
 **/
 
-import isTextNode        from '../../../dom/modules/is-text-node.js';
-import include           from '../scope/include.js';
-import library           from '../scope-dom.js';
-import removeNodeRange   from '../dom/remove-node-range.js';
-import TemplateRenderer  from '../renderer-template.js';
-import print             from '../scope/print.js';
-import indexOf           from './index-of.js';
-import toText            from './to-text.js';
-import Renderer          from './renderer.js';
+import isTextNode       from '../../../dom/modules/is-text-node.js';
+import include          from '../scope/include.js';
+import library          from '../scope-dom.js';
+import indexOf          from '../dom/index-of.js';
+import removeNodeRange  from '../dom/remove-node-range.js';
+import LiteralTemplate from '../literal-template.js';
+import print            from '../scope/print.js';
+import toText           from './to-text.js';
+import Renderer, { stats } from './renderer.js';
 
 
-const A      = Array.prototype;
 const assign = Object.assign;
 
 
@@ -26,7 +25,7 @@ function stop(node) {
 }
 
 function toRenderer(value) {
-    return value instanceof TemplateRenderer ? value :
+    return value instanceof LiteralTemplate ? value :
            value instanceof Node ? value :
            toText(value) ;
 }
@@ -35,11 +34,14 @@ function pushContents(contents, object) {
     // Object may be a string, DOM node, fragment, template renderer. Here
     // we concat strings together. May have side effects on complicated DOM
     // updates, so keep an eye out.
-    if (typeof object === 'string' && typeof contents[contents.length - 1] === 'string') {
+    if (typeof object === 'object') {
+        contents.push(object);
+    }
+    else if (typeof contents[contents.length - 1] === 'string') {
         contents[contents.length - 1] += object;
     }
     else {
-        contents.push(object);
+        contents.push(object + '');
     }
 
     return contents;
@@ -55,9 +57,20 @@ function composeDOM(contents, object) {
 }
 
 function setNodeValue(node, value) {
-    if (node.nodeValue !== value) {
-        node.nodeValue = value;
-        return 1;
+    const nodeValue = node.nodeValue;
+
+    // textNode.nodeValue = null actually results in textNode.nodeValue = ''
+    if (nodeValue) {
+        if (nodeValue !== value) {
+            node.nodeValue = value;
+            return 1;
+        }
+    }
+    else {
+        if (value) {
+            node.nodeValue = value;
+            return 1;
+        }
     }
 
     return 0;
@@ -69,7 +82,7 @@ function toContent(object) {
         object ;
 }
 
-function updateDOM(first, last, objects) {
+function updateDOM(stats, first, last, objects) {
     // Sanity check
     if (window.DEBUG) {
         if (first === last) {
@@ -92,29 +105,31 @@ function updateDOM(first, last, objects) {
 
     // Render first object. `objects[0]` is always a string. `first` is a
     // text node.
-    let count = setNodeValue(first, objects[0]);
+    stats.text += setNodeValue(first, objects[0]);
+
     let node  = first.nextSibling;
     let n     = 0;
-
     while (++n < nLast) {
         const object = objects[n];
 
-        // Is object a string
-        if (typeof object === 'string') {
+        // Is object a primitive
+        if (typeof object !== 'object') {
             // If node is a text node, use it.
             if (node !== last && isTextNode(node)) {
-                count += setNodeValue(node, object);
+                stats.text += setNodeValue(node, object);
                 node = node.nextSibling;
             }
             // ...otherwise insert a text node
             else {
                 node.before(object);
+                ++stats.add;
+ //console.log('add', typeof object, object);
             }
             continue;
         }
 
-        // Is object a TemplateRenderer with nodes already in this DOM
-        if (object instanceof TemplateRenderer && (node === object.first || node === object.last)) {
+        // Is object a LiteralTemplate with nodes already in this DOM
+        if (object instanceof LiteralTemplate && (node === object.first || node === object.last)) {
             // Skip over nodes handled by the renderer
             node = object.last.nextSibling;
             continue;
@@ -129,12 +144,15 @@ function updateDOM(first, last, objects) {
 
         // Remove template or node from wherever it currently is
         if (object.remove) {
-            count += (object.remove() || 0);
+            stats.remove += (object.remove() || 0);
+ //console.log('remove', object);
         }
 
         // And put it here
-        node.before(toContent(object));
-        ++count;
+        const content = toContent(object);
+        node.before(content);
+        ++stats.add;
+ //console.log('add', 'content', content);
     }
 
     // Remove unused nodes up to last
@@ -142,33 +160,27 @@ function updateDOM(first, last, objects) {
         const nd = node;
         node = node.nextSibling;
         nd.remove();
-        ++count;
+        ++stats.remove;
+ //console.log('remove', nd);
     }
 
     // Render last object. Where objects is less than 1 item long empty `last`,
     // otherwise render last object into `last`.
-    return count + setNodeValue(last, nLast < 1 ? null : objects[nLast]);
+    stats.text += setNodeValue(last, nLast < 1 ? null : objects[nLast]);
+    return stats;
 }
 
-export default function TextRenderer(path, index, source, message, options, node) {
-    Renderer.apply(this, arguments);
-    // Insert text node. When renderer is created with cloned DOM, clone of
-    // `node` is assigned to `renderer.first` and the clone of this new text
-    // node is assigned as `renderer.last`.
-    node.after(document.createTextNode(''));
-}
+export default class TextRenderer extends Renderer {
+    static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow', 'include', 'print'];
 
-assign(TextRenderer.prototype, Renderer.prototype, {
-    parameterNames: ['data', 'DATA', 'element', 'host', 'shadow', 'include', 'print'],
-
-    create: function(element, parameters, fragment = element) {
+    constructor(fn, element, name, parameters, fragment = element) {
         // Fragment may be the source fragment containing the first and last
         // text nodes, which are then rendered into element, or it may default
         // to element.
 
         const params = assign({}, parameters, {
             // Parameters
-            include: function(url, data) {
+            include(url, data) {
                 return arguments.length === 1 ?
                     // Partial application if called with url only
                     (data) => include(url, data, element, parameters) :
@@ -179,31 +191,30 @@ assign(TextRenderer.prototype, Renderer.prototype, {
             print: (...args) => print(this, ...args)
         });
 
-        return assign(Renderer.prototype.create.call(this, element, params), {
-            // Renderer properties
-            contents: [],
-            first:    fragment.childNodes[this.name],
-            last:     fragment.childNodes[this.name + 1]
-        });
-    },
+        super(fn, element, name, params);
 
-    push: function() {
+        this.contents = [];
+        this.first    = fragment.childNodes[this.name];
+        this.last     = fragment.childNodes[this.name + 1];
+    }
+
+    push() {
         // Preemptively stop all nodes, they are about to be updated
         this.contents.forEach(stop);
         this.contents.length = 0;
-        return Renderer.prototype.push.apply(this, arguments);
-    },
+        return super.push.apply(this, arguments);
+    }
 
-    update: function() {
+    update() {
         // Stop all nodes, they are about to be recreated. This needs to be done
-        // here as well as in push, as update may be called by TemplateRenderer
+        // here as well as in push, as update may be called by LiteralTemplate
         // without going through .push() cueing first. (??)
         this.contents.forEach(stop);
         this.contents.length = 0;
-        return Renderer.prototype.update.call(this);
-    },
+        return super.update.call(this);
+    }
 
-    render: function(strings) {
+    render(strings) {
         let n = 0;
         this.contents.length = 0;
         this.contents.push(strings[n]);
@@ -213,13 +224,12 @@ assign(TextRenderer.prototype, Renderer.prototype, {
             pushContents(this.contents, strings[n]);
         }
 
-        this.mutations = updateDOM(this.first, this.last, this.contents);
-        return this;
-    },
+        updateDOM(stats, this.first, this.last, this.contents);
+    }
 
-    stop: function() {
+    stop() {
         this.contents.forEach(stop);
         this.contents.length = 0;
-        return Renderer.prototype.stop.apply(this);
+        return super.stop.apply(this);
     }
-});
+}

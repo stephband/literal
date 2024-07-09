@@ -3,22 +3,25 @@ import id                from '../../../fn/modules/id.js';
 import overload          from '../../../fn/modules/overload.js';
 import toType            from '../../../dom/modules/to-type.js';
 import decode            from '../../../dom/modules/decode.js';
+import indexOf           from '../dom/index-of.js';
+import TextRenderer      from '../renderer/renderer-text.js';
 import isLiteralString   from '../is-literal-string.js';
+import scope             from '../scope-dom.js';
+import compile           from './compile.js';
 import { pathSeparator } from './constants.js';
-import indexOf           from './index-of.js';
 import truncate          from './truncate.js';
 import compileAttribute  from './compile-attribute.js';
-import TextRenderer      from './renderer-text.js';
+
 
 
 const assign = Object.assign;
 
 
 /*
-compileChildren(renderers, element, path, message, options)
+compileChildren(targets, element, path, message, options)
 */
 
-function compileChildren(renderers, element, path, message = '', options) {
+function compileChildren(targets, element, path, message = '', options) {
     // Children may mutate during compile, and we only want to compile
     // current children
     const children = Array.from(element.childNodes);
@@ -51,36 +54,36 @@ function compileChildren(renderers, element, path, message = '', options) {
                 }
             }
 
-            compileNode(renderers, children[n], path, message, options);
+            compileNode(targets, children[n], path, message, options);
         }
     }
 
-    return renderers;
+    return targets;
 }
 
 
 /*
-compileAttributes(renderers, node, path, message, options)
+compileAttributes(targets, node, path, message, options)
 */
 
-function compileAttributes(renderers, element, path, message = '', options) {
+function compileAttributes(targets, element, path, message = '', options) {
     // Attributes may be removed during parsing so copy the list before looping
     const attributes = Array.from(element.attributes);
     let n = -1, attribute;
 
     while (attribute = attributes[++n]) {
-        compileAttribute(renderers, element, attribute, path, message, options);
+        compileAttribute(targets, element, attribute, path, message, options);
     }
 
-    return renderers;
+    return targets;
 }
 
 
 /*
-compileElement(renderers, node, path, message, options)
+compileElement(targets, node, path, message, options)
 */
 
-const compileElement = overload((renderers, element) => element.tagName.toLowerCase(), {
+const compileElement = overload((targets, element) => element.tagName.toLowerCase(), {
     // Ignore <defs> and <template>, which we consider as inert. Templates
     // should have already been flattened into content anyway in compileChildren()
     'defs':     id,
@@ -89,48 +92,48 @@ const compileElement = overload((renderers, element) => element.tagName.toLowerC
     // Do not parse the inner DOM of scripts
     'script':   compileAttributes,
 
-    'textarea': (renderers, element, path, message, options) => {
+    'textarea': (targets, element, path, message, options) => {
         // A <textarea> does not have children, its textContent becomes its value
-        compileAttributes(renderers, element, path, message, options);
-        compileAttribute(renderers, element, {
+        compileAttributes(targets, element, path, message, options);
+        compileAttribute(targets, element, {
             localName: 'value',
             value:     element.textContent
         }, path, message, options);
         element.textContent = '';
-        return renderers;
+        return targets;
     },
 
-    'default': (renderers, element, path, message, options) => {
+    'default': (targets, element, path, message, options) => {
         // Compiling children first means inner DOM to outer DOM, which allows
         // `<select>`, for example, to pick up the correct option value. If we
         // decide to change this order we should still make sure value attribute
-        // is rendered after children for this reason.
-        compileChildren(renderers, element, path, message, options);
-        compileAttributes(renderers, element, path, message, options);
-        return renderers;
+        // is rendered after children.
+        compileChildren(targets, element, path, message, options);
+        compileAttributes(targets, element, path, message, options);
+        return targets;
     }
 });
 
 
 /**
-compileNode(renderers, node, path, message, options)
+compileNode(targets, node, path, message, options)
 **/
 
-const compileNode = overload((renderers, node) => toType(node), {
+const compileNode = overload((targets, node) => toType(node), {
     'comment':  id,
     'doctype':  id,
     'document': compileChildren,
     'fragment': compileChildren,
 
-    'element': (renderers, element, path, message = '', options) => {
-        compileElement(renderers, element, (path ? path + pathSeparator : '') + indexOf(element), message = '', options);
-        return renderers;
+    'element': (targets, element, path, message = '', options) => {
+        compileElement(targets, element, (path ? path + pathSeparator : '') + indexOf(element), message = '', options);
+        return targets;
     },
 
-    'text': (renderers, node, path, message = '', options) => {
+    'text': (targets, node, path, message = '', options) => {
         const string = node.nodeValue;
         if (!isLiteralString(string)) {
-            return renderers;
+            return targets;
         }
 
         const source = decode(string);
@@ -143,13 +146,26 @@ const compileNode = overload((renderers, node) => toType(node), {
                 + ' (' + message + ')' ;
         }
 
-        renderers.push(new TextRenderer(path, indexOf(node), source, message, options, node));
-        return renderers;
+        //targets.push(new TextRenderer(path, indexOf(node), source, message, options, node));
+        targets.push({
+            Renderer: TextRenderer,
+            fn: compile(source, scope, TextRenderer.parameterNames.join(', '), message, options),
+            path,
+            name: indexOf(node),
+            node
+        });
+
+        // Insert text node. When renderer is created with cloned DOM, clone of
+        // `node` is assigned to `renderer.first` and the clone of this new text
+        // node is assigned as `renderer.last`.
+        node.after(document.createTextNode(''));
+
+        return targets;
     },
 
-    'default': () => {
+    /*'default': () => {
         throw new Error('Literal: Cannot compile node');
-    }
+    }*/
 });
 
 export default compileNode;

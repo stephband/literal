@@ -8,7 +8,7 @@ comments.
 
 import read            from './read.js';
 import { rewriteURLs } from './url.js';
-import parseComments   from '../modules/parse-comments.js';
+import parseComments   from '../modules/parse/parse-comments.js';
 import { getAbsoluteFile } from './scope.js';
 import { red, yellow } from './log.js';
 

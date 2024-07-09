@@ -1,20 +1,20 @@
 
 /**
-TemplateRenderer(template, element, parameters, options)
+LiteralTemplate(template, element, parameters, options)
 
-Import the `TemplateRenderer` constructor:
+Import the `LiteralTemplate` constructor:
 
 ```js
-import TemplateRenderer from './literal/modules/renderer-template.js';
+import LiteralTemplate from './literal/modules/literal-template.js';
 ```
 
-The `TemplateRenderer` constructor takes a template element (or the `id` of a
+The `LiteralTemplate` constructor takes a template element (or the `id` of a
 template element), clones the template's content, and returns a renderer that
 renders data into the content. The renderer updates its DOM nodes in response
 to changing data.
 
 ```js
-const renderer = new TemplateRenderer('id');
+const renderer = new LiteralTemplate('id');
 const data     = {};
 
 // Cue data for render then add it to the DOM
@@ -25,17 +25,16 @@ renderer
 **/
 
 
-import overload          from '../../fn/modules/overload.js';
-import Stream, { stop }  from '../../fn/modules/stream/stream.js';
-import create            from '../../dom/modules/create.js';
-import identify          from '../../dom/modules/identify.js';
-import isTextNode        from '../../dom/modules/is-text-node.js';
-import { pathSeparator } from './renderer/constants.js';
-import compileNode       from './renderer/compile-node.js';
-import { cue, uncue }    from './renderer/cue.js';
-import removeNodeRange   from './dom/remove-node-range.js';
-import getNodeRange      from './dom/get-node-range.js';
-import Data              from './data.js';
+import overload            from '../../fn/modules/overload.js';
+import Data                from '../../fn/modules/signal-data.js';
+import create              from '../../dom/modules/create.js';
+import identify            from '../../dom/modules/identify.js';
+import isTextNode          from '../../dom/modules/is-text-node.js';
+import { pathSeparator }   from './compile/constants.js';
+import removeNodeRange     from './dom/remove-node-range.js';
+import Renderer, { stats } from './renderer.js';
+import getNodeRange        from './dom/get-node-range.js';
+import compileNode         from './compile.js';
 import { groupCollapsed, groupEnd } from './log.js';
 
 const assign = Object.assign;
@@ -50,7 +49,7 @@ function dataToString() {
 }
 
 /*
-TemplateRenderer
+LiteralTemplate
 Descendant paths are stored in the form `"#id>1>12>3"`, enabling fast
 cloning of template instances without retraversing their DOMs looking for
 literal attributes and text.
@@ -84,7 +83,7 @@ function isMarkerNode(node) {
 function prepareContent(content) {
     // Due to the way HTML is usually written the vast majority of templates
     // start and end with a text node, usually containing some white space
-    // and new lines. TemplateRenderer uses these as delimiters for the start
+    // and new lines. LiteralTemplate uses these as delimiters for the start
     // and end of templated content – where it can. If the template does NOT
     // start or end with a text node, we insert text nodes where needed.
     const first = content.childNodes[0];
@@ -99,63 +98,64 @@ function prepareContent(content) {
     }
 }
 
-function compileContent(content, message, options) {
-    if (window.DEBUG) { groupCollapsed('compile', message, 'yellow'); }
-    prepareContent(content);
-    const renderers = compileNode([], content, '', message, options);
-    if (window.DEBUG) { groupEnd(); }
-    return renderers;
-}
-
 function compileTemplate(template, id, options) {
     const content = template.content
         || create('fragment', template.childNodes, template) ;
 
-    const renderers = compileContent(content, '#' + id, options);
+    if (window.DEBUG) { groupCollapsed('compile', '#' + id, 'yellow'); }
+    prepareContent(content);
+    // compile(fragment, message, options)
+    const targets = compileNode(content, '#' + id, options);
+    if (window.DEBUG) { groupEnd(); }
 
-    return { id, content, renderers };
+    return { content, targets };
 }
 
-function createRenderer(Renderer) {
-    //console.log(Renderer.path, Renderer.name, Renderer.path ? getElement(Renderer.path, this.content) : this.element, this.content);
+const R = Renderer;
+function createRenderer(target) {
+    const { Renderer, path, name, fn } = target;
 
-    // `this` is the TemplateRenderer
-    const renderer = Renderer.path ?
-        // Where `.path` exists find the element at the end of the path
-        Renderer.create(getElement(Renderer.path, this.content), this.parameters) :
+    // Where `.path` exists find the element at the end of the path
+    const element  = path ? getElement(path, this.content) : this.element ;
+    const renderer = path ?
+        new Renderer(fn, element, name, this.parameters) :
         // Where `.path` is an empty string we are dealing with the `.content`
         // fragment, which must be rendered into the `.element` element. Only a
         // TextRenderer can have an empty path.
-        Renderer.create(this.element, this.parameters, this.content) ;
+        new Renderer(fn, element, name, this.parameters, this.content) ;
+
+    //const renderer = R.create(element, name, fn, this.parameters, path ? undefined : this.content);
 
     // Stop clone when parent template renderer stops
     this.done(renderer);
     return renderer;
 }
 
-export default function TemplateRenderer(template, element = template.parentElement, parameters = {}, options = defaults) {
+export default function LiteralTemplate(template, element = template.parentElement, parameters = {}, options = defaults) {
     const id = identify(template) ;
 
-    const { content, renderers } = cache[id] ||
+    const compiled = cache[id] ||
         (cache[id] = compileTemplate(template, id, {
             nostrict: options.nostrict || (template.hasAttribute && template.hasAttribute('nostrict'))
         }));
 
+    const content = compiled.content.cloneNode(true);
+
+    this.content    = content;
     this.element    = element;
     this.parameters = parameters;
-    this.content    = content.cloneNode(true);
-    this.first      = this.content.childNodes[0];
-    this.last       = this.content.childNodes[this.content.childNodes.length - 1];
-    this.contents   = renderers.map(createRenderer, this);
+    this.first      = content.childNodes[0];
+    this.last       = content.childNodes[content.childNodes.length - 1];
+    this.contents   = compiled.targets.map(createRenderer, this);
 }
 
-assign(TemplateRenderer.prototype, {
+assign(LiteralTemplate.prototype, {
     push: function(object) {
         if (this.status === 'done') {
             throw new Error('Renderer is done, cannot .push() data');
         }
 
-        const data = Data(object) || object;
+        const data = Data.of(object) || object;
 
         // Dedup
         if (this.data === data) { return; }
@@ -187,7 +187,7 @@ assign(TemplateRenderer.prototype, {
             }
 
             this.content.prepend.apply(this.content, nodes);
-            return nodes.length;
+            stats.remove += nodes.length;
         },
 
         default: function() {
@@ -195,18 +195,17 @@ assign(TemplateRenderer.prototype, {
             const data = this.data;
 
             // Render the contents (synchronously)
-            this.mutations = this.contents.reduce((mutations, renderer) => {
+            this.contents.forEach((renderer) => {
                 renderer.data = data;
-                mutations = mutations + renderer.update().mutations;
-                return mutations;
-            }, 0);
+                renderer.update();
+            });
 
             // If this.last is not in the content fragment, it must be in the
             // parent DOM being used as a marker. It's time for its freshly
             // rendered brethren to join it.
             if (this.content.lastChild && this.last !== this.content.lastChild) {
                 this.last.before(this.content);
-                ++this.mutations;
+                stats.add += 1;
             }
 
             return this;
@@ -227,6 +226,7 @@ assign(TemplateRenderer.prototype, {
         // Remove first to last and all nodes in between to .content fragment
         const nodes = getNodeRange(this.first, this.last);
         this.content.prepend.apply(this.content, nodes);
+        stats.remove += nodes.length;
         return nodes.length;
     },
 
@@ -241,6 +241,7 @@ assign(TemplateRenderer.prototype, {
         }
 
         this.last.after.apply(this.last, arguments);
+        stats.add += arguments.length;
         return this.remove();
     },
 
@@ -248,10 +249,11 @@ assign(TemplateRenderer.prototype, {
     .stop()
     Stops renderer.
     **/
-    stop: function() {
-        uncue(this);
-        return stop(this);
-    },
+    stop: Renderer.prototype.stop,
 
-    done: Stream.prototype.done
+    /**
+    .done(object)
+    Registers `object.stop()` to be called when this renderer is stopped.
+    **/
+    done: Renderer.prototype.done
 });

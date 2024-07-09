@@ -1,7 +1,7 @@
 
 import { getInternals } from '../../../dom/modules/element.js';
 import { rewriteURL }   from '../../modules/urls.js';
-import parseNameValues  from '../../modules/parse-name-values.js';
+import parseNameValues  from '../../modules/parse/parse-name-values.js';
 
 export default {
     /** tag=""

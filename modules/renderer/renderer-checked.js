@@ -7,12 +7,11 @@ import bindChecked       from '../scope/bind-checked.js';
 import composeBoolean    from './compose-boolean.js';
 import AttributeRenderer from './renderer-attribute.js';
 import { getValue }      from './value.js';
-
-const assign  = Object.assign;
+import { stats }         from './renderer.js';
 
 
 /**
-CheckedRenderer()
+CheckedRenderer(fn, element, unused, parameters)
 Constructs an object responsible for rendering to a checked property.
 **/
 
@@ -51,26 +50,25 @@ function setChecked(element, value, hasValueAttribute) {
     return 1;
 }
 
-export default function CheckedRenderer(path, name, source, message, options, element) {
-    AttributeRenderer.call(this, path, 'checked', source, message, options, element);
-    // Flag whether element has a value attribute
-    this.hasValue = isDefined(element.getAttribute('value'));
-    // Remove checked attribute to prevent Flash Of Unrendered Checkiness
-    element.removeAttribute(name);
-}
+export default class CheckedRenderer extends AttributeRenderer {
+    static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow', 'bind'];
 
-assign(CheckedRenderer.prototype, AttributeRenderer.prototype, {
-    parameterNames: ['data', 'DATA', 'element', 'host', 'shadow', 'bind'],
+    constructor(fn, element, name, parameters) {
+        super(fn, element, 'checked', parameters);
+        // Flag whether element has a value attribute
+        this.hasValue = isDefined(element.getAttribute('value'));
+    }
 
-    create: function(element, parameters) {
+/*
+    create(element, parameters) {
         return AttributeRenderer.prototype.create.call(this, element, assign({
             // Parameters
             bind: (path, object, to=id, from=id) =>
                 bindChecked(element, object, path, to, from, setChecked)
         }, parameters));
-    },
-
-    render: function(strings) {
+    }
+*/
+    render(strings) {
         if (this.singleExpression) {
             // Don't bother evaluating empty space in attributes
             this.value = arguments[1];
@@ -79,7 +77,6 @@ assign(CheckedRenderer.prototype, AttributeRenderer.prototype, {
             this.value = composeBoolean(arguments);
         }
 
-        this.mutations = setChecked(this.element, this.value, this.hasValue);
-        return this;
+        stats.property += setChecked(this.element, this.value, this.hasValue);
     }
-});
+}

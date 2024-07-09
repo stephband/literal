@@ -7,10 +7,10 @@ make it easy to mix islands of dynamically rendered content into static content.
 
 
 import noop             from '../../fn/modules/noop.js';
+import Signal           from '../../fn/modules/signal.js';
 import element, { getInternals as Internals } from '../../dom/modules/element.js';
-import LatestStream     from '../modules/latest-stream.js';
 import requestData      from '../modules/request-data.js';
-import TemplateRenderer from '../modules/renderer-template.js';
+import LiteralTemplate from '../modules/literal-template.js';
 import print            from '../modules/scope/print.js';
 
 const assign  = Object.assign;
@@ -35,7 +35,7 @@ function parseData(value) {
         value ;
 }
 
-function getDataFromDataset(datas, dataset) {
+function getDataFromDataset(dataset) {
     const keys   = Object.keys(dataset);
     const values = Object.values(dataset);
 
@@ -43,10 +43,9 @@ function getDataFromDataset(datas, dataset) {
     // assigned data
     //if (!keys.length) { return; }
 
-    datas.push(values
+    return values
         .map(parseData)
-        .reduce((data, value, i) => (data[keys[i]] = value, data), {})
-    );
+        .reduce((data, value, i) => (data[keys[i]] = value, data), {});
 }
 
 // tag, template, lifecycle, properties, log
@@ -55,8 +54,8 @@ export default element('<template is="literal-html">', {
         const internals = Internals(this);
         internals.initialised = false;
         internals.pushed      = false;
-        internals.datas       = new LatestStream();
-        internals.renderer    = new TemplateRenderer(this, this.parentElement);
+        internals.data        = Signal.of();
+        internals.renderer    = new LiteralTemplate(this, this.parentElement);
     },
 
     connect: function(shadow) {
@@ -66,9 +65,12 @@ export default element('<template is="literal-html">', {
         if (internals.initialised) { return; }
         internals.initialised = true;
 
-        const { datas, renderer } = internals;
-        datas.each((object) => {
-            renderer.push(object);
+        // Compute signal listens to changs
+        internals.data.observe(() => {
+            const { data, renderer } = internals;
+
+            if (!data.value) return;
+            renderer.push(data.value);
 
             // Replace DOM content on first push
             if (!internals.pushed) {
@@ -79,7 +81,7 @@ export default element('<template is="literal-html">', {
 
         // If src or data was not set use data found in dataset
         if (!internals.promise && !internals.pushed) {
-            getDataFromDataset(datas, this.dataset);
+            internals.data.value = getDataFromDataset(this.dataset);
         }
     }
 }, {
@@ -171,7 +173,7 @@ export default element('<template is="literal-html">', {
 
         set: function(object) {
             const internals = Internals(this);
-            internals.datas.push(object || null);
+            internals.data.value = object || null;
         }
     }
 }, null, 'stephen.band/literal/');

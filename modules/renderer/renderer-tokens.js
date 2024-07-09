@@ -1,24 +1,25 @@
 
+import id                from '../../../fn/modules/id.js';
 import overload          from '../../../fn/modules/overload.js';
 import toText            from './to-text.js';
 import AttributeRenderer from './renderer-attribute.js';
+import { stats }         from './renderer.js';
 
-const A      = Array.prototype;
-const assign = Object.assign;
 
+const A       = Array.prototype;
 const nothing = [];
 
 /**
-TokensRenderer()
+TokensRenderer(fn, element, name, parameters)
 Constructs an object responsible for rendering to a token list attribute such
 as a class attribute.
 **/
 
-const getTokenList = overload((node, name) => name, {
-    'class': (node) => node.classList
+const getTokenList = overload(id, {
+    'class': (name, node) => node.classList
 });
 
-function updateTokens(list, cached, tokens, count) {
+function updateTokens(list, cached, tokens, count = 0) {
     // Remove all tokens from cached that are found in new tokens
     let n = cached.length;
     while (n--) {
@@ -44,23 +45,18 @@ function updateTokens(list, cached, tokens, count) {
     return count;
 }
 
-export default function TokensRenderer(path, name, source, message, options, element) {
-    AttributeRenderer.apply(this, arguments);
-    // Empty the tokens attribute until it is rendered to avoid code in
-    // literals being interpreted as tokens.
-    element.setAttribute(name, '');
-}
+export default class TokensRenderer extends AttributeRenderer {
+    static parameterNames = AttributeRenderer.parameterNames;
 
-assign(TokensRenderer.prototype, AttributeRenderer.prototype, {
-    create: function(element, parameters) {
-        return assign(AttributeRenderer.prototype.create.apply(this, arguments), {
-            // Renderer properties
-            list:   getTokenList(element, this.name),
-            tokens: nothing
-        });
-    },
+    constructor(fn, element, name, parameters) {
+        super(fn, element, name, parameters);
 
-    render: function(strings) {
+        // Renderer properties
+        this.list   = getTokenList(name, element);
+        this.tokens = nothing;
+    }
+
+    render(strings) {
         let mutations = 0;
 
         // Set permanent tokens on first render only
@@ -70,8 +66,9 @@ assign(TokensRenderer.prototype, AttributeRenderer.prototype, {
                 .trim();
 
             if (tokens) {
-                this.list.add.apply(this.list, tokens.split(/\s+/));
-                ++mutations;
+                const array = tokens.split(/\s+/);
+                this.list.add.apply(this.list, array);
+                stats.token += array.length;
             }
         }
 
@@ -83,8 +80,7 @@ assign(TokensRenderer.prototype, AttributeRenderer.prototype, {
             .split(/\s+/)
             .filter((string) => !!string);
 
-        this.mutations = updateTokens(this.list, this.tokens, tokens, mutations);
-        this.tokens    = tokens;
-        return this;
+        stats.token += updateTokens(this.list, this.tokens, tokens);
+        this.tokens = tokens;
     }
-});
+}
