@@ -34,11 +34,14 @@ function pushContents(contents, object) {
     // Object may be a string, DOM node, fragment, template renderer. Here
     // we concat strings together. May have side effects on complicated DOM
     // updates, so keep an eye out.
-    if (typeof object === 'string' && typeof contents[contents.length - 1] === 'string') {
+    if (typeof object === 'object') {
+        contents.push(object);
+    }
+    else if (typeof contents[contents.length - 1] === 'string') {
         contents[contents.length - 1] += object;
     }
     else {
-        contents.push(object);
+        contents.push(object + '');
     }
 
     return contents;
@@ -109,8 +112,8 @@ function updateDOM(stats, first, last, objects) {
     while (++n < nLast) {
         const object = objects[n];
 
-        // Is object a string
-        if (typeof object === 'string') {
+        // Is object a primitive
+        if (typeof object !== 'object') {
             // If node is a text node, use it.
             if (node !== last && isTextNode(node)) {
                 stats.text += setNodeValue(node, object);
@@ -120,6 +123,7 @@ function updateDOM(stats, first, last, objects) {
             else {
                 node.before(object);
                 ++stats.add;
+ //console.log('add', typeof object, object);
             }
             continue;
         }
@@ -141,11 +145,14 @@ function updateDOM(stats, first, last, objects) {
         // Remove template or node from wherever it currently is
         if (object.remove) {
             stats.remove += (object.remove() || 0);
+ //console.log('remove', object);
         }
 
         // And put it here
-        node.before(toContent(object));
+        const content = toContent(object);
+        node.before(content);
         ++stats.add;
+ //console.log('add', 'content', content);
     }
 
     // Remove unused nodes up to last
@@ -154,6 +161,7 @@ function updateDOM(stats, first, last, objects) {
         node = node.nextSibling;
         nd.remove();
         ++stats.remove;
+ //console.log('remove', nd);
     }
 
     // Render last object. Where objects is less than 1 item long empty `last`,

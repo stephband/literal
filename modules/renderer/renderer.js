@@ -180,7 +180,6 @@ export default class Renderer {
 
         // Cue .update()
         cue(this);
-        return this;
     }
 
     update() {
@@ -209,13 +208,6 @@ export default class Renderer {
     }
 
     compose(strings) {
-        // Stop recording gets – other templates may use
-        // this data object and we don't want to include their gets by stopping
-        // any later. Stop now. If we want to change this, making an observer
-        // proxy per template instance would be the way to go. Currently
-        // observer proxies are shared by all observers. We're not going there.
-        //this.records.stop();
-
         // Flag the literal as containing exactly 1 expression optionally
         // surrounded by whitespace, which allows for some optimisations
         // further down the line, particularly for attribute renderers. We

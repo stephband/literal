@@ -32,14 +32,15 @@ function render(renderers) {
         log('render',
             ((t1 - t0) * 1000).toPrecision(3) + 'ms – '
             // renderers
-            + renderers.length + ' renderer' + (renderers.length === 1 ? '' : 's') + ' cued'
+            + renderers.length + ' renderer updates'
             // mutations
-            + (stats.add       ? ', ' + stats.add       + ' add'    + (stats.add       === 1 ? '' : 's') : '')
-            + (stats.remove    ? ', ' + stats.remove    + ' remove' + (stats.remove    === 1 ? '' : 's') : '')
-            + (stats.text      ? ', ' + stats.text      + ' text'   + (stats.remove    === 1 ? '' : 's') : '')
-            + (stats.property  ? ', ' + stats.property  + ' prop'   + (stats.property  === 1 ? '' : 's') : '')
-            + (stats.attribute ? ', ' + stats.attribute + ' attr'   + (stats.attribute === 1 ? '' : 's') : '')
-            + (stats.token     ? ', ' + stats.token     + ' token'  + (stats.token     === 1 ? '' : 's') : ''),
+            + (stats.remove    ? ', ' + stats.remove    + ' remove'    : '')
+            + (stats.add       ? ', ' + stats.add       + ' add'       : '')
+            + (stats.text      ? ', ' + stats.text      + ' text'      : '')
+            + (stats.property  ? ', ' + stats.property  + ' property'  : '')
+            + (stats.attribute ? ', ' + stats.attribute + ' attribute' : '')
+            + (stats.token     ? ', ' + stats.token     + ' token'     : '')
+            + ' mutations',
             //
             '', '', '#B6BD00'
         );

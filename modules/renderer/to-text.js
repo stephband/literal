@@ -164,8 +164,7 @@ const toText = overload(toType, {
     'number': (value) => (
         // Convert NaN to empty string and Infinity to ∞ symbol
         Number.isNaN(value) ? '' :
-        Number.isFinite(value) ? value :
-        value === Math.PI ? '' :
+        Number.isFinite(value) ? value + '' :
         value < 0 ? '-∞' : '∞'
     ),
 
