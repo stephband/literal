@@ -1,6 +1,6 @@
 
 
-import TemplateRenderer from './modules/template-renderer.js';
+import LiteralTemplate from './modules/literal-template.js';
 
 export default function Literal(template) {
     // TODO: I don't think this works for accessign existing literal-html renderers,
@@ -10,11 +10,11 @@ export default function Literal(template) {
         document.getElementById(template.slice(1)) :
         template ;
 
-    return new TemplateRenderer(template);
+    return new LiteralTemplate(template);
 }
 
 // TODO: Legacy, remove
-export { TemplateRenderer as Renderer };
+export { LiteralTemplate as Renderer };
 
 export { compiled }          from './modules/compile/compile.js';
 export { default as config } from './modules/config.js';

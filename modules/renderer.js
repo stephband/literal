@@ -1,10 +1,10 @@
-import Renderer          from './renderer/renderer.js';
-import AttributeRenderer from './renderer/renderer-attribute.js';
-import BooleanRenderer   from './renderer/renderer-boolean.js';
-import CheckedRenderer   from './renderer/renderer-checked.js';
-import TokenRenderer     from './renderer/renderer-token.js';
-import ValueRenderer     from './renderer/renderer-value.js';
-import TextRenderer      from './renderer/renderer-text.js';
+import Renderer, { stats } from './renderer/renderer.js';
+import AttributeRenderer   from './renderer/renderer-attribute.js';
+import BooleanRenderer     from './renderer/renderer-boolean.js';
+import CheckedRenderer     from './renderer/renderer-checked.js';
+import TokensRenderer      from './renderer/renderer-tokens.js';
+import ValueRenderer       from './renderer/renderer-value.js';
+import TextRenderer        from './renderer/renderer-text.js';
 
 const assign = Object.assign;
 
@@ -35,22 +35,30 @@ const renderers = {
     default:        BooleanRenderer
 };
 
-function throwError(message) {
+function throwError(message, element, n) {
+    console.log(element.childNodes[n]);
     throw new Error(message);
 }
 
 assign(Renderer, {
-    create: function(element, n, fn, parameters) {
+    create: function(element, n, fn, parameters, something) {
+        const Renderer =  typeof n === 'number' ? TextRenderer :
+            renderers[n] ||
+            AttributeRenderer ;
+
+        console.log('CREATE', Renderer);
+
         // If name is an index
         return typeof n === 'number' ?
             // of text node
             element.childNodes[n].nodeType === 3 ?
                 // Return a text renderer
-                new TextRenderer(fn, element, n, parameters) :
-            throwError('Renderer.create() – child at index is not a text node') :
+                new Renderer(fn, element, n, parameters, something) :
+            throwError('Renderer.create() – child at index ' + n + ' is not a text node', element, n) :
             // Return some type of attribute renderer
-            new (renderers[n] || AttributeRenderer)(fn, element, n, parameters) ;
+            new Renderer(fn, element, n, parameters, something) ;
     }
 });
 
+export { stats };
 export default Renderer;

@@ -11,7 +11,7 @@ import include          from '../scope/include.js';
 import library          from '../scope-dom.js';
 import indexOf          from '../dom/index-of.js';
 import removeNodeRange  from '../dom/remove-node-range.js';
-import TemplateRenderer from '../template-renderer.js';
+import LiteralTemplate from '../literal-template.js';
 import print            from '../scope/print.js';
 import toText           from './to-text.js';
 import Renderer, { stats } from './renderer.js';
@@ -25,7 +25,7 @@ function stop(node) {
 }
 
 function toRenderer(value) {
-    return value instanceof TemplateRenderer ? value :
+    return value instanceof LiteralTemplate ? value :
            value instanceof Node ? value :
            toText(value) ;
 }
@@ -128,8 +128,8 @@ function updateDOM(stats, first, last, objects) {
             continue;
         }
 
-        // Is object a TemplateRenderer with nodes already in this DOM
-        if (object instanceof TemplateRenderer && (node === object.first || node === object.last)) {
+        // Is object a LiteralTemplate with nodes already in this DOM
+        if (object instanceof LiteralTemplate && (node === object.first || node === object.last)) {
             // Skip over nodes handled by the renderer
             node = object.last.nextSibling;
             continue;
@@ -207,7 +207,7 @@ export default class TextRenderer extends Renderer {
 
     update() {
         // Stop all nodes, they are about to be recreated. This needs to be done
-        // here as well as in push, as update may be called by TemplateRenderer
+        // here as well as in push, as update may be called by LiteralTemplate
         // without going through .push() cueing first. (??)
         this.contents.forEach(stop);
         this.contents.length = 0;

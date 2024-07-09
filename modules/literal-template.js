@@ -1,20 +1,20 @@
 
 /**
-TemplateRenderer(template, element, parameters, options)
+LiteralTemplate(template, element, parameters, options)
 
-Import the `TemplateRenderer` constructor:
+Import the `LiteralTemplate` constructor:
 
 ```js
-import TemplateRenderer from './literal/modules/template-renderer.js';
+import LiteralTemplate from './literal/modules/literal-template.js';
 ```
 
-The `TemplateRenderer` constructor takes a template element (or the `id` of a
+The `LiteralTemplate` constructor takes a template element (or the `id` of a
 template element), clones the template's content, and returns a renderer that
 renders data into the content. The renderer updates its DOM nodes in response
 to changing data.
 
 ```js
-const renderer = new TemplateRenderer('id');
+const renderer = new LiteralTemplate('id');
 const data     = {};
 
 // Cue data for render then add it to the DOM
@@ -32,7 +32,7 @@ import identify            from '../../dom/modules/identify.js';
 import isTextNode          from '../../dom/modules/is-text-node.js';
 import { pathSeparator }   from './compile/constants.js';
 import removeNodeRange     from './dom/remove-node-range.js';
-import Renderer, { stats } from './renderer/renderer.js';
+import Renderer, { stats } from './renderer.js';
 import getNodeRange        from './dom/get-node-range.js';
 import compileNode         from './compile.js';
 import { groupCollapsed, groupEnd } from './log.js';
@@ -49,7 +49,7 @@ function dataToString() {
 }
 
 /*
-TemplateRenderer
+LiteralTemplate
 Descendant paths are stored in the form `"#id>1>12>3"`, enabling fast
 cloning of template instances without retraversing their DOMs looking for
 literal attributes and text.
@@ -83,7 +83,7 @@ function isMarkerNode(node) {
 function prepareContent(content) {
     // Due to the way HTML is usually written the vast majority of templates
     // start and end with a text node, usually containing some white space
-    // and new lines. TemplateRenderer uses these as delimiters for the start
+    // and new lines. LiteralTemplate uses these as delimiters for the start
     // and end of templated content – where it can. If the template does NOT
     // start or end with a text node, we insert text nodes where needed.
     const first = content.childNodes[0];
@@ -111,26 +111,27 @@ function compileTemplate(template, id, options) {
     return { content, targets };
 }
 
+const R = Renderer;
 function createRenderer(target) {
-    //console.log(Renderer.path, Renderer.name, Renderer.path ? getElement(Renderer.path, this.content) : this.element, this.content);
     const { Renderer, path, name, fn } = target;
 
-    // `this` is the TemplateRenderer
+    // Where `.path` exists find the element at the end of the path
+    const element  = path ? getElement(path, this.content) : this.element ;
     const renderer = path ?
-        // Where `.path` exists find the element at the end of the path
-        new Renderer(fn, getElement(path, this.content), name, this.parameters) :
+        new Renderer(fn, element, name, this.parameters) :
         // Where `.path` is an empty string we are dealing with the `.content`
         // fragment, which must be rendered into the `.element` element. Only a
-        // TextRenderer can have an empty path. A renderer is a signal with
-        // evaluation function `fn`.
-        new Renderer(fn, this.element, name, this.parameters, this.content) ;
+        // TextRenderer can have an empty path.
+        new Renderer(fn, element, name, this.parameters, this.content) ;
+
+    //const renderer = R.create(element, name, fn, this.parameters, path ? undefined : this.content);
 
     // Stop clone when parent template renderer stops
     this.done(renderer);
     return renderer;
 }
 
-export default function TemplateRenderer(template, element = template.parentElement, parameters = {}, options = defaults) {
+export default function LiteralTemplate(template, element = template.parentElement, parameters = {}, options = defaults) {
     const id = identify(template) ;
 
     const compiled = cache[id] ||
@@ -148,7 +149,7 @@ export default function TemplateRenderer(template, element = template.parentElem
     this.contents   = compiled.targets.map(createRenderer, this);
 }
 
-assign(TemplateRenderer.prototype, {
+assign(LiteralTemplate.prototype, {
     push: function(object) {
         if (this.status === 'done') {
             throw new Error('Renderer is done, cannot .push() data');

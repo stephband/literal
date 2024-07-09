@@ -220,11 +220,11 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
 import create           from '../dom/modules/create.js';
 import Stream           from '../fn/modules/stream.js';
 import IntervalStream   from '../fn/modules/stream/interval-stream.js';
-import TemplateRenderer from './modules/template-renderer.js';
+import LiteralTemplate from './modules/literal-template.js';
 
-    test("TemplateRenderer() primitive properties", [], function(equals, done) {
+    test("LiteralTemplate() primitive properties", [], function(equals, done) {
         const template = document.getElementById('attributes');
-        const renderer = new TemplateRenderer(template, { element: document.body });
+        const renderer = new LiteralTemplate(template, { element: document.body });
         const data = {
             attribute: '✔ Attribute is rendered',
             class:     '✔ Class is rendered',
@@ -241,27 +241,27 @@ import TemplateRenderer from './modules/template-renderer.js';
         done();
     });
 
-    test("TemplateRenderer() include", [], function(equals, done) {
+    test("LiteralTemplate() include", [], function(equals, done) {
         const template = document.getElementById('includer');
-        const renderer = new TemplateRenderer(template, { element: document.body });
+        const renderer = new LiteralTemplate(template, { element: document.body });
         const data = {};
         renderer.push(data);
         document.body.append(renderer.first);
         done();
     });
 
-    test("TemplateRenderer() looped include", [], function(equals, done) {
+    test("LiteralTemplate() looped include", [], function(equals, done) {
         const template = document.getElementById('item-list');
-        const renderer = new TemplateRenderer(template, { element: document.body });
+        const renderer = new LiteralTemplate(template, { element: document.body });
         const data = { items: [{ label: 'one' }, { label: 'two' }, { label: 'three' }] };
         renderer.push(data);
         document.body.append(renderer.first);
         done();
     });
 
-    test("TemplateRenderer() stream property", [],  function(equals, done) {
+    test("LiteralTemplate() stream property", [],  function(equals, done) {
         const template = document.getElementById('stream');
-        const renderer = new TemplateRenderer(template, { element: document.body });
+        const renderer = new LiteralTemplate(template, { element: document.body });
         const data = { stream: (new IntervalStream(0.4)).scan((value) => !value) };
         renderer.push(data);
         document.body.append(renderer.first);

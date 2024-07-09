@@ -6,7 +6,7 @@ import element, { getInternals } from '../../dom/modules/element.js';
 import toPrefetchPromise         from '../../dom/modules/element/to-prefetch-promise.js';
 import defineProperty            from './define-property.js';
 import getById                   from './dom/get-by-id.js';
-import TemplateRenderer          from './template-renderer.js';
+import LiteralTemplate          from './literal-template.js';
 
 const assign  = Object.assign;
 const entries = Object.entries;
@@ -79,7 +79,7 @@ export default function defineElement(tag, src, lifecycle = {}, props, scope = {
     return element(tag, {
         construct: function(shadow) {
             const internals = getInternals(this);
-            const renderer  = internals.renderer = new TemplateRenderer(template, this, assign({}, scope, {
+            const renderer  = internals.renderer = new LiteralTemplate(template, this, assign({}, scope, {
                 host:     this,
                 shadow:   shadow
             }));
