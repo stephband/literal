@@ -129,51 +129,38 @@ Renderer(path, name, source, message)
 export default class Renderer {
     static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow'];
 
-    constructor(fn, element, name, parameters) {
-        //super(() => fn.apply(this, this.getParameters()));
+    #fn;
+    #datasignal;
+    #parameters;
 
+    constructor(fn, element, name, parameters, datasignal = Signal.of()) {
         // Pick up paremeter names from the constructor, which may have been
         // overridden on dependent constructors
         const parameterNames = this.constructor.parameterNames;
 
         this.id          = ++id;
-        this.fn          = fn;
         this.element     = element;
         this.name        = name;
         this.status      = 'idle';
-        this.parameters  = parameterNames.map((name) => parameters[name]);
         this.renderCount = 0;
+
+        this.#fn         = fn;
+        this.#datasignal = datasignal;
+        this.#parameters = parameterNames.map((name) => parameters[name]);
 
         // Track the number of renderers created
         if (window.DEBUG) { ++Renderer.count; }
     }
 
-    getParameters() {
-        const parameters = this.parameters;
-        parameters[0] = this.data;
-        parameters[1] = Data.objectOf(this.data);
+    #evaluate() {
+        const data       = this.#datasignal.value;
+        const parameters = this.#parameters;
+
+        parameters[0] = Data(data);
+        parameters[1] = Data.objectOf(data);
         parameters[2] = this.element;
-        return parameters;
-    }
 
-    push(object) {
-        if (window.DEBUG && this.status === 'rendering') {
-            throw new Error('Renderer is rendering, cannot .push() data');
-        }
-
-        if (window.DEBUG && this.status === 'done') {
-            throw new Error('Renderer is done, cannot .push() data');
-        }
-
-        const data = Data.of(object);
-
-        if (this.data === data) { return; }
-        this.data = data;
-        this.invalidate();
-    }
-
-    evaluate() {
-        return this.fn.apply(this, this.getParameters());
+        return this.#fn.apply(this, parameters);
     }
 
     invalidate() {
@@ -194,7 +181,7 @@ export default class Renderer {
             try {
                 ++this.renderCount;
                 // Evaluation causes DOM render
-                Signal.evaluate(this, this.evaluate);
+                Signal.evaluate(this, this.#evaluate);
             }
             catch(e) {
                 // TODO: add template id to error message
@@ -204,7 +191,7 @@ export default class Renderer {
         }
         else {
             ++this.renderCount;
-            Signal.evaluate(this, this.evaluate);
+            Signal.evaluate(this, this.#evaluate);
         }
 
         this.status = this.status === 'rendering' ? 'idle' : this.status ;

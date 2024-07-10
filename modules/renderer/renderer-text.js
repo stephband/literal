@@ -172,7 +172,7 @@ function updateDOM(stats, first, last, objects) {
 export default class TextRenderer extends Renderer {
     static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow', 'include', 'print'];
 
-    constructor(fn, element, name, parameters, fragment = element) {
+    constructor(fn, element, name, parameters, datasignal, fragment = element) {
         // Fragment may be the source fragment containing the first and last
         // text nodes, which are then rendered into element, or it may default
         // to element.
@@ -190,7 +190,7 @@ export default class TextRenderer extends Renderer {
             print: (...args) => print(this, ...args)
         });
 
-        super(fn, element, name, params);
+        super(fn, element, name, params, datasignal);
 
         this.contents = [];
         this.first    = fragment.childNodes[this.name];

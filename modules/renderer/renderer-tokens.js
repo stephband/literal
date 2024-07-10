@@ -48,8 +48,8 @@ function updateTokens(list, cached, tokens, count = 0) {
 export default class TokensRenderer extends AttributeRenderer {
     static parameterNames = AttributeRenderer.parameterNames;
 
-    constructor(fn, element, name, parameters) {
-        super(fn, element, name, parameters);
+    constructor(fn, element, name, parameters, datasignal) {
+        super(fn, element, name, parameters, datasignal);
 
         // Renderer properties
         this.list   = getTokenList(name, element);

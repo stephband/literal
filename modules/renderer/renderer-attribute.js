@@ -39,8 +39,8 @@ function setAttribute(node, name, value) {
 export default class AttributeRenderer extends Renderer {
     static parameterNames = Renderer.parameterNames;
 
-    constructor(fn, element, name, parameters) {
-        super(fn, element, name, parameters);
+    constructor(fn, element, name, parameters, datasignal) {
+        super(fn, element, name, parameters, datasignal);
         this.property = name in names ? names[name] : name ;
         this.writable = name in names ?
             // If name is listed as null or other falsy in property-names.js,

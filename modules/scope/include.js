@@ -26,13 +26,13 @@ import requestData     from '../request-data.js';
 
 function push(template, data, element, parameters, options) {
     const renderer = new LiteralTemplate(template, element, parameters, options);
-    renderer.push(data);
+    renderer.data = data;
     return renderer;
 }
 
 function pipe(template, data, element, parameters, options) {
     const renderer = new LiteralTemplate(template, element, parameters, options);
-    data.each((data) => renderer.push(data));
+    data.each((data) => renderer.data = data);
     renderer.done(data);
     return renderer;
 }

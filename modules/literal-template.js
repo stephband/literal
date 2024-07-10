@@ -26,6 +26,7 @@ renderer
 
 
 import overload            from '../../fn/modules/overload.js';
+import Signal              from '../../fn/modules/signal.js';
 import Data                from '../../fn/modules/signal-data.js';
 import create              from '../../dom/modules/create.js';
 import identify            from '../../dom/modules/identify.js';
@@ -118,11 +119,11 @@ function createRenderer(target) {
     // Where `.path` exists find the element at the end of the path
     const element  = path ? getElement(path, this.content) : this.element ;
     const renderer = path ?
-        new Renderer(fn, element, name, this.parameters) :
+        new Renderer(fn, element, name, this.parameters, this.datasignal) :
         // Where `.path` is an empty string we are dealing with the `.content`
         // fragment, which must be rendered into the `.element` element. Only a
         // TextRenderer can have an empty path.
-        new Renderer(fn, element, name, this.parameters, this.content) ;
+        new Renderer(fn, element, name, this.parameters, this.datasignal, this.content) ;
 
     //const renderer = R.create(element, name, fn, this.parameters, path ? undefined : this.content);
 
@@ -131,35 +132,34 @@ function createRenderer(target) {
     return renderer;
 }
 
-export default function LiteralTemplate(template, element = template.parentElement, parameters = {}, options = defaults) {
-    const id = identify(template) ;
+export default class LiteralTemplate {
+    constructor(template, element = template.parentElement, parameters = {}, options = defaults) {
+        const id = identify(template) ;
 
-    const compiled = cache[id] ||
-        (cache[id] = compileTemplate(template, id, {
-            nostrict: options.nostrict || (template.hasAttribute && template.hasAttribute('nostrict'))
-        }));
+        const compiled = cache[id] ||
+            (cache[id] = compileTemplate(template, id, {
+                nostrict: options.nostrict || (template.hasAttribute && template.hasAttribute('nostrict'))
+            }));
 
-    const content = compiled.content.cloneNode(true);
+        const content = compiled.content.cloneNode(true);
 
-    this.content    = content;
-    this.element    = element;
-    this.parameters = parameters;
-    this.first      = content.childNodes[0];
-    this.last       = content.childNodes[content.childNodes.length - 1];
-    this.contents   = compiled.targets.map(createRenderer, this);
-}
+        this.datasignal = Signal.of();
+        this.content    = content;
+        this.element    = element;
+        this.parameters = parameters;
+        this.first      = content.childNodes[0];
+        this.last       = content.childNodes[content.childNodes.length - 1];
+        this.contents   = compiled.targets.map(createRenderer, this);
+    }
 
-assign(LiteralTemplate.prototype, {
-    push: function(object) {
-        if (this.status === 'done') {
-            throw new Error('Renderer is done, cannot .push() data');
-        }
+    get data() {
+        return this.datasignal.value;
+    }
 
-        const data = Data.of(object) || object;
+    set data(data) {
+        if (this.status === 'done') return;
 
-        // Dedup
-        if (this.data === data) { return; }
-        this.data = data;
+        this.datasignal.value = Data(data);
 
         // Do we actually need to cue? I mean, the push on each child renderer
         // is cue()d so why do we need to do it here?
@@ -171,9 +171,13 @@ assign(LiteralTemplate.prototype, {
         //cue(this);
         // Nah lets not cue here ...
         this.update();
-    },
+    }
 
-    update: overload(dataToString, {
+    push() {
+        console.trace('.push() from where?');
+    }
+
+    update = overload(dataToString, {
         null: function() {
             // Remove all but the last node to the renderer's content fragment
             nodes.length = 0;
@@ -208,14 +212,14 @@ assign(LiteralTemplate.prototype, {
 
             return this;
         }
-    }),
+    })
 
     /**
     .remove()
     Removes rendered content from the DOM, placing it back in the
     fragment at `renderer.content`.
     **/
-    remove: function() {
+    remove() {
         // Can't remove if we're already removed
         if (this.content.lastChild === this.last) {
             return 0;
@@ -226,13 +230,13 @@ assign(LiteralTemplate.prototype, {
         this.content.prepend.apply(this.content, nodes);
         stats.remove += nodes.length;
         return nodes.length;
-    },
+    }
 
     /**
     .replaceWith()
     Removes rendered content from the DOM and inserts arguments in its place.
     **/
-    replaceWith: function() {
+    replaceWith() {
         // Can't replace if we're removed
         if (this.content.lastChild === this.last) {
             return 0;
@@ -241,17 +245,17 @@ assign(LiteralTemplate.prototype, {
         this.last.after.apply(this.last, arguments);
         stats.add += arguments.length;
         return this.remove();
-    },
+    }
 
     /**
     .stop()
     Stops renderer.
     **/
-    stop: Renderer.prototype.stop,
+    stop = Renderer.prototype.stop;
 
     /**
     .done(object)
     Registers `object.stop()` to be called when this renderer is stopped.
     **/
-    done: Renderer.prototype.done
-});
+    done = Renderer.prototype.done;
+}

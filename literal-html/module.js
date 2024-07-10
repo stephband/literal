@@ -70,7 +70,7 @@ export default element('<template is="literal-html">', {
             const { data, renderer } = internals;
 
             if (!data.value) return;
-            renderer.push(data.value);
+            renderer.data = data.value;
 
             // Replace DOM content on first push
             if (!internals.pushed) {

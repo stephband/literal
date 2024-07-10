@@ -118,7 +118,7 @@ export default function defineElement(tag, src, lifecycle = {}, props, scope = {
 
             // We must render synchronously here else rendered 'slotchange'
             // listeners miss the first slotchange
-            renderer.push(data);
+            renderer.data = data;
         }
     }, properties, null, window.DEBUG ?
         (keys(scope).length ? '\n  Imports ' + keys(scope).join(', ') : '') :
