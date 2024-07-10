@@ -45,9 +45,7 @@ const nodes  = [];
 const defaults = {};
 
 
-function dataToString() {
-    return this.data + '';
-}
+
 
 /*
 LiteralTemplate
@@ -113,53 +111,56 @@ function compileTemplate(template, id, options) {
 }
 
 const R = Renderer;
-function createRenderer(target) {
-    const { Renderer, path, name, fn } = target;
 
-    // Where `.path` exists find the element at the end of the path
-    const element  = path ? getElement(path, this.content) : this.element ;
-    const renderer = path ?
-        new Renderer(fn, element, name, this.parameters, this.datasignal) :
-        // Where `.path` is an empty string we are dealing with the `.content`
-        // fragment, which must be rendered into the `.element` element. Only a
-        // TextRenderer can have an empty path.
-        new Renderer(fn, element, name, this.parameters, this.datasignal, this.content) ;
-
-    //const renderer = R.create(element, name, fn, this.parameters, path ? undefined : this.content);
-
-    // Stop clone when parent template renderer stops
-    this.done(renderer);
-    return renderer;
-}
 
 export default class LiteralTemplate {
+    #data;
+
     constructor(template, element = template.parentElement, parameters = {}, options = defaults) {
         const id = identify(template) ;
 
-        const compiled = cache[id] ||
-            (cache[id] = compileTemplate(template, id, {
-                nostrict: options.nostrict || (template.hasAttribute && template.hasAttribute('nostrict'))
-            }));
+        const compiled = cache[id] || (cache[id] = compileTemplate(template, id, {
+            nostrict: options.nostrict || (template.hasAttribute && template.hasAttribute('nostrict'))
+        }));
 
         const content = compiled.content.cloneNode(true);
 
-        this.datasignal = Signal.of();
         this.content    = content;
         this.element    = element;
         this.parameters = parameters;
         this.first      = content.childNodes[0];
         this.last       = content.childNodes[content.childNodes.length - 1];
-        this.contents   = compiled.targets.map(createRenderer, this);
+        this.contents   = compiled.targets.map(this.#create, this);
+        this.#data      = Signal.of();
+    }
+
+    #create(target) {
+        const { Renderer, path, name, fn } = target;
+
+        // Where `.path` exists find the element at the end of the path
+        const element  = path ?
+            getElement(path, this.content) :
+            this.element ;
+
+        // Where `.path` is an empty string we are dealing with the `.content`
+        // fragment, which must be rendered into the `.element` element. Only a
+        // TextRenderer can have an empty path.
+        const renderer = new Renderer(fn, element, name, this.parameters, this.#data, path ? undefined : this.content) ;
+        //const renderer = R.create(element, name, fn, this.parameters, path ? undefined : this.content);
+
+        // Stop clone when parent template renderer stops
+        this.done(renderer);
+        return renderer;
     }
 
     get data() {
-        return this.datasignal.value;
+        return Data(this.#data.value);
     }
 
-    set data(data) {
+    push(data) {
         if (this.status === 'done') return;
 
-        this.datasignal.value = Data(data);
+        this.#data.value = Data.objectOf(data);
 
         // Do we actually need to cue? I mean, the push on each child renderer
         // is cue()d so why do we need to do it here?
@@ -173,11 +174,9 @@ export default class LiteralTemplate {
         this.update();
     }
 
-    push() {
-        console.trace('.push() from where?');
-    }
-
-    update = overload(dataToString, {
+    update = overload(function dataToString() {
+        return this.#data.value + '';
+    }, {
         null: function() {
             // Remove all but the last node to the renderer's content fragment
             nodes.length = 0;
@@ -198,7 +197,7 @@ export default class LiteralTemplate {
 
             // Render the contents (synchronously)
             this.contents.forEach((renderer) => {
-                renderer.data = data;
+                //renderer.data = data;
                 renderer.update();
             });
 

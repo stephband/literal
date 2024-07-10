@@ -130,7 +130,7 @@ export default class Renderer {
     static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow'];
 
     #fn;
-    #datasignal;
+    #data;
     #parameters;
 
     constructor(fn, element, name, parameters, datasignal = Signal.of()) {
@@ -145,7 +145,7 @@ export default class Renderer {
         this.renderCount = 0;
 
         this.#fn         = fn;
-        this.#datasignal = datasignal;
+        this.#data       = datasignal;
         this.#parameters = parameterNames.map((name) => parameters[name]);
 
         // Track the number of renderers created
@@ -153,7 +153,8 @@ export default class Renderer {
     }
 
     #evaluate() {
-        const data       = this.#datasignal.value;
+        const data       = this.#data.value;
+console.log('EVAL', data);
         const parameters = this.#parameters;
 
         parameters[0] = Data(data);
@@ -177,7 +178,7 @@ export default class Renderer {
         stopPromises(this.promises);
         this.status = 'rendering';
 
-        if (window.DEBUG) {
+        /*if (window.DEBUG) {
             try {
                 ++this.renderCount;
                 // Evaluation causes DOM render
@@ -189,10 +190,10 @@ export default class Renderer {
                 throw e;
             }
         }
-        else {
+        else {*/
             ++this.renderCount;
             Signal.evaluate(this, this.#evaluate);
-        }
+        /*}*/
 
         this.status = this.status === 'rendering' ? 'idle' : this.status ;
         return this;

@@ -58,7 +58,7 @@ export default element('<template is="literal-html">', {
         internals.renderer    = new LiteralTemplate(this, this.parentElement);
     },
 
-    connect: function(shadow) {
+    connect: function() {
         const internals = Internals(this);
 
         // If already initialised do nothing
@@ -70,7 +70,7 @@ export default element('<template is="literal-html">', {
             const { data, renderer } = internals;
 
             if (!data.value) return;
-            renderer.data = data.value;
+            renderer.push(data.value);
 
             // Replace DOM content on first push
             if (!internals.pushed) {
