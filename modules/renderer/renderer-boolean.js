@@ -4,7 +4,7 @@ import { stats }         from './renderer.js';
 
 
 /**
-BooleanRenderer(fn, element, name, parameters)
+BooleanRenderer(signal, fn, element, name, parameters)
 Constructs an object responsible for rendering to a boolean attribute.
 **/
 

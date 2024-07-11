@@ -42,21 +42,24 @@ export default function include(src, data, element, parameters, options) {
     // parent renderer
     const object = Data.objectOf(data);
 
-    // Template is in document
+    // If template is in document, src is its id
     if (/^#/.test(src)) {
         const template = getById(src);
         const dataRequest = typeof object === 'string' ? requestData(object) :
             object && object.then ? object :
             null;
 
+        // Support JSON or module URLs
         if (dataRequest) {
             return dataRequest.then((data) => push(template, data, element, parameters, options));
         }
 
+        // Support a stream of data
         if (object && object.pipe) {
             return pipe(template, object, element, parameters, options);
         }
 
+        // Support object or ... ?
         return push(template, object || {}, element, parameters, options);
     }
 

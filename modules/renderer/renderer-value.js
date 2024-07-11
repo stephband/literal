@@ -38,8 +38,8 @@ const compose = overload((value, type) => type, {
 export default class ValueRenderer extends AttributeRenderer {
     static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow', 'bind'];
 
-    constructor(fn, element, name, parameters) {
-        super(fn, element, 'value', parameters);
+    constructor(signal, fn, element, name, parameters) {
+        super(signal, fn, element, 'value', parameters);
     }
 
     render(strings) {

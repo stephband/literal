@@ -6,6 +6,7 @@ processing the literal content is more DOM content this renderer will insert
 that DOM after the text node.
 **/
 
+import Signal           from '../../../fn/modules/signal.js';
 import isTextNode       from '../../../dom/modules/is-text-node.js';
 import include          from '../scope/include.js';
 import indexOf          from '../dom/index-of.js';
@@ -172,7 +173,7 @@ function updateDOM(stats, first, last, objects) {
 export default class TextRenderer extends Renderer {
     static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow', 'include', 'print'];
 
-    constructor(fn, element, name, parameters, fragment = element) {
+    constructor(signal, fn, element, name, parameters, fragment = element) {
         // Fragment may be the source fragment containing the first and last
         // text nodes, which are then rendered into element, or it may default
         // to element.
@@ -180,6 +181,7 @@ export default class TextRenderer extends Renderer {
         const params = assign({}, parameters, {
             // Parameters
             include(url, data) {
+console.log('INCLUDE', url, data);
                 return arguments.length === 1 ?
                     // Partial application if called with url only
                     (data) => include(url, data, element, parameters) :
@@ -190,20 +192,20 @@ export default class TextRenderer extends Renderer {
             print: (...args) => print(this, ...args)
         });
 
-        super(fn, element, name, params);
+        super(signal, fn, element, name, params);
 
         this.contents = [];
-        this.first    = fragment.childNodes[this.name];
-        this.last     = fragment.childNodes[this.name + 1];
+        this.first = fragment.childNodes[this.name];
+        this.last  = fragment.childNodes[this.name + 1];
     }
-
+/*
     push() {
         // Preemptively stop all nodes, they are about to be updated
         this.contents.forEach(stop);
         this.contents.length = 0;
         return super.push.apply(this, arguments);
     }
-
+*/
     update() {
         // Stop all nodes, they are about to be recreated. This needs to be done
         // here as well as in push, as update may be called by LiteralTemplate

@@ -30,16 +30,14 @@ data.value = (${ this.renderCount }) ${ data.value }
 
     <hr/>
     <template is="literal-html" data-state="1" data-value="Hello">
-        <h2>is="literal-html"</h2>
-        <p>Render counts in (brackets).</p>
-        ${ window.data = data, '' }
-        <p class="${ 'hello world' }">${ 'Hello world' }</p>
-        (${ this.renderCount })
-        ${ include('#template-1', data) }
-        ${ include('#template-2', data) }
+        <!--h2>is="literal-html"</h2>
+        <p>Render counts in (brackets).</p-->
+        <!--p title="${ data.state }" class="${ data.state }">${ window.data = data, data.state } (${ this.renderCount })</p-->
+        ${ window.data = data, include('#template-1', data) }
+        <!--${ include('#template-2', { a: data }) }-->
     </template>
 
-    <hr/>
+    <!--hr/>
     <template is="literal-html" data-state="1" data-value="Hello">
         <h2>is="literal-html"</h2>
         <p>Render counts in (brackets).</p>
@@ -51,7 +49,7 @@ data.value = (${ this.renderCount }) ${ data.value }
         (${ this.renderCount })
         ${ include('#template-1', data) }
         ${ include('#template-2', data) }
-    </template>
+    </template-->
 
     <hr/>
     <!--template is="literal-html" data-default="2" data-value="Hello">

@@ -55,10 +55,13 @@ export default element('<template is="literal-html">', {
         internals.initialised = false;
         internals.pushed      = false;
         internals.data        = Signal.of();
+internals.data.id = 'Literal data';
         internals.renderer    = new LiteralTemplate(this, this.parentElement);
+        window.rndr = internals.renderer;
     },
 
     connect: function(shadow) {
+        console.log('Connect ------------');
         const internals = Internals(this);
 
         // If already initialised do nothing
@@ -77,7 +80,7 @@ export default element('<template is="literal-html">', {
                 internals.pushed = true;
                 this.replaceWith(renderer.content);
             }
-        });
+        }).id = 'Literal observer'
 
         // If src or data was not set use data found in dataset
         if (!internals.promise && !internals.pushed) {
