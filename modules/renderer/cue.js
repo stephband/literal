@@ -32,7 +32,7 @@ function render(renderers) {
         log('render',
             ((t1 - t0) * 1000).toPrecision(3) + 'ms – '
             // renderers
-            + renderers.length + ' renderer updates'
+            + renderers.length + ' cued renderers'
             // mutations
             + (stats.remove    ? ', ' + stats.remove    + ' remove'    : '')
             + (stats.add       ? ', ' + stats.add       + ' add'       : '')
@@ -61,6 +61,8 @@ cued it is not cued again.
 **/
 
 export function cue(renderer) {
+    log('cue', renderer.constructor.name + '[' + renderer.id + ']', '', '', 'blue');
+
     if (renderer.status === 'cued') {
         console.trace('Renderer already cued.');
         return cued;

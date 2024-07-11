@@ -148,7 +148,6 @@ const compileNode = overload((targets, node) => toType(node), {
 
         //targets.push(new TextRenderer(path, indexOf(node), source, message, options, node));
         targets.push({
-            Renderer: TextRenderer,
             fn: compile(source, scope, TextRenderer.parameterNames.join(', '), message, options),
             path,
             name: indexOf(node),

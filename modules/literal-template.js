@@ -108,16 +108,18 @@ function compileTemplate(template, id, options) {
     return { content, targets };
 }
 
-const R = Renderer;
-
-
 export default class LiteralTemplate {
+    // Data signal
     #data;
 
-    constructor(template, element = template.parentElement, parameters = {}, options = defaults) {
+    constructor(template, parent = template.parentElement, parameters = {}, options = defaults) {
+        // A literal template may be created from inside a TextRenderer via
+        // ${ include(...) } and for this reason we must avoid accessing any
+        // signals outside of a Signal.evaluate(), or they are registered as
+        // dependents of the TextRenderer.
+
         const id = identify(template) ;
-console.log('LiteralTemplate ' + id);
-//debugger
+
         const compiled = cache[id] ||
             (cache[id] = compileTemplate(template, id, {
                 nostrict: options.nostrict || (template.hasAttribute && template.hasAttribute('nostrict'))
@@ -126,17 +128,16 @@ console.log('LiteralTemplate ' + id);
         const content = compiled.content.cloneNode(true);
 
         this.content    = content;
-        this.element    = element;
+        this.element    = parent;
         this.parameters = parameters;
         this.first      = content.childNodes[0];
         this.last       = content.childNodes[content.childNodes.length - 1];
         this.#data      = Signal.of();
-this.#data.id = id;
         this.contents   = compiled.targets.map(this.#createRenderer, this);
     }
 
     #createRenderer(target) {
-        const { Renderer, path, name, fn } = target;
+        const { path, name, fn } = target;
 
         // Where `.path` exists find the element at the end of the path
         const element  = path ? getElement(path, this.content) : this.element ;
@@ -144,8 +145,7 @@ this.#data.id = id;
         // Where `.path` is an empty string we are dealing with the `.content`
         // fragment, which must be rendered into the `.element` element. Only a
         // TextRenderer can have an empty path.
-        const renderer = new Renderer(this.#data, fn, element, name, this.parameters, path ? undefined : this.content);
-        //const renderer = R.create(element, name, fn, this.parameters, path ? undefined : this.content);
+        const renderer = Renderer.create(element, name, this.#data, fn, this.parameters, path ? undefined : this.content);
 
         // Stop clone when parent template renderer stops
         this.done(renderer);
@@ -166,7 +166,7 @@ this.#data.id = id;
         // Causes renderers to .invalidate() because they are dependent on
         // this.#data
         this.#data.value = Data(object);
-window.r = this.#data;
+
         // Do we actually need to cue? I mean, the push on each child renderer
         // is cue()d so why do we need to do it here?
         //

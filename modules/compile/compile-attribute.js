@@ -18,6 +18,11 @@ import compile           from './compile.js';
 compileAttributes(array, element, attribute, path, message)
 **/
 
+// TODO: Renderers are only here so we can get parameterNames. This has been
+// moved to modules/renderer.js. Perhaps compile() should be moved into Renderer
+// constructors – we are only getting compiled fn from a cache, after all, it should
+// make no difference to speed
+
 const constructors = {
     class:          TokensRenderer,
     value:          ValueRenderer,
@@ -62,7 +67,6 @@ export default function compileAttribute(array, element, attribute, path, messag
     const Renderer = constructors[name] || AttributeRenderer;
 
     array.push({
-        Renderer: Renderer,
         fn: compile(source, scope, Renderer.parameterNames.join(', '), message, options),
         element,
         path,

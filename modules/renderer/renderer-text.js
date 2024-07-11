@@ -181,7 +181,6 @@ export default class TextRenderer extends Renderer {
         const params = assign({}, parameters, {
             // Parameters
             include(url, data) {
-console.log('INCLUDE', url, data);
                 return arguments.length === 1 ?
                     // Partial application if called with url only
                     (data) => include(url, data, element, parameters) :
@@ -198,14 +197,7 @@ console.log('INCLUDE', url, data);
         this.first = fragment.childNodes[this.name];
         this.last  = fragment.childNodes[this.name + 1];
     }
-/*
-    push() {
-        // Preemptively stop all nodes, they are about to be updated
-        this.contents.forEach(stop);
-        this.contents.length = 0;
-        return super.push.apply(this, arguments);
-    }
-*/
+
     update() {
         // Stop all nodes, they are about to be recreated. This needs to be done
         // here as well as in push, as update may be called by LiteralTemplate

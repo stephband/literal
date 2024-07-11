@@ -1,3 +1,5 @@
+
+import names               from './renderer/property-names.js';
 import Renderer, { stats } from './renderer/renderer.js';
 import AttributeRenderer   from './renderer/renderer-attribute.js';
 import BooleanRenderer     from './renderer/renderer-boolean.js';
@@ -8,55 +10,31 @@ import TextRenderer        from './renderer/renderer-text.js';
 
 const assign = Object.assign;
 
-const renderers = {
-    class:          TokensRenderer,
-    value:          ValueRenderer,
-    checked:        CheckedRenderer,
-    async:          BooleanRenderer,
-    autofocus:      BooleanRenderer,
-    autoplay:       BooleanRenderer,
-    controls:       BooleanRenderer,
-    defer:          BooleanRenderer,
-    disabled:       BooleanRenderer,
-    formnovalidate: BooleanRenderer,
-    hidden:         BooleanRenderer,
-    ismap:          BooleanRenderer,
-    itemscope:      BooleanRenderer,
-    loop:           BooleanRenderer,
-    multiple:       BooleanRenderer,
-    muted:          BooleanRenderer,
-    nomodule:       BooleanRenderer,
-    novalidate:     BooleanRenderer,
-    open:           BooleanRenderer,
-    readonly:       BooleanRenderer,
-    required:       BooleanRenderer,
-    reversed:       BooleanRenderer,
-    selected:       BooleanRenderer,
-    default:        BooleanRenderer
-};
-
 function throwError(message, element, n) {
-    console.log(element.childNodes[n]);
     throw new Error(message);
 }
 
 assign(Renderer, {
-    create: function(element, n, fn, parameters, something) {
-        const Renderer =  typeof n === 'number' ? TextRenderer :
-            renderers[n] ||
-            AttributeRenderer ;
-
-        console.log('CREATE', Renderer);
+    create: function(element, n, data, fn, parameters, content) {
+        const name = names[n] || n;
 
         // If name is an index
         return typeof n === 'number' ?
             // of text node
             element.childNodes[n].nodeType === 3 ?
                 // Return a text renderer
-                new Renderer(fn, element, n, parameters, something) :
+                new TextRenderer(data, fn, element, n, parameters, content) :
             throwError('Renderer.create() – child at index ' + n + ' is not a text node', element, n) :
             // Return some type of attribute renderer
-            new Renderer(fn, element, n, parameters, something) ;
+            name === 'value'   ?
+                new ValueRenderer(data, fn, element, n, parameters) :
+            name === 'checked' ?
+                new CheckedRenderer(data, fn, element, n, parameters) :
+            typeof element[name] === 'object' && element[name].add && element[name].remove ?
+                new TokensRenderer(data, fn, element, n, parameters) :
+            typeof element[name] === 'boolean' ?
+                new BooleanRenderer(data, fn, element, n, parameters) :
+            new AttributeRenderer(data, fn, element, n, parameters) ;
     }
 });
 

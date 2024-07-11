@@ -151,29 +151,10 @@ export default class Renderer {
         // are fully ready.)
         Signal.evaluate(this, this.#evaluate);
     }
-/*
-    push(object) {
-        if (window.DEBUG && this.status === 'rendering') {
-            throw new Error('Renderer is rendering, cannot .push() data');
-        }
 
-        if (window.DEBUG && this.status === 'done') {
-            throw new Error('Renderer is done, cannot .push() data');
-        }
-
-        const data = Data.of(object);
-
-        if (this.data === data) { return; }
-        this.data = data;
-        this.invalidate();
-    }
-*/
     #evaluate() {
         // Bind this renderer to current data
         const data = this.#data.value;
-
-console.log('DATA', data);
-if (++N > 8) debugger;
 
         if (!data) return;
         const parameters = this.parameters;
