@@ -74,7 +74,10 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
             return;
         }
 
-        /*
+        //if (Signal.isSignal(target)) {
+        //    //
+        //}
+
         // Is target a pipeable Stream?
         if (target.pipe) {
             const streams = renderer.streams || (renderer.streams = []);
@@ -88,6 +91,7 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
             return;
         }
 
+        /*
         // Is target a Stream that is already consumed, and therefore does not
         // have .pipe()? We still want to stop it when the renderer is
         // destroyed, but we don't want to renderer anything.
@@ -231,7 +235,7 @@ export default class Renderer {
 
         uncue(this);
         stopPromises(this.promises);
-        //stopStreams(this.streams);
+        this.streams && this.streams.forEach(callStop);
 
         if (window.DEBUG) { --Renderer.count; }
 
