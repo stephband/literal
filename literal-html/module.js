@@ -61,7 +61,6 @@ internals.data.id = 'literal-html data';
     },
 
     connect: function(shadow) {
-        console.log('Connect ------------');
         const internals = Internals(this);
 
         // If already initialised do nothing

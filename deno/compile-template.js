@@ -2,7 +2,7 @@
 import read    from './read.js';
 import compile from './compile.js';
 import include from './include.js';
-import library, { prependComment } from './scope.js';
+import * as cope from './scope.js';
 import { rewriteURLs } from './url.js';
 
 
@@ -25,7 +25,7 @@ export default (src, debug) => read(src)
                 (...urls)   => library.comments(src, request.url, ...urls)
             )
             .then(library.DEBUG ?
-                (text) => prependComment(src, request.url, rewriteURLs(src, request.url, text)) :
+                (text) => scope.prependComment(src, request.url, rewriteURLs(src, request.url, text)) :
                 (text) => rewriteURLs(src, request.url, text)
             );
     })

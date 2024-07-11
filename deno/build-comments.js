@@ -4,7 +4,7 @@ import { ensureDir } from "https://deno.land/std@0.110.0/fs/mod.ts";
 
 import read    from './read.js';
 import compile from './compile.js';
-import library, { prependComment } from './scope.js';
+import * as scope from './scope.js';
 import { rewriteURLs } from './url.js';
 import { dimyellow } from './log.js';
 import comments from './comments-comments.js';
@@ -30,7 +30,7 @@ export default function build(source, target, file, debug) {
         return comments(source, target, file)
         .then((sections) => renderer.render(sections, include, imports, comments))
         .then(library.DEBUG ?
-            (text) => prependComment(source, target, rewriteURLs(source, target, text)) :
+            (text) => scope.prependComment(source, target, rewriteURLs(source, target, text)) :
             (text) => rewriteURLs(source, target, text)
         );
     })

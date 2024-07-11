@@ -4,9 +4,6 @@ import * as path from "https://deno.land/std@0.110.0/path/mod.ts";
 // Absolute path to module
 const moduleAbs = path.dirname(path.fromFileUrl(import.meta.url));
 
-import base        from '../modules/scope/scope-fns.js';
-import fns         from '../modules/scope/scope-fns-ext.js';
-
 import { addDate } from '../../fn/modules/date.js';
 import { addTime } from '../../fn/modules/time.js';
 import exec        from '../../fn/modules/exec.js';
@@ -18,10 +15,18 @@ import read            from './read.js';
 import { rewriteURL, rewriteURLs } from './url.js';
 import compile         from './compile.js';
 import comments        from './comments.js';
-import { px, em, rem } from './parse-length.js';
+
 import parseMarkdown   from './parse-markdown.js';
 
 import { red, yellow }     from './log.js';
+
+export * from '../modules/scope/scope-fns.js';
+export * from '../modules/scope/scope-fns-ext.js';
+export { px, em, rem } from './parse-length.js';
+export const vw = () => { throw new Error('Literal scope function vw() not available in Deno') }
+export const vh = () => { throw new Error('Literal scope function vh() not available in Deno') }
+export { comments };
+export { parseMarkdown as markdown };
 
 
 const assign      = Object.assign;
@@ -160,7 +165,7 @@ const renderInclude = overload((source, target, file) => toExtension(file), {
         .then(([data, template]) => {
             const include  = (src, data) => library.include(file, target, src, data);
             const imports  = (src)       => library.imports(file, target, CanvasRenderingContext2D);
-            const comments = (...urls)   => library.comments(file, target, ...urls);
+            const comments = (...urls)   => comments(file, target, ...urls);
             const renderer = {
                 source: file,
                 render: compile(library, 'data, include, imports, comments', template, file)
@@ -182,7 +187,7 @@ const renderInclude = overload((source, target, file) => toExtension(file), {
         .then(([data, template]) => {
             const include  = (src, data) => library.include(file, target, src, data);
             const imports  = (src)       => library.imports(file, target, src);
-            const comments = (...urls)   => library.comments(file, target, ...urls);
+            const comments = (...urls)   => comments(file, target, ...urls);
             const renderer = {
                 source: file,
                 render: compile(library, 'data, include, imports, comments', template, file)
@@ -214,7 +219,7 @@ const renderInclude = overload((source, target, file) => toExtension(file), {
     'default': (source, target, file) => read(file)
 });
 
-function include(source, target, url, scope) {
+export function include(source, target, url, scope) {
     // Get absolute OS file path
     const file = getAbsoluteFile(source, url);
 
@@ -232,7 +237,7 @@ function include(source, target, url, scope) {
         console.log(red + ' ' + yellow, e.constructor.name + ' in', source);
         console.log(red, e.message);
     });
-}
+};
 
 
 /**
@@ -270,7 +275,7 @@ function toAddType(n) {
     type;
 }
 
-const add = overload(toAddType, {
+export const add = overload(toAddType, {
     'date': addDate,
     'time': addTime,
     'string': (a) => (b) => b + a,
@@ -289,6 +294,7 @@ const add = overload(toAddType, {
 render(array, param)
 **/
 
+/*
 import renderString        from '../modules/renderer/to-text.js';
 
 const join = (strings) => strings.join('');
@@ -319,22 +325,6 @@ function render(strings) {
     )
     .then(join);
 }
+*/
 
 
-/* Export library */
-
-const library = assign(base, fns, {
-    add,
-    comments,
-    include:  include,
-    imports:  imports,
-    markdown: parseMarkdown,
-    render:   render,
-    px,
-    em,
-    rem,
-    vw:       () => { throw new Error('Template function vw() not available in Deno version') },
-    vh:       () => { throw new Error('Template function vh() not available in Deno version') }
-});
-
-export default library;
