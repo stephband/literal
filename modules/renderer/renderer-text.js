@@ -11,7 +11,7 @@ import isTextNode       from '../../../dom/modules/is-text-node.js';
 import include          from '../scope/include.js';
 import indexOf          from '../dom/index-of.js';
 import removeNodeRange  from '../dom/remove-node-range.js';
-import LiteralTemplate  from '../literal-template.js';
+import Template  from '../template.js';
 import print            from '../scope/print.js';
 import toText           from './to-text.js';
 import Renderer, { stats } from './renderer.js';
@@ -25,7 +25,7 @@ function stop(node) {
 }
 
 function toRenderer(value) {
-    return value instanceof LiteralTemplate ? value :
+    return value instanceof Template ? value :
            value instanceof Node ? value :
            toText(value) ;
 }
@@ -128,8 +128,8 @@ function updateDOM(stats, first, last, objects) {
             continue;
         }
 
-        // Is object a LiteralTemplate with nodes already in this DOM
-        if (object instanceof LiteralTemplate && (node === object.first || node === object.last)) {
+        // Is object a Template with nodes already in this DOM
+        if (object instanceof Template && (node === object.first || node === object.last)) {
             // Skip over nodes handled by the renderer
             node = object.last.nextSibling;
             continue;
@@ -173,13 +173,13 @@ function updateDOM(stats, first, last, objects) {
 export default class TextRenderer extends Renderer {
     static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow', 'include', 'print'];
 
-    constructor(signal, fn, element, name, parameters, fragment = element) {
-        // Fragment may be the source fragment containing the first and last
-        // text nodes, which are then rendered into element, or it may default
-        // to element.
+    constructor(signal, fn, parameters, element, node) {
+        if (window.DEBUG) {
+            if (!isTextNode(node))             throw new Error('TextRenderer() node not a text node');
+            if (!isTextNode(node.nextSibling)) throw new Error('TextRenderer() node.nextSibling not a text node');
+        }
 
         const params = assign({}, parameters, {
-            // Parameters
             include(url, data) {
                 return arguments.length === 1 ?
                     // Partial application if called with url only
@@ -191,16 +191,15 @@ export default class TextRenderer extends Renderer {
             print: (...args) => print(this, ...args)
         });
 
-        super(signal, fn, element, name, params);
-
+        super(signal, fn, params, element);
         this.contents = [];
-        this.first = fragment.childNodes[this.name];
-        this.last  = fragment.childNodes[this.name + 1];
+        this.first    = node;
+        this.last     = node.nextSibling;
     }
 
     update() {
         // Stop all nodes, they are about to be recreated. This needs to be done
-        // here as well as in push, as update may be called by LiteralTemplate
+        // here as well as in push, as update may be called by Template
         // without going through .push() cueing first. (??)
         this.contents.forEach(stop);
         this.contents.length = 0;

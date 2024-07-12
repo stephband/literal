@@ -13,6 +13,7 @@ export default {
     'accesskey':      'accessKey',
     'cellpadding':    'cellPadding',
     'cellspacing':    'cellSpacing',
+    'class':          'classList',
     'codebase':       'codeBase',
     'colspan':        'colSpan',
     'datetime':       'dateTime',

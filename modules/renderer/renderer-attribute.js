@@ -39,8 +39,10 @@ function setAttribute(node, name, value) {
 export default class AttributeRenderer extends Renderer {
     static parameterNames = Renderer.parameterNames;
 
-    constructor(signal, fn, element, name, parameters) {
-        super(signal, fn, element, name, parameters);
+    constructor(signal, fn, parameters, element, name) {
+        super(signal, fn, parameters, element);
+
+        this.name     = name;
         this.property = name in names ? names[name] : name ;
         this.writable = name in names ?
             // If name is listed as null or other falsy in property-names.js,
@@ -48,11 +50,6 @@ export default class AttributeRenderer extends Renderer {
             !!names[name] :
             // Otherwise check property descriptor
             name in element && isWritableProperty(name, element) ;
-
-        // MOVED TO COMPILE STEP compile-attribute.js.
-        // Avoid errant template literals making booleans default to true,
-        // mangling classes and unnecessarily checking checkboxes.
-        //element.removeAttribute(name);
     }
 
     render() {

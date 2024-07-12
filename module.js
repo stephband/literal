@@ -1,10 +1,10 @@
 
-import LiteralTemplate from './modules/literal-template.js';
+import Template from './modules/template.js';
 import scope           from './modules/scope.js';
 
-LiteralTemplate.scope = scope;
+Template.scope = scope;
 
-export default LiteralTemplate;
+export default Template;
 
 export { compiled }          from './modules/compile/compile.js';
 export { default as config } from './modules/config.js';

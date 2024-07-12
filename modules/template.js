@@ -1,20 +1,20 @@
 
 /**
-LiteralTemplate(template, element, parameters, options)
+Template(template, element, parameters, options)
 
-Import the `LiteralTemplate` constructor:
+Import the `Template` constructor:
 
 ```js
-import LiteralTemplate from './literal/modules/literal-template.js';
+import Template from './literal/modules/template.js';
 ```
 
-The `LiteralTemplate` constructor takes a template element (or the `id` of a
+The `Template` constructor takes a template element (or the `id` of a
 template element), clones the template's content, and returns a renderer that
 renders data into the content. The renderer updates its DOM nodes in response
 to changing data.
 
 ```js
-const renderer = new LiteralTemplate('id');
+const renderer = new Template('id');
 const data     = {};
 
 // Cue data for render then add it to the DOM
@@ -46,7 +46,7 @@ const defaults = {};
 
 
 /*
-LiteralTemplate
+Template
 Descendant paths are stored in the form `"#id>1>12>3"`, enabling fast
 cloning of template instances without retraversing their DOMs looking for
 literal attributes and text.
@@ -80,7 +80,7 @@ function isMarkerNode(node) {
 function prepareContent(content) {
     // Due to the way HTML is usually written the vast majority of templates
     // start and end with a text node, usually containing some white space
-    // and new lines. LiteralTemplate uses these as delimiters for the start
+    // and new lines. Template uses these as delimiters for the start
     // and end of templated content – where it can. If the template does NOT
     // start or end with a text node, we insert text nodes where needed.
     const first = content.childNodes[0];
@@ -108,7 +108,7 @@ function compileTemplate(template, id, options) {
     return { content, targets };
 }
 
-export default class LiteralTemplate {
+export default class Template {
     // Data signal
     #data;
 
@@ -133,21 +133,31 @@ export default class LiteralTemplate {
         this.first      = content.childNodes[0];
         this.last       = content.childNodes[content.childNodes.length - 1];
         this.#data      = Signal.of();
-        this.contents   = compiled.targets.map(this.#createRenderer, this);
+        this.contents   = compiled.targets
+            // We must find targets in cloned content
+            .map(this.#toRendererParams, this)
+            // before we create renderers for them, as renderers may mutate the DOM
+            .map(this.#toRenderer, this);
     }
 
-    #createRenderer(target) {
+    #toRendererParams(target) {
         const { path, name, fn } = target;
 
         // Where `.path` exists find the element at the end of the path
-        const element  = path ? getElement(path, this.content) : this.element ;
+        const element = path ? getElement(path, this.content) : this.element ;
 
-        // Where `.path` is an empty string we are dealing with the `.content`
-        // fragment, which must be rendered into the `.element` element. Only a
-        // TextRenderer can have an empty path.
-        const renderer = Renderer.create(element, name, this.#data, fn, this.parameters, path ? undefined : this.content);
+        // Text renderer expects a text node that must always come from the
+        // cloned content fragment
+        const n = typeof name === 'number' ?
+            path ? element.childNodes[name] :
+            this.content.childNodes[name] :
+        name;
 
-        // Stop clone when parent template renderer stops
+        return [this.#data, fn, this.parameters, element, n];
+    }
+
+    #toRenderer(parameters) {
+        const renderer = Renderer.create(...parameters);
         this.done(renderer);
         return renderer;
     }

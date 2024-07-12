@@ -8,35 +8,28 @@ import TokensRenderer      from './renderer/renderer-tokens.js';
 import ValueRenderer       from './renderer/renderer-value.js';
 import TextRenderer        from './renderer/renderer-text.js';
 
-const assign = Object.assign;
 
 function throwError(message, element, n) {
     throw new Error(message);
 }
 
-assign(Renderer, {
-    create: function(element, n, data, fn, parameters, content) {
-        const name = names[n] || n;
+Renderer.create = function create(signal, fn, parameters, element, n) {
+    const name = typeof n === 'string' && (names[n] || n) ;
 
-        // If name is an index
-        return typeof n === 'number' ?
-            // of text node
-            element.childNodes[n].nodeType === 3 ?
-                // Return a text renderer
-                new TextRenderer(data, fn, element, n, parameters, content) :
-            throwError('Renderer.create() – child at index ' + n + ' is not a text node', element, n) :
-            // Return some type of attribute renderer
-            name === 'value'   ?
-                new ValueRenderer(data, fn, element, n, parameters) :
-            name === 'checked' ?
-                new CheckedRenderer(data, fn, element, n, parameters) :
-            typeof element[name] === 'object' && element[name].add && element[name].remove ?
-                new TokensRenderer(data, fn, element, n, parameters) :
-            typeof element[name] === 'boolean' ?
-                new BooleanRenderer(data, fn, element, n, parameters) :
-            new AttributeRenderer(data, fn, element, n, parameters) ;
-    }
-});
+    return name ?
+        // Return some type of attribute renderer
+        name === 'value' ?
+            new ValueRenderer(signal, fn, parameters, element) :
+        name === 'checked' ?
+            new CheckedRenderer(signal, fn, parameters, element) :
+        typeof element[name] === 'boolean' ?
+            new BooleanRenderer(signal, fn, parameters, element, n) :
+        typeof element[name] === 'object' && element[name].add && element[name].remove ?
+            new TokensRenderer(signal, fn, parameters, element, n) :
+        new AttributeRenderer(signal, fn, parameters, element, n) :
+    // Assume n is a text node
+    new TextRenderer(signal, fn, parameters, element, n) ;
+};
 
 export { stats };
 export default Renderer;

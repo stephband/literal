@@ -15,10 +15,6 @@ Constructs an object responsible for rendering to a token list attribute such
 as a class attribute.
 **/
 
-const getTokenList = overload(id, {
-    'class': (name, node) => node.classList
-});
-
 function updateTokens(list, cached, tokens, count = 0) {
     // Remove all tokens from cached that are found in new tokens
     let n = cached.length;
@@ -48,11 +44,11 @@ function updateTokens(list, cached, tokens, count = 0) {
 export default class TokensRenderer extends AttributeRenderer {
     static parameterNames = AttributeRenderer.parameterNames;
 
-    constructor(signal, fn, element, name, parameters) {
-        super(signal, fn, element, name, parameters);
+    constructor(signal, fn, parameters, element, name) {
+        super(signal, fn, parameters, element, name);
 
         // Renderer properties
-        this.list   = getTokenList(name, element);
+        this.list   = element[this.property];
         this.tokens = nothing;
     }
 

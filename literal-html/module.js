@@ -10,7 +10,7 @@ import noop             from '../../fn/modules/noop.js';
 import Signal           from '../../fn/modules/signal.js';
 import element, { getInternals as Internals } from '../../dom/modules/element.js';
 import requestData      from '../modules/request-data.js';
-import LiteralTemplate from '../modules/literal-template.js';
+import Template from '../modules/template.js';
 import print            from '../modules/scope/print.js';
 
 const assign  = Object.assign;
@@ -56,7 +56,7 @@ export default element('<template is="literal-html">', {
         internals.pushed      = false;
         internals.data        = Signal.of();
 internals.data.id = 'literal-html data';
-        internals.renderer    = new LiteralTemplate(this, this.parentElement);
+        internals.renderer    = new Template(this, this.parentElement);
         window.rndr = internals.renderer;
     },
 

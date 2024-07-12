@@ -23,10 +23,6 @@ data.value = (${ this.renderCount }) ${ data.value }
 data.value = (${ this.renderCount }) ${ data.value }
         </pre>
     </template>
-
-    <template id="template-3">
-        <h3>#template-3</h3>
-    </template>
 </head>
 
 <body>
@@ -42,7 +38,7 @@ data.value = (${ this.renderCount }) ${ data.value }
     </template>
 
     <hr/>
-    <template is="literal-html" data-state="1" data-value="Hello" data-n="1">
+    <template is="literal-html" data-state="1" data-value="Hello" data-template="1">
         <h2>is="literal-html"</h2>
         <p>Render counts in (brackets).</p>
         ${ window.data = data, '' }
@@ -51,8 +47,20 @@ data.value = (${ this.renderCount }) ${ data.value }
         <pre>data.state = (${ this.renderCount }) ${ data.state }</pre>
         <pre>data.value = (${ this.renderCount }) ${ data.value }</pre>
         (${ this.renderCount })
-        ${ include('#template-' + data.n, data) }
+        ${ include('#template-' + data.template, data) }
         ${ include('#template-2', data) }
+    </template>
+
+    <hr/>
+    <template is="literal-html" data-value="Hello World">
+        <h2>is="literal-html"</h2>
+        <p>Tests whether <code>data.value</code> is rendered into the correct
+        text node (referenced by childNodes index in compiled template) following
+        <code>include()</code> of multiple other nodes.</p>
+        ${ window.data = data, '' }
+        ${ include('#template-1', data) }
+        <p>An intervening paragraph.</p>
+        ${ data.value }
     </template>
 
     <hr/>
