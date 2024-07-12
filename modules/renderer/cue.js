@@ -46,7 +46,7 @@ function render(renderers) {
         );
 
         if (t1 - t0 > 0.016666667) {
-            log('render took longer than a frame (16.6667ms) ' + ((t1 - t0) * 1000).toPrecision(3) + 'ms', '', '', '', '#ba4029');
+            log('render took longer than a frame (16.67ms) ' + ((t1 - t0) * 1000).toPrecision(3) + 'ms', '', '', '', '#ba4029');
         }
     }
 

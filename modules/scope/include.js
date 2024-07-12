@@ -39,7 +39,7 @@ function pipe(template, data, element, parameters, options) {
 
 export default function include(src, data, element, parameters, options) {
     // Operate on target to be sure we are not registering gets in
-    // parent renderer
+    // parent renderer's signal
     const object = Data.objectOf(data);
 
     // If template is in document, src is its id

@@ -193,14 +193,17 @@ export default class TextRenderer extends Renderer {
 
         super(signal, fn, params, element);
         this.contents = [];
-        this.first    = node;
-        this.last     = node.nextSibling;
+
+        // Handily (deliberately), node.nextSibling is a text node left here
+        // by the compile step to be used as this.last
+        // TODO: Use node range instead?
+        // https://developer.mozilla.org/en-US/docs/Web/API/Range
+        this.first = node;
+        this.last  = node.nextSibling;
     }
 
     update() {
-        // Stop all nodes, they are about to be recreated. This needs to be done
-        // here as well as in push, as update may be called by Template
-        // without going through .push() cueing first. (??)
+        // Stop all nodes, they are about to be recreated.
         this.contents.forEach(stop);
         this.contents.length = 0;
         return super.update.call(this);
