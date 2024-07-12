@@ -7,3 +7,4 @@ export { px, em, rem, vw, vh    } from '../../../dom/modules/parse-length.js';
 export { default as validate    } from '../../../dom/modules/validate.js';
 export { default as navigate    } from '../../../dom/modules/navigate.js';
 export { default as paramify    } from './paramify.js';
+export { default as style       } from './style.js';
