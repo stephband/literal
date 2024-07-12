@@ -10,6 +10,7 @@ export { default as set         } from '../../../fn/modules/set-path.js';
 export { default as slugify     } from '../../../fn/modules/slugify.js';
 export { default as normalise   } from '../../../fn/modules/normalise.js';
 export { default as denormalise } from '../../../fn/modules/denormalise.js';
+export { default as stash       } from './stash.js';
 
 //const library = {
 
