@@ -8,11 +8,6 @@ import TokensRenderer      from './renderer/renderer-tokens.js';
 import ValueRenderer       from './renderer/renderer-value.js';
 import TextRenderer        from './renderer/renderer-text.js';
 
-
-function throwError(message, element, n) {
-    throw new Error(message);
-}
-
 Renderer.create = function create(signal, fn, parameters, element, n) {
     const name = typeof n === 'string' && (names[n] || n) ;
 

@@ -153,6 +153,8 @@ export default class Template {
             this.content.childNodes[name] :
         name;
 
+        // Parameters for Renderer.create():
+        // signal, fn, parameters, element, nameOrNode
         return [this.#data, fn, this.parameters, element, n];
     }
 
@@ -163,29 +165,11 @@ export default class Template {
     }
 
     push(object) {
-        if (this.status === 'done') {
-            throw new Error('Renderer is done, cannot .push() data');
-        }
-
-        //const data = Data.of(object) || object;
-
-        // Dedup
-        //if (this.data === data) { return; }
-        //this.data = data;
+        if (this.status === 'done') throw new Error('Renderer is done, cannot .push() data');
 
         // Causes renderers to .invalidate() because they are dependent on
         // this.#data
-        this.#data.value = Data(object);
-
-        // Do we actually need to cue? I mean, the push on each child renderer
-        // is cue()d so why do we need to do it here?
-        //
-        // Well, at the moment we need to do it here because in update()
-        // children are appended to the DOM synchronously around line 230. And
-        // perhaps this is for the best: why cue multiple renderers when you can
-        // cue just this one, after all? Hmmm.
-        //cue(this);
-        // Nah lets not cue here ...
+        this.#data.value = Data.of(object);
         this.update();
     }
 
