@@ -55,9 +55,7 @@ export default element('<template is="literal-html">', {
         internals.initialised = false;
         internals.pushed      = false;
         internals.data        = Signal.of();
-internals.data.id = 'literal-html data';
         internals.renderer    = new Template(this, this.parentElement);
-        window.rndr = internals.renderer;
     },
 
     connect: function(shadow) {
@@ -79,7 +77,7 @@ internals.data.id = 'literal-html data';
                 internals.pushed = true;
                 this.replaceWith(renderer.content);
             }
-        }).id = 'literal-html observer'
+        });
 
         // If src or data was not set use data found in dataset
         if (!internals.promise && !internals.pushed) {

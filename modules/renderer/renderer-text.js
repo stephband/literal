@@ -99,7 +99,7 @@ function updateDOM(stats, first, last, objects) {
             throw new Error('`last` is not after `first`, first: ' + iFirst + ' last: ' + iLast);
         }
     }
-
+//console.log('TextRenderer updateDOM', objects);
     //console.log(0, 'updateDOM', first.textContent, last.textContent, objects, nLast);
     const nLast = objects.length - 1;
 
@@ -123,13 +123,14 @@ function updateDOM(stats, first, last, objects) {
             else {
                 node.before(object);
                 ++stats.add;
- //console.log('add', typeof object, object);
+//console.log('add', typeof object, object);
             }
             continue;
         }
 
         // Is object a Template with nodes already in this DOM
         if (object instanceof Template && (node === object.first || node === object.last)) {
+//console.log('Skip nodes handled by Template');
             // Skip over nodes handled by the renderer
             node = object.last.nextSibling;
             continue;
@@ -144,24 +145,25 @@ function updateDOM(stats, first, last, objects) {
 
         // Remove template or node from wherever it currently is
         if (object.remove) {
+//console.log('Remove object', object);
             stats.remove += (object.remove() || 0);
- //console.log('remove', object);
         }
 
         // And put it here
         const content = toContent(object);
         node.before(content);
         ++stats.add;
- //console.log('add', 'content', content);
+//console.log('add', 'content', content);
     }
 
     // Remove unused nodes up to last
     while (node !== last) {
+// Ahaaaa... we want to stop any streams here, if we are removing a stream
+//console.log('Remove unused', typeof node, node);
         const nd = node;
         node = node.nextSibling;
         nd.remove();
         ++stats.remove;
- //console.log('remove', nd);
     }
 
     // Render last object. Where objects is less than 1 item long empty `last`,
@@ -169,6 +171,12 @@ function updateDOM(stats, first, last, objects) {
     stats.text += setNodeValue(last, nLast < 1 ? null : objects[nLast]);
     return stats;
 }
+
+/**
+TextRenderer()
+Renders a text node. Text node literals may evaluate to DOM nodes or fragments,
+template renderers, or strings.
+**/
 
 export default class TextRenderer extends Renderer {
     static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow', 'include', 'print'];
@@ -202,20 +210,15 @@ export default class TextRenderer extends Renderer {
         this.last  = node.nextSibling;
 
         // A synchronous evaluation while data signal value is undefined binds
-        // this renderer to changes to that signal. If signal value is an `data`
-        // object it renders the renderer immediately.
+        // this renderer to changes to that signal. If signal value is a `data`
+        // object evaluation renders the renderer immediately.
         Signal.evaluate(this, this.evaluate);
-    }
-
-    update() {
-        // Stop all nodes, they are about to be recreated.
-        this.contents.forEach(stop);
-        this.contents.length = 0;
-        return super.update.call(this);
     }
 
     render(strings) {
         let n = 0;
+
+        this.contents.forEach(stop);
         this.contents.length = 0;
         this.contents.push(strings[n]);
 

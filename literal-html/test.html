@@ -12,32 +12,28 @@
 
     <template id="template-1">
         <h3>#template-1</h3>
-        <pre>
-data.value = (${ this.renderCount }) ${ data.value }
-        </pre>
+        <pre>(${ this.renderCount }) data.value = ${ data.value }</pre>
     </template>
 
     <template id="template-2">
         <h3>#template-2</h3>
-        <pre>
-data.value = (${ this.renderCount }) ${ data.value }
-        </pre>
+        <pre>(${ this.renderCount }) data.value = ${ data.value }</pre>
     </template>
 </head>
 
 <body>
     <h1>Test</h1>
 
-    <hr/>
+    <!--hr/>
     <template is="literal-html" data-state="1" data-value="Hello">
         <h2>is="literal-html"</h2>
         <p hidden="${ data.state }">Render counts in (brackets).</p>
         <p title="${ data.state }" class="${ data.state }">${ window.data = data, data.state } (${ this.renderCount })</p>
         ${ window.data = data, include('#template-1', data) }
         ${ include('#template-2', data) }
-    </template>
+    </template-->
 
-    <hr/>
+    <!--hr/>
     <template is="literal-html" data-state="1" data-value="Hello" data-template="1">
         <h2>is="literal-html"</h2>
         <p>Render counts in (brackets).</p>
@@ -49,9 +45,22 @@ data.value = (${ this.renderCount }) ${ data.value }
         (${ this.renderCount })
         ${ include('#template-' + data.template, data) }
         ${ include('#template-2', data) }
-    </template>
+    </template-->
 
     <hr/>
+    <template is="literal-html" data-plonk="1" data-value="Hello" data-template="1">
+        <h2>is="literal-html"</h2>
+        <p>Asynchronous include(). Render counts in (brackets).</p>
+        <pre>(${ window.data = data, this.renderCount }) data.value = ${ data.value }</pre>
+        (${ this.renderCount }) data.plonk = ${ data.plonk }
+        ${
+            events('click', element)
+            .log('click')
+            .map((e) => include('#template-' + ((++data.template) % 2 + 1), data))
+        }
+    </template>
+
+    <!--hr/>
     <template is="literal-html" data-value="Hello World">
         <h2>is="literal-html"</h2>
         <p>Tests whether <code>data.value</code> is rendered into the correct

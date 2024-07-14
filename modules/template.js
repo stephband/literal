@@ -218,6 +218,7 @@ export default class Template {
     fragment at `renderer.content`.
     **/
     remove() {
+console.log('Template.remove()');
         // Can't remove if we're already removed
         if (this.content.lastChild === this.last) {
             return 0;
@@ -235,6 +236,7 @@ export default class Template {
     Removes rendered content from the DOM and inserts arguments in its place.
     **/
     replaceWith() {
+console.log('Template.replaceWith()');
         // Can't replace if we're removed
         if (this.content.lastChild === this.last) {
             return 0;
