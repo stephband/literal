@@ -25,8 +25,8 @@ import requestTemplate from '../request-template.js';
 import requestData     from '../request-data.js';
 
 function push(template, data, element, parameters, options) {
-    const renderer = new Template(template, element, parameters, options);
-    renderer.push(data);
+    const renderer = new Template(template, element, parameters, data, options);
+    //renderer.push(data);
     return renderer;
 }
 

@@ -1,6 +1,7 @@
 
 import id                from '../../../fn/modules/id.js';
 import overload          from '../../../fn/modules/overload.js';
+import Signal            from '../../../fn/modules/signal.js';
 import toText            from './to-text.js';
 import AttributeRenderer from './renderer-attribute.js';
 import { stats }         from './renderer.js';
@@ -50,6 +51,11 @@ export default class TokensRenderer extends AttributeRenderer {
         // Renderer properties
         this.list   = element[this.property];
         this.tokens = nothing;
+
+        // A synchronous evaluation while data signal value is undefined binds
+        // this renderer to changes to that signal. If signal value is an `data`
+        // object it renders the renderer immediately.
+        Signal.evaluate(this, this.evaluate);
     }
 
     render(strings) {

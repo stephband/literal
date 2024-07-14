@@ -146,16 +146,9 @@ export default class Renderer {
 
         // Track the number of renderers created
         if (window.DEBUG) { ++Renderer.count; }
-
-        // A synchronous evaluation while signal value is undefined binds this
-        // renderer to changes to the data object. The signal must be empty
-        // during construction, and be given value later. (Otherwise, this will
-        // have to be moved to the bottom of each constructor so the renderers
-        // are fully ready.)
-        Signal.evaluate(this, this.#evaluate);
     }
 
-    #evaluate() {
+    evaluate() {
         // Bind this renderer to current data
         const data = this.#data.value;
 
@@ -187,7 +180,7 @@ export default class Renderer {
             try {
                 ++this.renderCount;
                 // Evaluation causes DOM render
-                Signal.evaluate(this, this.#evaluate);
+                Signal.evaluate(this, this.evaluate);
             }
             catch(e) {
                 // TODO: add template id to error message
@@ -197,7 +190,7 @@ export default class Renderer {
         }
         else {
             ++this.renderCount;
-            Signal.evaluate(this, this.#evaluate);
+            Signal.evaluate(this, this.evaluate);
         }
 
         this.status = this.status === 'rendering' ? 'idle' : this.status ;

@@ -112,7 +112,7 @@ export default class Template {
     // Data signal
     #data;
 
-    constructor(template, parent = template.parentElement, parameters = {}, options = defaults) {
+    constructor(template, parent = template.parentElement, parameters = {}, data, options = defaults) {
         // A literal template may be created from inside a TextRenderer via
         // ${ include(...) } and for this reason we must avoid accessing any
         // signals outside of a Signal.evaluate(), or they are registered as
@@ -132,7 +132,7 @@ export default class Template {
         this.parameters = parameters;
         this.first      = content.childNodes[0];
         this.last       = content.childNodes[content.childNodes.length - 1];
-        this.#data      = Signal.of();
+        this.#data      = Signal.of(data);
         this.contents   = compiled.targets
             // We must find targets in cloned content
             .map(this.#toRendererParams, this)

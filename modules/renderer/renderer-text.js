@@ -200,6 +200,11 @@ export default class TextRenderer extends Renderer {
         // https://developer.mozilla.org/en-US/docs/Web/API/Range
         this.first = node;
         this.last  = node.nextSibling;
+
+        // A synchronous evaluation while data signal value is undefined binds
+        // this renderer to changes to that signal. If signal value is an `data`
+        // object it renders the renderer immediately.
+        Signal.evaluate(this, this.evaluate);
     }
 
     update() {

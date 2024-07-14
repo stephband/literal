@@ -1,6 +1,7 @@
 
 import id                from '../../../fn/modules/id.js';
 import isDefined         from '../../../fn/modules/is-defined.js';
+import Signal            from '../../../fn/modules/signal.js';
 import trigger           from '../../../dom/modules/trigger.js';
 import config            from '../config.js';
 import bindChecked       from '../scope/bind-checked.js';
@@ -58,6 +59,11 @@ export default class CheckedRenderer extends AttributeRenderer {
 
         // Flag whether element has a value attribute
         this.hasValue = isDefined(element.getAttribute('value'));
+
+        // A synchronous evaluation while data signal value is undefined binds
+        // this renderer to changes to that signal. If signal value is an `data`
+        // object it renders the renderer immediately.
+        Signal.evaluate(this, this.evaluate);
     }
 
 /*

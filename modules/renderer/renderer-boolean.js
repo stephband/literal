@@ -1,3 +1,5 @@
+
+import Signal            from '../../../fn/modules/signal.js';
 import composeBoolean    from './compose-boolean.js';
 import AttributeRenderer from './renderer-attribute.js';
 import { stats }         from './renderer.js';
@@ -30,6 +32,16 @@ function setBooleanAttribute(node, name, value) {
 
 export default class BooleanRenderer extends AttributeRenderer {
     static parameterNames = AttributeRenderer.parameterNames;
+
+    /* Only needed to evaluate */
+    constructor(signal, fn, parameters, element, name) {
+        super(signal, fn, parameters, element, name);
+
+        // A synchronous evaluation while data signal value is undefined binds
+        // this renderer to changes to that signal. If signal value is an `data`
+        // object it renders the renderer immediately.
+        Signal.evaluate(this, this.evaluate);
+    }
 
     render(strings) {
         const value = composeBoolean(arguments);
