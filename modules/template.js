@@ -132,7 +132,7 @@ export default class Template {
         this.parameters = parameters;
         this.first      = content.childNodes[0];
         this.last       = content.childNodes[content.childNodes.length - 1];
-        this.#data      = Signal.of(data);
+        this.#data      = Signal.of(Data.of(data));
         this.contents   = compiled.targets
             // We must find targets in cloned content
             .map(this.#toRendererParams, this)

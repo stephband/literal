@@ -19,16 +19,10 @@ ${ data.array.map(include('#list-item')) }
 **/
 
 import Data            from '../../../fn/modules/signal-data.js';
-import Template from '../template.js';
 import getById         from '../dom/get-by-id.js';
+import Template        from '../template.js';
 import requestTemplate from '../request-template.js';
 import requestData     from '../request-data.js';
-
-function push(template, data, element, parameters, options) {
-    const renderer = new Template(template, element, parameters, data, options);
-    //renderer.push(data);
-    return renderer;
-}
 
 function pipe(template, data, element, parameters, options) {
     const renderer = new Template(template, element, parameters, options);
@@ -51,7 +45,7 @@ export default function include(src, data, element, parameters, options) {
 
         // Support JSON or module URLs
         if (dataRequest) {
-            return dataRequest.then((data) => push(template, data, element, parameters, options));
+            return dataRequest.then((data) => new Template(template, element, parameters, data, options));
         }
 
         // Support a stream of data
@@ -60,7 +54,7 @@ export default function include(src, data, element, parameters, options) {
         }
 
         // Support object or ... ?
-        return push(template, object || {}, element, parameters, options);
+        return new Template(template, element, parameters, object, options);
     }
 
     // Template is external to document
@@ -78,7 +72,7 @@ export default function include(src, data, element, parameters, options) {
 
     return Promise
     .all([templateRequest, dataRequest])
-    .then(([template, data]) => push(template, data, element, parameters));
+    .then(([template, data]) => new Template(template, element, parameters, data, options));
 }
 
 

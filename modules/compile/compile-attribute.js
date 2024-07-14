@@ -58,8 +58,7 @@ export default function compileAttribute(array, element, attribute, path, messag
         message = truncate(64, '<'
             + element.tagName.toLowerCase() + ' '
             + name + '="' + source
-            + '">')
-            + ' (' + message + ')' ;
+            + '">') ;
     }
 
     // We need the Renderer here just to get .parameterNames. This is a bit

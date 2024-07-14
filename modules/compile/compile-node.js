@@ -138,12 +138,12 @@ const compileNode = overload((targets, node) => toType(node), {
 
         const source = decode(string);
         if (window.DEBUG) {
-            const parent = node.parentElement || { tagName: 'template' };
-            message = truncate(64, '<'
-                + parent.tagName.toLowerCase() + '>'
-                + source.trim()
-                + '</' + parent.tagName.toLowerCase() + '>')
-                + ' (' + message + ')' ;
+            const parent = node.parentElement;
+            const tag = parent && parent.tagName.toLowerCase();
+            message = truncate(64, tag ?
+                '<' + tag + '>' + source.trim() + '</' + tag + '>' :
+                source.trim()
+            );
         }
 
         //targets.push(new TextRenderer(path, indexOf(node), source, message, options, node));
