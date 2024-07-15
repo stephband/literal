@@ -66,9 +66,7 @@ function isMarkerNode(node) {
     // Markers should be spaces-only else we risk unrendered content being
     // inserted into the DOM. If it's not a text node, it's not a marker
     // node because it could contain something that contains unrendered code.
-    if (!isTextNode(node)) {
-        return false;
-    }
+    if (!isTextNode(node)) return false;
 
     const text  = node.nodeValue;
     const space = /^\s*/.exec(text);
@@ -168,16 +166,12 @@ export default class Template {
         if (this.status === 'done') throw new Error('Renderer is done, cannot .push() data');
 
         // Causes renderers to .invalidate() because they are dependent on
-        // this.#data
+        // this.#data signal
         this.#data.value = Data.of(object);
-        this.update();
-    }
 
-    update = overload(function() {
-        return '';
-    }, {
-        null: function() {
-            // Remove all but the last node to the renderer's content fragment
+        // If object is null remove all but the last node to the renderer's
+        // content fragment
+        if (object === null) {
             nodes.length = 0;
             let node = this.first;
 
@@ -188,29 +182,19 @@ export default class Template {
 
             this.content.prepend.apply(this.content, nodes);
             stats.remove += nodes.length;
-        },
-
-        default: function() {
-            /*//console.log(this.constructor.name + (this.id ? '#' + this.id : '') + '.render()');
-            const data = this.data;
-
-            // Render the contents (synchronously)
-            this.contents.forEach((renderer) => {
-                renderer.data = data;
-                renderer.update();
-            });*/
-
-            // If this.last is not in the content fragment, it must be in the
-            // parent DOM being used as a marker. It's time for its freshly
-            // rendered brethren to join it.
-            if (this.content.lastChild && this.last !== this.content.lastChild) {
-                this.last.before(this.content);
-                stats.add += 1;
-            }
-
             return this;
         }
-    });
+
+        // If there is a content in the content fragment and this.last is not in
+        // the content fragment, it must be in the parent DOM being used as a
+        // marker. It's time for its freshly rendered brethren to join it.
+        if (this.content.lastChild && this.last !== this.content.lastChild) {
+            this.last.before(this.content);
+            stats.add += 1;
+        }
+
+        return this;
+    }
 
     /**
     .remove()
