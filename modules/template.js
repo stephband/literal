@@ -113,10 +113,10 @@ export default class Template {
     #data;
 
     constructor(template, parent = template.parentElement, parameters = {}, data, options = defaults) {
-        // A literal template may be created from inside a TextRenderer via
-        // ${ include(...) } and for this reason we must avoid accessing any
-        // signals outside of a Signal.evaluate(), or they are registered as
-        // dependents of the TextRenderer.
+        // A literal template may be created from inside a TextRenderer render
+        // evaluation via ${ include(...) } and for this reason we must avoid
+        // accessing any signals outside of a Signal.evaluate(), or they are
+        // registered as dependents of the TextRenderer.
 
         const id = identify(template) ;
 
@@ -218,7 +218,7 @@ export default class Template {
     fragment at `renderer.content`.
     **/
     remove() {
-console.log('Template.remove()');
+//console.log('Template.remove()');
         // Can't remove if we're already removed
         if (this.content.lastChild === this.last) {
             return 0;
@@ -236,7 +236,7 @@ console.log('Template.remove()');
     Removes rendered content from the DOM and inserts arguments in its place.
     **/
     replaceWith() {
-console.log('Template.replaceWith()');
+//console.log('Template.replaceWith()');
         // Can't replace if we're removed
         if (this.content.lastChild === this.last) {
             return 0;

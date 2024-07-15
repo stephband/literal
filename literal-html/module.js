@@ -66,7 +66,7 @@ export default element('<template is="literal-html">', {
         internals.initialised = true;
 
         // Compute signal listens to changs
-        internals.data.observe(() => {
+        Signal.observe(internals.data, () => {
             const { data, renderer } = internals;
 
             if (!data.value) return;

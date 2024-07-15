@@ -1,6 +1,6 @@
 
 import { remove }       from '../../../fn/modules/remove.js';
-import Signal, { ObserverSignal } from '../../../fn/modules/signal.js';
+import Signal, { ObserveSignal } from '../../../fn/modules/signal.js';
 import Data             from '../../../fn/modules/signal-data.js';
 import scope            from '../scope.js';
 import { cue, uncue }   from './cue.js';
@@ -116,9 +116,18 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
 
     // If the isRender flag is set, send to render
     if (isRender) {
-        // Todo: work out a way of cueing this render
+        // Todo: work out a way of cueing this render??
         renderer.render.apply(renderer, args);
     }
+}
+
+
+function renderExpressionValue(value) {
+    if (typeof value !== 'object') { return value; }
+
+    if (value.then) { return Signal.from(value); }
+    if (value.stop) {}
+    if (value.each) {}
 }
 
 
@@ -153,12 +162,13 @@ export default class Renderer {
         const data = this.#data.value;
 
         if (!data) return;
-        const parameters = this.parameters;
 
+        const parameters = this.parameters;
         parameters[0] = Data.of(data);
         parameters[1] = Data.objectOf(data);
         parameters[2] = this.element;
 
+        ++this.renderCount;
         return this.fn.apply(this, parameters);
     }
 
@@ -178,7 +188,6 @@ export default class Renderer {
 
         if (window.DEBUG) {
             try {
-                ++this.renderCount;
                 // Evaluation causes DOM render
                 Signal.evaluate(this, this.evaluate);
             }
@@ -189,7 +198,6 @@ export default class Renderer {
             }
         }
         else {
-            ++this.renderCount;
             Signal.evaluate(this, this.evaluate);
         }
 
@@ -223,7 +231,7 @@ export default class Renderer {
         if (this.status === 'done') return this;
 
         // Sets status
-        ObserverSignal.prototype.stop.apply(this);
+        ObserveSignal.prototype.stop.apply(this);
 
         uncue(this);
         stopPromises(this.promises);

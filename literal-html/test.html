@@ -24,28 +24,28 @@
 <body>
     <h1>Test</h1>
 
-    <!--hr/>
+    <hr/>
     <template is="literal-html" data-state="1" data-value="Hello">
         <h2>is="literal-html"</h2>
         <p hidden="${ data.state }">Render counts in (brackets).</p>
-        <p title="${ data.state }" class="${ data.state }">${ window.data = data, data.state } (${ this.renderCount })</p>
+        <p title="${ data.state }" class="${ data.state }">(${ this.renderCount }) ${ window.data = data, data.state }</p>
         ${ window.data = data, include('#template-1', data) }
         ${ include('#template-2', data) }
-    </template-->
+    </template>
 
-    <!--hr/>
+    <hr/>
     <template is="literal-html" data-state="1" data-value="Hello" data-template="1">
         <h2>is="literal-html"</h2>
         <p>Render counts in (brackets).</p>
         ${ window.data = data, '' }
         <p class="${ 'hello world' }">${ 'Hello world' }</p>
-        <pre>data = (${ this.renderCount }) ${ data }</pre>
-        <pre>data.state = (${ this.renderCount }) ${ data.state }</pre>
-        <pre>data.value = (${ this.renderCount }) ${ data.value }</pre>
+        <pre>(${ this.renderCount }) data = ${ data }</pre>
+        <pre>(${ this.renderCount }) data.state = ${ data.state }</pre>
+        <pre>(${ this.renderCount }) data.value = ${ data.value }</pre>
         (${ this.renderCount })
         ${ include('#template-' + data.template, data) }
         ${ include('#template-2', data) }
-    </template-->
+    </template>
 
     <hr/>
     <template is="literal-html" data-plonk="1" data-value="Hello" data-template="1">
@@ -60,7 +60,7 @@
         }
     </template>
 
-    <!--hr/>
+    <hr/>
     <template is="literal-html" data-value="Hello World">
         <h2>is="literal-html"</h2>
         <p>Tests whether <code>data.value</code> is rendered into the correct
@@ -73,20 +73,19 @@
     </template>
 
     <hr/>
-    <!--template is="literal-html" data-default="2" data-value="Hello">
-        <h2>Literal template</h2>
+    <template is="literal-html" data-default="2" data-value="Hello">
+        <h2>is="literal-html"</h2>
         <input class="masked" type="radio" name="test-2" value="1" id="test-2-value-1" checked="$ { data.default == element.value }" />
         <label class="black-pill-button pill-button button register-btn log-in-btn" for="test-2-value-1">1</label>
         <input class="masked" type="radio" name="test-2" value="2" id="test-2-value-2" checked="$ { data.default == element.value }" />
         <label class="black-pill-button pill-button button register-btn log-in-btn" for="test-2-value-2">2</label>
         ${
             events({ type: 'change', select: '[name="test-2"]' }, element)
-            .map((e) => (console.log('CHANGE'), data.default = e.target.value)),
-            'EVENTS'
+            .map((e) => (console.log('CHANGE'), data.default = e.target.value))
         }
 
         ${ include('#template-' + data.default, data) }
-    </template-->
+    </template>
 
     <script type="module">
     import '../scope.js';
