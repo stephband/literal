@@ -187,15 +187,9 @@ export default class TextRenderer extends Renderer {
             if (!isTextNode(node.nextSibling)) throw new Error('TextRenderer() node.nextSibling not a text node');
         }
 
+        // Parameters added to text renderer
         const params = assign({}, parameters, {
-            include(url, data) {
-                return arguments.length === 1 ?
-                    // Partial application if called with url only
-                    (data) => include(url, data, element, parameters) :
-                    // Include immediately when data is defined
-                    include(url, data, element, parameters);
-            },
-
+            include: (url, data) => this.include(url, data),
             print: (...args) => print(this, ...args)
         });
 
@@ -213,6 +207,14 @@ export default class TextRenderer extends Renderer {
         // this renderer to changes to that signal. If signal value is a `data`
         // object evaluation renders the renderer immediately.
         Signal.evaluate(this, this.evaluate);
+    }
+
+    include(url, data) {
+        // Partially applicable
+        if (arguments.length === 1) return (data) => this.include(url, data);
+
+        //console.log(include);
+        return include(url, data, this.element, this.parameters);
     }
 
     render(strings) {
