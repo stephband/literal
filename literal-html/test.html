@@ -22,7 +22,26 @@
 
     <template id="template-3">
         <h3>#template-3</h3>
-        <pre>(${ this.renderCount }) data.value = ${ data.cause.an.error }</pre>
+        <p>Causes a compile error in some text.</p>
+        <pre>${ cause a compile error }</pre>
+    </template>
+
+    <template id="template-4">
+        <h3>#template-4</h3>
+        <p>Causes a compile error in an attribute.</p>
+        <pre class="${ cause a compile error }"></pre>
+    </template>
+
+    <template id="template-5">
+        <h3>#template-5</h3>
+        <p>Causes a render error in some text.</p>
+        <pre>${ data.cause.a.render.error }</pre>
+    </template>
+
+    <template id="template-6">
+        <h3>#template-6</h3>
+        <p>Causes a render error in an attribute.</p>
+        <pre class="${ data.cause.a.render.error }"></pre>
     </template>
 </head>
 

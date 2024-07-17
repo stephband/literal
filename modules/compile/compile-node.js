@@ -1,17 +1,17 @@
 
-import id                from '../../../fn/modules/id.js';
-import overload          from '../../../fn/modules/overload.js';
-import toType            from '../../../dom/modules/to-type.js';
-import decode            from '../../../dom/modules/decode.js';
-import indexOf           from '../dom/index-of.js';
-import TextRenderer      from '../renderer/renderer-text.js';
-import scope             from '../scope.js';
-import compile           from './compile.js';
-import { pathSeparator } from './constants.js';
-import isLiteralString   from './is-literal-string.js';
-import truncate          from './truncate.js';
-import compileAttribute  from './compile-attribute.js';
-
+import id                   from '../../../fn/modules/id.js';
+import overload             from '../../../fn/modules/overload.js';
+import toType               from '../../../dom/modules/to-type.js';
+import decode               from '../../../dom/modules/decode.js';
+import indexOf              from '../dom/index-of.js';
+import TextRenderer         from '../renderer/renderer-text.js';
+import { printRenderError } from '../scope/print.js';
+import scope                from '../scope.js';
+import compile              from './compile.js';
+import { pathSeparator }    from './constants.js';
+import isLiteralString      from './is-literal-string.js';
+import truncate             from './truncate.js';
+import compileAttribute     from './compile-attribute.js';
 
 
 const assign = Object.assign;
@@ -132,29 +132,41 @@ const compileNode = overload((targets, node) => toType(node), {
 
     'text': (targets, node, path, options, debug) => {
         const string = node.nodeValue;
-        if (!isLiteralString(string)) {
-            return targets;
-        }
+        if (!isLiteralString(string)) return targets;
 
         const source = decode(string);
-        let message = '';
+        const target = {
+            source,
+            path,
+            name: indexOf(node)
+        };
+
         if (window.DEBUG) {
             const parent = node.parentElement;
             const tag = parent && parent.tagName.toLowerCase();
-            message = truncate(64, tag ?
+            const message = truncate(64, tag ?
                 '<' + tag + '>' + source.trim() + '</' + tag + '>' :
                 source.trim()
             );
+
+            // Fill target object with debug info
+            assign(target, debug, { tag, message });
+
+            // Attempt to compile, and in case of an error replace node with
+            // an error element
+            try {
+                target.literal = compile(source, scope, TextRenderer.parameterNames.join(', '), message, options);
+            }
+            catch(error) {
+                node.parentNode.replaceWith(printRenderError(error, target));
+                return targets;
+            }
+        }
+        else {
+            target.literal = compile(source, scope, TextRenderer.parameterNames.join(', '), '', options);
         }
 
-        targets.push({
-            literal: compile(source, scope, TextRenderer.parameterNames.join(', '), message, options),
-            source,
-            path,
-            name: indexOf(node),
-            template: debug.template,
-            message
-        });
+        targets.push(target);
 
         // Insert text node. When renderer is created with cloned DOM, clone of
         // `node` is assigned to `renderer.first` and the clone of this new text

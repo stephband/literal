@@ -225,7 +225,6 @@ export default class TextRenderer extends Renderer {
         if (window.DEBUG) {
             try {
                 return super.evaluate();
-                this.fn.apply(this, parameters);
             }
             catch(error) {
                 // Error object, renderer, DATA

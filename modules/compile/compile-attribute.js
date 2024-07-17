@@ -9,6 +9,10 @@ import ValueRenderer     from '../renderer/renderer-value.js';
 import isLiteralString   from './is-literal-string.js';
 import truncate          from './truncate.js';
 import compile           from './compile.js';
+import { printRenderError } from '../scope/print.js';
+
+
+const assign = Object.assign;
 
 
 /**
@@ -21,16 +25,10 @@ export default function compileAttribute(array, element, attribute, path, option
 
     if (!isLiteralString(source)) { return; }
 
-    const message = window.DEBUG ?
-        truncate(64, '<'
-            + element.tagName.toLowerCase() + ' '
-            + name + '="' + source
-            + '">') :
-        '' ;
-
     // We need the Renderer here just to get .parameterNames. This is a bit
     // clunky, but the whole passing parameters to compiled functions thing is,
     // anyway.
+    const target   = { source, path, name };
     const property = names[name] || name;
     const Renderer =
         property === 'value'   ? ValueRenderer :
@@ -39,14 +37,31 @@ export default function compileAttribute(array, element, attribute, path, option
         typeof element[property] === 'object' && element[property].add && element[property].remove ? TokensRenderer :
         AttributeRenderer ;
 
-    array.push({
-        literal: compile(source, scope, Renderer.parameterNames.join(', '), message, options),
-        source,
-        path,
-        name,
-        message,
-        template: debug && debug.template
-    });
+    if (window.DEBUG) {
+        const tag = element.tagName.toLowerCase();
+        const message = truncate(64, '<'
+            + tag + ' '
+            + name + '="' + source
+            + '">') ;
+
+        // Fill target object with debug info
+        assign(target, debug, { tag, message, property });
+
+        // Attempt to compile, and in case of an error replace element with
+        // an error element
+        try {
+            target.literal = compile(source, scope, Renderer.parameterNames.join(', '), message, options);
+        }
+        catch(error) {
+            element.replaceWith(printRenderError(error, target));
+            return array;
+        }
+    }
+    else {
+        target.literal = compile(source, scope, Renderer.parameterNames.join(', '), '', options);
+    }
+
+    array.push(target);
 
     // Avoid errant template literals making booleans default to true, mangling
     // classes, and unnecessarily checking checkboxes. This has been moved here

@@ -14,14 +14,14 @@ Renderer.create = function create(signal, literal, parameters, element, n, debug
     return name ?
         // Return some type of attribute renderer
         name === 'value' ?
-            new ValueRenderer(signal, literal, parameters, element) :
+            new ValueRenderer(signal, literal, parameters, element, n, debug) :
         name === 'checked' ?
-            new CheckedRenderer(signal, literal, parameters, element) :
+            new CheckedRenderer(signal, literal, parameters, element, n, debug) :
         typeof element[name] === 'boolean' ?
-            new BooleanRenderer(signal, literal, parameters, element, n) :
+            new BooleanRenderer(signal, literal, parameters, element, n, debug) :
         typeof element[name] === 'object' && element[name].add && element[name].remove ?
-            new TokensRenderer(signal, literal, parameters, element, n) :
-        new AttributeRenderer(signal, literal, parameters, element, n) :
+            new TokensRenderer(signal, literal, parameters, element, n, debug) :
+        new AttributeRenderer(signal, literal, parameters, element, n, debug) :
     // Assume n is a text node
     new TextRenderer(signal, literal, parameters, element, n, debug) ;
 };

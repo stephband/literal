@@ -59,7 +59,7 @@ export function printRenderError(error, debug, data) {
             + ' <small class="literal-message">' + debug.message.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</small>'
             + '<code>'
             +   '<strong>' + error.constructor.name + '</strong> '
-            +   error.message
+            +   error.message.replace(/</g, '&lt;').replace(/>/g, '&gt;')
             + '</code>'
     });
 

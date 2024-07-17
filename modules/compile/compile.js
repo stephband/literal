@@ -3,6 +3,8 @@ import compileFn  from '../../../fn/modules/compile.js';
 import { log }    from '../log.js';
 import { indent } from './constants.js';
 
+const DEBUG = false;//window.DEBUG;
+
 /**
 compile(source, scope, parameters, message, options)
 Compiles a literal template string to a function.
@@ -42,7 +44,8 @@ export default function compile(source, scope, parameters, message = '', options
     if (compiled[code]) { return compiled[code]; }
 
     // The DEBUG logging version (removed in built files)
-    if (window.DEBUG) {
+    // Error handling has been moved to compile and render steps
+    /*if (DEBUG) {
         try {
             const t0 = window.performance.now();
             const fn = compileFn(scope, parameters, code);
@@ -62,7 +65,7 @@ export default function compile(source, scope, parameters, message = '', options
             e.message += ' in ' + message;
             throw e;
         }
-    }
+    }*/
 
     // The quick version
     return compiled[code] = compileFn(scope, parameters, code);

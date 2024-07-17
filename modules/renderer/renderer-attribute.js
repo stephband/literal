@@ -2,6 +2,8 @@
 import composeString from './compose-string.js';
 import names         from './property-names.js';
 import Renderer, { stats } from './renderer.js';
+import { printRenderError } from '../scope/print.js';
+
 
 const getDescriptor = Object.getOwnPropertyDescriptor;
 const getPrototype  = Object.getPrototypeOf;
@@ -39,7 +41,7 @@ function setAttribute(node, name, value) {
 export default class AttributeRenderer extends Renderer {
     static parameterNames = Renderer.parameterNames;
 
-    constructor(signal, literal, parameters, element, name) {
+    constructor(signal, literal, parameters, element, name, debug) {
         super(signal, literal, parameters, element);
 
         this.name     = name;
@@ -50,6 +52,25 @@ export default class AttributeRenderer extends Renderer {
             !!names[name] :
             // Otherwise check property descriptor
             name in element && isWritableProperty(name, element) ;
+
+        // Pass a message to printError() for debugging only
+        if (window.DEBUG) this.debug = debug;
+    }
+
+    evaluate() {
+        if (window.DEBUG) {
+            try {
+                return super.evaluate();
+            }
+            catch(error) {
+                // Error object, renderer, DATA
+                const elem = printRenderError(error, this.debug);
+                this.element.replaceWith(elem);
+                return;
+            }
+        }
+
+        return super.evaluate();
     }
 
     render() {

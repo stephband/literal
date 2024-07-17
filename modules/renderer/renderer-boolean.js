@@ -35,8 +35,8 @@ export default class BooleanRenderer extends AttributeRenderer {
     static parameterNames = AttributeRenderer.parameterNames;
 
     /* Only needed to evaluate */
-    constructor(signal, literal, parameters, element, name) {
-        super(signal, literal, parameters, element, name);
+    constructor(signal, literal, parameters, element, name, debug) {
+        super(signal, literal, parameters, element, name, debug);
 
         // A synchronous evaluation while data signal value is undefined binds
         // this renderer to changes to that signal. If signal value is an `data`
