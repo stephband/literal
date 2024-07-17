@@ -61,6 +61,7 @@ export function printRenderError(error, debug, data) {
             +   '<strong>' + error.constructor.name + '</strong> '
             +   error.message.replace(/</g, '&lt;').replace(/>/g, '&gt;')
             + '</code>'
+            + '<a href="https://stephen.band/literal/literal-html/">literal</literal>'
     });
 
     log('error', '#' + debug.template.id + ' – ' + debug.message, '', '', 'red');
