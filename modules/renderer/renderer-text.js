@@ -7,12 +7,13 @@ that DOM after the text node.
 **/
 
 import Signal           from '../../../fn/modules/signal.js';
+import Data             from '../../../fn/modules/signal-data.js';
 import isTextNode       from '../../../dom/modules/is-text-node.js';
 import include          from '../scope/include.js';
 import indexOf          from '../dom/index-of.js';
 import removeNodeRange  from '../dom/remove-node-range.js';
-import Template  from '../template.js';
-import print            from '../scope/print.js';
+import Template         from '../template.js';
+import print, { printRenderError } from '../scope/print.js';
 import toText           from './to-text.js';
 import Renderer, { stats } from './renderer.js';
 
@@ -181,7 +182,7 @@ template renderers, or strings.
 export default class TextRenderer extends Renderer {
     static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow', 'include', 'print'];
 
-    constructor(signal, fn, parameters, element, node) {
+    constructor(signal, fn, parameters, element, node, message) {
         if (window.DEBUG) {
             if (!isTextNode(node))             throw new Error('TextRenderer() node not a text node');
             if (!isTextNode(node.nextSibling)) throw new Error('TextRenderer() node.nextSibling not a text node');
@@ -200,8 +201,11 @@ export default class TextRenderer extends Renderer {
         // by the compile step to be used as this.last
         // TODO: Use node range instead?
         // https://developer.mozilla.org/en-US/docs/Web/API/Range
-        this.first = node;
-        this.last  = node.nextSibling;
+        this.first   = node;
+        this.last    = node.nextSibling;
+
+        // Pass a message to printError() for debugging only
+        this.message = message;
 
         // A synchronous evaluation while data signal value is undefined binds
         // this renderer to changes to that signal. If signal value is a `data`
@@ -215,6 +219,24 @@ export default class TextRenderer extends Renderer {
 
         //console.log(include);
         return include(url, data, this.element, this.parameters);
+    }
+
+    evaluate() {
+        if (window.DEBUG) {
+            try {
+                return super.evaluate();
+                this.fn.apply(this, parameters);
+            }
+            catch(error) {
+                // Error object, renderer, DATA
+                const elem = printRenderError(error, this, this.parameters[1]);
+                this.first.before(elem);
+                removeNodeRange(this.first, this.last);
+                return;
+            }
+        }
+
+        return super.evaluate();
     }
 
     render(strings) {

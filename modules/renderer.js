@@ -8,7 +8,7 @@ import TokensRenderer      from './renderer/renderer-tokens.js';
 import ValueRenderer       from './renderer/renderer-value.js';
 import TextRenderer        from './renderer/renderer-text.js';
 
-Renderer.create = function create(signal, fn, parameters, element, n) {
+Renderer.create = function create(signal, fn, parameters, element, n, message) {
     const name = typeof n === 'string' && (names[n] || n) ;
 
     return name ?
@@ -23,7 +23,7 @@ Renderer.create = function create(signal, fn, parameters, element, n) {
             new TokensRenderer(signal, fn, parameters, element, n) :
         new AttributeRenderer(signal, fn, parameters, element, n) :
     // Assume n is a text node
-    new TextRenderer(signal, fn, parameters, element, n) ;
+    new TextRenderer(signal, fn, parameters, element, n, message) ;
 };
 
 export { stats };

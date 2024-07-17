@@ -183,24 +183,14 @@ export default class Renderer {
     }
 
     update() {
+        // .update() is called by the cue timer
         stopPromises(this.promises);
         this.status = 'rendering';
 
-        if (window.DEBUG) {
-            try {
-                // Evaluation causes DOM render
-                Signal.evaluate(this, this.evaluate);
-            }
-            catch(e) {
-                // TODO: add template id to error message
-                e.message += '\n    in ' + this.message;
-                throw e;
-            }
-        }
-        else {
-            Signal.evaluate(this, this.evaluate);
-        }
+        // Evaluating this as a signal composes the expressions and renders
+        Signal.evaluate(this, this.evaluate);
 
+        // TODO: not certain we actually need status 'rendering' and 'idle'
         this.status = this.status === 'rendering' ? 'idle' : this.status ;
         return this;
     }

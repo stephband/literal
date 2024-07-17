@@ -94,8 +94,7 @@ function prepareContent(content) {
 }
 
 function compileTemplate(template, id, options) {
-    const content = template.content
-        || create('fragment', template.childNodes, template) ;
+    const content = template.content || create('fragment', template.childNodes, template) ;
 
     if (window.DEBUG) { groupCollapsed('compile', '#' + id, 'yellow'); }
     prepareContent(content);
@@ -125,6 +124,7 @@ export default class Template {
 
         const content = compiled.content.cloneNode(true);
 
+        this.templateId = id;
         this.content    = content;
         this.element    = parent;
         this.parameters = parameters;
@@ -139,7 +139,7 @@ export default class Template {
     }
 
     #toRendererParams(target) {
-        const { path, name, fn } = target;
+        const { path, name, fn, message } = target;
 
         // Where `.path` exists find the element at the end of the path
         const element = path ? getElement(path, this.content) : this.element ;
@@ -151,9 +151,17 @@ export default class Template {
             this.content.childNodes[name] :
         name;
 
+        // Path for debug messages in printError()
+        const fullpath = window.DEBUG ?
+            '#' + this.templateId
+            + ' <small>&gt; ' + path + (typeof name === 'string' ? name : '') + '</small>'
+            + '&nbsp;&nbsp;'
+            + ' <small class="literal-message">' + message.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</small>' :
+            '' ;
+
         // Parameters for Renderer.create():
         // signal, fn, parameters, element, nameOrNode
-        return [this.#data, fn, this.parameters, element, n];
+        return [this.#data, fn, this.parameters, element, n, fullpath];
     }
 
     #toRenderer(parameters) {

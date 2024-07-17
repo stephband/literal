@@ -25,8 +25,10 @@ Messages should be styled with the print stylesheet:
 
 **/
 
-import noop from '../../../fn/modules/noop.js';
-import Data from '../../../fn/modules/signal-data.js';
+import noop    from '../../../fn/modules/noop.js';
+import Data    from '../../../fn/modules/signal-data.js';
+import create  from '../../../dom/modules/create.js';
+import { log } from '../log.js';
 
 function toHTML(object) {
     // Print different kinds of objects differently
@@ -35,7 +37,7 @@ function toHTML(object) {
     }
 
     if (typeof object === 'object' && object.message) {
-        return '<code class="red-bg white-fg"><strong>' + object.constructor.name + '</strong> ' + object.message + '</code>';
+        return '<code class="white-fg">' + object.message + '</code>';
     }
 
     if (typeof object === 'object') {
@@ -43,25 +45,52 @@ function toHTML(object) {
     }
 }
 
-export default function print(object) {
-    // Print renderer
-    const pre = document.createElement('pre');
+export function printRenderError(error, renderer, data) {
+    // Extract template id. TODO: Must be a better way to pass these around.
+    log('error', renderer.message.replace(/&nbsp;.*$/, '').replace(/&gt;/g, '>').replace(/<\/?small>/g, ''), '', '', 'red');
+    console.log(error);
+    // TODO: get the data in here!
+    //console.log(data);
+
+    const element = create('pre', {
+        class: 'literal-error',
+        html: renderer.message + '<code>'
+            +'<strong>' + error.constructor.name + '</strong> '
+            + error.message
+            + '</code>'
+    });
+
+    return element;
+}
+
+export function printError(error, renderer) {
+    const element = document.createElement('pre');
     let html = '';
 
-    if (object instanceof Error) {
-        console.error(object);
-        pre.setAttribute('class', 'literal-print-error literal-print');
-        html += '<strong>' + object.constructor.name + '</strong>';
-        html += '<code>' + object.message + '</code>';
-    }
-    else {
-        let n = -1;
-        pre.setAttribute('class', 'literal-print');
-        while (arguments[++n] !== undefined) {
-            html += toHTML(Data.objectOf(arguments[n]));
-        }
+    element.setAttribute('class', 'literal-error');
+    element.innerHTML = '<strong>' + error.constructor.name + '</strong>'
+    + '<code>' + error.message + '</code>' ;
+
+    console.error(error);
+    return element;
+}
+
+export function printDebug(object) {
+    // Print renderer
+    const pre = document.createElement('pre');
+    let n = -1;
+
+    pre.setAttribute('class', 'literal-print');
+    while (arguments[++n] !== undefined) {
+        html += toHTML(Data.objectOf(arguments[n]));
     }
 
     pre.innerHTML = html;
     return pre;
-};
+}
+
+export default function print(object) {
+    return object instanceof Error ?
+        printError(object) :
+        printDebug(object) ;
+}

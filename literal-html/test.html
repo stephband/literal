@@ -4,7 +4,7 @@
     <meta name="description" content="Documentation for Literal. Literal puts JS into your HTML. Literal defines a custom include element that parses and renders templates written as JS Literals, in a small library under 15kB minified and gzipped." />
     <meta name="viewport" content="width=device-width" />
 
-    <!--link rel="stylesheet" href="./module.css" /-->
+    <link rel="stylesheet" href="../module.css" />
 
     <script>
         window.DEBUG = true;
@@ -19,22 +19,27 @@
         <h3>#template-2</h3>
         <pre>(${ this.renderCount }) data.value = ${ data.value }</pre>
     </template>
+
+    <template id="template-3">
+        <h3>#template-3</h3>
+        <pre>(${ this.renderCount }) data.value = ${ data.cause.an.error }</pre>
+    </template>
 </head>
 
 <body>
     <h1>Test</h1>
 
-    <hr/>
+    <!--hr/>
     <template is="literal-html" data-state="1" data-value="Hello">
         <h2>is="literal-html"</h2>
         <p hidden="${ data.state }">Render counts in (brackets).</p>
         <p title="${ data.state }" class="${ data.state }">(${ this.renderCount }) ${ window.data = data, data.state }</p>
         ${ window.data = data, include('#template-1', data) }
         ${ include('#template-2', data) }
-    </template>
+    </template-->
 
     <hr/>
-    <template is="literal-html" data-state="1" data-value="Hello" data-template="1">
+    <template is="literal-html" data-state="1" data-value="Hello" data-template="2">
         <h2>is="literal-html"</h2>
         <p>Render counts in (brackets).</p>
         ${ window.data = data, '' }
@@ -47,10 +52,10 @@
         ${ include('#template-2', data) }
     </template>
 
-    <hr/>
+    <!--hr/>
     <template is="literal-html" data-plonk="1" data-value="Hello" data-template="1">
         <h2>is="literal-html"</h2>
-        <p>Asynchronous include(). Render counts in (brackets).</p>
+        <p>Asynchronous Stream of include()s. Render counts in (brackets).</p>
         <pre>(${ window.data = data, this.renderCount }) data.value = ${ data.value }</pre>
         (${ this.renderCount }) data.plonk = ${ data.plonk }
         ${
@@ -58,9 +63,22 @@
             .log('click')
             .map((e) => include('#template-' + ((++data.template) % 2 + 1), data))
         }
-    </template>
+    </template-->
 
-    <hr/>
+    <!--hr/>
+    <template is="literal-html" data-plonk="1" data-value="Hello" data-template="1">
+        <h2>is="literal-html"</h2>
+        <p>Asynchronous Stream of Promises of include()s. Render counts in (brackets).</p>
+        <pre>(${ window.data = data, this.renderCount }) data.value = ${ data.value }</pre>
+        (${ this.renderCount }) data.plonk = ${ data.plonk }
+        ${
+            events('click', element)
+            .log('click')
+            .map((e) => request().then(include('#template-' + ((++data.template) % 2 + 1), data)))
+        }
+    </template-->
+
+    <!--hr/>
     <template is="literal-html" data-value="Hello World">
         <h2>is="literal-html"</h2>
         <p>Tests whether <code>data.value</code> is rendered into the correct
@@ -85,7 +103,7 @@
         }
 
         ${ include('#template-' + data.default, data) }
-    </template>
+    </template-->
 
     <script type="module">
     import '../scope.js';

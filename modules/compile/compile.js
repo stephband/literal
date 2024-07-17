@@ -17,7 +17,7 @@ export const compiled = {};
 export default function compile(source, scope, parameters, message = '', options = {}) {
     // Hey hey, we are not in 'strict mode' inside compiled functions by default
     // so we CAN use with(), making `${ data.name }` available as simply `${ name }`
-    // in a template... but let's make it opt-in for the moment at least. There
+    // in a template... but let's make it opt-in (for the moment at least). There
     // be dragons:
     //
     // 1. MDN says `with` should be considered deprecated. I really don't see
