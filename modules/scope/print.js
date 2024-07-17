@@ -54,8 +54,8 @@ export function printRenderError(error, debug, data) {
     const element = create('pre', {
         class: 'literal-error',
         html: '#' + debug.template.id
-            + ' <small>&gt; ' + fullpath.replace(/>/g, ' &gt ') + '</small>'
-            + '&nbsp;&nbsp;'
+            //+ ' <small>&gt; ' + fullpath.replace(/>/g, ' &gt ') + '</small>'
+            //+ '&nbsp;&nbsp;'
             + ' <small class="literal-message">' + debug.message.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</small>'
             + '<code>'
             +   '<strong>' + error.constructor.name + '</strong> '

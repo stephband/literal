@@ -10,6 +10,12 @@
         window.DEBUG = true;
     </script>
 
+    <style>
+        body  { columns: 2; column-gap: 2.5rem; margin: 1.25rem; font-family: sans-serif; }
+        .test { display: block; break-inside: avoid; }
+        .test + .test { border-top: 1px solid black; margin-top: 1.5rem; }
+    </style>
+
     <template id="template-1">
         <h3>#template-1</h3>
         <pre>(${ this.renderCount }) data.value = ${ data.value }</pre>
@@ -48,16 +54,17 @@
 <body>
     <h1>Test</h1>
 
-    <!--hr/>
+    <div class="test">
     <template is="literal-html" data-state="1" data-value="Hello">
         <h2>is="literal-html"</h2>
         <p hidden="${ data.state }">Render counts in (brackets).</p>
         <p title="${ data.state }" class="${ data.state }">(${ this.renderCount }) ${ window.data = data, data.state }</p>
         ${ window.data = data, include('#template-1', data) }
         ${ include('#template-2', data) }
-    </template-->
+    </template>
+    </div>
 
-    <hr/>
+    <div class="test">
     <template is="literal-html" data-state="1" data-value="Hello" data-template="2">
         <h2>is="literal-html"</h2>
         <p>Render counts in (brackets).</p>
@@ -70,8 +77,9 @@
         ${ include('#template-' + data.template, data) }
         ${ include('#template-2', data) }
     </template>
+    </div>
 
-    <!--hr/>
+    <div class="test">
     <template is="literal-html" data-plonk="1" data-value="Hello" data-template="1">
         <h2>is="literal-html"</h2>
         <p>Asynchronous Stream of include()s. Render counts in (brackets).</p>
@@ -82,7 +90,8 @@
             .log('click')
             .map((e) => include('#template-' + ((++data.template) % 2 + 1), data))
         }
-    </template-->
+    </template>
+    </div>
 
     <!--hr/>
     <template is="literal-html" data-plonk="1" data-value="Hello" data-template="1">
@@ -97,7 +106,7 @@
         }
     </template-->
 
-    <!--hr/>
+    <div class="test">
     <template is="literal-html" data-value="Hello World">
         <h2>is="literal-html"</h2>
         <p>Tests whether <code>data.value</code> is rendered into the correct
@@ -108,8 +117,9 @@
         <p>An intervening paragraph.</p>
         ${ data.value }
     </template>
+    </div>
 
-    <hr/>
+    <div class="test">
     <template is="literal-html" data-default="2" data-value="Hello">
         <h2>is="literal-html"</h2>
         <input class="masked" type="radio" name="test-2" value="1" id="test-2-value-1" checked="$ { data.default == element.value }" />
@@ -122,7 +132,18 @@
         }
 
         ${ include('#template-' + data.default, data) }
-    </template-->
+    </template>
+    </div>
+
+    <div class="test">
+    <template is="literal-html">
+        <h2>Compile and render errors</h2>
+        ${ include('#template-3', data) }
+        ${ include('#template-4', data) }
+        ${ include('#template-5', data) }
+        ${ include('#template-6', data) }
+    </template>
+    </div>
 
     <script type="module">
     import '../scope.js';
