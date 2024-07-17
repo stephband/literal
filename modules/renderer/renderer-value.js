@@ -39,8 +39,8 @@ const compose = overload((value, type) => type, {
 export default class ValueRenderer extends AttributeRenderer {
     static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow', 'bind'];
 
-    constructor(signal, fn, parameters, element) {
-        super(signal, fn, parameters, element, 'value');
+    constructor(signal, literal, parameters, element) {
+        super(signal, literal, parameters, element, 'value');
 
         // A synchronous evaluation while data signal value is undefined binds
         // this renderer to changes to that signal. If signal value is an `data`

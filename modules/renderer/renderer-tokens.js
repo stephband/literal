@@ -11,7 +11,7 @@ const A       = Array.prototype;
 const nothing = [];
 
 /**
-TokensRenderer(signal, fn, element, name, parameters)
+TokensRenderer(signal, literal, parameters, element, name)
 Constructs an object responsible for rendering to a token list attribute such
 as a class attribute.
 **/
@@ -45,8 +45,8 @@ function updateTokens(list, cached, tokens, count = 0) {
 export default class TokensRenderer extends AttributeRenderer {
     static parameterNames = AttributeRenderer.parameterNames;
 
-    constructor(signal, fn, parameters, element, name) {
-        super(signal, fn, parameters, element, name);
+    constructor(signal, literal, parameters, element, name) {
+        super(signal, literal, parameters, element, name);
 
         // Renderer properties
         this.list   = element[this.property];

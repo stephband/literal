@@ -12,54 +12,21 @@ import compile           from './compile.js';
 
 
 /**
-compileAttributes(array, element, attribute, path, message)
+compileAttributes(array, element, attribute, path, options[, debug])
 **/
 
-// TODO: Renderers are only here so we can get parameterNames. This has been
-// moved to modules/renderer.js. Perhaps compile() should be moved into Renderer
-// constructors – we are only getting compiled fn from a cache, after all, it should
-// make no difference to speed
-/*
-const constructors = {
-    class:          TokensRenderer,
-    value:          ValueRenderer,
-    checked:        CheckedRenderer,
-    async:          BooleanRenderer,
-    autofocus:      BooleanRenderer,
-    autoplay:       BooleanRenderer,
-    controls:       BooleanRenderer,
-    defer:          BooleanRenderer,
-    disabled:       BooleanRenderer,
-    formnovalidate: BooleanRenderer,
-    hidden:         BooleanRenderer,
-    ismap:          BooleanRenderer,
-    itemscope:      BooleanRenderer,
-    loop:           BooleanRenderer,
-    multiple:       BooleanRenderer,
-    muted:          BooleanRenderer,
-    nomodule:       BooleanRenderer,
-    novalidate:     BooleanRenderer,
-    open:           BooleanRenderer,
-    readonly:       BooleanRenderer,
-    required:       BooleanRenderer,
-    reversed:       BooleanRenderer,
-    selected:       BooleanRenderer,
-    default:        BooleanRenderer
-};
-*/
-
-export default function compileAttribute(array, element, attribute, path, message = '', options) {
+export default function compileAttribute(array, element, attribute, path, options, debug) {
     const name   = attribute.localName;
     const source = attribute.value;
 
     if (!isLiteralString(source)) { return; }
 
-    if (window.DEBUG) {
-        message = truncate(64, '<'
+    const message = window.DEBUG ?
+        truncate(64, '<'
             + element.tagName.toLowerCase() + ' '
             + name + '="' + source
-            + '">') ;
-    }
+            + '">') :
+        '' ;
 
     // We need the Renderer here just to get .parameterNames. This is a bit
     // clunky, but the whole passing parameters to compiled functions thing is,
@@ -73,11 +40,12 @@ export default function compileAttribute(array, element, attribute, path, messag
         AttributeRenderer ;
 
     array.push({
-        fn: compile(source, scope, Renderer.parameterNames.join(', '), message, options),
+        literal: compile(source, scope, Renderer.parameterNames.join(', '), message, options),
         source,
-        message,
         path,
-        name
+        name,
+        message,
+        template: debug && debug.template
     });
 
     // Avoid errant template literals making booleans default to true, mangling

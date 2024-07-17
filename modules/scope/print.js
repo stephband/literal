@@ -22,7 +22,6 @@ Messages should be styled with the print stylesheet:
 @import "http://stephen.band/literal/modules/scope/print.css";
 ```-->
 
-
 **/
 
 import noop    from '../../../fn/modules/noop.js';
@@ -45,25 +44,31 @@ function toHTML(object) {
     }
 }
 
-export function printRenderError(error, renderer, data) {
-    // Extract template id. TODO: Must be a better way to pass these around.
-    log('error', renderer.message.replace(/&nbsp;.*$/, '').replace(/&gt;/g, '>').replace(/<\/?small>/g, ''), '', '', 'red');
-    console.log(error);
+export function printRenderError(error, debug, data) {
     // TODO: get the data in here!
     //console.log(data);
 
+    const fullpath = debug.path
+        + (typeof debug.name === 'string' ? '>' + debug.name : '') ;
+
     const element = create('pre', {
         class: 'literal-error',
-        html: renderer.message + '<code>'
-            +'<strong>' + error.constructor.name + '</strong> '
-            + error.message
+        html: '#' + debug.template.id
+            + ' <small>&gt; ' + fullpath.replace(/>/g, ' &gt ') + '</small>'
+            + '&nbsp;&nbsp;'
+            + ' <small class="literal-message">' + debug.message.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</small>'
+            + '<code>'
+            +   '<strong>' + error.constructor.name + '</strong> '
+            +   error.message
             + '</code>'
     });
 
+    log('error', '#' + debug.template.id + ' – ' + debug.message, '', '', 'red');
+    console.log(error);
     return element;
 }
 
-export function printError(error, renderer) {
+export function printError(error) {
     const element = document.createElement('pre');
     let html = '';
 

@@ -96,10 +96,19 @@ function prepareContent(content) {
 function compileTemplate(template, id, options) {
     const content = template.content || create('fragment', template.childNodes, template) ;
 
-    if (window.DEBUG) { groupCollapsed('compile', '#' + id, 'yellow'); }
-    prepareContent(content);
-    // compile(fragment, message, options)
-    const targets = compileNode(content, '#' + id, options);
+    let targets;
+    if (window.DEBUG) {
+        groupCollapsed('compile', '#' + id, 'yellow');
+        prepareContent(content);
+        const debug = { template };
+        targets = compileNode(content, options, debug);
+        groupEnd();
+    }
+    else {
+        targets = compileNode(content, options);
+    }
+
+    // compile(fragment, options[, debug])
     if (window.DEBUG) { groupEnd(); }
 
     return { content, targets };
@@ -115,7 +124,7 @@ export default class Template {
         // accessing any signals outside of a Signal.evaluate(), or they are
         // registered as dependents of the TextRenderer.
 
-        const id = identify(template) ;
+        const id = identify(template, 'literal-') ;
 
         const compiled = cache[id] ||
             (cache[id] = compileTemplate(template, id, {
@@ -124,7 +133,6 @@ export default class Template {
 
         const content = compiled.content.cloneNode(true);
 
-        this.templateId = id;
         this.content    = content;
         this.element    = parent;
         this.parameters = parameters;
@@ -139,7 +147,7 @@ export default class Template {
     }
 
     #toRendererParams(target) {
-        const { path, name, fn, message } = target;
+        const { path, name, literal, message, template } = target;
 
         // Where `.path` exists find the element at the end of the path
         const element = path ? getElement(path, this.content) : this.element ;
@@ -151,17 +159,9 @@ export default class Template {
             this.content.childNodes[name] :
         name;
 
-        // Path for debug messages in printError()
-        const fullpath = window.DEBUG ?
-            '#' + this.templateId
-            + ' <small>&gt; ' + path + (typeof name === 'string' ? name : '') + '</small>'
-            + '&nbsp;&nbsp;'
-            + ' <small class="literal-message">' + message.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</small>' :
-            '' ;
-
         // Parameters for Renderer.create():
-        // signal, fn, parameters, element, nameOrNode
-        return [this.#data, fn, this.parameters, element, n, fullpath];
+        // signal, literal, parameters, element, nameOrNode
+        return [this.#data, literal, this.parameters, element, n, target];
     }
 
     #toRenderer(parameters) {

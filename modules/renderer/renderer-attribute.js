@@ -8,7 +8,7 @@ const getPrototype  = Object.getPrototypeOf;
 
 
 /**
-AttributeRenderer(path, name, source, message, options, element)
+AttributeRenderer(signal, literal, parameters, element, name)
 Constructs an object responsible for rendering to a plain text attribute.
 **/
 
@@ -39,8 +39,8 @@ function setAttribute(node, name, value) {
 export default class AttributeRenderer extends Renderer {
     static parameterNames = Renderer.parameterNames;
 
-    constructor(signal, fn, parameters, element, name) {
-        super(signal, fn, parameters, element);
+    constructor(signal, literal, parameters, element, name) {
+        super(signal, literal, parameters, element);
 
         this.name     = name;
         this.property = name in names ? names[name] : name ;

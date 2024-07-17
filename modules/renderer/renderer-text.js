@@ -182,7 +182,7 @@ template renderers, or strings.
 export default class TextRenderer extends Renderer {
     static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow', 'include', 'print'];
 
-    constructor(signal, fn, parameters, element, node, message) {
+    constructor(signal, literal, parameters, element, node, debug) {
         if (window.DEBUG) {
             if (!isTextNode(node))             throw new Error('TextRenderer() node not a text node');
             if (!isTextNode(node.nextSibling)) throw new Error('TextRenderer() node.nextSibling not a text node');
@@ -194,7 +194,7 @@ export default class TextRenderer extends Renderer {
             print: (...args) => print(this, ...args)
         });
 
-        super(signal, fn, params, element);
+        super(signal, literal, params, element);
         this.contents = [];
 
         // Handily (deliberately), node.nextSibling is a text node left here
@@ -205,7 +205,7 @@ export default class TextRenderer extends Renderer {
         this.last    = node.nextSibling;
 
         // Pass a message to printError() for debugging only
-        this.message = message;
+        if (window.DEBUG) this.debug = debug;
 
         // A synchronous evaluation while data signal value is undefined binds
         // this renderer to changes to that signal. If signal value is a `data`
@@ -229,7 +229,7 @@ export default class TextRenderer extends Renderer {
             }
             catch(error) {
                 // Error object, renderer, DATA
-                const elem = printRenderError(error, this, this.parameters[1]);
+                const elem = printRenderError(error, this.debug);
                 this.first.before(elem);
                 removeNodeRange(this.first, this.last);
                 return;

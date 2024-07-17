@@ -140,13 +140,13 @@ export default class Renderer {
 
     #data;
 
-    constructor(signal, fn, parameters, element) {
+    constructor(signal, literal, parameters, element) {
         // Pick up paremeter names from the constructor, which may have been
         // overridden on dependent constructors
         const parameterNames = this.constructor.parameterNames;
 
         this.id          = ++id;
-        this.fn          = fn;
+        this.literal     = literal;
         this.element     = element;
         this.status      = 'idle';
         this.parameters  = parameterNames.map((name) => parameters[name]);
@@ -169,7 +169,7 @@ export default class Renderer {
         parameters[2] = this.element;
 
         ++this.renderCount;
-        return this.fn.apply(this, parameters);
+        return this.literal.apply(this, parameters);
     }
 
     invalidate() {
