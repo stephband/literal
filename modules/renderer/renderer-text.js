@@ -190,7 +190,7 @@ export default class TextRenderer extends Renderer {
 
         // Parameters added to text renderer
         const params = assign({}, parameters, {
-            include: (url, data) => this.include(url, data),
+            include: (...params) => this.include(...params),
             print:   (...args) => print(this, ...args)
         });
 
@@ -210,12 +210,12 @@ export default class TextRenderer extends Renderer {
         Signal.evaluate(this, this.evaluate);
     }
 
-    include(url, data) {
-        // Partially applicable
-        if (arguments.length === 1) return (data) => this.include(url, data);
-
-        //console.log(include);
-        return include(url, data, this.element, this.parameters);
+    include(url) {
+        return arguments.length === 1 ?
+            // Partially applied
+            (data) => this.include(url, data) :
+            // Immediate include
+            include(url, arguments[1], this.element, this.parameters) ;
     }
 
     evaluate() {
