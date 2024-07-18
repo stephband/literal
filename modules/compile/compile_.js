@@ -3,9 +3,10 @@ import compileFn  from '../../../fn/modules/compile.js';
 import { log }    from '../log.js';
 import { indent } from './constants.js';
 
+const DEBUG = false;//window.DEBUG;
 
 /**
-compile(source, scope, parameters, options)
+compile(source, scope, parameters, message, options)
 Compiles a literal template string to a function.
 
 (`options.nostrict = true` enables template rendering `with(data)`.)
@@ -14,7 +15,8 @@ Compiles a literal template string to a function.
 // Store render functions against their source
 export const compiled = {};
 
-export default function compile(source, scope, parameters, options = {}, message) {
+// Last param, message, is for logging/throwing message
+export default function compile(source, scope, parameters, message = '', options = {}) {
     // Hey hey, we are not in 'strict mode' inside compiled functions by default
     // so we CAN use with(), making `${ data.name }` available as simply `${ name }`
     // in a template... but let's make it opt-in (for the moment at least). There
@@ -41,17 +43,29 @@ export default function compile(source, scope, parameters, options = {}, message
     // Return cached fn
     if (compiled[code]) { return compiled[code]; }
 
-    if (window.DEBUG) {
-        const t0 = window.performance.now();
-        const fn = compileFn(scope, parameters, code);
-        const t1 = window.performance.now();
+    // The DEBUG logging version (removed in built files)
+    // Error handling has been moved to compile and render steps
+    /*if (DEBUG) {
+        try {
+            const t0 = window.performance.now();
+            const fn = compileFn(scope, parameters, code);
+            const t1 = window.performance.now();
 
-        // Log this compile
-        log('compile', (t1 - t0).toPrecision(3) + 'ms – ' + message, undefined, undefined, 'yellow');
+            // Store totals on the compile function
+            compile.duration += (t1 - t0);
+            compile.count    += 1;
 
-        // Add fn to cache
-        return compiled[code] = fn;
-    }
+            // Log this compile
+            log('compile', (t1 - t0).toPrecision(3) + 'ms – ' + message, undefined, undefined, 'yellow');
+
+            return compiled[code] = fn;
+        }
+        catch(e) {
+            // Append message to error message
+            e.message += ' in ' + message;
+            throw e;
+        }
+    }*/
 
     // The quick version
     return compiled[code] = compileFn(scope, parameters, code);

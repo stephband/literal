@@ -100,16 +100,12 @@ function compileTemplate(template, id, options) {
     if (window.DEBUG) {
         groupCollapsed('compile', '#' + id, 'yellow');
         prepareContent(content);
-        const debug = { template };
-        targets = compileNode(content, options, debug);
+        targets = compileNode(content, options, { template });
         groupEnd();
     }
     else {
         targets = compileNode(content, options);
     }
-
-    // compile(fragment, options[, debug])
-    if (window.DEBUG) { groupEnd(); }
 
     return { content, targets };
 }

@@ -29,6 +29,8 @@ import Data    from '../../../fn/modules/signal-data.js';
 import create  from '../../../dom/modules/create.js';
 import { log } from '../log.js';
 
+const linkHTML = '<a class="literal-link" href="https://stephen.band/literal/literal-html/">literal</literal>';
+
 function toHTML(object) {
     // Print different kinds of objects differently
     if (typeof object === 'object' && object.template) {
@@ -44,32 +46,29 @@ function toHTML(object) {
     }
 }
 
-export function printRenderError(error, debug, data) {
+export function printRenderError(renderer, error, data) {
     // TODO: get the data in here!
-    //console.log(data);
+    //const fullpath = renderer.path
+    //    + (typeof renderer.name === 'string' ? '>' + renderer.name : '') ;
 
-    const fullpath = debug.path
-        + (typeof debug.name === 'string' ? '>' + debug.name : '') ;
+    log('error', '#' + renderer.template.id + ' – ' + renderer.message, '', '', 'red');
+    console.log(error);
 
-    const element = create('pre', {
+    return create('pre', {
         class: 'literal-error',
-        html: '#' + debug.template.id
+        html: '#' + renderer.template.id
             //+ ' <small>&gt; ' + fullpath.replace(/>/g, ' &gt ') + '</small>'
             //+ '&nbsp;&nbsp;'
-            + ' <small class="literal-message">' + debug.message.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</small>'
+            + ' <small class="literal-message">' + renderer.message.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</small>'
             + '<code>'
             +   '<strong>' + error.constructor.name + '</strong> '
             +   error.message.replace(/</g, '&lt;').replace(/>/g, '&gt;')
             + '</code>'
-            + '<a href="https://stephen.band/literal/literal-html/">literal</literal>'
+            + linkHTML
     });
-
-    log('error', '#' + debug.template.id + ' – ' + debug.message, '', '', 'red');
-    console.log(error);
-    return element;
 }
 
-export function printError(error) {
+export function printError(renderer, error) {
     const element = document.createElement('pre');
     let html = '';
 
@@ -81,22 +80,30 @@ export function printError(error) {
     return element;
 }
 
-export function printDebug(object) {
-    // Print renderer
-    const pre = document.createElement('pre');
-    let n = -1;
+export function printDebug(renderer, object) {
+    const fullpath = renderer.path
+        + (typeof renderer.name === 'string' ? '>' + renderer.name : '') ;
 
-    pre.setAttribute('class', 'literal-print');
+    let n = 0;
+    let html = '';
     while (arguments[++n] !== undefined) {
-        html += toHTML(Data.objectOf(arguments[n]));
+        html += toHTML(arguments[n]);
     }
 
-    pre.innerHTML = html;
-    return pre;
+    return create('pre', {
+        class: 'literal-print',
+        html: '#' + renderer.template.id
+            + ' <small>' + (fullpath ? '&gt; ' + fullpath.replace(/>/g, ' &gt ') : '') + '</small>'
+            //+ '&nbsp;&nbsp;'
+            //+ ' <small class="literal-message">' + renderer.message.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</small>'
+            + '<span class="literal-count">' + renderer.renderCount + '</span>'
+            + html
+            + linkHTML
+    });
 }
 
-export default function print(object) {
+export default function print(renderer, object) {
     return object instanceof Error ?
-        printError(object) :
-        printDebug(object) ;
+        printError(renderer, object) :
+        printDebug(renderer, object) ;
 }

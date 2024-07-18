@@ -3,13 +3,12 @@ import { log, group, groupEnd } from '../log.js';
 import { stats } from './renderer.js';
 
 const renderers = [];
-const promise   = Promise.resolve(renderers);
+//const promise   = Promise.resolve(renderers);
 
 let cued;
 
-function render(renderers) {
+function render(t) {
     let t0, t1;
-
     if (window.DEBUG && window.DEBUG.literal !== false) {
         t0 = window.performance.now() / 1000;
         stats.attribute = 0;
@@ -21,8 +20,7 @@ function render(renderers) {
     }
 
     let n = -1;
-    while (renderers[++n] !== undefined) {
-        // Allow changes inside template to recue render
+    while (renderers[++n]) {
         renderers[n].update();
     }
 
@@ -40,13 +38,19 @@ function render(renderers) {
             + (stats.property  ? ', ' + stats.property  + ' property'  : '')
             + (stats.attribute ? ', ' + stats.attribute + ' attribute' : '')
             + (stats.token     ? ', ' + stats.token     + ' token'     : '')
-            + ' mutations',
+            + ' mutations'
+            + ' – frame t=' + (t / 1000).toFixed(3) + 's',
             //
             '', '', '#B6BD00'
         );
 
         if (t1 - t0 > 0.016666667) {
-            log('render took longer than a frame (16.67ms) ' + ((t1 - t0) * 1000).toPrecision(3) + 'ms', '', '', '', '#ba4029');
+            log('render took longer than a frame (16.67ms) ' + ((t1 - t0) * 1000).toPrecision(3) + 'ms', '',
+                'frame t=' + (t / 1000).toFixed(3) + 's'
+                + ' t0=' + t0.toFixed(3) + ','
+                + ' t1=' + t0.toFixed(3),
+                '',
+                '#ba4029');
         }
     }
 
@@ -62,19 +66,11 @@ cued it is not cued again.
 
 export function cue(renderer) {
     //log('cue', renderer.constructor.name + '[' + renderer.id + ']', '', '', 'blue');
-
-    if (renderer.status === 'cued') {
-        console.trace('Renderer already cued.');
-        return cued;
-    }
-
-    // Create a new batch end promise where required
-    if (!cued) {
-        cued = promise.then(render);
-    }
-
+    // Create a new cued render process by promise...
+    //if (!cued) cued = promise.then(render);
+    // ...or by animation frame
+    if (cued === undefined) cued = requestAnimationFrame(render);
     renderers.push(renderer);
-    renderer.status = 'cued';
     return cued;
 }
 
@@ -84,11 +80,7 @@ Removes renderer from the render queue.
 **/
 
 export function uncue(renderer) {
-    if (renderer.status !== 'cued') { return; }
-    if (!renderers.length) { return; }
-
     const i = renderers.indexOf(renderer);
-    if (i > 0) { renderers.splice(i, 1); }
-
-    renderer.status = 'idle';
+    if (i > 0) renderers.splice(i, 1);
+    return renderer;
 }

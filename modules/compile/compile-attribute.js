@@ -50,15 +50,15 @@ export default function compileAttribute(array, element, attribute, path, option
         // Attempt to compile, and in case of an error replace element with
         // an error element
         try {
-            target.literal = compile(source, scope, Renderer.parameterNames.join(', '), message, options);
+            target.literal = compile(source, scope, Renderer.parameterNames.join(', '), options, message);
         }
         catch(error) {
-            element.replaceWith(printRenderError(error, target));
+            element.replaceWith(printRenderError(target, error));
             return array;
         }
     }
     else {
-        target.literal = compile(source, scope, Renderer.parameterNames.join(', '), '', options);
+        target.literal = compile(source, scope, Renderer.parameterNames.join(', '), options);
     }
 
     array.push(target);

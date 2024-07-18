@@ -7,6 +7,7 @@ import { cue, uncue }   from './cue.js';
 import toText           from './to-text.js';
 
 
+const assign     = Object.assign;
 const $stopables = Symbol('stopables');
 
 export const stats = {
@@ -19,6 +20,7 @@ export const stats = {
 };
 
 let id = 0;
+
 
 function callStop(stopable) {
     stopable.stop();
@@ -140,7 +142,7 @@ export default class Renderer {
 
     #data;
 
-    constructor(signal, literal, parameters, element) {
+    constructor(signal, literal, parameters, element, name, debug) {
         // Pick up paremeter names from the constructor, which may have been
         // overridden on dependent constructors
         const parameterNames = this.constructor.parameterNames;
@@ -153,8 +155,13 @@ export default class Renderer {
         this.renderCount = 0;
         this.#data       = signal;
 
-        // Track the number of renderers created
-        if (window.DEBUG) { ++Renderer.count; }
+        // Assign debug properties and track the number of renderers created
+        if (window.DEBUG) {
+            this.template = debug.template;
+            this.path     = debug.path;
+            this.message  = debug.message;
+            ++Renderer.count;
+        }
     }
 
     evaluate() {
@@ -175,23 +182,24 @@ export default class Renderer {
     invalidate() {
         // A renderer, as a consumer, does not have validity or dependent
         // signals to invalidate. It does have status.
-        if (this.status === 'done') return this;
-        if (this.status === 'cued') return this;
+        if (this.status === 'done') return;
+        if (this.status === 'cued') {
+            console.trace('Renderer already cued.');
+            return;
+        }
 
         // Cue .update()
         cue(this);
+        this.status = 'cued';
     }
 
     update() {
         // .update() is called by the cue timer
         stopPromises(this.promises);
-        this.status = 'rendering';
 
         // Evaluating this as a signal composes the expressions and renders
         Signal.evaluate(this, this.evaluate);
-
-        // TODO: not certain we actually need status 'rendering' and 'idle'
-        this.status = this.status === 'rendering' ? 'idle' : this.status ;
+        this.status = 'idle';
         return this;
     }
 
@@ -219,11 +227,11 @@ export default class Renderer {
     stop() {
         // Check and set status
         if (this.status === 'done') return this;
+        if (this.status === 'cued') uncue(this);
 
-        // Sets status
+        // Sets this.status = 'done'
         ObserveSignal.prototype.stop.apply(this);
 
-        uncue(this);
         stopPromises(this.promises);
         this.streams && this.streams.forEach(callStop);
 

@@ -155,15 +155,15 @@ const compileNode = overload((targets, node) => toType(node), {
             // Attempt to compile, and in case of an error replace node with
             // an error element
             try {
-                target.literal = compile(source, scope, TextRenderer.parameterNames.join(', '), message, options);
+                target.literal = compile(source, scope, TextRenderer.parameterNames.join(', '), options, message);
             }
             catch(error) {
-                node.parentNode.replaceWith(printRenderError(error, target));
+                node.parentNode.replaceWith(printRenderError(target, error));
                 return targets;
             }
         }
         else {
-            target.literal = compile(source, scope, TextRenderer.parameterNames.join(', '), '', options);
+            target.literal = compile(source, scope, TextRenderer.parameterNames.join(', '), options);
         }
 
         targets.push(target);

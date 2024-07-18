@@ -42,7 +42,7 @@ export default class AttributeRenderer extends Renderer {
     static parameterNames = Renderer.parameterNames;
 
     constructor(signal, literal, parameters, element, name, debug) {
-        super(signal, literal, parameters, element);
+        super(signal, literal, parameters, element, name, debug);
 
         this.name     = name;
         this.property = name in names ? names[name] : name ;
@@ -52,9 +52,6 @@ export default class AttributeRenderer extends Renderer {
             !!names[name] :
             // Otherwise check property descriptor
             name in element && isWritableProperty(name, element) ;
-
-        // Pass a message to printError() for debugging only
-        if (window.DEBUG) this.debug = debug;
     }
 
     evaluate() {
@@ -64,7 +61,7 @@ export default class AttributeRenderer extends Renderer {
             }
             catch(error) {
                 // Error object, renderer, DATA
-                const elem = printRenderError(error, this.debug);
+                const elem = printRenderError(this, error);
                 this.element.replaceWith(elem);
                 return;
             }

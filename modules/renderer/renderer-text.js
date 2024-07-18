@@ -191,10 +191,10 @@ export default class TextRenderer extends Renderer {
         // Parameters added to text renderer
         const params = assign({}, parameters, {
             include: (url, data) => this.include(url, data),
-            print: (...args) => print(this, ...args)
+            print:   (...args) => print(this, ...args)
         });
 
-        super(signal, literal, params, element);
+        super(signal, literal, params, element, node, debug);
         this.contents = [];
 
         // Handily (deliberately), node.nextSibling is a text node left here
@@ -203,9 +203,6 @@ export default class TextRenderer extends Renderer {
         // https://developer.mozilla.org/en-US/docs/Web/API/Range
         this.first   = node;
         this.last    = node.nextSibling;
-
-        // Pass a message to printError() for debugging only
-        if (window.DEBUG) this.debug = debug;
 
         // A synchronous evaluation while data signal value is undefined binds
         // this renderer to changes to that signal. If signal value is a `data`
@@ -228,7 +225,7 @@ export default class TextRenderer extends Renderer {
             }
             catch(error) {
                 // Error object, renderer, DATA
-                const elem = printRenderError(error, this.debug);
+                const elem = printRenderError(this, error);
                 this.first.before(elem);
                 removeNodeRange(this.first, this.last);
                 return;

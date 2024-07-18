@@ -12,8 +12,6 @@
     font-weight: normal;
     letter-spacing: -0.05em;
     line-height: 1.5rem !important;
-    color: black;
-    background-color: #f7d213;
     border-width: 0;
     /* Bottom left corner underlaps <code> corner, we give it a slightly bigger
        radius to avoid aliasing this background color through the edge. */
@@ -26,8 +24,9 @@
     overflow: hidden;
 }
 
-.literal-error > a,
-.literal-print > a {
+.literal-error > .literal-link,
+.literal-print > .literal-link {
+    box-sizing: border-box;
     position: absolute;
     bottom: 0.25rem;
     right: 0.25rem;
@@ -43,8 +42,8 @@
     text-decoration: none;
 }
 
-.literal-error > a:hover,
-.literal-print > a:hover {
+.literal-error > .literal-link:hover,
+.literal-print > .literal-link:hover {
     color: #374562;
 }
 
@@ -71,12 +70,11 @@
     border-top: inherit;
     border-bottom: inherit;
     border-radius: 0;
-    background-color: #fff8d5;
-    margin-left: 0;
-    margin-right: 0;
     padding: 0.5em 0.375rem;
     width: auto;
-    color: inherit;
+    margin-left: -0.375rem;
+    margin-right: -0.375rem;
+    color: #141B1E;
 }
 
 .literal-error > code + code,
@@ -98,22 +96,27 @@
     right: 0.375rem;
 }
 
-
-
+.literal-error > .literal-message,
+.literal-print > .literal-message {
+    opacity: 0.86666667;
+}
 
 .literal-error {
     color: white;
     background-color: #DC0F0E;
 }
 
-.literal-error > .literal-message {
-    opacity: 0.86666667;
+.literal-error > code {
+    background-color: #ffdddd;
 }
 
-.literal-error > code {
-    box-sizing: border-box;
-    color: #141B1E;
-    background-color: #ffdddd;
-    margin-left: -0.375rem;
-    margin-right: -0.375rem;
+.literal-print {
+    color: white;
+    background-color: #f7d213;
+    background-color: #46789a;
+}
+
+.literal-print > code {
+    background-color: #fff8d5;
+    background-color: #c5dded;
 }
