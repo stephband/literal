@@ -184,7 +184,7 @@ export default class Renderer {
         // signals to invalidate. It does have status.
         if (this.status === 'done') return;
         if (this.status === 'cued') {
-            console.log('Renderer already cued.');
+console.warn(this.constructor.name + ' ' + this.template.id + ' ' + this.path + ' already cued');
             return;
         }
 
