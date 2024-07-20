@@ -49,12 +49,6 @@
         <p>Causes a render error in an attribute.</p>
         <pre class="${ data.cause.a.render.error }"></pre>
     </template>
-
-    <template id="template-6">
-        <h3>#template-6</h3>
-        <p>Causes a render error in an attribute.</p>
-        <pre class="${ data.cause.a.render.error }"></pre>
-    </template>
 </head>
 
 <body>
@@ -63,7 +57,7 @@
     <div class="test">
         <template is="literal-html" data-state="1" data-value="Hello">
             <h2>is="literal-html"</h2>
-            <p hidden="${ data.state }">Render counts in (brackets).</p>
+            <p hidden="${ data.state }">Render counts in ().</p>
             <p title="${ data.state }" class="${ data.state }">(${ this.renderCount }) ${ data.state }</p>
             ${ include('#template-1', data) }
             ${ include('#template-2', data) }
@@ -73,7 +67,7 @@
     <div class="test">
         <template is="literal-html" data-state="1" data-value="Hello" data-template="2">
             <h2>is="literal-html"</h2>
-            <p>Render counts in (brackets).</p>
+            <p>Render counts in ().</p>
             <!--${ window.data = data, '' }-->
             <p class="${ 'hello world' }">${ 'Hello world' }</p>
             <pre>(${ this.renderCount }) data = ${ data }</pre>
@@ -88,9 +82,10 @@
     <div class="test">
         <template is="literal-html" data-plonk="1" data-value="Hello" data-template="1">
             <h2>Cued renders</h2>
-            <p>Asynchronous .stop()-able stream of data mutations. From clicks.
-            Render counts in (brackets). These includes are cue()d: a click
-            increments <code>data.template</code> which cues a render.</p>
+            <p>Asynchronous stopable stream of mutations to <code>data.template</code>.
+            From clicks. These includes are cue()d: a click increments
+            <code>data.template</code> which cues a render. Render counts
+            in ().</p>
             ${
                 events('click', element)
                 .log('click')
@@ -104,10 +99,10 @@
     <div class="test">
         <template is="literal-html" data-plonk="1" data-value="Hello" data-template="1">
             <h2>Uncued renders</h2>
-            <p>Asynchronous .stop()-able stream of include()s. From clicks.
-            Render counts in (brackets). Not the recommended way of doing things.
-            These includes are not cued: an include() with data renders a template
-            instantly.</p>
+            <p>Asynchronous stopable stream of include()s. From clicks. Not
+            the recommended way of doing things. These includes are not cued: an
+            include() with data renders a template instantly. Render counts in
+            ().</p>
             <pre>(${ this.renderCount }) data.value = ${ data.value }</pre>
             ${
                 events('click', element)
@@ -120,7 +115,7 @@
     <!--hr/>
     <template is="literal-html" data-plonk="1" data-value="Hello" data-template="1">
         <h2>is="literal-html"</h2>
-        <p>Asynchronous Stream of Promises of include()s. Render counts in (brackets).</p>
+        <p>Asynchronous Stream of Promises of include()s. Render counts in ().</p>
         <pre>(${ window.data = data, this.renderCount }) data.value = ${ data.value }</pre>
         (${ this.renderCount }) data.plonk = ${ data.plonk }
         ${
