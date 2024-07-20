@@ -62,8 +62,8 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
         // Avoid having property gets registered as observers
         const target = Data.objectOf(object);
 
-        // Is target a Promise?
-        if (target.then) {
+        // Is target have .then()?
+        if (typeof target.then === 'function') {
             const promises = renderer.promises || (renderer.promises = []);
             values[n] = '';
             target.then((value) => {
@@ -76,12 +76,8 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
             return;
         }
 
-        //if (Signal.isSignal(target)) {
-        //    //
-        //}
-
         // Is target a pipeable Stream?
-        if (target.pipe) {
+        if (typeof target.pipe === 'function') {
             const streams = renderer.streams || (renderer.streams = []);
             values[n] = '';
             // Do not render synchronous values that are in the stream
@@ -94,10 +90,9 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
         }
 
         /*
-        // Is target a Stream that is already consumed, and therefore does not
-        // have .pipe()? We still want to stop it when the renderer is
-        // destroyed, but we don't want to renderer anything.
-        if (Stream.isStream(target)) {
+        // Does target have .stop()? We want to call .stop() when this renderer
+        // is stopped.
+        if (typeof target.stop === 'function') {
             const streams = renderer.streams || (renderer.streams = []);
             values[n] = '';
             streams.push(target);
