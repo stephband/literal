@@ -1,13 +1,12 @@
 
 import id                from '../../../fn/modules/id.js';
+import get               from '../../../fn/modules/get.js';
 import overload          from '../../../fn/modules/overload.js';
 import Signal            from '../../../fn/modules/signal.js';
 import config            from '../config.js';
 import bindValue         from '../scope/bind-value.js';
-import AttributeRenderer from './renderer-attribute.js';
+import AttributeRenderer, { toAttributeString } from './renderer-attribute.js';
 import { stats }         from './renderer.js';
-import composeString     from './compose-string.js';
-import composeNumber     from './compose-number.js';
 import { getValue, setValue, removeValue } from './value.js';
 
 
@@ -18,23 +17,13 @@ value property. Parameter `name` is redundant, but here for symmetry with other
 renderers.
 **/
 
-const compose = overload((value, type) => type, {
+const toValue = overload(get('type'), {
     //'date':      composeDate,
     //'select-multiple': composeArray,
-    'number':     composeNumber,
-    'range':      composeNumber,
-    'default':    composeString
+    'number':     Number,
+    'range':      Number,
+    'default':    id
 });
-
-/*
-    create(element, parameters) {
-        return AttributeRenderer.prototype.create.call(this, element, assign({
-            // Parameters
-            bind: (path, object, to = id, from = id) =>
-                bindValue(element, object, path, to, from, setValue)
-        }, parameters));
-    }
-*/
 
 export default class ValueRenderer extends AttributeRenderer {
     static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow', 'bind'];
@@ -43,18 +32,19 @@ export default class ValueRenderer extends AttributeRenderer {
         super(signal, literal, parameters, element, 'value', debug);
 
         // A synchronous evaluation while data signal value is undefined binds
-        // this renderer to changes to that signal. If signal value is an `data`
-        // object it renders the renderer immediately.
+        // this renderer to changes to signal. If signal has value this also
+        // renders the renderer immediately.
         Signal.evaluate(this, this.evaluate);
     }
 
     render(strings) {
-        this.value = this.singleExpression ?
-            // Don't evaluate empty space in attributes with a single expression
+        // If arguments contains a single expression use its value
+        const value = toValue(this.element.type, this.singleExpression ?
             arguments[1] :
-            compose(arguments, this.element.type) ;
+            toAttributeString(arguments)
+        );
 
-        stats.property += setValue(this.element, this.value);
+        return setValue(this.element, value);
     }
 
     stop() {

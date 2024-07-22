@@ -8,6 +8,15 @@ import TokensRenderer      from './renderer/renderer-tokens.js';
 import ValueRenderer       from './renderer/renderer-value.js';
 import TextRenderer        from './renderer/renderer-text.js';
 
+/*
+    Include bind() in parameters somehow...
+    AttributeRenderer.prototype.create.call(this, element, assign({
+        // Parameters
+        bind: (path, object, to = id, from = id) =>
+            bindValue(element, object, path, to, from, setValue)
+    }, parameters));
+*/
+
 Renderer.create = function create(signal, literal, parameters, element, n, debug) {
     const name = typeof n === 'string' && (names[n] || n) ;
 

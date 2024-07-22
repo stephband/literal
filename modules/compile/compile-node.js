@@ -167,12 +167,6 @@ const compileNode = overload((targets, node) => toType(node), {
         }
 
         targets.push(target);
-
-        // Insert text node. When renderer is created with cloned DOM, clone of
-        // `node` is assigned to `renderer.first` and the clone of this new text
-        // node is assigned as `renderer.last`.
-        node.after(document.createTextNode(''));
-
         return targets;
     },
 

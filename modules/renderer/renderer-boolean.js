@@ -1,6 +1,6 @@
 
 import Signal            from '../../../fn/modules/signal.js';
-import composeBoolean    from './compose-boolean.js';
+import sum               from '../../../fn/modules/sum.js';
 import AttributeRenderer from './renderer-attribute.js';
 import { stats }         from './renderer.js';
 
@@ -12,24 +12,41 @@ attribute.
 **/
 
 function setBooleanProperty(node, name, value) {
-    if (node[name] === !!value) return 0;
+    if (node[name] === !!value) return;
     node[name] = !!value;
-    return 1;
+    if (window.DEUBG) ++stats.property;
 }
 
 function setBooleanAttribute(node, name, value) {
     // If attribute is already set...
     if ((node.getAttribute(name) !== null)) {
-        if (value) return 0;
+        if (value) return;
         node.removeAttribute(name);
-        return 1;
+        if (window.DEUBG) ++stats.attribute;
+        return;
     }
 
     // Otherwise...
-    if (!value) return 0;
+    if (!value) return;
     node.setAttribute(name, name);
-    return 1;
+    return;
 }
+
+export function toAttributeBoolean(values) {
+    // Sum all values
+    const strings = values[0];
+    let n = 0;
+
+    // Anything other than white space in strings counts as true
+    if (/\S/.test(strings[n])) return true;
+    while (strings[++n] !== undefined) {
+        if (Boolean(values[n])) return true;
+        if (/\S/.test(strings[n])) return true;
+    }
+
+    return false;
+}
+
 
 export default class BooleanRenderer extends AttributeRenderer {
     static parameterNames = AttributeRenderer.parameterNames;
@@ -45,15 +62,13 @@ export default class BooleanRenderer extends AttributeRenderer {
     }
 
     render(strings) {
-        const value = composeBoolean(arguments);
+        // If arguments contains a single expression use its value
+        const value = this.singleExpression ?
+            arguments[1] :
+            toAttributeBoolean(arguments);
 
-        if (this.writable) {
-            stats.property += setBooleanProperty(this.element, this.property, value);
-        }
-        else {
-            stats.attribute += setBooleanAttribute(this.element, this.name, value) ;
-        }
-
-        return;
+        return this.writable ?
+            setBooleanProperty(this.element, this.property, value) :
+            setBooleanAttribute(this.element, this.name, value) ;
     }
 }

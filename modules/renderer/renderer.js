@@ -21,7 +21,6 @@ export const stats = {
 
 let id = 0;
 
-
 function callStop(stopable) {
     stopable.stop();
 }
@@ -131,6 +130,7 @@ function renderExpressionValue(value) {
 /*
 Renderer(path, name, source, message)
 */
+const values = [];
 let N = 0;
 export default class Renderer {
     static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow'];
@@ -198,6 +198,11 @@ console.warn(this.constructor.name + ' ' + this.template.id + ' ' + this.path + 
         return this;
     }
 
+
+    /*
+    .compose(strings, ...args)
+    The renderer method called by compiled literal function
+    */
     compose(strings) {
         // Flag the literal as containing exactly 1 expression optionally
         // surrounded by whitespace, which allows for some optimisations
@@ -209,8 +214,6 @@ console.warn(this.constructor.name + ' ' + this.template.id + ' ' + this.path + 
                 && !/\S/.test(strings[1]) ;
         }
 
-        // Loop over strings[1] to end, evaluate argument that precedes
-        // each string, collapsing them to primitives
         let n = 0;
         while (strings[++n] !== undefined) {
             renderValue(this, arguments, arguments, n, arguments[n]);

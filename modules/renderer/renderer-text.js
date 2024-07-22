@@ -8,10 +8,9 @@ that DOM after the text node.
 
 import Signal           from '../../../fn/modules/signal.js';
 import Data             from '../../../fn/modules/signal-data.js';
-import isTextNode       from '../../../dom/modules/is-text-node.js';
+import { isCommentNode, isElementNode, isFragmentNode, isTextNode } from '../../../dom/modules/node.js';
 import include          from '../scope/include.js';
-import indexOf          from '../dom/index-of.js';
-import removeNodeRange  from '../dom/remove-node-range.js';
+import deleteRange      from '../dom/delete-range.js';
 import Template         from '../template.js';
 import print, { printRenderError } from '../scope/print.js';
 import toText           from './to-text.js';
@@ -25,38 +24,6 @@ function stop(node) {
     node && typeof node === 'object' && node.stop && node.stop();
 }
 
-function toRenderer(value) {
-    return value instanceof Template ? value :
-           value instanceof Node ? value :
-           toText(value) ;
-}
-
-function pushContents(contents, object) {
-    // Object may be a string, DOM node, fragment, template renderer. Here
-    // we concat strings together. May have side effects on complicated DOM
-    // updates, so keep an eye out.
-    if (typeof object === 'object') {
-        contents.push(object);
-    }
-    else if (typeof contents[contents.length - 1] === 'string') {
-        contents[contents.length - 1] += object;
-    }
-    else {
-        contents.push(object + '');
-    }
-
-    return contents;
-}
-
-function composeDOM(contents, object) {
-    // Flatten nested arrays of renderables
-    if (Array.isArray(object)) {
-        return object.reduce(composeDOM, contents);
-    }
-
-    return pushContents(contents, toRenderer(object));
-}
-
 function setNodeValue(node, value) {
     const nodeValue = node.nodeValue;
 
@@ -64,17 +31,15 @@ function setNodeValue(node, value) {
     if (nodeValue) {
         if (nodeValue !== value) {
             node.nodeValue = value;
-            return 1;
+            if (window.DEBUG) ++stats.text;
         }
     }
     else {
         if (value) {
             node.nodeValue = value;
-            return 1;
+            if (window.DEBUG) ++stats.text;
         }
     }
-
-    return 0;
 }
 
 function toContent(object) {
@@ -83,95 +48,6 @@ function toContent(object) {
         object ;
 }
 
-function updateDOM(stats, first, last, objects) {
-    // Sanity check
-    if (window.DEBUG) {
-        if (first === last) {
-            throw new Error('`first` and `last` are the same node');
-        }
-
-        if (first.parentNode !== last.parentNode) {
-            throw new Error('`first` and `last` are not siblings');
-        }
-
-        const iFirst   = indexOf(first);
-        const iLast    = indexOf(last);
-        if (iFirst > iLast) {
-            throw new Error('`last` is not after `first`, first: ' + iFirst + ' last: ' + iLast);
-        }
-    }
-//console.log('TextRenderer updateDOM', objects);
-    //console.log(0, 'updateDOM', first.textContent, last.textContent, objects, nLast);
-    const nLast = objects.length - 1;
-
-    // Render first object. `objects[0]` is always a string. `first` is a
-    // text node.
-    stats.text += setNodeValue(first, objects[0]);
-
-    let node  = first.nextSibling;
-    let n     = 0;
-    while (++n < nLast) {
-        const object = objects[n];
-
-        // Is object a primitive
-        if (typeof object !== 'object') {
-            // If node is a text node, use it.
-            if (node !== last && isTextNode(node)) {
-                stats.text += setNodeValue(node, object);
-                node = node.nextSibling;
-            }
-            // ...otherwise insert a text node
-            else {
-                node.before(object);
-                ++stats.add;
-//console.log('add', typeof object, object);
-            }
-            continue;
-        }
-
-        // Is object a Template with nodes already in this DOM
-        if (object instanceof Template && (node === object.first || node === object.last)) {
-//console.log('Skip nodes handled by Template');
-            // Skip over nodes handled by the renderer
-            node = object.last.nextSibling;
-            continue;
-        }
-
-        // If node and object are the same thing. Could happen, I suppose, if
-        // a template expression returns a cached node on successive renders.
-        if (node === object) {
-            node = node.nextSibling;
-            continue;
-        }
-
-        // Remove template or node from wherever it currently is
-        if (object.remove) {
-//console.log('Remove object', object);
-            stats.remove += (object.remove() || 0);
-        }
-
-        // And put it here
-        const content = toContent(object);
-        node.before(content);
-        ++stats.add;
-//console.log('add', 'content', content);
-    }
-
-    // Remove unused nodes up to last
-    while (node !== last) {
-// Ahaaaa... we want to stop any streams here, if we are removing a stream
-//console.log('Remove unused', typeof node, node);
-        const nd = node;
-        node = node.nextSibling;
-        nd.remove();
-        ++stats.remove;
-    }
-
-    // Render last object. Where objects is less than 1 item long empty `last`,
-    // otherwise render last object into `last`.
-    stats.text += setNodeValue(last, nLast < 1 ? null : objects[nLast]);
-    return stats;
-}
 
 /**
 TextRenderer()
@@ -185,7 +61,7 @@ export default class TextRenderer extends Renderer {
     constructor(signal, literal, parameters, element, node, debug) {
         if (window.DEBUG) {
             if (!isTextNode(node))             throw new Error('TextRenderer() node not a text node');
-            if (!isTextNode(node.nextSibling)) throw new Error('TextRenderer() node.nextSibling not a text node');
+            //if (!isTextNode(node.nextSibling)) throw new Error('TextRenderer() node.nextSibling not a text node');
         }
 
         // Parameters added to text renderer
@@ -195,19 +71,27 @@ export default class TextRenderer extends Renderer {
         });
 
         super(signal, literal, params, element, node, debug);
-        this.contents = [];
 
-        // Handily (deliberately), node.nextSibling is a text node left here
-        // by the compile step to be used as this.last
-        // TODO: Use node range instead?
-        // https://developer.mozilla.org/en-US/docs/Web/API/Range
-        this.first   = node;
-        this.last    = node.nextSibling;
+        // Contents may contain Nodes and LiteralTemplates, but the last item
+        // in contents will always be the original text node
+        this.contents = [node];
 
         // A synchronous evaluation while data signal value is undefined binds
         // this renderer to changes to that signal. If signal value is a `data`
         // object evaluation renders the renderer immediately.
         Signal.evaluate(this, this.evaluate);
+    }
+
+    get firstNode() {
+        // The first item in contents may be a LiteralTemplate
+        return this.contents[0].firstNode ?
+            this.contents[0].firstNode :
+            this.contents[0] ;
+    }
+
+    get lastNode() {
+        // The last item in contents is always the original text node
+        return this.contents[this.contents.length - 1];
     }
 
     include(url) {
@@ -226,8 +110,18 @@ export default class TextRenderer extends Renderer {
             catch(error) {
                 // Error object, renderer, DATA
                 const elem = printRenderError(this, error);
-                this.first.before(elem);
-                removeNodeRange(this.first, this.last);
+
+                // Remove objects
+                const contents = this.contents;
+                if (contents.length > 1) {
+                    deleteRange();
+                    if (window.DEBUG) ++stats.remove;
+                    while (contents[1]) stop(contents.shift());
+                }
+
+                // Manipulate contents
+                contents[0].before(elem);
+                contents.unshift(elem);
                 return;
             }
         }
@@ -236,18 +130,92 @@ export default class TextRenderer extends Renderer {
     }
 
     render(strings) {
-        let n = 0;
+        const contents = this.contents;
+        let i      = -1;
 
-        this.contents.forEach(stop);
-        this.contents.length = 0;
-        this.contents.push(strings[n]);
+        // Last is the original text node
+        const last = contents[contents.length - 1];
+        let n      = -1;
+        let string = '';
+        let object;
 
-        while (strings[++n] !== undefined) {
-            composeDOM(this.contents, arguments[n]);
-            pushContents(this.contents, strings[n]);
+        while(++n < strings.length - 1) {
+            // Add previous string in stings to output string
+            string += strings[n];
+
+            // Object may be a string, DOM node, fragment or Literal Template.
+            object = arguments[n + 1];
+
+            // If object is not a node or renderer, append to string
+            if (!(object instanceof Template) && !(object instanceof Node)) {
+                string += toText(object);
+                continue;
+            }
+
+            // If a there is a string to splice in
+            if (string) {
+                // And content is a text node, but not the last text node, update it
+                if (++i < contents.length - 1 && isTextNode(contents[i])) {
+                    setNodeValue(contents[i], string);
+                }
+                // Otherwise create new text node and splice it into contents
+                // and the DOM
+                else {
+                    const node = document.createTextNode(string);
+                    contents[i].before(node);
+                    contents.splice(i, 0, node);
+                    if (window.DEBUG) ++stats.add;
+                }
+
+                string = '';
+            }
+
+            // It is possible that the template has returned the same object
+            // again, in which case we do nothing. Unlikely, but possible.
+            if (object === contents[++i]) continue;
+            --i;
+
+            if (object instanceof Template) {
+                // Content is also a template. Maybe in future we will update it,
+                // but for now, replace it
+                // Add template content to the DOM
+                contents[++i].before(toContent(object));
+                contents.splice(i, 0, object);
+                if (window.DEBUG) ++stats.add;
+                continue;
+            }
+
+            if (isFragmentNode(object)) {
+                // TODO Splice fragment content in... represent in contents
+                // with a new object?
+                console.log('TODO');
+                continue;
+            }
+
+            // Compare object against current content
+            if (isTextNode(object) || isElementNode(object) || isCommentNode(object)) {
+                // Splice node into contents and the DOM
+                contents[++i].before(object);
+                contents.splice(i, 0, object);
+                if (window.DEBUG) ++stats.add;
+                continue;
+            }
         }
 
-        updateDOM(stats, this.first, this.last, this.contents);
+        // Add the last string on
+        string += strings[n];
+
+        // Remove unused content up to but not including the last node
+        // and .stop() it
+        if (contents[++i] !== last) {
+            const mid = contents[i].firstNode || contents[i];
+            deleteRange(mid, last);
+            if (window.DEBUG) ++stats.remove;
+            contents.splice(i, contents.length - i - 1).forEach(stop);
+        }
+
+        // Set text of final text node
+        setNodeValue(last, string);
     }
 
     stop() {

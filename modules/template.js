@@ -30,7 +30,7 @@ import Signal              from '../../fn/modules/signal.js';
 import Data                from '../../fn/modules/signal-data.js';
 import create              from '../../dom/modules/create.js';
 import identify            from '../../dom/modules/identify.js';
-import isTextNode          from '../../dom/modules/is-text-node.js';
+import { isTextNode, toNodeType } from '../../dom/modules/node.js';
 import { pathSeparator }   from './compile/constants.js';
 import removeNodeRange     from './dom/remove-node-range.js';
 import Renderer, { stats } from './renderer.js';
@@ -46,7 +46,7 @@ const defaults = {};
 
 
 /*
-Template
+LiteralTemplate
 Descendant paths are stored in the form `"#id>1>12>3"`, enabling fast
 cloning of template instances without retraversing their DOMs looking for
 literal attributes and text.
@@ -62,44 +62,12 @@ function getElement(path, node) {
         .reduce(getChild, node) ;
 }
 
-function isMarkerNode(node) {
-    // Markers should be spaces-only else we risk unrendered content being
-    // inserted into the DOM. If it's not a text node, it's not a marker
-    // node because it could contain something that contains unrendered code.
-    if (!isTextNode(node)) return false;
-
-    const text  = node.nodeValue;
-    const space = /^\s*/.exec(text);
-
-    // If text is more than just space return false
-    return space[0].length === text.length;
-}
-
-function prepareContent(content) {
-    // Due to the way HTML is usually written the vast majority of templates
-    // start and end with a text node, usually containing some white space
-    // and new lines. Template uses these as delimiters for the start
-    // and end of templated content – where it can. If the template does NOT
-    // start or end with a text node, we insert text nodes where needed.
-    const first = content.childNodes[0];
-    const last  = content.childNodes[content.childNodes.length - 1];
-
-    if (!first || !isMarkerNode(first)) {
-        content.prepend(create('text'));
-    }
-
-    if (!last || !isMarkerNode(last)) {
-        content.append(create('text'));
-    }
-}
-
 function compileTemplate(template, id, options) {
     const content = template.content || create('fragment', template.childNodes, template) ;
 
     let targets;
     if (window.DEBUG) {
         groupCollapsed('compile', '#' + id, 'yellow');
-        prepareContent(content);
         targets = compileNode(content, options, { template });
         groupEnd();
     }
@@ -110,8 +78,42 @@ function compileTemplate(template, id, options) {
     return { content, targets };
 }
 
-export default class Template {
-    // Data signal
+function removeRange(first, last, fragment) {
+    if (window.DEBUG && first.parentNode !== last.parentNode) {
+        throw new Error('first and last not children of same parent')
+    }
+
+    if (first === last) {
+        fragment.prepend(last);
+        if (window.DEBUG) ++stats.remove;
+        return;
+    }
+
+    // Select range of nodes managed by this template
+    const range = new Range();
+    range.setStartBefore(first);
+    range.setEndAfter(last);
+
+    // Remove range content from DOM
+    const dom = range.extractContents();
+    if (window.DEBUG) ++stats.remove;
+
+    // And place into this.content fragment
+    fragment.appendChild(dom);
+}
+
+export default class LiteralTemplate {
+    static isTemplate(object) {
+        return object instanceof LiteralTemplate;
+    }
+
+    static of(html) {
+        const template = create('template', html);
+        return new LiteralTemplate(template);
+    }
+
+    #first;
+    #last;
     #data;
 
     constructor(template, parent = template.parentElement, parameters = {}, data, options = defaults) {
@@ -127,14 +129,16 @@ export default class Template {
                 nostrict: options.nostrict || (template.hasAttribute && template.hasAttribute('nostrict'))
             }));
 
-        const content = compiled.content.cloneNode(true);
+        const content   = compiled.content.cloneNode(true);
+        const children  = content.childNodes;
 
+        // The first node may change. The last node is always the last node.
+        this.#data      = Signal.of(Data.of(data));
+        this.#first     = children[0];
+        this.#last      = children[children.length - 1];
         this.content    = content;
         this.element    = parent;
         this.parameters = parameters;
-        this.first      = content.childNodes[0];
-        this.last       = content.childNodes[content.childNodes.length - 1];
-        this.#data      = Signal.of(Data.of(data));
         this.contents   = compiled.targets
             // We must find targets in cloned content
             .map(this.#toRendererParams, this)
@@ -166,84 +170,110 @@ export default class Template {
         return renderer;
     }
 
+    /*
+    template.firstNode
+    template.lastNode
+    */
+
+    get firstNode() {
+        // Has #first become the last node of a TextRenderer?
+        const renderer = this.contents[0];
+//console.log('First renderer', renderer, this.contents.length);
+        return this.#first === renderer.lastNode ?
+            renderer.firstNode :
+            this.#first ;
+    }
+
+    get lastNode() {
+        return this.#last;
+    }
+
+    /*
+    .push()
+    */
+
     push(object) {
         if (this.status === 'done') throw new Error('Renderer is done, cannot .push() data');
+
+        // Dedup
+        if (this.#data === object) return;
+
+        // If we are coming out of sleep put content back in the DOM
+        if (this.#data === null && object !== null) {
+            this.lastNode.before(this.content);
+        }
 
         // Causes renderers to .invalidate() because they are dependent on
         // this.#data signal
         this.#data.value = Data.of(object);
 
-        // If object is null remove all but the last node to the renderer's
-        // content fragment
+        // If object is null put template to sleep: remove all but the last node
+        // to the content fragment and blank out the last text node, which we
+        // leave in the DOM to serve as a marker for reentry of rendered content
         if (object === null) {
-            nodes.length = 0;
-            let node = this.first;
-
-            while (node !== this.last) {
-                nodes.push(node);
-                node = node.nextSibling;
+            if (this.firstNode !== this.lastNode) {
+                removeRange(this.firstNode, this.lastNode.previousSibling, this.content);
             }
 
-            this.content.prepend.apply(this.content, nodes);
-            stats.remove += nodes.length;
-            return this;
+            this.lastNode.textContent = '';
         }
 
-        // If there is a content in the content fragment and this.last is not in
-        // the content fragment, it must be in the parent DOM being used as a
-        // marker. It's time for its freshly rendered brethren to join it.
-        if (this.content.lastChild && this.last !== this.content.lastChild) {
-            this.last.before(this.content);
-            stats.add += 1;
+        return this.content;
+    }
+
+    /**
+    .before()
+    **/
+
+    before() {
+        const first = this.firstNode;
+        const last  = this.lastNode;
+
+        // Last node is not in the DOM
+        if (this.content.lastChild === last) {
+            throw new Error('Illegal LiteralTemplate.before() – template is not in the DOM')
         }
 
-        return this;
+        // First node is not in the DOM
+        return this.content.firstChild === first ?
+            last.before.apply(last, arguments) :
+            first.before.apply(first, arguments) ;
     }
 
     /**
     .remove()
     Removes rendered content from the DOM, placing it back in the
-    fragment at `renderer.content`.
+    `renderer.content` fragment.
     **/
+
     remove() {
-//console.log('Template.remove()');
-        // Can't remove if we're already removed
-        if (this.content.lastChild === this.last) {
-            return 0;
+        const first = this.firstNode;
+        const last  = this.lastNode;
+
+        // Check if we are in the DOM. Can't remove if we're not in the DOM.
+        if (this.content.lastChild === last) {
+            return;
         }
 
-        // Remove first to last and all nodes in between to .content fragment
-        const nodes = getNodeRange(this.first, this.last);
-        this.content.prepend.apply(this.content, nodes);
-        stats.remove += nodes.length;
-        return nodes.length;
-    }
-
-    /**
-    .replaceWith()
-    Removes rendered content from the DOM and inserts arguments in its place.
-    **/
-    replaceWith() {
-//console.log('Template.replaceWith()');
-        // Can't replace if we're removed
-        if (this.content.lastChild === this.last) {
-            return 0;
+        if (this.content.firstChild === first) {
+            this.content.appendChild(last);
+            return;
         }
 
-        this.last.after.apply(this.last, arguments);
-        stats.add += arguments.length;
-        return this.remove();
+        removeRange(first, last, this.content);
     }
 
     /**
     .stop()
     Stops renderer.
     **/
+
     stop = Renderer.prototype.stop;
 
     /**
     .done(object)
     Registers `object.stop()` to be called when this renderer is stopped.
     **/
+
     done = Renderer.prototype.done;
 }

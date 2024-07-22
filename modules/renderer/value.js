@@ -84,15 +84,11 @@ function setElementValue(element, value) {
     const isEnhanced = enhancedTypes[element.type];
 
     // If value is already set on $value expando do nothing
-    if (isEnhanced && $value in element && element[$value] === value) {
-        return 0;
-    }
+    if (isEnhanced && $value in element && element[$value] === value) return;
 
     // Refuse to set value that does not conform to input type
     const expectedType = types[element.type];
-    if (expectedType && typeof value !== expectedType) {
-        return 0;
-    }
+    if (expectedType && typeof value !== expectedType) return;
 
     // Where input is an enhanced type set object value as a $value expando
     if (isEnhanced) {
@@ -103,9 +99,7 @@ function setElementValue(element, value) {
     const string = toText(value);
 
     // Avoid updating DOM with the same value.
-    if (string === element.value) {
-        return 0;
-    }
+    if (string === element.value) return;
 
     // Bit of an edge case, but where we have a custom element that has not
     // been upgraded yet, but will have a value property defined on its
@@ -113,11 +107,13 @@ function setElementValue(element, value) {
     // mask the ultimate get/set definition on the prototype...
     if ('value' in element) {
         element.value = string;
+        if (window.DEBUG) ++stats.property;
     }
     // ...so don't, if property is not in node. Set the attribute, it will be
     // picked up on upgrade.
     else {
         element.setAttribute('value', string);
+        if (window.DEBUG) ++stats.attribute;
     }
 
     // Optional event hook
@@ -126,7 +122,7 @@ function setElementValue(element, value) {
     }
 
     // Return DOM mod count
-    return 1;
+    return;
 }
 
 export const setValue = overload(get('type'), {

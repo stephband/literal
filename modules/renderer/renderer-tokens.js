@@ -28,7 +28,7 @@ function updateTokens(list, cached, tokens, count = 0) {
     // The remainder are not in values and thus must be removed
     if (cached.length) {
         list.remove.apply(list, cached);
-        ++count;
+        if (window.DEBUG) ++stats.tokens;
     }
 
     // Add the new tokens. The list object (a TokenList) ignores tokens it
@@ -36,9 +36,10 @@ function updateTokens(list, cached, tokens, count = 0) {
     // for logging
     if (tokens.length) {
         list.add.apply(list, tokens);
-        ++count
+        if (window.DEBUG) ++stats.tokens;
     }
 
+    if (window.DEBUG) ++stats.tokens;
     return count;
 }
 
@@ -59,30 +60,28 @@ export default class TokensRenderer extends AttributeRenderer {
     }
 
     render(strings) {
-        let mutations = 0;
-
-        // Set permanent tokens on first render only
+        // Set permanent tokens from strings on first render
         if (this.renderCount === 1) {
-            const tokens = strings
-                .join(' ')
-                .trim();
-
+            const tokens = strings.join(' ').trim();
             if (tokens) {
                 const array = tokens.split(/\s+/);
                 this.list.add.apply(this.list, array);
-                stats.token += array.length;
+                if (window.DEBUG) stats.token += 1;
             }
         }
 
-        // Turn evaluated values into an array of strings
-        const tokens = A.slice.call(arguments, 1)
-            .map(toText)
-            .join(' ')
-            .trim()
-            .split(/\s+/)
-            .filter((string) => !!string);
+        // Concat remaining expression values into a spaced string
+        let n      = 0;
+        let string = '';
+        while (strings[++n] !== undefined) {
+            string += ' ' + toText(arguments[n]);
+        }
 
-        stats.token += updateTokens(this.list, this.tokens, tokens);
+        // Split into tokens
+        const tokens = string.trim().split(/\s+/);
+
+        // Set new tokens, remove unused tokens
+        updateTokens(this.list, this.tokens, tokens);
         this.tokens = tokens;
     }
 }

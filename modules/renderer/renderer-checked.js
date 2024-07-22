@@ -5,8 +5,8 @@ import Signal            from '../../../fn/modules/signal.js';
 import trigger           from '../../../dom/modules/trigger.js';
 import config            from '../config.js';
 import bindChecked       from '../scope/bind-checked.js';
-import composeBoolean    from './compose-boolean.js';
 import AttributeRenderer from './renderer-attribute.js';
+import { toAttributeBoolean } from './renderer-boolean.js';
 import { getValue }      from './value.js';
 import { stats }         from './renderer.js';
 
@@ -36,19 +36,15 @@ function setChecked(element, value, hasValueAttribute) {
         !!value ;
 
     // Avoid updating the DOM unnecessarily
-    if (checked === element.checked) {
-        return 0;
-    }
+    if (checked === element.checked) return;
 
     element.checked = checked;
+    if (window.DEBUG) ++stats.property;
 
     // Optional event hook
     if (config.updateEvent) {
         trigger(config.updateEvent, node);
     }
-
-    // Return DOM mod count
-    return 1;
 }
 
 export default class CheckedRenderer extends AttributeRenderer {
@@ -66,24 +62,12 @@ export default class CheckedRenderer extends AttributeRenderer {
         Signal.evaluate(this, this.evaluate);
     }
 
-/*
-    create(element, parameters) {
-        return AttributeRenderer.prototype.create.call(this, element, assign({
-            // Parameters
-            bind: (path, object, to=id, from=id) =>
-                bindChecked(element, object, path, to, from, setChecked)
-        }, parameters));
-    }
-*/
     render(strings) {
-        if (this.singleExpression) {
-            // Don't bother evaluating empty space in attributes
-            this.value = arguments[1];
-        }
-        else {
-            this.value = composeBoolean(arguments);
-        }
+        // If arguments contains a single expression use its value
+        const value = this.singleExpression ?
+            Boolean(arguments[1]) :
+            toAttributeBoolean(arguments) ;
 
-        stats.property += setChecked(this.element, this.value, this.hasValue);
+        return setChecked(this.element, value, this.hasValue);
     }
 }

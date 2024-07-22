@@ -10,7 +10,7 @@ import noop             from '../../fn/modules/noop.js';
 import Signal           from '../../fn/modules/signal.js';
 import element, { getInternals as Internals } from '../../dom/modules/element.js';
 import requestData      from '../modules/request-data.js';
-import Template from '../modules/template.js';
+import Template         from '../modules/template.js';
 import print            from '../modules/scope/print.js';
 
 const assign  = Object.assign;
@@ -65,17 +65,18 @@ export default element('<template is="literal-html">', {
         if (internals.initialised) { return; }
         internals.initialised = true;
 
-        // Compute signal listens to changs
+        // Observe signal listens to signal value changes and calls fn() on next
+        // tick, as well as immediately if signal already has value
         Signal.observe(internals.data, () => {
             const { data, renderer } = internals;
 
             if (!data.value) return;
-            renderer.push(data.value);
+            const fragment = renderer.push(data.value);
 
             // Replace DOM content on first push
             if (!internals.pushed) {
                 internals.pushed = true;
-                this.replaceWith(renderer.content);
+                this.replaceWith(fragment);
             }
         });
 
