@@ -48,6 +48,81 @@ function toContent(object) {
         object ;
 }
 
+function objectToContents(state, object) {
+    // Object may be a primitive, a DOM node or fragment, a LiteralTemplate or
+    // an array of any of these.
+    let { string, contents, i } = state;
+
+    // If object is not a node or renderer, append to string. Array.isArray()
+    // does return true for a proxy of an array.
+    if (!(object instanceof Template) && !(object instanceof Node) && !Array.isArray(object)) {
+        state.string += toText(object);
+        return;
+    }
+
+    // If there is a string to splice in
+    if (string) {
+        // And content is a text node, but not the last text node, update it
+        if (++i < contents.length - 1 && isTextNode(contents[i])) {
+            setNodeValue(contents[i], string);
+        }
+        // Otherwise create new text node and splice it into contents
+        // and the DOM
+        else {
+            const node = document.createTextNode(string);
+            contents[i].before(node);
+            if (window.DEBUG) ++stats.add;
+            contents.splice(i, 0, node);
+        }
+
+        state.string = '';
+    }
+
+    // It is possible that the template has returned the same object
+    // again, in which case we do nothing. Unlikely, but possible.
+    if (object === contents[++i]) {
+        state.i = i;
+        return;
+    }
+    --i;
+
+    // Object is an array, recurse over its values
+    if (Array.isArray(object)) {
+        state.i = i;
+        let n = -1;
+        while(++n < object.length) objectToContents(state, object[n]);
+        return;
+    }
+
+    // Object is a freshly rendered Literal Template
+    if (object instanceof Template) {
+        contents[++i].before(toContent(object));
+        if (window.DEBUG) ++stats.add;
+        contents.splice(i, 0, object);
+        state.i = i;
+        return;
+    }
+
+    // Object is a fragment
+    if (isFragmentNode(object)) {
+        // TODO Splice fragment content in... represent in contents
+        // with a new object?
+        console.log('TODO');
+        state.i = i;
+        return;
+    }
+
+    // Object is a DOM node
+    if (isTextNode(object) || isElementNode(object) || isCommentNode(object)) {
+        // Splice node into contents and the DOM
+        contents[++i].before(object);
+        if (window.DEBUG) ++stats.add;
+        contents.splice(i, 0, object);
+        state.i = i;
+        return;
+    }
+}
+
 
 /**
 TextRenderer()
@@ -119,92 +194,38 @@ export default class TextRenderer extends Renderer {
     }
 
     render(strings) {
-        const contents = this.contents;
-        let i      = -1;
-
         // Last is the original text node
-        const last = contents[contents.length - 1];
-        let n      = -1;
-        let string = '';
-        let object;
+        const contents = this.contents;
+        const last     = contents[contents.length - 1];
 
+        // Use `this` as an accumulator. It's an internal object anyway, so
+        // this should not leak, but I admit doing this is a bit naff. It does
+        // avoid creating any more objects though.
+        this.string = '';
+        this.i      = -1;
+
+        // Loop over strings, zip objects into string
+        let n = -1;
         while(++n < strings.length - 1) {
             // Add previous string in stings to output string
-            string += strings[n];
-
-            // Object may be a string, DOM node, fragment or Literal Template.
-            object = arguments[n + 1];
-
-            // If object is not a node or renderer, append to string
-            if (!(object instanceof Template) && !(object instanceof Node)) {
-                string += toText(object);
-                continue;
-            }
-
-            // If a there is a string to splice in
-            if (string) {
-                // And content is a text node, but not the last text node, update it
-                if (++i < contents.length - 1 && isTextNode(contents[i])) {
-                    setNodeValue(contents[i], string);
-                }
-                // Otherwise create new text node and splice it into contents
-                // and the DOM
-                else {
-                    const node = document.createTextNode(string);
-                    contents[i].before(node);
-                    contents.splice(i, 0, node);
-                    if (window.DEBUG) ++stats.add;
-                }
-
-                string = '';
-            }
-
-            // It is possible that the template has returned the same object
-            // again, in which case we do nothing. Unlikely, but possible.
-            if (object === contents[++i]) continue;
-            --i;
-
-            if (object instanceof Template) {
-                // Content is also a template. Maybe in future we will update it,
-                // but for now, replace it
-                // Add template content to the DOM
-                contents[++i].before(toContent(object));
-                contents.splice(i, 0, object);
-                if (window.DEBUG) ++stats.add;
-                continue;
-            }
-
-            if (isFragmentNode(object)) {
-                // TODO Splice fragment content in... represent in contents
-                // with a new object?
-                console.log('TODO');
-                continue;
-            }
-
-            // Compare object against current content
-            if (isTextNode(object) || isElementNode(object) || isCommentNode(object)) {
-                // Splice node into contents and the DOM
-                contents[++i].before(object);
-                contents.splice(i, 0, object);
-                if (window.DEBUG) ++stats.add;
-                continue;
-            }
+            this.string += strings[n];
+            objectToContents(this, arguments[n + 1]);
         }
 
         // Add the last string on
-        string += strings[n];
+        let string = this.string + strings[n];
+        let i      = this.i;
 
-        // Remove unused content up to but not including the last node
-        // and .stop() it
+        // Set text of final text node
+        setNodeValue(last, string);
+
+        // Remove and stop unused contents up to but not including the last node
         if (contents[++i] !== last) {
             const mid = contents[i].firstNode || contents[i];
             deleteRange(mid, last);
             if (window.DEBUG) ++stats.remove;
             contents.splice(i, contents.length - i - 1).forEach(stop);
         }
-
-        // Set text of final text node
-        setNodeValue(last, string);
     }
 
     stop() {

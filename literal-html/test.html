@@ -287,6 +287,14 @@
 
     <div class="test">
         <template is="literal-html">
+            <h2>Array.map(include())</h2>
+            <p></p>
+            ${ [{ value: 1 }, { value: 2 }, { value: 3 }].map(include('#template-1')) }
+        </template>
+    </div>
+
+    <div class="test">
+        <template is="literal-html">
             <h2>Compile and render errors</h2>
             ${ include('#template-3', data) }
             ${ include('#template-4', data) }
