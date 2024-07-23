@@ -166,8 +166,8 @@ const compileNode = overload((targets, node) => toType(node), {
             target.literal = compile(source, scope, TextRenderer.parameterNames.join(', '), options);
         }
 
+        node.nodeValue = '';
         targets.push(target);
-
         return targets;
     },
 
