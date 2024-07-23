@@ -17,6 +17,10 @@
     <style>
         body  { columns: 2; column-gap: 2.5rem; margin: 1.25rem; font-family: sans-serif; }
 
+        table {
+            --x-gap: 0.375rem;
+        }
+
         table > * > tr > td,
         table > * > tr > th {
             text-align: left;
@@ -72,8 +76,8 @@
     <table class="striped-table x-bleed test">
         <thead>
             <tr>
-                <th>Expression</th>
-                <th style="width:40%;">Render</th>
+                <th style="width: 60%;">Expression</th>
+                <th style="width: 40%;">Render</th>
             </tr>
         </thead>
         <tbody>
@@ -166,17 +170,18 @@
                 </td>
             </tr>
             <tr>
-                <th><code>${ events('pointermove', body)<br/>
-                &nbsp;&nbsp;.map((e) => round(e.pageX)) }</code></th>
+                <th><code>${&nbsp;events('pointermove', body).map(<br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;(e) => round(e.pageX) + ', ' + round(e.pageY)<br/>
+                )}</code></th>
                 <td>
-                    <template is="literal-html">${ events('pointermove', body).map((e) => round(e.pageX)) }</template>
+                    <template is="literal-html">${ events('pointermove', body).map((e) => round(e.pageX) + ', ' + round(e.pageY)) }</template>
                 </td>
             </tr>
         </tbody>
     </table>
 
     <div class="test">
-        <template is="literal-html" data-state="1" data-value="Hello" data-template="2">
+        <template is="literal-html" data-state="1" data-value="Hello" data-template="3">
             ${ window.data = data, include('#template-' + data.template, data) }
         </template>
     </div>

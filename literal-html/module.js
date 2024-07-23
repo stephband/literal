@@ -11,7 +11,7 @@ import Signal           from '../../fn/modules/signal.js';
 import element, { getInternals as Internals } from '../../dom/modules/element.js';
 import requestData      from '../modules/request-data.js';
 import Template         from '../modules/template.js';
-import print            from '../modules/scope/print.js';
+import { printError }   from '../modules/scope/print.js';
 
 const assign  = Object.assign;
 const rpath   = /^(\.+|https?:\/)?\//;
@@ -20,6 +20,7 @@ const robject = /^(\{|\[)/;
 const onerror = window.DEBUG ?
     (e, element) => element.replaceWith(print(e)) :
     noop ;
+
 
 /* Lifecycle */
 
@@ -127,7 +128,7 @@ export default element('<template is="literal-html">', {
                 if (p.cancelled) { return; }
                 this.data = data;
             })
-            .catch((e) => onerror(e, this));
+            .catch((error) => element.replaceWith(printError(this, error)));
         }
     },
 

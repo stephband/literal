@@ -7,7 +7,7 @@ import config            from '../config.js';
 import bindChecked       from '../scope/bind-checked.js';
 import AttributeRenderer from './renderer-attribute.js';
 import { toAttributeBoolean } from './renderer-boolean.js';
-import { getValue }      from './value.js';
+import { getValue }      from './renderer-value.js';
 import { stats }         from './renderer.js';
 
 

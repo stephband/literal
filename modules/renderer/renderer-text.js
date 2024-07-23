@@ -12,7 +12,7 @@ import { isCommentNode, isElementNode, isFragmentNode, isTextNode } from '../../
 import include          from '../scope/include.js';
 import deleteRange      from '../dom/delete-range.js';
 import Template         from '../template.js';
-import print, { printRenderError } from '../scope/print.js';
+import print, { printError } from '../scope/print.js';
 import toText           from './to-text.js';
 import Renderer, { stats } from './renderer.js';
 
@@ -108,7 +108,7 @@ export default class TextRenderer extends Renderer {
             }
             catch(error) {
                 // Error object, renderer, DATA
-                const elem = printRenderError(this, error);
+                const elem = printError(this, error);
                 this.render(['',''], elem);
                 //throw new Error('Literal', { cause: error });
                 return;

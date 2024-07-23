@@ -18,7 +18,9 @@ export { default as parse      } from '../../../dom/modules/parse.js';
 export { default as request    } from '../../../dom/modules/request.js';
 export { default as toNodeType } from '../../../dom/modules/to-type.js';
 export { default as trigger    } from '../../../dom/modules/trigger.js';
-export { getValue }              from '../renderer/value.js';
+
+// Causes import loop because scope is imported into renderers
+//export { getValue }              from '../renderer/renderer-value.js';
 
 export function translate(key) {
     if (window.DEBUG && !window.translations) {

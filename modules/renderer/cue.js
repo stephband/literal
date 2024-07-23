@@ -31,7 +31,7 @@ function render(t) {
             // Frame time
             (t / 1000).toFixed(3) + 's – '
             // renderers
-            + renderers.length + ' renderers – '
+            + renderers.length + ' renderer' + (renderers.length === 1 ? '' : 's') + ' fired'
             // mutations
             + (stats.remove    ? ', ' + stats.remove    + ' remove'    : '')
             + (stats.add       ? ', ' + stats.add       + ' add'       : '')

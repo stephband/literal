@@ -2,7 +2,7 @@
   "title": "Literal",
   "name": "literal",
   "description": "Literal enhances HTML templates with JS literal expressions for data binding, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped.",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "author": {
     "name": "Stephen Band",
     "url": "http://stephen.band/",
