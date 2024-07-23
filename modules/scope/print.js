@@ -46,38 +46,27 @@ function toHTML(object) {
     }
 }
 
-export function printRenderError(renderer, error, data) {
+export function printError(renderer, error) {
     // TODO: get the data in here!
+
     //const fullpath = renderer.path
     //    + (typeof renderer.name === 'string' ? '>' + renderer.name : '') ;
 
-    log('error', '#' + renderer.templateId + ' – ' + renderer.message, '', '', 'red');
+    log('error', renderer.template + ' – ' + renderer.code, '', '', 'red');
     console.log(error);
 
     return create('pre', {
         class: 'literal-error',
-        html: '#' + renderer.templateId
+        html: renderer.template
             //+ ' <small>&gt; ' + fullpath.replace(/>/g, ' &gt ') + '</small>'
             //+ '&nbsp;&nbsp;'
-            + ' <small class="literal-message">' + renderer.message.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</small>'
+            + ' <small class="literal-message">' + renderer.code.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</small>'
             + '<code>'
             + '<strong>' + error.constructor.name + '</strong> '
             + error.message.replace(/</g, '&lt;').replace(/>/g, '&gt;')
             + '</code>'
             + linkHTML
     });
-}
-
-export function printError(renderer, error) {
-    const element = document.createElement('pre');
-    let html = '';
-
-    element.setAttribute('class', 'literal-error');
-    element.innerHTML = '<strong>' + error.constructor.name + '</strong>'
-    + '<code>' + error.message + '</code>' ;
-
-    console.error(error);
-    return element;
 }
 
 export function printDebug(renderer, object) {
@@ -92,10 +81,10 @@ export function printDebug(renderer, object) {
 
     return create('pre', {
         class: 'literal-print',
-        html: '#' + renderer.templateId
+        html: renderer.template
             + ' <small>' + (fullpath ? '&gt; ' + fullpath.replace(/>/g, ' &gt ') : '') + '</small>'
             //+ '&nbsp;&nbsp;'
-            //+ ' <small class="literal-message">' + renderer.message.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</small>'
+            //+ ' <small class="literal-message">' + renderer.code.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</small>'
             + '<span class="literal-count">' + renderer.renderCount + '</span>'
             + html
             + linkHTML

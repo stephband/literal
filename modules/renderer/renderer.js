@@ -126,8 +126,9 @@ function renderExpressionValue(value) {
 
 
 /*
-Renderer(path, name, source, message)
+Renderer(signal, fn, parameters, element, name, debug)
 */
+
 const values = [];
 let N = 0;
 export default class Renderer {
@@ -140,20 +141,20 @@ export default class Renderer {
         // overridden on dependent constructors
         const parameterNames = this.constructor.parameterNames;
 
-        this.#data       = signal;
-        this.literal     = literal;
-        this.element     = element;
-        this.status      = 'idle';
-        this.parameters  = parameterNames.map((name) => parameters[name]);
-        this.renderCount = 0;
-
         // Assign debug properties and track the number of renderers created
         if (window.DEBUG) {
-            this.templateId = debug.templateId;
-            this.path       = debug.path;
-            this.message    = debug.message;
+            this.template = debug.template;
+            this.path     = debug.path;
+            this.code     = debug.code;
             ++Renderer.count;
         }
+
+        this.#data       = signal;
+        this.element     = element;
+        this.literal     = literal;
+        this.parameters  = parameterNames.map((name) => parameters[name]);
+        this.renderCount = 0;
+        this.status      = 'idle';
     }
 
     evaluate() {
@@ -176,7 +177,7 @@ export default class Renderer {
         // signals to invalidate. It does have status.
         if (this.status === 'done') return;
         if (this.status === 'cued') {
-console.warn(this.constructor.name + ' ' + this.templateId + ' ' + this.path + ' already cued');
+console.warn(this.constructor.name + ' ' + this.template + ' ' + this.path + ' already cued');
             return;
         }
 

@@ -2,7 +2,7 @@
 //import composeString from './compose-string.js';
 import names  from './property-names.js';
 import Renderer, { stats } from './renderer.js';
-import { printRenderError } from '../scope/print.js';
+import { printError } from '../scope/print.js';
 import toText from './to-text.js';
 
 
@@ -73,8 +73,7 @@ export default class AttributeRenderer extends Renderer {
             }
             catch(error) {
                 // Error object, renderer, DATA
-                const elem = printRenderError(this, error);
-                console.log(this);
+                const elem = printError(this, error);
                 this.element.before(elem);
                 return;
             }

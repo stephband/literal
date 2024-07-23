@@ -9,7 +9,7 @@ import ValueRenderer     from '../renderer/renderer-value.js';
 import isLiteralString   from './is-literal-string.js';
 import truncate          from './truncate.js';
 import compile           from './compile.js';
-import { printRenderError } from '../scope/print.js';
+import { printError } from '../scope/print.js';
 
 
 const assign = Object.assign;
@@ -38,22 +38,22 @@ export default function compileAttribute(array, element, attribute, path, option
         AttributeRenderer ;
 
     if (window.DEBUG) {
-        const tag = element.tagName.toLowerCase();
-        const message = truncate(64, '<'
+        const tag  = element.tagName.toLowerCase();
+        const code = truncate(64, '<'
             + tag + ' '
             + name + '="' + source
             + '">') ;
 
         // Fill target object with debug info
-        assign(target, debug, { tag, message, property });
+        assign(target, debug, { tag, code, property });
 
         // Attempt to compile, and in case of an error replace element with
         // an error element
         try {
-            target.literal = compile(source, scope, Renderer.parameterNames.join(', '), options, message);
+            target.literal = compile(source, scope, Renderer.parameterNames.join(', '), options, code);
         }
         catch(error) {
-            element.replaceWith(printRenderError(target, error));
+            element.replaceWith(printError(target, error));
             return array;
         }
     }

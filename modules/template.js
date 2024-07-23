@@ -59,13 +59,13 @@ function getElement(path, node) {
         .reduce(getChild, node) ;
 }
 
-function compileTemplate(template, id, options) {
+function compileTemplate(template, options) {
     const content = template.content || create('fragment', template.childNodes, template) ;
 
     let targets;
     if (window.DEBUG) {
-        groupCollapsed('compile', '#' + id, 'yellow');
-        targets = compileNode(content, options, { template });
+        groupCollapsed('compile', '#' + template.id, 'yellow');
+        targets = compileNode(content, options, { template: '#' + template.id });
         groupEnd();
     }
     else {
@@ -119,10 +119,9 @@ export default class LiteralTemplate {
         // accessing any signals outside of a Signal.evaluate(), or they are
         // registered as dependents of the TextRenderer.
 
-        const id = identify(template, 'literal-') ;
-
+        const id       = identify(template, 'literal-');
         const compiled = cache[id] ||
-            (cache[id] = compileTemplate(template, id, {
+            (cache[id] = compileTemplate(template, {
                 nostrict: options.nostrict || (template.hasAttribute && template.hasAttribute('nostrict'))
             }));
 
@@ -173,10 +172,10 @@ export default class LiteralTemplate {
     */
 
     get firstNode() {
-        // Has #first become the last node of a TextRenderer?
-        const renderer = this.contents[0];
-//console.log('First renderer', renderer, this.contents.length);
-        return this.#first === renderer.lastNode ?
+        // Has #first become the last node of a TextRenderer? Note that it is
+        // perfectly possible to have a template with no content renderers.
+        const renderer = this.contents && this.contents[0];
+        return renderer && this.#first === renderer.lastNode ?
             renderer.firstNode :
             this.#first ;
     }
@@ -259,18 +258,20 @@ export default class LiteralTemplate {
 
         removeRange(first, last, this.content);
     }
+}
 
+assign(LiteralTemplate.prototype, {
     /**
     .stop()
     Stops renderer.
     **/
 
-    stop = Renderer.prototype.stop;
+    stop: Renderer.prototype.stop,
 
     /**
     .done(object)
     Registers `object.stop()` to be called when this renderer is stopped.
     **/
 
-    done = Renderer.prototype.done;
-}
+    done: Renderer.prototype.done
+});
