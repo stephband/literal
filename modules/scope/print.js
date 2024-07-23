@@ -51,18 +51,18 @@ export function printRenderError(renderer, error, data) {
     //const fullpath = renderer.path
     //    + (typeof renderer.name === 'string' ? '>' + renderer.name : '') ;
 
-    log('error', '#' + renderer.template.id + ' – ' + renderer.message, '', '', 'red');
+    log('error', '#' + renderer.templateId + ' – ' + renderer.message, '', '', 'red');
     console.log(error);
 
     return create('pre', {
         class: 'literal-error',
-        html: '#' + renderer.template.id
+        html: '#' + renderer.templateId
             //+ ' <small>&gt; ' + fullpath.replace(/>/g, ' &gt ') + '</small>'
             //+ '&nbsp;&nbsp;'
             + ' <small class="literal-message">' + renderer.message.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</small>'
             + '<code>'
-            +   '<strong>' + error.constructor.name + '</strong> '
-            +   error.message.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            + '<strong>' + error.constructor.name + '</strong> '
+            + error.message.replace(/</g, '&lt;').replace(/>/g, '&gt;')
             + '</code>'
             + linkHTML
     });
@@ -92,7 +92,7 @@ export function printDebug(renderer, object) {
 
     return create('pre', {
         class: 'literal-print',
-        html: '#' + renderer.template.id
+        html: '#' + renderer.templateId
             + ' <small>' + (fullpath ? '&gt; ' + fullpath.replace(/>/g, ' &gt ') : '') + '</small>'
             //+ '&nbsp;&nbsp;'
             //+ ' <small class="literal-message">' + renderer.message.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</small>'

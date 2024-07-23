@@ -19,8 +19,6 @@ export const stats = {
     add:       0
 };
 
-let id = 0;
-
 function callStop(stopable) {
     stopable.stop();
 }
@@ -142,19 +140,18 @@ export default class Renderer {
         // overridden on dependent constructors
         const parameterNames = this.constructor.parameterNames;
 
-        this.id          = ++id;
+        this.#data       = signal;
         this.literal     = literal;
         this.element     = element;
         this.status      = 'idle';
         this.parameters  = parameterNames.map((name) => parameters[name]);
         this.renderCount = 0;
-        this.#data       = signal;
 
         // Assign debug properties and track the number of renderers created
         if (window.DEBUG) {
-            this.template = debug.template;
-            this.path     = debug.path;
-            this.message  = debug.message;
+            this.templateId = debug.templateId;
+            this.path       = debug.path;
+            this.message    = debug.message;
             ++Renderer.count;
         }
     }
@@ -179,7 +176,7 @@ export default class Renderer {
         // signals to invalidate. It does have status.
         if (this.status === 'done') return;
         if (this.status === 'cued') {
-console.warn(this.constructor.name + ' ' + this.template.id + ' ' + this.path + ' already cued');
+console.warn(this.constructor.name + ' ' + this.templateId + ' ' + this.path + ' already cued');
             return;
         }
 

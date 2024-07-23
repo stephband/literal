@@ -59,9 +59,8 @@ export default class TextRenderer extends Renderer {
     static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow', 'include', 'print'];
 
     constructor(signal, literal, parameters, element, node, debug) {
-        if (window.DEBUG) {
-            if (!isTextNode(node))             throw new Error('TextRenderer() node not a text node');
-            //if (!isTextNode(node.nextSibling)) throw new Error('TextRenderer() node.nextSibling not a text node');
+        if (window.DEBUG && !isTextNode(node)) {
+            throw new TypeError('TextRenderer() node not a text node');
         }
 
         // Parameters added to text renderer
@@ -110,18 +109,8 @@ export default class TextRenderer extends Renderer {
             catch(error) {
                 // Error object, renderer, DATA
                 const elem = printRenderError(this, error);
-
-                // Remove objects
-                const contents = this.contents;
-                if (contents.length > 1) {
-                    deleteRange();
-                    if (window.DEBUG) ++stats.remove;
-                    while (contents[1]) stop(contents.shift());
-                }
-
-                // Manipulate contents
-                contents[0].before(elem);
-                contents.unshift(elem);
+                this.render(['',''], elem);
+                //throw new Error('Literal', { cause: error });
                 return;
             }
         }

@@ -74,7 +74,8 @@ export default class AttributeRenderer extends Renderer {
             catch(error) {
                 // Error object, renderer, DATA
                 const elem = printRenderError(this, error);
-                this.element.replaceWith(elem);
+                console.log(this);
+                this.element.before(elem);
                 return;
             }
         }

@@ -6,7 +6,7 @@ import config            from '../config.js';
 import toText            from './to-text.js';
 
 const A      = Array.prototype;
-const $value = Symbol('literal-value');
+const $value = Symbol('value');
 
 const enhancedTypes = {
     'select-one':      true,

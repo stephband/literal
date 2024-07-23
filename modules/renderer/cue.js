@@ -28,9 +28,10 @@ function render(t) {
         t1 = window.performance.now() / 1000;
 
         log('render',
-            ((t1 - t0) * 1000).toPrecision(3) + 'ms – '
+            // Frame time
+            (t / 1000).toFixed(3) + 's – '
             // renderers
-            + renderers.length + ' cued renderers'
+            + renderers.length + ' renderers – '
             // mutations
             + (stats.remove    ? ', ' + stats.remove    + ' remove'    : '')
             + (stats.add       ? ', ' + stats.add       + ' add'       : '')
@@ -39,7 +40,8 @@ function render(t) {
             + (stats.attribute ? ', ' + stats.attribute + ' attribute' : '')
             + (stats.token     ? ', ' + stats.token     + ' token'     : '')
             + ' mutations'
-            + ' – frame t=' + (t / 1000).toFixed(3) + 's',
+            // Render duration
+            + ' – ' + ((t1 - t0) * 1000).toPrecision(3) + 'ms',
             //
             '', '', '#B6BD00'
         );

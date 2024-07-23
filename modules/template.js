@@ -30,11 +30,8 @@ import Signal              from '../../fn/modules/signal.js';
 import Data                from '../../fn/modules/signal-data.js';
 import create              from '../../dom/modules/create.js';
 import identify            from '../../dom/modules/identify.js';
-import { isTextNode, toNodeType } from '../../dom/modules/node.js';
 import { pathSeparator }   from './compile/constants.js';
-import removeNodeRange     from './dom/remove-node-range.js';
 import Renderer, { stats } from './renderer.js';
-import getNodeRange        from './dom/get-node-range.js';
 import compileNode         from './compile.js';
 import { groupCollapsed, groupEnd } from './log.js';
 
@@ -231,7 +228,7 @@ export default class LiteralTemplate {
 
         // Last node is not in the DOM
         if (this.content.lastChild === last) {
-            throw new Error('Illegal LiteralTemplate.before() – template is not in the DOM')
+            throw new Error('Illegal LiteralTemplate.before() – template is not in the DOM');
         }
 
         // First node is not in the DOM

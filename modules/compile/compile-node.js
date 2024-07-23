@@ -158,7 +158,7 @@ const compileNode = overload((targets, node) => toType(node), {
                 target.literal = compile(source, scope, TextRenderer.parameterNames.join(', '), options, message);
             }
             catch(error) {
-                node.parentNode.replaceWith(printRenderError(target, error));
+                node.replaceWith(printRenderError(target, error));
                 return targets;
             }
         }
@@ -167,6 +167,7 @@ const compileNode = overload((targets, node) => toType(node), {
         }
 
         targets.push(target);
+
         return targets;
     },
 
