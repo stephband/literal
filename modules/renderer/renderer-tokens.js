@@ -1,5 +1,6 @@
 
 import id                from '../../../fn/modules/id.js';
+import nothing           from '../../../fn/modules/nothing.js';
 import overload          from '../../../fn/modules/overload.js';
 import Signal            from '../../../fn/modules/signal.js';
 import toText            from './to-text.js';
@@ -8,7 +9,6 @@ import { stats }         from './renderer.js';
 
 
 const A       = Array.prototype;
-const nothing = [];
 
 /**
 TokensRenderer(signal, literal, parameters, element, name)
@@ -40,7 +40,6 @@ function updateTokens(list, cached, tokens, count = 0) {
     }
 
     if (window.DEBUG) ++stats.tokens;
-    return count;
 }
 
 export default class TokensRenderer extends AttributeRenderer {
@@ -74,11 +73,14 @@ export default class TokensRenderer extends AttributeRenderer {
         let n      = 0;
         let string = '';
         while (strings[++n] !== undefined) {
-            string += ' ' + toText(arguments[n]);
+            const text = toText(arguments[n]);
+            if (text) string += ' ' + text;
         }
 
         // Split into tokens
-        const tokens = string.trim().split(/\s+/);
+        const tokens = string ?
+            string.trim().split(/\s+/) :
+            nothing ;
 
         // Set new tokens, remove unused tokens
         updateTokens(this.list, this.tokens, tokens);
