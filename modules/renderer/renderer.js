@@ -1,7 +1,7 @@
 
 import { remove }       from '../../../fn/modules/remove.js';
 import Signal, { ObserveSignal } from '../../../fn/modules/signal.js';
-import Data             from '../../../fn/modules/signal-data.js';
+import Data             from '../../../fn/modules/data.js';
 import scope            from '../scope.js';
 import { cue, uncue }   from './cue.js';
 import toText           from './to-text.js';
@@ -17,6 +17,11 @@ export const stats = {
     text:      0,
     remove:    0,
     add:       0
+};
+
+const properties = {
+    renderCount: { writable: true },
+    status:      { writable: true }
 };
 
 function callStop(stopable) {
@@ -135,11 +140,23 @@ export default class Renderer {
     static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow'];
 
     #data;
+    #evaluate;
+    #parameters;
 
     constructor(signal, literal, parameters, element, name, debug) {
         // Pick up paremeter names from the constructor, which may have been
         // overridden on dependent constructors
         const parameterNames = this.constructor.parameterNames;
+
+        Object.defineProperties(this, properties);
+
+        this.#data       = signal;
+        this.#evaluate   = literal;
+        this.#parameters = parameterNames.map((name) => parameters[name]);
+
+        this.element     = element;
+        this.renderCount = 0;
+        this.status      = 'idle';
 
         // Assign debug properties and track the number of renderers created
         if (window.DEBUG) {
@@ -148,13 +165,6 @@ export default class Renderer {
             this.code     = debug.code;
             ++Renderer.count;
         }
-
-        this.#data       = signal;
-        this.element     = element;
-        this.literal     = literal;
-        this.parameters  = parameterNames.map((name) => parameters[name]);
-        this.renderCount = 0;
-        this.status      = 'idle';
     }
 
     evaluate() {
@@ -163,13 +173,13 @@ export default class Renderer {
 
         if (!data) return;
 
-        const parameters = this.parameters;
+        const parameters = this.#parameters;
         parameters[0] = Data.of(data);
         parameters[1] = Data.objectOf(data);
         parameters[2] = this.element;
 
         ++this.renderCount;
-        return this.literal.apply(this, parameters);
+        return this.#evaluate.apply(this, parameters);
     }
 
     invalidate() {

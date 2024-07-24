@@ -7,7 +7,7 @@ that DOM after the text node.
 **/
 
 import Signal           from '../../../fn/modules/signal.js';
-import Data             from '../../../fn/modules/signal-data.js';
+import Data             from '../../../fn/modules/data.js';
 import { isCommentNode, isElementNode, isFragmentNode, isTextNode } from '../../../dom/modules/node.js';
 import include          from '../scope/include.js';
 import deleteRange      from '../dom/delete-range.js';
@@ -48,16 +48,16 @@ function toContent(object) {
         object ;
 }
 
-function objectToContents(state, object) {
+function objectToContents(state, object, i) {
     // Object may be a primitive, a DOM node or fragment, a LiteralTemplate or
     // an array of any of these.
-    let { string, contents, i } = state;
+    let { string, contents } = state;
 
     // If object is not a node or renderer, append to string. Array.isArray()
     // does return true for a proxy of an array.
     if (!(object instanceof Template) && !(object instanceof Node) && !Array.isArray(object)) {
         state.string += toText(object);
-        return;
+        return i;
     }
 
     // If there is a string to splice in
@@ -80,18 +80,15 @@ function objectToContents(state, object) {
 
     // It is possible that the template has returned the same object
     // again, in which case we do nothing. Unlikely, but possible.
-    if (object === contents[++i]) {
-        state.i = i;
-        return;
-    }
+    if (object === contents[++i]) return i;
     --i;
 
     // Object is an array, recurse over its values
     if (Array.isArray(object)) {
-        state.i = i;
+        //state.i = i;
         let n = -1;
-        while(++n < object.length) objectToContents(state, object[n]);
-        return;
+        while(++n < object.length) i = objectToContents(state, object[n], i);
+        return i;
     }
 
     // Object is a freshly rendered Literal Template
@@ -99,8 +96,8 @@ function objectToContents(state, object) {
         contents[++i].before(toContent(object));
         if (window.DEBUG) ++stats.add;
         contents.splice(i, 0, object);
-        state.i = i;
-        return;
+        //state.i = i;
+        return i;
     }
 
     // Object is a fragment
@@ -108,8 +105,8 @@ function objectToContents(state, object) {
         // TODO Splice fragment content in... represent in contents
         // with a new object?
         console.log('TODO');
-        state.i = i;
-        return;
+        //state.i = i;
+        return i;
     }
 
     // Object is a DOM node
@@ -118,9 +115,11 @@ function objectToContents(state, object) {
         contents[++i].before(object);
         if (window.DEBUG) ++stats.add;
         contents.splice(i, 0, object);
-        state.i = i;
-        return;
+        //state.i = i;
+        return i;
     }
+
+    return i;
 }
 
 
@@ -149,6 +148,7 @@ export default class TextRenderer extends Renderer {
         // Contents may contain Nodes and LiteralTemplates, but the last item
         // in contents will always be the original text node
         this.contents = [node];
+        this.string   = '';
 
         // A synchronous evaluation while data signal value is undefined binds
         // this renderer to changes to that signal. If signal value is a `data`
@@ -198,26 +198,22 @@ export default class TextRenderer extends Renderer {
         const contents = this.contents;
         const last     = contents[contents.length - 1];
 
-        // Use `this` as an accumulator. It's an internal object anyway, so
-        // this should not leak, but I admit doing this is a bit naff. It does
-        // avoid creating any more objects though.
+        // Use `this` as an accumulator for .string. It's an internal object
+        // anyway, so this should not leak, but I admit doing this is a bit naff.
+        // It does avoid creating any more objects though.
         this.string = '';
-        this.i      = -1;
 
         // Loop over strings, zip objects into string
         let n = -1;
+        let i = -1;
         while(++n < strings.length - 1) {
-            // Add previous string in stings to output string
+            // Add string to next output-to-text-node string
             this.string += strings[n];
-            objectToContents(this, arguments[n + 1]);
+            i = objectToContents(this, arguments[n + 1], i);
         }
 
-        // Add the last string on
-        let string = this.string + strings[n];
-        let i      = this.i;
-
-        // Set text of final text node
-        setNodeValue(last, string);
+        // Set the last string on the last text node
+        setNodeValue(last, this.string + strings[n]);
 
         // Remove and stop unused contents up to but not including the last node
         if (contents[++i] !== last) {
