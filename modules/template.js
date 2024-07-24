@@ -27,7 +27,7 @@ renderer
 
 import overload            from '../../fn/modules/overload.js';
 import Signal              from '../../fn/modules/signal.js';
-import Data                from '../../fn/modules/signal-data.js';
+import Data                from '../../fn/modules/data.js';
 import create              from '../../dom/modules/create.js';
 import identify            from '../../dom/modules/identify.js';
 import { pathSeparator }   from './compile/constants.js';

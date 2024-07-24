@@ -67,7 +67,7 @@ export { default as overload  } from '../../../fn/modules/overload.js';
 export { default as remove    } from '../../../fn/modules/remove.js';
 export { default as set       } from '../../../fn/modules/set-path.js';
 export { default as sum       } from '../../../fn/modules/sum.js';
-export { default as Data      } from '../../../fn/modules/signal-data.js';
+export { default as Data      } from '../../../fn/modules/data.js';
 export { default as Signal    } from '../../../fn/modules/signal.js';
 
 

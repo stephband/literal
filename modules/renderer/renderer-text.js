@@ -7,7 +7,7 @@ that DOM after the text node.
 **/
 
 import Signal           from '../../../fn/modules/signal.js';
-import Data             from '../../../fn/modules/signal-data.js';
+import Data             from '../../../fn/modules/data.js';
 import { isCommentNode, isElementNode, isFragmentNode, isTextNode } from '../../../dom/modules/node.js';
 import include          from '../scope/include.js';
 import deleteRange      from '../dom/delete-range.js';

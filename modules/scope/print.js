@@ -25,7 +25,7 @@ Messages should be styled with the print stylesheet:
 **/
 
 import noop    from '../../../fn/modules/noop.js';
-import Data    from '../../../fn/modules/signal-data.js';
+import Data    from '../../../fn/modules/data.js';
 import create  from '../../../dom/modules/create.js';
 import { log } from '../log.js';
 

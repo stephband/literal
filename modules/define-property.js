@@ -2,7 +2,7 @@
 import arg                  from '../../fn/modules/arg.js';
 import nothing              from '../../fn/modules/nothing.js';
 import overload             from '../../fn/modules/overload.js';
-import Data                 from '../../fn/modules/signal-data.js';
+import Data                 from '../../fn/modules/data.js';
 import TokenList            from '../../dom/modules/element/token-list.js';
 import updateTokenList      from '../../dom/modules/element/update-token-list.js';
 import { getInternals }     from '../../dom/modules/element.js';

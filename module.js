@@ -9,6 +9,6 @@ Template.compiled = compiled;
 export default Template;
 
 export { default as config } from './modules/config.js';
-export { default as Data }   from '../fn/modules/signal-data.js';
+export { default as Data }   from '../fn/modules/data.js';
 export { default as Signal } from '../fn/modules/signal.js';
 export { urls }              from './modules/urls.js';

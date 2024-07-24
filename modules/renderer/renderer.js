@@ -1,7 +1,7 @@
 
 import { remove }       from '../../../fn/modules/remove.js';
 import Signal, { ObserveSignal } from '../../../fn/modules/signal.js';
-import Data             from '../../../fn/modules/signal-data.js';
+import Data             from '../../../fn/modules/data.js';
 import scope            from '../scope.js';
 import { cue, uncue }   from './cue.js';
 import toText           from './to-text.js';
@@ -140,7 +140,7 @@ export default class Renderer {
     static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow'];
 
     #data;
-    #literate;
+    #evaluate;
     #parameters;
 
     constructor(signal, literal, parameters, element, name, debug) {
@@ -151,7 +151,7 @@ export default class Renderer {
         Object.defineProperties(this, properties);
 
         this.#data       = signal;
-        this.#literate   = literal;
+        this.#evaluate   = literal;
         this.#parameters = parameterNames.map((name) => parameters[name]);
 
         this.element     = element;
@@ -179,7 +179,7 @@ export default class Renderer {
         parameters[2] = this.element;
 
         ++this.renderCount;
-        return this.#literate.apply(this, parameters);
+        return this.#evaluate.apply(this, parameters);
     }
 
     invalidate() {
