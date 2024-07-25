@@ -4,6 +4,7 @@ import Renderer, { stats } from './renderer/renderer.js';
 import AttributeRenderer   from './renderer/renderer-attribute.js';
 import BooleanRenderer     from './renderer/renderer-boolean.js';
 import CheckedRenderer     from './renderer/renderer-checked.js';
+import DatasetRenderer     from './renderer/renderer-dataset.js';
 import TokensRenderer      from './renderer/renderer-tokens.js';
 import ValueRenderer       from './renderer/renderer-value.js';
 import TextRenderer        from './renderer/renderer-text.js';
@@ -21,6 +22,8 @@ Renderer.create = function create(signal, literal, parameters, element, n, debug
     const name = typeof n === 'string' && (names[n] || n) ;
 
     return name ?
+        /^data-/.test(name) ?
+            new DatasetRenderer(signal, literal, parameters, element, n, debug) :
         // Return some type of attribute renderer
         name === 'value' ?
             new ValueRenderer(signal, literal, parameters, element, n, debug) :

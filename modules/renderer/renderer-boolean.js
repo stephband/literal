@@ -67,7 +67,7 @@ export default class BooleanRenderer extends AttributeRenderer {
             arguments[1] :
             toAttributeBoolean(arguments);
 
-        return this.writable ?
+        return this.property ?
             setBooleanProperty(this.element, this.property, value) :
             setBooleanAttribute(this.element, this.name, value) ;
     }

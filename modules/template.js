@@ -99,33 +99,24 @@ function removeRange(first, last, fragment) {
     fragment.appendChild(dom);
 }
 
-export default class LiteralTemplate {
-    static isTemplate(object) {
-        return object instanceof LiteralTemplate;
-    }
-
-    static of(html) {
-        const template = create('template', html);
-        return new LiteralTemplate(template);
-    }
-
+export class LiteralDOM {
     #first;
     #last;
     #data;
 
-    constructor(template, parent = template.parentElement, parameters = {}, data, options = defaults) {
+    constructor(content, targets, parent = template.parentElement, parameters = {}, data, options = defaults) {
         // A literal template may be created from inside a TextRenderer render
         // evaluation via ${ include(...) } and for this reason we must avoid
         // accessing any signals outside of a Signal.evaluate(), or they are
         // registered as dependents of the TextRenderer.
-
+/*
         const id       = identify(template, 'literal-');
         const compiled = cache[id] ||
             (cache[id] = compileTemplate(template, {
                 nostrict: options.nostrict || (template.hasAttribute && template.hasAttribute('nostrict'))
             }));
 
-        const content   = compiled.content.cloneNode(true);
+        const content   = compiled.content.cloneNode(true);*/
         const children  = content.childNodes;
 
         // The first node may change. The last node is always the last node.
@@ -135,7 +126,7 @@ export default class LiteralTemplate {
         this.content    = content;
         this.element    = parent;
         this.parameters = parameters;
-        this.contents   = compiled.targets
+        this.contents   = targets
             // We must find targets in cloned content
             .map(this.#toRendererParams, this)
             // before we create renderers for them, as renderers may mutate the DOM
@@ -260,7 +251,7 @@ export default class LiteralTemplate {
     }
 }
 
-assign(LiteralTemplate.prototype, {
+assign(LiteralDOM.prototype, {
     /**
     .stop()
     Stops renderer.
@@ -275,3 +266,41 @@ assign(LiteralTemplate.prototype, {
 
     done: Renderer.prototype.done
 });
+
+
+export class LiteralShadow extends LiteralDOM {
+    constructor(shadow, parent = template.parentElement, parameters = {}, data, options = defaults) {
+        const compiled = compileTemplate({ content: shadow, id: 'shadow' }, {
+            nostrict: options.nostrict
+        });
+
+        super(compiled.content, compiled.targets, parent, parameters, data, options);
+    }
+}
+
+
+export default class LiteralTemplate extends LiteralDOM {
+    static isTemplate(object) {
+        return object instanceof LiteralTemplate;
+    }
+
+    static of(html) {
+        const template = create('template', html);
+        return new LiteralTemplate(template);
+    }
+
+    constructor(template, parent = template.parentElement, parameters = {}, data, options = defaults) {
+        // A literal template may be created from inside a TextRenderer render
+        // evaluation via ${ include(...) } and for this reason we must avoid
+        // accessing any signals outside of a Signal.evaluate(), or they are
+        // registered as dependents of the TextRenderer.
+
+        const id       = identify(template, 'literal-');
+        const compiled = cache[id] ||
+            (cache[id] = compileTemplate(template, {
+                nostrict: options.nostrict || (template.hasAttribute && template.hasAttribute('nostrict'))
+            }));
+
+        super(compiled.content.cloneNode(true), compiled.targets, parent, parameters, data, options);
+    }
+}

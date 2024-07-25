@@ -1,0 +1,150 @@
+<head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Stephen" />
+    <meta name="description" content="Documentation for Literal. Literal puts JS into your HTML. Literal defines a custom include element that parses and renders templates written as JS Literals, in a small library under 15kB minified and gzipped." />
+    <meta name="viewport" content="width=device-width" />
+
+    <link rel="stylesheet" href="../module.css" />
+
+    <script>
+        window.DEBUG = true;
+    </script>
+
+
+    <link rel="stylesheet" href="../../bolt/elements/table.css" />
+    <link rel="stylesheet" href="../../bolt/classes/striped-table.css" />
+
+    <style>
+        body  { column-gap: 2.5rem; margin: 1.25rem; font-family: sans-serif; }
+
+        @media (min-width: 960px) {
+            body  { columns: 2; }
+        }
+
+        table {
+            --x-gap: 0.375rem;
+        }
+
+        table > * > tr > td,
+        table > * > tr > th {
+            text-align: left;
+        }
+
+        table > tbody > tr > td,
+        table > tbody > tr > th {
+            font-weight: 400;
+            white-space: nowrap;
+        }
+
+        .test { display: block; break-inside: avoid; }
+        .test + .test { border-top: 1px solid black; margin-top: 1.5rem; }
+
+        :root {
+            --aqua:      #00a8a9;
+            --blue:      #3a8ab0;
+            --green:     oklch(0.77 0.2 113.57); /* #B6BD00; */
+            --yellow:    #DDB523;
+            --orange:    #ff9433;
+            --red:       #ff003a;
+            --grey:      #81868f;
+            --lightgrey: #a2a8b3;
+        }
+
+        .disabled-test,
+        .required-test {
+            /* Nullify style of buttons, inputs tested for :disabled */
+            font: inherit;
+            border-width: 0;
+            background-color: transparent;
+            padding: 0;
+            width: 100%;
+            text-align: left;
+            display: block;
+            margin: 0;
+            margin-top: 1em;
+        }
+
+        .required-test:required {
+            padding-left: 1.04em;
+        }
+
+        [id="✓"],
+        [title="✓"],
+        [itemid="✓"],
+        [data-test-attr="✓"],
+        [test-attr="✓"],
+        .disabled-test:disabled,
+        .required-test:required,
+        .empty-test:empty,
+        .content-test:not(:empty) {
+            color: var(--green);
+        }
+
+        [id="✓"]::before,
+        [title="✓"]::before,
+        [itemid="✓"]::before,
+        [data-test-attr="✓"]::before,
+        [test-attr="✓"]::before,
+        .disabled-test:disabled::before,
+        .empty-test:empty::before,
+        .content-test:not(:empty)::before {
+            content: '✓ ';
+        }
+
+        .empty-test:not(:empty),
+        .content-test:empty {
+            color: var(--red);
+        }
+
+        .empty-test:not(:empty)::before {
+            content: '✘ Should be empty. ';
+        }
+
+        .content-test:empty::before {
+            content: '✘ Should have content.';
+        }
+    </style>
+
+    <script type="module">
+    import element from './element.js';
+
+    const AttributeTester = element('attribute-tester', {
+        templates: {
+            p: `
+                <h3>#p</h3>
+                <p>Shadow include.</p>
+                <p><code>(\${ this.renderCount }) host.text = \${ host.text }</code></p>
+            `
+        },
+
+        // If a backtick string is used to write multi-line html, literal
+        // expressions must be escaped, we don't want them to render here
+        shadow: `
+            <p><code>(\${ this.renderCount }) host.switch   = \${ host.switch }</code></p>
+            <p><code>(\${ this.renderCount }) host.count    = \${ host.count }</code></p>
+            <p><code>(\${ this.renderCount }) host.text     = \${ host.text }</code></p>
+            <p><code>(\${ this.renderCount }) host.controls = \${ host.controls }</code></p>
+            <p><code>(\${ this.renderCount }) host.data     = \${ host.data }</code></p>
+            \${ include('#p', data) }
+        `
+    }, {
+        switch:   'boolean',
+        count:    'number',
+        text:     'string',
+        controls: 'tokens',
+        data:     'property'
+    });
+
+    const at = document.getElementById('attribute-tester-1');
+
+    window.at = at;
+
+    </script>
+</head>
+
+<body>
+    <div class="test">
+        <h1>element()</h1>
+        <attribute-tester id="attribute-tester-1" text="Lunchtime, doubly so."></attribute-tester>
+    </div>
+</body>

@@ -52,23 +52,23 @@ export const round   = (value, n = 1) => Math.round(value / n) * n;
 // literal so they come at no cost to have them in scope by default. Functions
 // not already used by literal should be put in scope-extended.js
 
-export { default as arg       } from '../../../fn/modules/arg.js';
-export { default as cache     } from '../../../fn/modules/cache.js';
-export { default as capture   } from '../../../fn/modules/capture.js';
-export { default as choose    } from '../../../fn/modules/choose.js';
-export { default as exec      } from '../../../fn/modules/exec.js';
-export { default as id        } from '../../../fn/modules/id.js';
-export { default as isDefined } from '../../../fn/modules/is-defined.js';
-export { default as last      } from '../../../fn/modules/last.js';
-export { default as matches   } from '../../../fn/modules/matches.js';
-export { default as noop      } from '../../../fn/modules/noop.js';
-export { default as nothing   } from '../../../fn/modules/nothing.js';
-export { default as overload  } from '../../../fn/modules/overload.js';
-export { default as remove    } from '../../../fn/modules/remove.js';
-export { default as set       } from '../../../fn/modules/set-path.js';
-export { default as sum       } from '../../../fn/modules/sum.js';
-export { default as Data      } from '../../../fn/modules/data.js';
-export { default as Signal    } from '../../../fn/modules/signal.js';
+export { default as arg         } from '../../../fn/modules/arg.js';
+export { default as cache       } from '../../../fn/modules/cache.js';
+export { default as capture     } from '../../../fn/modules/capture.js';
+export { default as choose      } from '../../../fn/modules/choose.js';
+export { default as exec        } from '../../../fn/modules/exec.js';
+export { default as id          } from '../../../fn/modules/id.js';
+export { default as isDefined   } from '../../../fn/modules/is-defined.js';
+export { default as last        } from '../../../fn/modules/last.js';
+export { default as matches     } from '../../../fn/modules/matches.js';
+export { default as noop        } from '../../../fn/modules/noop.js';
+export { default as nothing     } from '../../../fn/modules/nothing.js';
+export { default as overload    } from '../../../fn/modules/overload.js';
+export { default as remove      } from '../../../fn/modules/remove.js';
+export { default as set         } from '../../../fn/modules/set-path.js';
+export { default as sum         } from '../../../fn/modules/sum.js';
+export { default as Data        } from '../../../fn/modules/data.js';
+export { default as Signal      } from '../../../fn/modules/signal.js';
 
 
 

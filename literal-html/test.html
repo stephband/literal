@@ -15,7 +15,11 @@
     <link rel="stylesheet" href="../../bolt/classes/striped-table.css" />
 
     <style>
-        body  { columns: 2; column-gap: 2.5rem; margin: 1.25rem; font-family: sans-serif; }
+        body  { column-gap: 2.5rem; margin: 1.25rem; font-family: sans-serif; }
+
+        @media (min-width: 960px) {
+            body  { columns: 2; }
+        }
 
         table {
             --x-gap: 0.375rem;
@@ -29,6 +33,7 @@
         table > tbody > tr > td,
         table > tbody > tr > th {
             font-weight: 400;
+            white-space: nowrap;
         }
 
         .test { display: block; break-inside: avoid; }
@@ -68,10 +73,102 @@
         <p>Causes a render error in an attribute.</p>
         <pre class="${ data.cause.a.render.error }"></pre>
     </template>
+
+    <style>
+        :root {
+            --aqua:      #00a8a9;
+            --blue:      #3a8ab0;
+            --green:     oklch(0.77 0.2 113.57); /* #B6BD00; */
+            --yellow:    #DDB523;
+            --orange:    #ff9433;
+            --red:       #ff003a;
+            --grey:      #81868f;
+            --lightgrey: #a2a8b3;
+        }
+
+        .disabled-test,
+        .required-test {
+            /* Nullify style of buttons, inputs tested for :disabled */
+            font: inherit;
+            border-width: 0;
+            background-color: transparent;
+            padding: 0;
+            width: 100%;
+            text-align: left;
+            display: block;
+            margin: 0;
+            margin-top: 1em;
+        }
+
+        .required-test:required {
+            padding-left: 1.04em;
+        }
+
+        [id="✓"],
+        [title="✓"],
+        [itemid="✓"],
+        [data-test-attr="✓"],
+        [test-attr="✓"],
+        .disabled-test:disabled,
+        .required-test:required,
+        .empty-test:empty,
+        .content-test:not(:empty) {
+            color: var(--green);
+        }
+
+        [id="✓"]::before,
+        [title="✓"]::before,
+        [itemid="✓"]::before,
+        [data-test-attr="✓"]::before,
+        [test-attr="✓"]::before,
+        .disabled-test:disabled::before,
+        .empty-test:empty::before,
+        .content-test:not(:empty)::before {
+            content: '✓ ';
+        }
+
+        .empty-test:not(:empty),
+        .content-test:empty {
+            color: var(--red);
+        }
+
+        .empty-test:not(:empty)::before {
+            content: '✘ Should be empty. ';
+        }
+
+        .content-test:empty::before {
+            content: '✘ Should have content.';
+        }
+    </style>
+
+    <template id="template-7">
+        <h3>#template-7</h3>
+        <p>Test attribute and property renderers.</p>
+        <p title="${ '✓' }">String property <code>.title="✓"</code></p>
+        <button class="disabled-test" disabled="${ '✓' }">Boolean property <code>.disabled</code></button>
+        <input class="required-test" required="${ '✓' }" value="Boolean property .required" />
+        <p data-test-attr="${ '✓' }">Dataset property <code>.dataset.testAttr="✓"</code></p>
+        <p itemid="${ '✓' }">Microdata attribute <code>itemid="✓"</code></p>
+        <p test-attr="${ '✓' }">Non-standard attribute <code>test-attr="✓"</code></p>
+    </template>
+
+    <script type="module">
+    import '../scope.js';
+    import LiteralHTML from './module.js';
+    </script>
 </head>
 
 <body>
     <h1>Tests</h1>
+
+    <div class="test">
+        <template is="literal-html">
+            <h2>is="literal-html"</h2>
+            <p>Test attribute renderers.</p>
+            <p id="${ '✓' }">String property <code>.id="✓"</code></p>
+            ${ include('#template-7', data) }
+        </template>
+    </div>
 
     <table class="striped-table x-bleed test">
         <thead>
@@ -82,100 +179,70 @@
         </thead>
         <tbody>
             <tr>
-                <th><code>${ undefined }</code></th>
-                <td><template is="literal-html">${ undefined }</template></td>
+                <th><code>${undefined}</code></th>
+                <td class="empty-test"><template is="literal-html">${ undefined }</template></td>
             </tr>
             <tr>
-                <th><code>${ null }</code></th>
-                <td>
-                    <template is="literal-html">${ null }</template>
-                </td>
+                <th><code>${null}</code></th>
+                <td class="empty-test"><template is="literal-html">${ null }</template></td>
             </tr>
             <tr>
-                <th><code>${ NaN }</code></th>
-                <td>
-                    <template is="literal-html">${ NaN }</template>
-                </td>
+                <th><code>${NaN}</code></th>
+                <td class="empty-test"><template is="literal-html">${ NaN }</template></td>
             </tr>
             <tr>
-                <th><code>${ 'Hello' }</code></th>
-                <td>
-                    <template is="literal-html">${ 'Hello' }</template>
-                </td>
+                <th><code>${'Hello world'}</code></th>
+                <td class="content-test"><template is="literal-html">${ 'Hello world' }</template></td>
             </tr>
             <tr>
-                <th><code>${ true }, ${ false }</code></th>
-                <td>
-                    <template is="literal-html">${ true }, ${ false }</template>
-                </td>
+                <th><code>${document.createTextNode('Hello world')}</code></th>
+                <td class="content-test"><template is="literal-html">${ document.createTextNode('Hello world') }</template></td>
             </tr>
             <tr>
-                <th><code>${ 123.4 }</code></th>
-                <td>
-                    <template is="literal-html">${ 123.4 }</template>
-                </td>
+                <th><code>${Promise.resolve('Hello world')}</code></th>
+                <td class="content-test"><template is="literal-html">${ Promise.resolve('Hello world') }</template></td>
             </tr>
             <tr>
-                <th><code>${ Infinity }, ${ -Infinity }</code></th>
-                <td>
-                    <template is="literal-html">${ Infinity }, ${ -Infinity }</template>
-                </td>
+                <th><code>${true}, ${false}</code></th>
+                <td class="content-test"><template is="literal-html">${ true }, ${ false }</template></td>
             </tr>
             <tr>
-                <th><code>${ function name(param) {} }</code></th>
-                <td>
-                    <template is="literal-html">${ function name(param) {} }</template>
-                </td>
+                <th><code>${123.4}</code></th>
+                <td class="content-test"><template is="literal-html">${ 123.4 }</template></td>
             </tr>
             <tr>
-                <th><code>${ (param) => {} }</code></th>
-                <td>
-                    <template is="literal-html">${ (param) => {} }</template>
-                </td>
+                <th><code>${Infinity}, ${-Infinity}</code></th>
+                <td class="content-test"><template is="literal-html">${ Infinity }, ${ -Infinity }</template></td>
             </tr>
             <tr>
-                <th><code>${ /^regexp/ }</code></th>
-                <td>
-                    <template is="literal-html">${ /^regexp/ }</template>
-                </td>
+                <th><code>${[0, 1, 2, 3]}</code></th>
+                <td class="content-test"><template is="literal-html">${ [0, 1, 2, 3] }</template></td>
             </tr>
             <tr>
-                <th><code>${ Symbol('name') }</code></th>
-                <td>
-                    <template is="literal-html">${ Symbol('name') }</template>
-                </td>
+                <th><code>${{ property: 'value' }}</code></th>
+                <td class="content-test"><template is="literal-html">${ { property: 'value' } }</template></td>
             </tr>
             <tr>
-                <th><code>${ [0, 1, 2, 3] }</code></th>
-                <td>
-                    <template is="literal-html">${ [0, 1, 2, 3] }</template>
-                </td>
+                <th><code>${function name(param) {}}</code></th>
+                <td class="content-test"><template is="literal-html">${ function name(param) {} }</template></td>
             </tr>
             <tr>
-                <th><code>${ { property: 'value' } }</code></th>
-                <td>
-                    <template is="literal-html">${ { property: 'value' } }</template>
-                </td>
+                <th><code>${(param) => {}}</code></th>
+                <td class="content-test"><template is="literal-html">${ (param) => {} }</template></td>
             </tr>
             <tr>
-                <th><code>${ document.createTextNode('Hello') }</code></th>
-                <td>
-                    <template is="literal-html">${ document.createTextNode('Hello') }</template>
-                </td>
+                <th><code>${/^regexp/ }</code></th>
+                <td class="content-test"><template is="literal-html">${ /^regexp/ }</template></td>
             </tr>
             <tr>
-                <th><code>${ Promise.resolve('yoohoo') }</code></th>
-                <td>
-                    <template is="literal-html">${ Promise.resolve('yoohoo') }</template>
-                </td>
+                <th><code>${Symbol('name')}</code></th>
+                <td class="content-test"><template is="literal-html">${ Symbol('name') }</template></td>
             </tr>
             <tr>
-                <th><code>${&nbsp;events('pointermove', body).map(<br/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;(e) => round(e.pageX) + ', ' + round(e.pageY)<br/>
+                <th><code>${events('pointermove',body).map((e)=><br/>
+                    &nbsp;&nbsp;round(e.pageX) + ', ' + round(e.pageY)<br/>
                 )}</code></th>
-                <td>
-                    <template is="literal-html">${ events('pointermove', body).map((e) => round(e.pageX) + ', ' + round(e.pageY)) }</template>
-                </td>
+                <td class="content-test"><template is="literal-html">${ events('pointermove', body).map((e) => round(e.pageX) + ', ' + round(e.pageY)) }</template></td>
             </tr>
         </tbody>
     </table>
@@ -222,7 +289,7 @@
                 //.log('click')
                 .each((e) => ++data.template)
             }
-            <pre>(${ this.renderCount }) data.value = ${ data.value }</pre>
+            <pre>(${ this.renderCount }) data.template = ${ data.template }</pre>
             ${ include('#template-' + ((data.template) % 2 + 1), data) }
         </template>
     </div>
@@ -232,13 +299,13 @@
             <h2>Uncued renders</h2>
             <p>Asynchronous stopable stream of include()s. From clicks. Not
             the recommended way of doing things. These includes are not cued: an
-            include() with data renders a template instantly. Render counts in
-            ().</p>
-            <pre>(${ this.renderCount }) data.value = ${ data.value }</pre>
+            include() with data renders a template instantly on click. Render
+            counts in ().</p>
+            <pre>(${ this.renderCount }) data.template = ${ data.template }</pre>
             ${
                 events('click', element)
                 //.log('click')
-                .map((e) => include('#template-' + ((++data.template) % 2 + 1), data))
+                .map((e) => include('#template-' + (data.template = ((data.template - 1) % 2) + 1), data))
             }
         </template>
     </div>
@@ -314,9 +381,4 @@
             ${ print(data) }
         </template>
     </div>
-
-    <script type="module">
-    import '../scope.js';
-    import LiteralHTML from './module.js';
-    </script>
 </body>

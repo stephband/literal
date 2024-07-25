@@ -1,5 +1,6 @@
 
 //import composeString from './compose-string.js';
+import Signal            from '../../../fn/modules/signal.js';
 import names  from './property-names.js';
 import Renderer, { stats } from './renderer.js';
 import { printError } from '../scope/print.js';
@@ -56,14 +57,22 @@ export default class AttributeRenderer extends Renderer {
     constructor(signal, literal, parameters, element, name, debug) {
         super(signal, literal, parameters, element, name, debug);
 
-        this.name     = name;
-        this.property = name in names ? names[name] : name ;
-        this.writable = name in names ?
-            // If name is listed as null or other falsy in property-names.js,
-            // it is considered readonly. This applies to the `form` attribute.
-            !!names[name] :
-            // Otherwise check property descriptor
-            name in element && isWritableProperty(name, element) ;
+        this.name = name;
+
+        // TODO: property ought to be tested dynamically on custom elements
+        // as they can be upgraded at any point
+        const property = name in names ? names[name] : name;
+        if (property
+            && (property in element)
+            && isWritableProperty(property, element)) {
+            this.property = property;
+        }
+
+        // Only evaluate now if this is not a sub-class. Sub classes may yet
+        // have more work to do and will take care of their own renders.
+        if (this.constructor === AttributeRenderer) {
+            Signal.evaluate(this, this.evaluate);
+        }
     }
 
     evaluate() {
@@ -88,7 +97,7 @@ export default class AttributeRenderer extends Renderer {
             arguments[1] :
             toAttributeString(arguments) ;
 
-        return this.writable ?
+        return this.property ?
             setProperty(this.element, this.property, value) :
             setAttribute(this.element, this.name, value) ;
     }

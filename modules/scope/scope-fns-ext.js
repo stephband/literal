@@ -8,6 +8,7 @@ export { default as matches     } from '../../../fn/modules/matches.js';
 export { default as get         } from '../../../fn/modules/get-path.js';
 export { default as set         } from '../../../fn/modules/set-path.js';
 export { default as slugify     } from '../../../fn/modules/slugify.js';
+export { default as toCamelCase } from '../../../fn/modules/to-camel-case.js';
 export { default as normalise   } from '../../../fn/modules/normalise.js';
 export { default as denormalise } from '../../../fn/modules/denormalise.js';
 export { default as stash       } from './stash.js';

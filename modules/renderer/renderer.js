@@ -134,16 +134,14 @@ function renderExpressionValue(value) {
 Renderer(signal, fn, parameters, element, name, debug)
 */
 
-const values = [];
-let N = 0;
 export default class Renderer {
     static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow'];
 
     #data;
-    #evaluate;
+    #render;
     #parameters;
 
-    constructor(signal, literal, parameters, element, name, debug) {
+    constructor(signal, render, parameters, element, name, debug) {
         // Pick up paremeter names from the constructor, which may have been
         // overridden on dependent constructors
         const parameterNames = this.constructor.parameterNames;
@@ -151,7 +149,7 @@ export default class Renderer {
         Object.defineProperties(this, properties);
 
         this.#data       = signal;
-        this.#evaluate   = literal;
+        this.#render     = render;
         this.#parameters = parameterNames.map((name) => parameters[name]);
 
         this.element     = element;
@@ -179,7 +177,7 @@ export default class Renderer {
         parameters[2] = this.element;
 
         ++this.renderCount;
-        return this.#evaluate.apply(this, parameters);
+        return this.#render.apply(this, parameters);
     }
 
     invalidate() {
