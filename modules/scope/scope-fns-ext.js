@@ -11,6 +11,8 @@ export { default as slugify     } from '../../../fn/modules/slugify.js';
 export { default as toCamelCase } from '../../../fn/modules/to-camel-case.js';
 export { default as normalise   } from '../../../fn/modules/normalise.js';
 export { default as denormalise } from '../../../fn/modules/denormalise.js';
+export { default as copy        } from './copy.js';
+export { default as pluralise   } from './pluralise.js';
 export { default as stash       } from './stash.js';
 
 //const library = {

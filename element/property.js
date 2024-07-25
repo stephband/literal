@@ -38,11 +38,12 @@ const types = {
     src: (name, symbol) => ({
         construct: function()      { define(this, symbol, { value: Signal.of(null) }); },
         attribute: function(value) { this[name] = value; },
-        get:       function()      { return this.getAttribute(name); },
+        get:       function()      { return this[symbol].value; },
         set:       function(value) {
             if (!rpath.test(value)) return;
+            console.log('Literal request ' + name + ' "' + value + '"');
             requestData(value)
-            .then((object) => this[symbol] = object)
+            .then((object) => this[symbol].value = object)
             .catch((error) => console.error(error));
         }
     }),
@@ -55,7 +56,7 @@ const types = {
         set:       function(value) {
             if (!rpath.test(value)) return;
             requestData(value)
-            .then((object) => this[symbol] = object)
+            .then((object) => this[symbol].value = object)
             .catch((error) => console.error(error));
         }
     }),
@@ -104,7 +105,7 @@ const types = {
         set:       function(value) {
             if (!rpath.test(value)) return;
             requestData(value)
-            .then((object) => this[symbol] = object)
+            .then((object) => this[symbol].value = object)
             .catch((error) => console.error(error));
         }
     })
