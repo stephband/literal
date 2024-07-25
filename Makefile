@@ -16,8 +16,8 @@ modules:
 		module.css \
 		module.js \
 		data/clock.js \
-		literal-element/module.js \
-		literal-html/module.js
+		literal-html/module.js \
+		element/element.js
 
 documentation:
 	rm -rf ./documentation/build

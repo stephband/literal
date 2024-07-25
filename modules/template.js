@@ -43,7 +43,7 @@ const defaults = {};
 
 
 /*
-LiteralTemplate
+LiteralRenderer
 Descendant paths are stored in the form `"#id>1>12>3"`, enabling fast
 cloning of template instances without retraversing their DOMs looking for
 literal attributes and text.
@@ -59,20 +59,20 @@ function getElement(path, node) {
         .reduce(getChild, node) ;
 }
 
-function compileTemplate(template, options) {
-    const content = template.content || create('fragment', template.childNodes, template) ;
+function compileFragment(id, fragment, options) {
+    //const content = template.content || create('fragment', template.childNodes, template) ;
 
     let targets;
     if (window.DEBUG) {
-        groupCollapsed('compile', '#' + template.id, 'yellow');
-        targets = compileNode(content, options, { template: '#' + template.id });
+        groupCollapsed('compile', '#' + id, 'yellow');
+        targets = compileNode(fragment, options, { template: '#' + id });
         groupEnd();
     }
     else {
-        targets = compileNode(content, options);
+        targets = compileNode(fragment, options);
     }
 
-    return { content, targets };
+    return { id, fragment, targets };
 }
 
 function removeRange(first, last, fragment) {
@@ -105,24 +105,13 @@ export class LiteralDOM {
     #data;
 
     constructor(content, targets, parent = template.parentElement, parameters = {}, data, options = defaults) {
-        // A literal template may be created from inside a TextRenderer render
-        // evaluation via ${ include(...) } and for this reason we must avoid
-        // accessing any signals outside of a Signal.evaluate(), or they are
-        // registered as dependents of the TextRenderer.
-/*
-        const id       = identify(template, 'literal-');
-        const compiled = cache[id] ||
-            (cache[id] = compileTemplate(template, {
-                nostrict: options.nostrict || (template.hasAttribute && template.hasAttribute('nostrict'))
-            }));
-
-        const content   = compiled.content.cloneNode(true);*/
         const children  = content.childNodes;
 
         // The first node may change. The last node is always the last node.
         this.#data      = Signal.of(Data.of(data));
         this.#first     = children[0];
         this.#last      = children[children.length - 1];
+
         this.content    = content;
         this.element    = parent;
         this.parameters = parameters;
@@ -218,7 +207,7 @@ export class LiteralDOM {
 
         // Last node is not in the DOM
         if (this.content.lastChild === last) {
-            throw new Error('Illegal LiteralTemplate.before() – template is not in the DOM');
+            throw new Error('Illegal LiteralRenderer.before() – template is not in the DOM');
         }
 
         // First node is not in the DOM
@@ -267,40 +256,39 @@ assign(LiteralDOM.prototype, {
     done: Renderer.prototype.done
 });
 
-
-export class LiteralShadow extends LiteralDOM {
-    constructor(shadow, parent = template.parentElement, parameters = {}, data, options = defaults) {
-        const compiled = compileTemplate({ content: shadow, id: 'shadow' }, {
-            nostrict: options.nostrict
-        });
-
-        super(compiled.content, compiled.targets, parent, parameters, data, options);
-    }
-}
-
-
-export default class LiteralTemplate extends LiteralDOM {
+export default class LiteralRenderer extends LiteralDOM {
     static isTemplate(object) {
-        return object instanceof LiteralTemplate;
+        return object instanceof LiteralRenderer;
     }
 
     static of(html) {
         const template = create('template', html);
-        return new LiteralTemplate(template);
+        return new LiteralRenderer(template);
     }
 
-    constructor(template, parent = template.parentElement, parameters = {}, data, options = defaults) {
-        // A literal template may be created from inside a TextRenderer render
-        // evaluation via ${ include(...) } and for this reason we must avoid
-        // accessing any signals outside of a Signal.evaluate(), or they are
-        // registered as dependents of the TextRenderer.
+    static compile(fragment, options, debug) {
+        let targets;
 
+        if (window.DEBUG) {
+            groupCollapsed('compile', debug.template, 'yellow');
+            targets = compileNode(fragment, options, debug);
+            groupEnd();
+        }
+        else {
+            targets = compileNode(fragment, options);
+        }
+
+        return targets;
+    }
+
+    constructor(template, parent = template.parentElement, parameters = {}, data, o = defaults) {
         const id       = identify(template, 'literal-');
-        const compiled = cache[id] ||
-            (cache[id] = compileTemplate(template, {
-                nostrict: options.nostrict || (template.hasAttribute && template.hasAttribute('nostrict'))
-            }));
+        const options  = assign({}, o, {
+            nostrict: template.hasAttribute && template.hasAttribute('nostrict')
+        });
 
-        super(compiled.content.cloneNode(true), compiled.targets, parent, parameters, data, options);
+        const compiled = LiteralRenderer.compile(template.content, options, { template: '#' + id });
+
+        super(template.content.cloneNode(true), compiled, parent, parameters, data, options);
     }
 }

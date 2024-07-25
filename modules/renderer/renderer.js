@@ -152,6 +152,7 @@ export default class Renderer {
         this.#render     = render;
         this.#parameters = parameterNames.map((name) => parameters[name]);
 
+        this.parameters  = parameters;
         this.element     = element;
         this.renderCount = 0;
         this.status      = 'idle';

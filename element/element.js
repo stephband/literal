@@ -5,7 +5,7 @@ import create                    from '../../dom/modules/create.js';
 import element, { getInternals } from '../../dom/modules/element.js';
 import toPrefetchPromise         from '../../dom/modules/element/to-prefetch-promise.js';
 import getById                   from '../modules/dom/get-by-id.js';
-import { LiteralShadow }         from '../modules/template.js';
+import Literal                   from '../modules/template.js';
 import defineProperty            from './property.js';
 
 const assign  = Object.assign;
@@ -15,7 +15,7 @@ const keys    = Object.keys;
 
 
 /**
-element(tag, lifecycle, properties)
+element(tag, lifecycle, properties, parameters)
 
 ```js
 element(tag, {
@@ -88,9 +88,9 @@ function getDataFromDataset(dataset, data) {
     const keys   = Object.keys(dataset);
     const values = Object.values(dataset);
 
-    values
+    return values
     .map(parseData)
-    .reduce((data, value, i) => (data[keys[i]] = value, data), {});
+    .reduce((data, value, i) => (data[keys[i]] = value, data), data);
 }
 
 export default function LiteralElement(tag, lifecycle = {}, properties = {}, parameters = {}) {
@@ -102,58 +102,53 @@ export default function LiteralElement(tag, lifecycle = {}, properties = {}, par
         return;
     }
 
+    const name = '<' + tag.replace(/^</, '').replace(/>$/, '') + '>';
+
+    // Compile templates
+    const template  = create('template', { id: name, html: lifecycle.shadow });
+    const templates = Object
+        .entries(lifecycle.templates)
+        .map(([id, html]) => create('template', { id, html }));
+
+    // Create templates. This is a crude way to do it, and we should probably
+    // isolate templates in the shadow from those outside with a separate
+    // template cache (based around shadow.getElementById()?)... but... it'll
+    // do for now
+    if (window.DEBUG) document.head.appendChild(create('comment', ' Templates for ' + name));
+    document.head.append.apply(document.head, templates);
+
     const life = {
-        shadow: lifecycle.shadow,
+        // DEBUG stylesheet for in-DOM prints of errors and logs
+        shadow: window.DEBUG ? '<link rel="stylesheet" href="../module.css">' : '',
 
         construct: function(shadow, internals) {
+            // Render data
             internals.object = {};
 
-            if (window.DEBUG) {
-                shadow.prepend(create('link', {
-                    rel:  'stylesheet',
-                    href: '../module.css'
-                }));
-            }
-
-            // Create templates. This is a crude way to do it, and we should
-            // probably isolate templates in the shadow from those outside
-            // with a separate template cache, but it'll do for now
-            if (lifecycle.templates) {
-                if (window.DEBUG) {
-                    document.head.appendChild(create('comment', ' Templates for <' + this.tagName.toLowerCase() + '> '));
-                }
-
-                document.head.append.apply(
-                    document.head,
-                    Object
-                    .entries(lifecycle.templates)
-                    .map(([id, html]) => create('template', { id, html }))
-                );
-            }
-
             // template, parent, parameters, data, options
-            internals.renderer = new LiteralShadow(shadow, this, assign({
-                host:     this,
-                shadow:   shadow
-            }, parameters));
+            const renderer = new Literal(template, this, assign({ host: this, shadow }, parameters), undefined);
+            shadow.appendChild(renderer.content);
 
+            // Call lifecycle.construct()
+            internals.renderer = renderer;
             if (lifecycle.construct) lifecycle.construct.call(this, shadow, internals, internals.object);
         },
 
         connect: function(shadow, internals) {
+            const { renderer } = internals;
+
             if (!internals.initialised) {
                 internals.initialised = true;
 
                 // Get data found in dataset
                 getDataFromDataset(this.dataset, internals.object);
 
-                // Set internal data to its observer proxy so that changes to host
-                // attributes, which mutate data, now trigger template updates
+                // Set internal data to object's observer proxy
                 internals.data = Data.of(internals.object);
             }
 
             // We must render synchronously here else rendered 'slotchange'
-            // listeners miss the first slotchange
+            // listeners miss the first slotchange... this IS synchronous, right?
             internals.renderer.push(internals.data);
 
             // Connect callback called post-render
@@ -161,7 +156,9 @@ export default function LiteralElement(tag, lifecycle = {}, properties = {}, par
         },
 
         disconnect: function(shadow, internals) {
-            // Make literal go dormant
+            const { renderer } = internals;
+
+            // Make literal renderer go dormant
             internals.renderer.push(null);
 
             // Disconnect callback post render

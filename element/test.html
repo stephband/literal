@@ -109,6 +109,9 @@
     import element from './element.js';
 
     const AttributeTester = element('attribute-tester', {
+        // If a backtick string is used to write multi-line html, literal
+        // expressions must be escaped
+
         templates: {
             p: `
                 <h3>#p</h3>
@@ -117,14 +120,13 @@
             `
         },
 
-        // If a backtick string is used to write multi-line html, literal
-        // expressions must be escaped, we don't want them to render here
         shadow: `
             <p><code>(\${ this.renderCount }) host.switch   = \${ host.switch }</code></p>
             <p><code>(\${ this.renderCount }) host.count    = \${ host.count }</code></p>
             <p><code>(\${ this.renderCount }) host.text     = \${ host.text }</code></p>
             <p><code>(\${ this.renderCount }) host.controls = \${ host.controls }</code></p>
             <p><code>(\${ this.renderCount }) host.data     = \${ host.data }</code></p>
+            <p><code>(\${ this.renderCount }) data.count    = \${ data.count }</code></p>
             \${ include('#p', data) }
         `
     }, {
@@ -137,7 +139,6 @@
     });
 
     const at = document.getElementById('attribute-tester-1');
-
     window.at = at;
 
     </script>
@@ -146,6 +147,6 @@
 <body>
     <div class="test">
         <h1>element()</h1>
-        <attribute-tester id="attribute-tester-1" text="Lunchtime, doubly so."></attribute-tester>
+        <attribute-tester id="attribute-tester-1" text="Lunchtime, doubly so." data-count="9"></attribute-tester>
     </div>
 </body>

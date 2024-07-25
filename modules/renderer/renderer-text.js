@@ -132,18 +132,18 @@ template renderers, or strings.
 export default class TextRenderer extends Renderer {
     static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow', 'include', 'print'];
 
-    constructor(signal, literal, parameters, element, node, debug) {
+    constructor(signal, literal, params, element, node, debug) {
         if (window.DEBUG && !isTextNode(node)) {
             throw new TypeError('TextRenderer() node not a text node');
         }
 
         // Parameters added to text renderer
-        const params = assign({}, parameters, {
+        const parameters = assign({}, params, {
             include: (...params) => this.include(...params),
             print:   (...args) => print(this, ...args)
         });
 
-        super(signal, literal, params, element, node, debug);
+        super(signal, literal, parameters, element, node, debug);
 
         // Contents may contain Nodes and LiteralTemplates, but the last item
         // in contents will always be the original text node
