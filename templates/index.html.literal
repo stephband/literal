@@ -36,7 +36,6 @@
             '../modules/scope.js',
             '../modules/scope-dom.js',
             '../../fn/modules/stream.js',
-            //'../fn/observer/observe.js',
         ))
         .filter((doc) => (doc.type === 'function' || doc.type === 'constructor'))
         .filter((entry) => ['Stream.of', 'Stream.from', 'Stream.combine', 'Stream.merge', 'clock', 'events', 'observe'].includes(entry.name))
@@ -63,9 +62,7 @@
             '../../fn/modules/overload.js',
             '../../fn/modules/remove.js',
             '../../fn/modules/slugify.js',
-            //'../../fn/modules/stream.js',
             '../../fn/modules/sum.js',
-            //'../fn/observer/observe.js',
             '../../dom/modules/delegate.js',
             '../../dom/modules/trigger.js',
             '../modules/scope.js',
