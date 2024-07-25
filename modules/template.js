@@ -287,7 +287,12 @@ export default class LiteralRenderer extends LiteralDOM {
             nostrict: template.hasAttribute && template.hasAttribute('nostrict')
         });
 
-        const compiled = LiteralRenderer.compile(template.content, options, { template: '#' + id });
+        const debug    = window.DEBUG && {
+            template: '#' + id
+        };
+
+        const compiled = cache[id]
+            || (cache[id] = LiteralRenderer.compile(template.content, options, debug));
 
         super(template.content.cloneNode(true), compiled, parent, parameters, data, options);
     }
