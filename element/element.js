@@ -177,7 +177,8 @@ export default function LiteralElement(tag, lifecycle = {}, properties = {}, par
         {} ;
 
     const message = window.DEBUG ?
-        (keys(parameters).length ? '\n  Imports ' + keys(scope).join(', ') : '') :
+        'literal element stephen.band/literal/element/'
+        + (keys(parameters).length ? '\n  Imports ' + keys(scope).join(', ') : '') :
         '' ;
 
     // tag, lifecycle, properties, stylesheet, message
