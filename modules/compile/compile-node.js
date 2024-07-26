@@ -130,15 +130,17 @@ const compileNode = overload((targets, node) => toType(node), {
         return targets;
     },
 
-    'text': (targets, node, path, options, debug) => {
+    'text': (targets, node, path, options, template) => {
         const string = node.nodeValue;
         if (!isLiteralString(string)) return targets;
 
         const source = decode(string);
         const target = {
-            source,
+            template,
             path,
-            name: indexOf(node)
+            name: indexOf(node),
+            source,
+            Renderer: TextRenderer
         };
 
         if (window.DEBUG) {
@@ -149,8 +151,9 @@ const compileNode = overload((targets, node) => toType(node), {
                 source.trim()
             );
 
-            // Fill target object with debug info
-            assign(target, debug, { tag, code });
+            // Add target object with debug info
+            target.tag  = tag;
+            target.code = code;
 
             // Attempt to compile, and in case of an error replace node with
             // an error element

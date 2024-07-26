@@ -20,12 +20,12 @@ const assign = Object.assign;
 compileAttributes(array, element, attribute, path, options[, debug])
 **/
 
-export default function compileAttribute(array, element, attribute, path, options, debug) {
+export default function compileAttribute(array, element, attribute, path, options, template) {
     const source = attribute.value;
     if (!isLiteralString(source)) { return; }
 
-    const name   = attribute.localName;
-    const tag    = element.tagName.toLowerCase();
+    const name = attribute.localName;
+    const tag  = element.tagName.toLowerCase();
 
     // TODO: custom elements need to be flagged as potentially upgradeable, and
     // we shall have to devise a way of upgrading their renderers. The problem
@@ -49,7 +49,7 @@ export default function compileAttribute(array, element, attribute, path, option
     AttributeRenderer ;
 
     const params = Renderer.parameterNames.join(', ');
-    const target = { source, path, name, upgradeable, Renderer };
+    const target = { template, path, name, source, upgradeable, Renderer };
 
     if (window.DEBUG) {
         const code = truncate(64, '<'
@@ -58,7 +58,9 @@ export default function compileAttribute(array, element, attribute, path, option
             + '">') ;
 
         // Fill target object with debug info
-        assign(target, debug, { tag, code, property });
+        target.tag      = tag;
+        target.code     = code;
+        target.property = property;
 
         // Attempt to compile, and in case of an error replace element with
         // an error element

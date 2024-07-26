@@ -50,7 +50,7 @@ definitions.
 - `"boolean"` - defines a boolean attribute and a boolean property
 - `"number"` - defines a string attribute and a number property
 - `"string"` - defines a string attribute and string property
-- `"tokens"` - defines a tokens attribute and a TokenList property
+- `"tokens"` - defines a tokens attribute (think `class`) and a string setter / TokenList getter property
 - `"src"`    - defines a URL attribute that links to a data property (TODO)
 - `"module"` - defines a URL attribute that ... (TODO)
 

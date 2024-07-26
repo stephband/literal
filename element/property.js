@@ -23,6 +23,8 @@ const resolveAndAssign = function(signal, value) {
     }
 };
 
+const symbols = {};
+
 const types = {
     attribute: (name, symbol) => ({
         construct: function()      { define(this, symbol, { value: Signal.of('') }); },
@@ -112,19 +114,28 @@ const types = {
 };
 
 export default overload((name, descriptor) => typeof descriptor, {
+    // Where descriptor is a function return a getter property that reads from
+    // a compute signal of fn, where fn is nonetheless called with context set
+    // to the object
     function: (name, fn) => {
         const camelcase = toCamelCase(name);
-        return fn(camelcase);
+        const symbol = symbols[camelcase] || (symbols[camelcase] = Symbol(camelcase));
+        return {
+            construct: function() { define(this, symbol, { value: Signal.from(fn, this) }); },
+            get:       function() { return this[symbol].value; }
+        };
     },
 
-    // Where descriptor is a descriptor object pass it straight back
+    // Where descriptor is a descriptor object pass it straight back. Whoever
+    // did this is expected to implement their own observers if needed.
     object: arg(1),
 
     // Where descriptor is a string return a descriptor object of that type
     string: (name, descriptor) => {
         const camelcase = toCamelCase(name);
+        const symbol = symbols[camelcase] || (symbols[camelcase] = Symbol(camelcase));
         if (!types[descriptor]) throw new Error('element() property descriptor "' + descriptor + '" not supported');
-        return types[descriptor](camelcase, Symbol(camelcase));
+        return types[descriptor](camelcase, symbol);
     }
 
     // Where descriptor is undefined assume it is an attribute

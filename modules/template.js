@@ -59,22 +59,6 @@ function getElement(path, node) {
         .reduce(getChild, node) ;
 }
 
-function compileFragment(id, fragment, options) {
-    //const content = template.content || create('fragment', template.childNodes, template) ;
-
-    let targets;
-    if (window.DEBUG) {
-        groupCollapsed('compile', '#' + id, 'yellow');
-        targets = compileNode(fragment, options, { template: '#' + id });
-        groupEnd();
-    }
-    else {
-        targets = compileNode(fragment, options);
-    }
-
-    return { id, fragment, targets };
-}
-
 function removeRange(first, last, fragment) {
     if (window.DEBUG && first.parentNode !== last.parentNode) {
         throw new Error('first and last not children of same parent')
@@ -266,12 +250,12 @@ export default class LiteralRenderer extends LiteralDOM {
         return new LiteralRenderer(template);
     }
 
-    static compile(fragment, options, debug) {
+    static compile(fragment, options, src) {
         let targets;
 
         if (window.DEBUG) {
-            groupCollapsed('compile', debug.template, 'yellow');
-            targets = compileNode(fragment, options, debug);
+            groupCollapsed('compile', src, 'yellow');
+            targets = compileNode(fragment, options, src);
             groupEnd();
         }
         else {
@@ -287,12 +271,8 @@ export default class LiteralRenderer extends LiteralDOM {
             nostrict: template.hasAttribute && template.hasAttribute('nostrict')
         });
 
-        const debug    = window.DEBUG && {
-            template: '#' + id
-        };
-
         const compiled = cache[id]
-            || (cache[id] = LiteralRenderer.compile(template.content, options, debug));
+            || (cache[id] = LiteralRenderer.compile(template.content, options, '#' + id));
 
         super(template.content.cloneNode(true), compiled, parent, parameters, data, options);
     }
