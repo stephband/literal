@@ -53,6 +53,19 @@ definitions.
 - `"tokens"` - defines a tokens attribute (think `class`) and a string setter / TokenList getter property
 - `"src"`    - defines a URL attribute that links to a data property (TODO)
 - `"module"` - defines a URL attribute that ... (TODO)
+- `"data"` - defines a property that exposes Literal's `data` object. This is
+useful if you are building a closed system where literal custom elements are
+authored inside literal templates, as data can be passed efficiently from
+template to custom element.
+
+```html
+<template is="literal-html">
+    <p>The light is <toggle-button data="${ data }"></toggle-button></p>
+</template>
+```
+
+It is probably less useful for publishing custom elements intended for general
+consumption.
 
 Changes to properties defined in this way are signalled to Literal's renderer.
 Literal updates the shadow DOM (not the whole thing, just the parts that need

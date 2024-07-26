@@ -113,7 +113,7 @@ export default function LiteralElement(tag, lifecycle = {}, properties = {}, par
     // Create templates. This is a crude way to do it, and we should probably
     // isolate templates in the shadow from those outside with a separate
     // template cache (based around shadow.getElementById()?)... but... it'll
-    // do for now
+    // do for now... ?
     if (window.DEBUG) document.head.appendChild(create('comment', ' Templates for ' + name));
     document.head.append.apply(document.head, templates);
 

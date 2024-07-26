@@ -110,6 +110,11 @@ const types = {
             .then((object) => this[symbol].value = object)
             .catch((error) => console.error(error));
         }
+    }),
+
+    data: (name, symbol) => ({
+        get: function() { return getInternals(this).renderer.data; },
+        set: function(data) { getInternals(this).renderer.push(data); }
     })
 };
 

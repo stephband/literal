@@ -92,7 +92,7 @@ export class LiteralDOM {
         const children  = content.childNodes;
 
         // The first node may change. The last node is always the last node.
-        this.#data      = Signal.of(Data.of(data));
+        this.#data      = Signal.of(Data.objectOf(data));
         this.#first     = children[0];
         this.#last      = children[children.length - 1];
 
@@ -131,8 +131,8 @@ export class LiteralDOM {
     }
 
     /*
-    template.firstNode
-    template.lastNode
+    .firstNode
+    .lastNode
     */
 
     get firstNode() {
@@ -148,24 +148,40 @@ export class LiteralDOM {
         return this.#last;
     }
 
-    /*
-    .push()
-    */
+    /**
+    .data
+    Read-only property exposing (literal's `data` proxy of) the currently
+    rendered object. This is the same object available as `data` inside a
+    literal template. Setting properties on this object causes the DOM to update.
+    **/
+
+    get data() {
+        const data = this.#data.value;
+        return Data.of(data) || data;
+    }
+
+    /**
+    .push(object)
+    Rerenders and binds the DOM to (literal's `data` proxy of) `object`. This is
+    the same object available as `data` inside the template.
+    **/
 
     push(object) {
         if (this.status === 'done') throw new Error('Renderer is done, cannot .push() data');
 
+        // Make sure we have the raw object
+        object = Data.objectOf(object);
+
         // Dedup
-        if (this.#data === object) return;
+        if (this.#data.value === object) return;
 
         // If we are coming out of sleep put content back in the DOM
-        if (this.#data === null && object !== null) {
+        if (this.#data.value === null && object !== null) {
             this.lastNode.before(this.content);
         }
 
-        // Causes renderers to .invalidate() because they are dependent on
-        // this.#data signal
-        this.#data.value = Data.of(object);
+        // Causes renderers dependent on this signal to .invalidate()
+        this.#data.value = object;
 
         // If object is null put template to sleep: remove all but the last node
         // to the content fragment and blank out the last text node, which we
@@ -246,8 +262,16 @@ export default class LiteralRenderer extends LiteralDOM {
     }
 
     static of(html) {
-        const template = create('template', html);
-        return new LiteralRenderer(template);
+        return LiteralRenderer.from(create('template', html));
+    }
+
+    static from(template, parent) {
+        const id       = identify(template, 'literal-');
+        const fragment = template.content;
+        const compiled = cache[id]
+            || (cache[id] = LiteralRenderer.compile(fragment, options, '#' + id));
+
+        return new LiteralDOM(compiled, fragment.cloneNode(true), parent = template.parentElement);
     }
 
     static compile(fragment, options, src) {
