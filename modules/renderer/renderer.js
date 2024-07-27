@@ -155,7 +155,7 @@ Renderer(signal, fn, consts, element, name, debug)
 */
 
 export default class Renderer {
-    static consts = ['data', 'DATA', 'element', 'shadow', 'host'];
+    static consts = ['DATA', 'data', 'element', 'shadow', 'host'];
 
     #data;
     #render;
@@ -192,14 +192,13 @@ export default class Renderer {
         // Update template consts. We are ok to do this even if consts is a
         // shared object, because consts.data and consts.DATA are only accessed
         // synchronously by #render().
-        const consts = this.consts;
-        consts.data    = Data.of(data);
-        consts.DATA    = Data.objectOf(data);
-        consts.element = this.element;
+        this.consts.data    = Data.of(data);
+        this.consts.DATA    = Data.objectOf(data);
+        this.consts.element = this.element;
 
         // Render!
         ++this.renderCount;
-        return render(this, this.#render(consts));
+        return render(this, this.#render(this.consts));
     }
 
     invalidate() {

@@ -130,7 +130,7 @@ template renderers, or strings.
 **/
 
 export default class TextRenderer extends Renderer {
-    static consts = ['data', 'DATA', 'element', 'host', 'shadow', 'include', 'print'];
+    static consts = ['DATA', 'data', 'element', 'shadow', 'host', 'include', 'print'];
 
     constructor(signal, literal, params, element, node, debug) {
         if (window.DEBUG && !isTextNode(node)) {
@@ -138,7 +138,11 @@ export default class TextRenderer extends Renderer {
         }
 
         const consts = assign({}, params, {
-            include: (...params) => this.include(...params),
+            // Make a partially applicable include()
+            include: (url, data) => data === undefined ?
+                (data) => include(url, data, this.element, this.consts) :
+                include(url, data, this.element, this.consts),
+
             print:   (...args) => print(this, ...args)
         });
 
@@ -165,14 +169,6 @@ export default class TextRenderer extends Renderer {
     get lastNode() {
         // The last item in contents is always the original text node
         return this.contents[this.contents.length - 1];
-    }
-
-    include(url) {
-        return arguments.length === 1 ?
-            // Partially applied
-            (data) => this.include(url, data) :
-            // Immediate include
-            include(url, arguments[1], this.element, this.consts) ;
     }
 
     evaluate() {
