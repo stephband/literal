@@ -16,7 +16,7 @@ const keys    = Object.keys;
 
 
 /**
-element(tag, lifecycle, properties, parameters)
+element(tag, lifecycle, properties, consts)
 
 ```js
 element(tag, {
@@ -76,7 +76,7 @@ function assignProperty(properties, entry) {
     return properties;
 }
 
-export default function LiteralElement(tag, lifecycle = {}, properties = {}, parameters = {}) {
+export default function LiteralElement(tag, lifecycle = {}, properties = {}, consts = {}) {
     if (window.DEBUG && typeof src === 'string' && !/^#/.test(src)) {
         console.error('TODO: Support external templates?');
         // requestTemplate(value).then((template) => {
@@ -108,8 +108,8 @@ export default function LiteralElement(tag, lifecycle = {}, properties = {}, par
             // Render data
             internals.object = {};
 
-            // template, parent, parameters, data, options
-            const renderer = new Literal(template, this, assign({ host: this, shadow, internals }, parameters), undefined);
+            // template, parent, consts, data, options
+            const renderer = new Literal(template, this, assign({ host: this, shadow, internals }, consts), undefined);
             shadow.appendChild(renderer.content);
 
             // Call lifecycle.construct()
@@ -161,7 +161,7 @@ export default function LiteralElement(tag, lifecycle = {}, properties = {}, par
 
     const message = window.DEBUG ?
         'literal element stephen.band/literal/element/'
-        + (keys(parameters).length ? '\n  Imports ' + keys(scope).join(', ') : '') :
+        + (keys(consts).length ? '\n  Imports ' + keys(scope).join(', ') : '') :
         '' ;
 
     // tag, lifecycle, properties, stylesheet, message

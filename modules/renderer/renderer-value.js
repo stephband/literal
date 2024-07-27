@@ -164,7 +164,7 @@ export function removeValue(element) {
 
 
 /**
-ValueRenderer(fn, element, unused, parameters)
+ValueRenderer(fn, element, unused, consts)
 Constructs an object responsible for rendering from a value attribute to a
 value property. Parameter `name` is redundant, but here for symmetry with other
 renderers.
@@ -179,10 +179,10 @@ const toValue = overload(get('type'), {
 });
 
 export default class ValueRenderer extends AttributeRenderer {
-    static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow', 'bind'];
+    static consts = ['data', 'DATA', 'element', 'host', 'shadow', 'bind'];
 
-    constructor(signal, literal, parameters, element, name, debug) {
-        super(signal, literal, parameters, element, 'value', debug);
+    constructor(signal, literal, consts, element, name, debug) {
+        super(signal, literal, consts, element, 'value', debug);
 
         // A synchronous evaluation while data signal value is undefined binds
         // this renderer to changes to signal. If signal has value this also

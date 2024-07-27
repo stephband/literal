@@ -1,11 +1,11 @@
 
 import compileFn  from '../../../fn/modules/compile.js';
 import { log }    from '../log.js';
-import { indent } from './constants.js';
 
+const indent = window.DEBUG ? '\n    ' : '' ;
 
 /**
-compile(source, scope, parameters, options)
+compile(source, scope, consts, options)
 Compiles a literal template string to a function.
 
 (`options.nostrict = true` enables template rendering `with(data)`.)
@@ -14,7 +14,7 @@ Compiles a literal template string to a function.
 // Store render functions against their source
 export const compiled = {};
 
-export default function compile(source, scope, parameters, options = {}, message) {
+export default function compile(source, scope, consts, options = {}, message) {
     // Hey hey, we are not in 'strict mode' inside compiled functions by default
     // so we CAN use with(), making `${ data.name }` available as simply `${ name }`
     // in a template... but let's make it opt-in (for the moment at least). There
@@ -34,8 +34,9 @@ export default function compile(source, scope, parameters, options = {}, message
     // weird, and probably bad. If we are going to use nostrict mode it would
     // probably be best to devise some way of enforcing the base data object to
     // be a prototype-less object of some sort.
-    const code = '\n' + indent
-        + (options.nostrict ? 'with(data) ' : '"use strict";')
+    const code = indent + (options.nostrict ? '' : '"use strict";')
+        + indent + 'const {' + consts.join(',') + '} = arguments[0];'
+        + indent + (options.nostrict ? 'with(data) ' : '')
         + 'return this.compose`' + source + '`;\n';
 
     // Return cached fn
@@ -43,7 +44,7 @@ export default function compile(source, scope, parameters, options = {}, message
 
     if (window.DEBUG) {
         const t0 = window.performance.now();
-        const fn = compileFn(scope, parameters, code);
+        const fn = compileFn(scope, '', code);
         const t1 = window.performance.now();
 
         // Log this compile
@@ -54,5 +55,5 @@ export default function compile(source, scope, parameters, options = {}, message
     }
 
     // The quick version
-    return compiled[code] = compileFn(scope, parameters, code);
+    return compiled[code] = compileFn(scope, '', code);
 }

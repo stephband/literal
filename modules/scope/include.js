@@ -24,14 +24,14 @@ import Template        from '../template.js';
 import requestTemplate from '../request-template.js';
 import requestData     from '../request-data.js';
 
-function pipe(template, data, element, parameters, options) {
-    const renderer = new Template(template, element, parameters, options);
+function pipe(template, data, element, consts, options) {
+    const renderer = new Template(template, element, consts, options);
     data.each((data) => renderer.push(data));
     renderer.done(data);
     return renderer;
 }
 
-export default function include(src, data, element, parameters, options) {
+export default function include(src, data, element, consts, options) {
     // Operate on target to be sure we are not registering gets in
     // parent renderer's signal
     const object = Data.objectOf(data);
@@ -45,16 +45,16 @@ export default function include(src, data, element, parameters, options) {
 
         // Support JSON or module URLs
         if (dataRequest) {
-            return dataRequest.then((data) => new Template(template, element, parameters, data, options));
+            return dataRequest.then((data) => new Template(template, element, consts, data, options));
         }
 
         // Support a stream of data
         if (object && object.pipe) {
-            return pipe(template, object, element, parameters, options);
+            return pipe(template, object, element, consts, options);
         }
 
         // Support object or ... ?
-        return new Template(template, element, parameters, object, options);
+        return new Template(template, element, consts, object, options);
     }
 
     // Template is external to document
@@ -66,13 +66,13 @@ export default function include(src, data, element, parameters, options) {
     if (object && object.pipe) {
         return templateRequest
         .then((template) =>
-            pipe(template, data, element, parameters, options)
+            pipe(template, data, element, consts, options)
         );
     }
 
     return Promise
     .all([templateRequest, dataRequest])
-    .then(([template, data]) => new Template(template, element, parameters, data, options));
+    .then(([template, data]) => new Template(template, element, consts, data, options));
 }
 
 

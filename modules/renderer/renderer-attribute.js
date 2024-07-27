@@ -12,7 +12,7 @@ const getPrototype  = Object.getPrototypeOf;
 
 
 /**
-AttributeRenderer(signal, literal, parameters, element, name)
+AttributeRenderer(signal, literal, consts, element, name)
 Constructs an object responsible for rendering to a plain text attribute.
 **/
 
@@ -52,10 +52,10 @@ export function toAttributeString(values) {
 }
 
 export default class AttributeRenderer extends Renderer {
-    static parameterNames = Renderer.parameterNames;
+    static consts = Renderer.consts;
 
-    constructor(signal, literal, parameters, element, name, debug) {
-        super(signal, literal, parameters, element, name, debug);
+    constructor(signal, literal, consts, element, name, debug) {
+        super(signal, literal, consts, element, name, debug);
 
         this.name = name;
 

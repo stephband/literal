@@ -53,6 +53,7 @@ export const round   = (value, n = 1) => Math.round(value / n) * n;
 // not already used by literal should be put in scope-extended.js
 
 export { default as arg         } from '../../../fn/modules/arg.js';
+export { default as args        } from '../../../fn/modules/args.js';
 export { default as cache       } from '../../../fn/modules/cache.js';
 export { default as capture     } from '../../../fn/modules/capture.js';
 export { default as choose      } from '../../../fn/modules/choose.js';

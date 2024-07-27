@@ -6,15 +6,15 @@ import { stats }         from './renderer.js';
 
 
 /**
-DatasetRenderer(signal, literal, parameters, element, name)
+DatasetRenderer(signal, literal, consts, element, name)
 Constructs an object responsible for rendering to the `.dataset` property.
 **/
 
 export default class DatasetRenderer extends AttributeRenderer {
-    static parameterNames = AttributeRenderer.parameterNames;
+    static consts = AttributeRenderer.consts;
 
-    constructor(signal, literal, parameters, element, name, debug) {
-        super(signal, literal, parameters, element, name, debug);
+    constructor(signal, literal, consts, element, name, debug) {
+        super(signal, literal, consts, element, name, debug);
 
         // data-prop-thing to propThing
         this.property = toCamelCase(name.replace(/^data-/, ''));

@@ -131,28 +131,26 @@ function renderExpressionValue(value) {
 
 
 /*
-Renderer(signal, fn, parameters, element, name, debug)
+Renderer(signal, fn, consts, element, name, debug)
 */
 
 export default class Renderer {
-    static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow'];
+    static consts = ['data', 'DATA', 'element', 'host', 'shadow'];
 
     #data;
     #render;
-    #parameters;
 
-    constructor(signal, render, parameters, element, name, debug) {
+    constructor(signal, render, consts, element, name, debug) {
         // Pick up paremeter names from the constructor, which may have been
         // overridden on dependent constructors
-        const parameterNames = this.constructor.parameterNames;
+        //const consts = this.constructor.consts;
 
         Object.defineProperties(this, properties);
 
         this.#data       = signal;
         this.#render     = render;
-        this.#parameters = parameterNames.map((name) => parameters[name]);
 
-        this.parameters  = parameters;
+        this.consts      = consts;
         this.element     = element;
         this.renderCount = 0;
         this.status      = 'idle';
@@ -169,16 +167,18 @@ export default class Renderer {
     evaluate() {
         // Bind this renderer to current data
         const data = this.#data.value;
-
         if (!data) return;
 
-        const parameters = this.#parameters;
-        parameters[0] = Data.of(data);
-        parameters[1] = Data.objectOf(data);
-        parameters[2] = this.element;
+        // Update template consts. We are ok to do this even if consts is a
+        // shared object, because consts.data and consts.DATA are only accessed
+        // synchronously by #render()
+        const consts = this.consts;
+        consts.data    = Data.of(data);
+        consts.DATA    = Data.objectOf(data);
+        consts.element = this.element;
 
         ++this.renderCount;
-        return this.#render.apply(this, parameters);
+        return this.#render(consts);
     }
 
     invalidate() {
