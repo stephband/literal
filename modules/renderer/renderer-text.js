@@ -9,10 +9,10 @@ that DOM after the text node.
 import Signal           from '../../../fn/modules/signal.js';
 import Data             from '../../../fn/modules/data.js';
 import { isCommentNode, isElementNode, isFragmentNode, isTextNode } from '../../../dom/modules/node.js';
-import include          from '../scope/include.js';
+import include          from '../include.js';
 import deleteRange      from '../dom/delete-range.js';
-import DOMRenderer      from '../template.js';
-import print, { printError } from '../scope/print.js';
+import Literal          from '../template.js';
+import print, { printError } from '../print.js';
 import toText           from './to-text.js';
 import Renderer, { stats } from './renderer.js';
 
@@ -55,7 +55,7 @@ function objectToContents(state, object, i) {
 
     // If object is not a node or renderer, append to string. Array.isArray()
     // does return true for a proxy of an array.
-    if (!(object instanceof DOMRenderer) && !(object instanceof Node) && !Array.isArray(object)) {
+    if (!(object instanceof Literal) && !(object instanceof Node) && !Array.isArray(object)) {
         state.string += toText(object);
         return i;
     }
@@ -92,7 +92,7 @@ function objectToContents(state, object, i) {
     }
 
     // Object is a freshly rendered Literal Template
-    if (object instanceof DOMRenderer) {
+    if (object instanceof Literal) {
         contents[++i].before(toContent(object));
         if (window.DEBUG) ++stats.add;
         contents.splice(i, 0, object);

@@ -20,8 +20,8 @@ import parseMarkdown   from './parse-markdown.js';
 
 import { red, yellow }     from './log.js';
 
-export * from '../modules/scope/scope-fns.js';
-export * from '../modules/scope/scope-fns-ext.js';
+export * from '../scope/scope-fns.js';
+export * from '../scope/scope-fns-ext.js';
 export { px, em, rem } from './parse-length.js';
 export const vw = () => { throw new Error('Literal scope function vw() not available in Deno') }
 export const vh = () => { throw new Error('Literal scope function vh() not available in Deno') }

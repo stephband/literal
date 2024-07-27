@@ -12,7 +12,7 @@ import element, { getInternals as Internals } from '../../dom/modules/element.js
 import assignDataset    from '../modules/dom/assign-dataset.js';
 import requestData      from '../modules/request-data.js';
 import DOMRenderer      from '../modules/template.js';
-import { printError }   from '../modules/scope/print.js';
+import { printError }   from '../modules/print.js';
 
 const assign  = Object.assign;
 const rpath   = /^(\.+|https?:\/)?\//;

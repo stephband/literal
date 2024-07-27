@@ -11,7 +11,7 @@ import R                 from '../renderer/renderer.js';
 import isLiteralString   from './is-literal-string.js';
 import truncate          from './truncate.js';
 import compile           from './compile.js';
-import { printError } from '../scope/print.js';
+import { printError }    from '../print.js';
 
 
 const assign = Object.assign;

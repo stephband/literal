@@ -67,9 +67,9 @@
             '../../dom/modules/trigger.js',
             '../modules/scope.js',
             '../modules/scope-dom.js',
-            '../modules/scope/include.js',
-            '../modules/scope/paramify.js',
-            '../modules/scope/print.js'
+            '../modules/include.js',
+            '../scope/paramify.js',
+            '../modules/print.js'
         ))
         .filter((doc) => (doc.type === 'function' || doc.type === 'constructor'))
         .filter((entry) => !['Stream.of', 'Stream.from', 'Stream.combine', 'Stream.merge', 'clock', 'events', 'observe'].includes(entry.name))

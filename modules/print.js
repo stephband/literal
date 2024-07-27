@@ -19,15 +19,15 @@ Renders as:
 Messages should be styled with the print stylesheet:
 
 ```css
-@import "http://stephen.band/literal/modules/scope/print.css";
+@import "http://stephen.band/literal/modules/print.css";
 ```-->
 
 **/
 
-import noop    from '../../../fn/modules/noop.js';
-import Data    from '../../../fn/modules/data.js';
-import create  from '../../../dom/modules/create.js';
-import { log } from '../log.js';
+import noop    from '../../fn/modules/noop.js';
+import Data    from '../../fn/modules/data.js';
+import create  from '../../dom/modules/create.js';
+import { log } from './log.js';
 
 const linkHTML = '<a class="literal-link" href="https://stephen.band/literal/literal-html/">literal</literal>';
 

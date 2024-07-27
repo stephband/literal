@@ -3,7 +3,7 @@
 import Signal            from '../../../fn/modules/signal.js';
 import names  from './property-names.js';
 import Renderer, { stats } from './renderer.js';
-import { printError } from '../scope/print.js';
+import { printError } from '../print.js';
 import toText from './to-text.js';
 
 

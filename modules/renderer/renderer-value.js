@@ -5,7 +5,7 @@ import overload          from '../../../fn/modules/overload.js';
 import Signal            from '../../../fn/modules/signal.js';
 import trigger           from '../../../dom/modules/trigger.js';
 import config            from '../config.js';
-import bindValue         from '../scope/bind-value.js';
+import bindValue         from '../../scope/bind-value.js';
 import AttributeRenderer, { toAttributeString } from './renderer-attribute.js';
 import { stats }         from './renderer.js';
 import toText            from './to-text.js';

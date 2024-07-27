@@ -18,11 +18,11 @@ ${ data.array.map(include('#list-item')) }
 ```
 **/
 
-import Data            from '../../../fn/modules/data.js';
-import getById         from '../dom/get-by-id.js';
-import Literal         from '../template.js';
-import requestTemplate from '../request-template.js';
-import requestData     from '../request-data.js';
+import Data            from '../../fn/modules/data.js';
+import getById         from './dom/get-by-id.js';
+import Literal         from './template.js';
+import requestTemplate from './request-template.js';
+import requestData     from './request-data.js';
 
 function pipe(template, data, element, consts) {
     const renderer = Literal.fromTemplate(template, element, consts, data);

@@ -83,7 +83,7 @@ function removeRange(first, last, fragment) {
     fragment.appendChild(dom);
 }
 
-export default class LiteralDOM {
+export default class Literal {
     static compile(fragment, options, src) {
         if (window.DEBUG) {
             groupCollapsed('compile', src, 'yellow');
@@ -105,11 +105,11 @@ export default class LiteralDOM {
 
     static fromFragment(fragment, identifier, element, consts = {}, data, options) {
         const compiled = cache[identifier] || (
-            cache[identifier] = LiteralDOM.compile(fragment, options, identifier)
+            cache[identifier] = Literal.compile(fragment, options, identifier)
         );
 
         // fragment, targets, element, consts, data, options
-        return new LiteralDOM(fragment.cloneNode(true), compiled, element, consts, data, options);
+        return new Literal(fragment.cloneNode(true), compiled, element, consts, data, options);
     }
 
     static fromTemplate(template, element, consts = {}, data) {
@@ -120,7 +120,7 @@ export default class LiteralDOM {
             nostrict: template.hasAttribute && template.hasAttribute('nostrict')
         };
 
-        return LiteralDOM.fromFragment(fragment, '#' + id, element, consts, data, options);
+        return Literal.fromFragment(fragment, '#' + id, element, consts, data, options);
     }
 
     #first;
@@ -279,7 +279,7 @@ export default class LiteralDOM {
     }
 }
 
-assign(LiteralDOM.prototype, {
+assign(Literal.prototype, {
     /**
     .stop()
     Stops renderer.

@@ -5,7 +5,7 @@ import toType               from '../../../dom/modules/to-type.js';
 import decode               from '../../../dom/modules/decode.js';
 import indexOf              from '../dom/index-of.js';
 import TextRenderer         from '../renderer/renderer-text.js';
-import { printError }       from '../scope/print.js';
+import { printError }       from '../print.js';
 import scope                from '../scope.js';
 import compile              from './compile.js';
 import { pathSeparator }    from './constants.js';
