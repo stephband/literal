@@ -135,7 +135,7 @@ Renderer(signal, fn, consts, element, name, debug)
 */
 
 export default class Renderer {
-    static consts = ['data', 'DATA', 'element', 'host', 'shadow'];
+    static consts = ['data', 'DATA', 'element', 'shadow', 'host'];
 
     #data;
     #render;
