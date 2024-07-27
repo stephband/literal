@@ -1,6 +1,6 @@
 
 /**
-Template(template, element, parameters, options)
+Template(template, element, consts, options)
 
 Import the `Template` constructor:
 
@@ -88,7 +88,7 @@ export class LiteralDOM {
     #last;
     #data;
 
-    constructor(content, targets, parent = template.parentElement, parameters = {}, data, options = defaults) {
+    constructor(content, targets, parent = template.parentElement, consts = {}, data, options = defaults) {
         const children  = content.childNodes;
 
         // The first node may change. The last node is always the last node.
@@ -98,7 +98,7 @@ export class LiteralDOM {
 
         this.content    = content;
         this.element    = parent;
-        this.parameters = parameters;
+        this.consts     = consts;
         this.contents   = targets
             // We must find targets in cloned content
             .map(this.#toRendererParams, this)
@@ -120,8 +120,8 @@ export class LiteralDOM {
         name;
 
         // Parameters for Renderer.create():
-        // signal, literal, parameters, element, nameOrNode
-        return [this.#data, literal, this.parameters, element, n, target];
+        // signal, literal, consts, element, nameOrNode
+        return [this.#data, literal, this.consts, element, n, target];
     }
 
     #toRenderer(parameters) {
@@ -289,7 +289,7 @@ export default class LiteralRenderer extends LiteralDOM {
         return targets;
     }
 
-    constructor(template, parent = template.parentElement, parameters = {}, data, o = defaults) {
+    constructor(template, parent = template.parentElement, consts = {}, data, o = defaults) {
         const id       = identify(template, 'literal-');
         const options  = assign({}, o, {
             nostrict: template.hasAttribute && template.hasAttribute('nostrict')
@@ -298,6 +298,6 @@ export default class LiteralRenderer extends LiteralDOM {
         const compiled = cache[id]
             || (cache[id] = LiteralRenderer.compile(template.content, options, '#' + id));
 
-        super(template.content.cloneNode(true), compiled, parent, parameters, data, options);
+        super(template.content.cloneNode(true), compiled, parent, consts, data, options);
     }
 }

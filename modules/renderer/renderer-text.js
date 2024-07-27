@@ -130,20 +130,19 @@ template renderers, or strings.
 **/
 
 export default class TextRenderer extends Renderer {
-    static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow', 'include', 'print'];
+    static consts = ['data', 'DATA', 'element', 'host', 'shadow', 'include', 'print'];
 
     constructor(signal, literal, params, element, node, debug) {
         if (window.DEBUG && !isTextNode(node)) {
             throw new TypeError('TextRenderer() node not a text node');
         }
 
-        // Parameters added to text renderer
-        const parameters = assign({}, params, {
+        const consts = assign({}, params, {
             include: (...params) => this.include(...params),
             print:   (...args) => print(this, ...args)
         });
 
-        super(signal, literal, parameters, element, node, debug);
+        super(signal, literal, consts, element, node, debug);
 
         // Contents may contain Nodes and LiteralTemplates, but the last item
         // in contents will always be the original text node
@@ -173,7 +172,7 @@ export default class TextRenderer extends Renderer {
             // Partially applied
             (data) => this.include(url, data) :
             // Immediate include
-            include(url, arguments[1], this.element, this.parameters) ;
+            include(url, arguments[1], this.element, this.consts) ;
     }
 
     evaluate() {

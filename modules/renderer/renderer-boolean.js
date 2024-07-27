@@ -6,7 +6,7 @@ import { stats }         from './renderer.js';
 
 
 /**
-BooleanRenderer(signal, literal, parameters, element, name)
+BooleanRenderer(signal, literal, consts, element, name)
 Constructs an object responsible for rendering to a boolean property or
 attribute.
 **/
@@ -49,11 +49,11 @@ export function toAttributeBoolean(values) {
 
 
 export default class BooleanRenderer extends AttributeRenderer {
-    static parameterNames = AttributeRenderer.parameterNames;
+    static consts = AttributeRenderer.consts;
 
     /* Only needed to evaluate */
-    constructor(signal, literal, parameters, element, name, debug) {
-        super(signal, literal, parameters, element, name, debug);
+    constructor(signal, literal, consts, element, name, debug) {
+        super(signal, literal, consts, element, name, debug);
 
         // A synchronous evaluation while data signal value is undefined binds
         // this renderer to changes to that signal. If signal value is an `data`

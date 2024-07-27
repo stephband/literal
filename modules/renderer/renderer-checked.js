@@ -12,7 +12,7 @@ import { stats }         from './renderer.js';
 
 
 /**
-CheckedRenderer(signal, literal, parameters, element)
+CheckedRenderer(signal, literal, consts, element)
 Constructs an object responsible for rendering to a checked property.
 **/
 
@@ -48,10 +48,10 @@ function setChecked(element, value, hasValueAttribute) {
 }
 
 export default class CheckedRenderer extends AttributeRenderer {
-    static parameterNames = ['data', 'DATA', 'element', 'host', 'shadow', 'bind'];
+    static consts = ['data', 'DATA', 'element', 'host', 'shadow', 'bind'];
 
-    constructor(signal, literal, parameters, element, name, debug) {
-        super(signal, literal, parameters, element, 'checked', debug);
+    constructor(signal, literal, consts, element, name, debug) {
+        super(signal, literal, consts, element, 'checked', debug);
 
         // Flag whether element has a value attribute
         this.hasValue = isDefined(element.getAttribute('value'));

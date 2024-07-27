@@ -7,6 +7,7 @@ import CheckedRenderer   from '../renderer/renderer-checked.js';
 import DatasetRenderer   from '../renderer/renderer-dataset.js';
 import TokensRenderer    from '../renderer/renderer-tokens.js';
 import ValueRenderer     from '../renderer/renderer-value.js';
+import R                 from '../renderer/renderer.js';
 import isLiteralString   from './is-literal-string.js';
 import truncate          from './truncate.js';
 import compile           from './compile.js';
@@ -36,7 +37,7 @@ export default function compileAttribute(array, element, attribute, path, option
     const upgradeable = /-/.test(tag) || element.getAttribute('is');
     const property    = name in names ? names[name] : name;
 
-    // We need the Renderer here just to get .parameterNames. This is a bit
+    // We need the Renderer here just to get .consts. This is a bit
     // clunky, but the whole passing parameters to compiled functions thing is,
     // anyway. Needs a once-over.
     const Renderer = /^data-/.test(name) ? DatasetRenderer :
@@ -48,7 +49,6 @@ export default function compileAttribute(array, element, attribute, path, option
         AttributeRenderer :
     AttributeRenderer ;
 
-    const params = Renderer.parameterNames.join(', ');
     const target = { template, path, name, source, upgradeable, Renderer };
 
     if (window.DEBUG) {
@@ -65,7 +65,7 @@ export default function compileAttribute(array, element, attribute, path, option
         // Attempt to compile, and in case of an error replace element with
         // an error element
         try {
-            target.literal = compile(source, scope, params, options, code);
+            target.literal = compile(source, scope, Renderer.consts, options, code);
         }
         catch(error) {
             element.replaceWith(printError(target, error));
@@ -73,7 +73,7 @@ export default function compileAttribute(array, element, attribute, path, option
         }
     }
     else {
-        target.literal = compile(source, scope, params, options);
+        target.literal = compile(source, scope, Renderer.consts, options);
     }
 
     array.push(target);

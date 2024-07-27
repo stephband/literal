@@ -5,7 +5,7 @@ import toType               from '../../../dom/modules/to-type.js';
 import decode               from '../../../dom/modules/decode.js';
 import indexOf              from '../dom/index-of.js';
 import TextRenderer         from '../renderer/renderer-text.js';
-import { printError } from '../scope/print.js';
+import { printError }       from '../scope/print.js';
 import scope                from '../scope.js';
 import compile              from './compile.js';
 import { pathSeparator }    from './constants.js';
@@ -158,7 +158,7 @@ const compileNode = overload((targets, node) => toType(node), {
             // Attempt to compile, and in case of an error replace node with
             // an error element
             try {
-                target.literal = compile(source, scope, TextRenderer.parameterNames.join(', '), options, code);
+                target.literal = compile(source, scope, TextRenderer.consts, options, code);
             }
             catch(error) {
                 node.replaceWith(printError(target, error));
@@ -166,7 +166,7 @@ const compileNode = overload((targets, node) => toType(node), {
             }
         }
         else {
-            target.literal = compile(source, scope, TextRenderer.parameterNames.join(', '), options);
+            target.literal = compile(source, scope, TextRenderer.consts, options);
         }
 
         node.nodeValue = '';
