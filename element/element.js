@@ -5,6 +5,7 @@ import create                    from '../../dom/modules/create.js';
 import element, { getInternals } from '../../dom/modules/element.js';
 import toPrefetchPromise         from '../../dom/modules/element/to-prefetch-promise.js';
 import getById                   from '../modules/dom/get-by-id.js';
+import assignDataset             from '../modules/dom/assign-dataset.js';
 import Literal                   from '../modules/template.js';
 import defineProperty            from './property.js';
 
@@ -75,24 +76,6 @@ function assignProperty(properties, entry) {
     return properties;
 }
 
-function parseData(value) {
-    try {
-        return JSON.parse(value);
-    }
-    catch(e) {
-        return value;
-    }
-}
-
-function getDataFromDataset(dataset, data) {
-    const keys   = Object.keys(dataset);
-    const values = Object.values(dataset);
-
-    return values
-    .map(parseData)
-    .reduce((data, value, i) => (data[keys[i]] = value, data), data);
-}
-
 export default function LiteralElement(tag, lifecycle = {}, properties = {}, parameters = {}) {
     if (window.DEBUG && typeof src === 'string' && !/^#/.test(src)) {
         console.error('TODO: Support external templates?');
@@ -126,7 +109,7 @@ export default function LiteralElement(tag, lifecycle = {}, properties = {}, par
             internals.object = {};
 
             // template, parent, parameters, data, options
-            const renderer = new Literal(template, this, assign({ host: this, shadow }, parameters), undefined);
+            const renderer = new Literal(template, this, assign({ host: this, shadow, internals }, parameters), undefined);
             shadow.appendChild(renderer.content);
 
             // Call lifecycle.construct()
@@ -141,7 +124,7 @@ export default function LiteralElement(tag, lifecycle = {}, properties = {}, par
                 internals.initialised = true;
 
                 // Get data found in dataset
-                getDataFromDataset(this.dataset, internals.object);
+                assignDataset(internals.object, this.dataset);
 
                 // Set internal data to object's observer proxy
                 internals.data = Data.of(internals.object);

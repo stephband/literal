@@ -9,6 +9,7 @@ make it easy to mix islands of dynamically rendered content into static content.
 import noop             from '../../fn/modules/noop.js';
 import Signal           from '../../fn/modules/signal.js';
 import element, { getInternals as Internals } from '../../dom/modules/element.js';
+import assignDataset    from '../modules/dom/assign-dataset.js';
 import requestData      from '../modules/request-data.js';
 import Template         from '../modules/template.js';
 import { printError }   from '../modules/scope/print.js';
@@ -23,31 +24,6 @@ const onerror = window.DEBUG ?
 
 
 /* Lifecycle */
-
-function parseData(value) {
-        // Object or array
-    return robject.test(value) ? JSON.parse(value) :
-        // Number
-        !Number.isNaN(Number(value)) ? Number(value) :
-        // Boolean
-        value === 'true' ? true :
-        value === 'false' ? false :
-        // String
-        value ;
-}
-
-function getDataFromDataset(dataset) {
-    const keys   = Object.keys(dataset);
-    const values = Object.values(dataset);
-
-    // Do this if you don't want templats to render before they are explicitly
-    // assigned data
-    //if (!keys.length) { return; }
-
-    return values
-        .map(parseData)
-        .reduce((data, value, i) => (data[keys[i]] = value, data), {});
-}
 
 // tag, template, lifecycle, properties, log
 export default element('<template is="literal-html">', {
@@ -83,7 +59,7 @@ export default element('<template is="literal-html">', {
 
         // If src or data was not set use data found in dataset
         if (!internals.promise && !internals.pushed) {
-            internals.data.value = getDataFromDataset(this.dataset);
+            internals.data.value = assignDataset({}, this.dataset);
         }
     }
 }, {

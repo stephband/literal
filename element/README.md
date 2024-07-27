@@ -1,13 +1,14 @@
 
 ## `element()`
 
-Literal wraps the tendrils of the various Custom Elements APIs into a single
-`element()` function that aims to make the whole palaver a million times easier.
+Literal wraps the mega-splat of the various Custom Elements APIs into a single
+`element()` function that aims to make the whole palaver a million times easier
+by cleaning up some gotchas, pitfalls and idiosyncrasies en route.
 
 ### How it works
 
 Import the `element()` function, define, register and export a custom element.
-Like this `<toggle-button>` for example:
+Take this `<toggle-button>` definition, for example:
 
 ```js
 // Import the element() function
@@ -29,10 +30,9 @@ property `active`. Its shadow DOM is rendered from a literal template which has
 access to a `host` object, the element, and renders "on" when `.active` is
 `true`, and "off" when `.active` is `false`.
 
-The `active` attribute is a boolean attribute, it can be authored as
-`<toggle-button active>`, or set via `.setAttribute()` and `.removeAttribute()`,
-or the `.active` property can be set directly. Literal updates the shadow DOM
-accordingly on the next animation frame.
+```html
+<toggle-button active>
+```
 
 ```js
 const toggle = document.querySelector('toggle-button');
@@ -53,14 +53,25 @@ definitions.
 - `"tokens"` - defines a tokens attribute (think `class`) and a string setter / TokenList getter property
 - `"src"`    - defines a URL attribute that links to a data property (TODO)
 - `"module"` - defines a URL attribute that ... (TODO)
-- `"data"` - defines a property that exposes Literal's `data` object. This is
-useful if you are building a closed system where literal custom elements are
-authored inside literal templates, as data can be passed efficiently from
-template to custom element.
+- `"data"` - defines a property exposing literal's `data` object. Setting this
+property to an object changes the data being rendered. Getting this property
+returns literal's `data` proxy of the object.
+
+This is useful if you are building a closed system where literal custom elements
+are authored inside literal templates, as data can be passed efficiently from
+template to custom element shadow DOM by the renderer.
+
+```js
+export default element("<show-text>", {
+    shadow: "<p>${ data.text }</p>"
+}, {
+    data:   "data"
+});
+```
 
 ```html
 <template is="literal-html">
-    <p>The light is <toggle-button data="${ data }"></toggle-button></p>
+    <p>Data has the text "<show-text data="${ data }"><show-text>"</p>
 </template>
 ```
 
