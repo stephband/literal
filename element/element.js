@@ -76,7 +76,7 @@ function assignProperty(properties, entry) {
     return properties;
 }
 
-export default function LiteralElement(tag, lifecycle = {}, properties = {}, consts = {}) {
+export default function LiteralElement(tag, lifecycle = {}, properties = {}) {
     if (window.DEBUG && typeof src === 'string' && !/^#/.test(src)) {
         console.error('TODO: Support external templates?');
         // requestTemplate(value).then((template) => {
@@ -100,16 +100,27 @@ export default function LiteralElement(tag, lifecycle = {}, properties = {}, con
     if (window.DEBUG) document.head.appendChild(create('comment', ' Templates for ' + name));
     document.head.append.apply(document.head, templates);
 
-    const life = {
+    // Assemble properties
+    const props = properties ?
+        entries(properties).reduce(assignProperty, {}) :
+        {} ;
+
+    const message = window.DEBUG ?
+        'literal element stephen.band/literal/element/' :
+        //+ (keys(consts).length ? '\n  Imports ' + keys(scope).join(', ') : '') :
+        '' ;
+
+    // tag, lifecycle, properties, stylesheet, message
+    return element(tag, {
         // DEBUG stylesheet for in-DOM prints of errors and logs
         shadow: window.DEBUG ? '<link rel="stylesheet" href="../module.css">' : '',
 
         construct: function(shadow, internals) {
-            // Render data
+            // Data object
             internals.object = {};
 
-            // template, parent, consts, data, options
-            const renderer = new Literal(template, this, assign({ host: this, shadow, internals }, consts), undefined);
+            const consts   = { host: this, shadow, internals };
+            const renderer = Literal.fromTemplate(template, this, consts);
             shadow.appendChild(renderer.content);
 
             // Call lifecycle.construct()
@@ -152,18 +163,5 @@ export default function LiteralElement(tag, lifecycle = {}, properties = {}, con
         disable: lifecycle.disable && function disable(shadow, internals) { lifecycle.disable.call(this, shadow, internals, internals.data); },
         reset:   lifecycle.reset   && function reset(shadow, internals)   { lifecycle.reset.call(this, shadow, internals, internals.data); },
         restore: lifecycle.restore && function restore(shadow, internals) { lifecycle.restore.call(this, shadow, internals, internals.data); }
-    };
-
-    // Assemble properties
-    const props = properties ?
-        entries(properties).reduce(assignProperty, {}) :
-        {} ;
-
-    const message = window.DEBUG ?
-        'literal element stephen.band/literal/element/'
-        + (keys(consts).length ? '\n  Imports ' + keys(scope).join(', ') : '') :
-        '' ;
-
-    // tag, lifecycle, properties, stylesheet, message
-    return element(tag, life, props, null, message);
+    }, props, null, message);
 }

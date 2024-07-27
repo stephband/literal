@@ -130,17 +130,17 @@ const compileNode = overload((targets, node) => toType(node), {
         return targets;
     },
 
-    'text': (targets, node, path, options, template) => {
+    'text': (targets, node, path, options, debug) => {
         const string = node.nodeValue;
         if (!isLiteralString(string)) return targets;
 
         const source = decode(string);
         const target = {
-            template,
             path,
             name: indexOf(node),
             source,
-            Renderer: TextRenderer
+            Renderer: TextRenderer,
+            debug
         };
 
         if (window.DEBUG) {

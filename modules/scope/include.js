@@ -20,18 +20,19 @@ ${ data.array.map(include('#list-item')) }
 
 import Data            from '../../../fn/modules/data.js';
 import getById         from '../dom/get-by-id.js';
-import Template        from '../template.js';
+import Literal         from '../template.js';
 import requestTemplate from '../request-template.js';
 import requestData     from '../request-data.js';
 
-function pipe(template, data, element, consts, options) {
-    const renderer = new Template(template, element, consts, options);
+function pipe(template, data, element, consts) {
+    const renderer = Literal.fromTemplate(template, element, consts, data);
+    //const renderer = new Template(template, element, consts, options);
     data.each((data) => renderer.push(data));
     renderer.done(data);
     return renderer;
 }
 
-export default function include(src, data, element, consts, options) {
+export default function include(src, data, element, consts) {
     // Operate on target to be sure we are not registering gets in
     // parent renderer's signal
     const object = Data.objectOf(data);
@@ -45,7 +46,7 @@ export default function include(src, data, element, consts, options) {
 
         // Support JSON or module URLs
         if (dataRequest) {
-            return dataRequest.then((data) => new Template(template, element, consts, data, options));
+            return dataRequest.then((data) => Literal.fromTemplate(template, element, consts, data));
         }
 
         // Support a stream of data
@@ -54,7 +55,7 @@ export default function include(src, data, element, consts, options) {
         }
 
         // Support object or ... ?
-        return new Template(template, element, consts, object, options);
+        return Literal.fromTemplate(template, element, consts, data);
     }
 
     // Template is external to document
@@ -72,7 +73,7 @@ export default function include(src, data, element, consts, options) {
 
     return Promise
     .all([templateRequest, dataRequest])
-    .then(([template, data]) => new Template(template, element, consts, data, options));
+    .then(([template, data]) => Literal.fromTemplate(template, element, consts, data));
 }
 
 

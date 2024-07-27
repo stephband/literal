@@ -21,7 +21,7 @@ const assign = Object.assign;
 compileAttributes(array, element, attribute, path, options[, debug])
 **/
 
-export default function compileAttribute(array, element, attribute, path, options, template) {
+export default function compileAttribute(array, element, attribute, path, options, debug) {
     const source = attribute.value;
     if (!isLiteralString(source)) { return; }
 
@@ -46,10 +46,10 @@ export default function compileAttribute(array, element, attribute, path, option
             property === 'checked' ? CheckedRenderer :
             typeof element[property] === 'boolean' ? BooleanRenderer :
             typeof element[property] === 'object' && element[property].add && element[property].remove ? TokensRenderer :
-        AttributeRenderer :
-    AttributeRenderer ;
+            AttributeRenderer :
+        AttributeRenderer ;
 
-    const target = { template, path, name, source, upgradeable, Renderer };
+    const target = { path, name, source, Renderer, upgradeable, debug };
 
     if (window.DEBUG) {
         const code = truncate(64, '<'

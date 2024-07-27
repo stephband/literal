@@ -11,7 +11,7 @@ import Data             from '../../../fn/modules/data.js';
 import { isCommentNode, isElementNode, isFragmentNode, isTextNode } from '../../../dom/modules/node.js';
 import include          from '../scope/include.js';
 import deleteRange      from '../dom/delete-range.js';
-import Template         from '../template.js';
+import DOMRenderer      from '../template.js';
 import print, { printError } from '../scope/print.js';
 import toText           from './to-text.js';
 import Renderer, { stats } from './renderer.js';
@@ -55,7 +55,7 @@ function objectToContents(state, object, i) {
 
     // If object is not a node or renderer, append to string. Array.isArray()
     // does return true for a proxy of an array.
-    if (!(object instanceof Template) && !(object instanceof Node) && !Array.isArray(object)) {
+    if (!(object instanceof DOMRenderer) && !(object instanceof Node) && !Array.isArray(object)) {
         state.string += toText(object);
         return i;
     }
@@ -92,7 +92,7 @@ function objectToContents(state, object, i) {
     }
 
     // Object is a freshly rendered Literal Template
-    if (object instanceof Template) {
+    if (object instanceof DOMRenderer) {
         contents[++i].before(toContent(object));
         if (window.DEBUG) ++stats.add;
         contents.splice(i, 0, object);

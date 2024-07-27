@@ -83,49 +83,88 @@ function removeRange(first, last, fragment) {
     fragment.appendChild(dom);
 }
 
-export class LiteralDOM {
+export default class LiteralDOM {
+    static compile(fragment, options, src) {
+        if (window.DEBUG) {
+            groupCollapsed('compile', src, 'yellow');
+            const targets = compileNode(fragment, options, src);
+            groupEnd();
+            return targets;
+        }
+
+        return compileNode(fragment, options);
+    }
+
+    static isTemplate(object) {
+        return object instanceof LiteralRenderer;
+    }
+
+    static of(html) {
+        return LiteralRenderer.from(create('template', html));
+    }
+
+    static fromFragment(fragment, identifier, element, consts = {}, data, options) {
+        const compiled = cache[identifier] || (
+            cache[identifier] = LiteralDOM.compile(fragment, options, identifier)
+        );
+
+        // fragment, targets, element, consts, data, options
+        return new LiteralDOM(fragment.cloneNode(true), compiled, element, consts, data, options);
+    }
+
+    static fromTemplate(template, element, consts = {}, data) {
+        const id       = identify(template, 'literal-');
+        const fragment = template.content;
+
+        const options  = {
+            nostrict: template.hasAttribute && template.hasAttribute('nostrict')
+        };
+
+        return LiteralDOM.fromFragment(fragment, '#' + id, element, consts, data, options);
+    }
+
     #first;
     #last;
     #data;
 
-    constructor(content, targets, parent = template.parentElement, consts = {}, data, options = defaults) {
-        const children  = content.childNodes;
+    // fragment, targets, element, consts, data, options
+    constructor(fragment, targets, parent = template.parentElement, consts = {}, data, options = defaults) {
+        const children  = fragment.childNodes;
 
         // The first node may change. The last node is always the last node.
-        this.#data      = Signal.of(Data.objectOf(data));
-        this.#first     = children[0];
-        this.#last      = children[children.length - 1];
-
-        this.content    = content;
-        this.element    = parent;
-        this.consts     = consts;
-        this.contents   = targets
+        this.#data    = Signal.of(Data.objectOf(data));
+        this.#first   = children[0];
+        this.#last    = children[children.length - 1];
+        this.content  = fragment;
+        this.element  = parent;
+        this.consts   = consts;
+        this.contents = targets
             // We must find targets in cloned content
-            .map(this.#toRendererParams, this)
+            .map(this.#toCompiled, this)
             // before we create renderers for them, as renderers may mutate the DOM
             .map(this.#toRenderer, this);
     }
 
-    #toRendererParams(target) {
-        const { path, name, literal, message, template } = target;
+    #toCompiled(compiled) {
+        const { path, name } = compiled;
 
         // Where `.path` exists find the element at the end of the path
         const element = path ? getElement(path, this.content) : this.element ;
 
         // Text renderer expects a text node that must always come from the
         // cloned content fragment
-        const n = typeof name === 'number' ?
+        const node = typeof name === 'number' ?
             path ? element.childNodes[name] :
             this.content.childNodes[name] :
         name;
 
-        // Parameters for Renderer.create():
-        // signal, literal, consts, element, nameOrNode
-        return [this.#data, literal, this.consts, element, n, target];
+        // Parameters for new Renderer()
+        return { element, node, compiled };
     }
 
-    #toRenderer(parameters) {
-        const renderer = Renderer.create(...parameters);
+    #toRenderer({ element, node, compiled }) {
+        const { Renderer, literal } = compiled;
+        const renderer = new Renderer(this.#data, literal, this.consts, element, node, compiled);
         this.done(renderer);
         return renderer;
     }
@@ -255,49 +294,3 @@ assign(LiteralDOM.prototype, {
 
     done: Renderer.prototype.done
 });
-
-export default class LiteralRenderer extends LiteralDOM {
-    static isTemplate(object) {
-        return object instanceof LiteralRenderer;
-    }
-
-    static of(html) {
-        return LiteralRenderer.from(create('template', html));
-    }
-
-    static from(template, parent) {
-        const id       = identify(template, 'literal-');
-        const fragment = template.content;
-        const compiled = cache[id]
-            || (cache[id] = LiteralRenderer.compile(fragment, options, '#' + id));
-
-        return new LiteralDOM(compiled, fragment.cloneNode(true), parent = template.parentElement);
-    }
-
-    static compile(fragment, options, src) {
-        let targets;
-
-        if (window.DEBUG) {
-            groupCollapsed('compile', src, 'yellow');
-            targets = compileNode(fragment, options, src);
-            groupEnd();
-        }
-        else {
-            targets = compileNode(fragment, options);
-        }
-
-        return targets;
-    }
-
-    constructor(template, parent = template.parentElement, consts = {}, data, o = defaults) {
-        const id       = identify(template, 'literal-');
-        const options  = assign({}, o, {
-            nostrict: template.hasAttribute && template.hasAttribute('nostrict')
-        });
-
-        const compiled = cache[id]
-            || (cache[id] = LiteralRenderer.compile(template.content, options, '#' + id));
-
-        super(template.content.cloneNode(true), compiled, parent, consts, data, options);
-    }
-}

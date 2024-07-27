@@ -11,7 +11,7 @@ import Signal           from '../../fn/modules/signal.js';
 import element, { getInternals as Internals } from '../../dom/modules/element.js';
 import assignDataset    from '../modules/dom/assign-dataset.js';
 import requestData      from '../modules/request-data.js';
-import Template         from '../modules/template.js';
+import DOMRenderer      from '../modules/template.js';
 import { printError }   from '../modules/scope/print.js';
 
 const assign  = Object.assign;
@@ -32,7 +32,7 @@ export default element('<template is="literal-html">', {
         internals.initialised = false;
         internals.pushed      = false;
         internals.data        = Signal.of();
-        internals.renderer    = new Template(this, this.parentElement);
+        internals.renderer    = DOMRenderer.fromTemplate(this, this.parentElement);
     },
 
     connect: function(shadow) {
