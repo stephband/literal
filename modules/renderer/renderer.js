@@ -120,13 +120,33 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
     }
 }
 
-
 function renderExpressionValue(value) {
     if (typeof value !== 'object') { return value; }
 
     if (value.then) { return Signal.from(value); }
     if (value.stop) {}
     if (value.each) {}
+}
+
+function render(renderer, args) {
+    const strings = args[0];
+
+    // Flag the literal as containing exactly 1 expression optionally
+    // surrounded by whitespace, which allows for some optimisations
+    // further down the line, particularly for attribute renderers. We
+    // need only do this on first render.
+    if (renderer.singleExpression === undefined) {
+        renderer.singleExpression = strings.length === 2
+            && !/\S/.test(strings[0])
+            && !/\S/.test(strings[1]) ;
+    }
+
+    let n = 0;
+    while (strings[++n] !== undefined) {
+        renderValue(renderer, args, args, n, args[n]);
+    }
+
+    renderer.render.apply(renderer, args);
 }
 
 
@@ -177,8 +197,9 @@ export default class Renderer {
         consts.DATA    = Data.objectOf(data);
         consts.element = this.element;
 
+        // Render!
         ++this.renderCount;
-        return this.#render(consts);
+        return render(this, this.#render(consts));
     }
 
     invalidate() {
@@ -203,30 +224,6 @@ console.warn(this.constructor.name + ' ' + this.template + ' ' + this.path + ' a
         Signal.evaluate(this, this.evaluate);
         this.status = 'idle';
         return this;
-    }
-
-
-    /*
-    .compose(strings, ...args)
-    The renderer method called by compiled literal function
-    */
-    compose(strings) {
-        // Flag the literal as containing exactly 1 expression optionally
-        // surrounded by whitespace, which allows for some optimisations
-        // further down the line, particularly for attribute renderers. We
-        // need only do this on first render.
-        if (this.singleExpression === undefined) {
-            this.singleExpression = strings.length === 2
-                && !/\S/.test(strings[0])
-                && !/\S/.test(strings[1]) ;
-        }
-
-        let n = 0;
-        while (strings[++n] !== undefined) {
-            renderValue(this, arguments, arguments, n, arguments[n]);
-        }
-
-        return this.render.apply(this, arguments);
     }
 
     stop() {

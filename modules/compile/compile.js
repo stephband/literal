@@ -37,7 +37,7 @@ export default function compile(source, scope, consts, options = {}, message) {
     const code = indent + (options.nostrict ? '' : '"use strict";')
         + indent + 'const {' + consts.join(',') + '} = arguments[0];'
         + indent + (options.nostrict ? 'with(data) ' : '')
-        + 'return this.compose`' + source + '`;\n';
+        + 'return args`' + source + '`;\n';
 
     // Return cached fn
     if (compiled[code]) { return compiled[code]; }
