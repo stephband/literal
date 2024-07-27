@@ -171,7 +171,7 @@ export default class Renderer {
 
         // Update template consts. We are ok to do this even if consts is a
         // shared object, because consts.data and consts.DATA are only accessed
-        // synchronously by #render()
+        // synchronously by #render().
         const consts = this.consts;
         consts.data    = Data.of(data);
         consts.DATA    = Data.objectOf(data);
