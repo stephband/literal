@@ -120,14 +120,6 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
     }
 }
 
-function renderExpressionValue(value) {
-    if (typeof value !== 'object') { return value; }
-
-    if (value.then) { return Signal.from(value); }
-    if (value.stop) {}
-    if (value.each) {}
-}
-
 function render(renderer, args) {
     const strings = args[0];
 
@@ -161,10 +153,6 @@ export default class Renderer {
     #render;
 
     constructor(signal, render, consts, element, name, debug) {
-        // Pick up paremeter names from the constructor, which may have been
-        // overridden on dependent constructors
-        //const consts = this.constructor.consts;
-
         Object.defineProperties(this, properties);
 
         this.#data       = signal;
@@ -176,8 +164,6 @@ export default class Renderer {
 
         // Assign debug properties and track the number of renderers created
         if (window.DEBUG) {
-            console.log('D', debug);
-
             this.template = debug.template;
             this.path     = debug.path;
             this.code     = debug.code;
