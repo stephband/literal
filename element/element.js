@@ -88,7 +88,7 @@ export default function LiteralElement(tag, lifecycle = {}, properties = {}) {
     const name = '<' + tag.replace(/^</, '').replace(/>$/, '') + '>';
 
     // Compile templates
-    const template  = create('template', { id: name, html: lifecycle.shadow });
+    const template  = create('template', { html: lifecycle.shadow });
     const templates = Object
         .entries(lifecycle.templates)
         .map(([id, html]) => create('template', { id, html }));
@@ -120,7 +120,7 @@ export default function LiteralElement(tag, lifecycle = {}, properties = {}) {
             internals.object = {};
 
             const consts   = { host: this, shadow, internals };
-            const renderer = Literal.fromTemplate(template, this, consts);
+            const renderer = Literal.fromFragment(name, template.content, this, consts);
             shadow.appendChild(renderer.content);
 
             // Call lifecycle.construct()

@@ -84,15 +84,17 @@ function removeRange(first, last, fragment) {
 }
 
 export default class Literal {
-    static compile(fragment, options, src) {
+    static compile(identifier, fragment, options) {
+        if(cache[identifier]) return cache[identifier];
+
         if (window.DEBUG) {
-            groupCollapsed('compile', src, 'yellow');
-            const targets = compileNode(fragment, options, src);
+            groupCollapsed('compile', identifier, 'yellow');
+            cache[identifier] = compileNode(fragment, options, identifier);
             groupEnd();
-            return targets;
+            return cache[identifier];
         }
 
-        return compileNode(fragment, options);
+        return cache[identifier] = compileNode(fragment, options);
     }
 
     static isTemplate(object) {
@@ -103,10 +105,8 @@ export default class Literal {
         return Literal.fromTemplate(create('template', html));
     }
 
-    static fromFragment(fragment, identifier, element, consts = {}, data, options) {
-        const compiled = cache[identifier] || (
-            cache[identifier] = Literal.compile(fragment, options, identifier)
-        );
+    static fromFragment(identifier, fragment, element, consts = {}, data, options) {
+        const compiled = Literal.compile(identifier, fragment, options);
 
         // fragment, targets, element, consts, data, options
         return new Literal(fragment.cloneNode(true), compiled, element, consts, data, options);
@@ -115,12 +115,11 @@ export default class Literal {
     static fromTemplate(template, element, consts = {}, data) {
         const id       = identify(template, 'literal-');
         const fragment = template.content;
-
         const options  = {
             nostrict: template.hasAttribute && template.hasAttribute('nostrict')
         };
 
-        return Literal.fromFragment(fragment, '#' + id, element, consts, data, options);
+        return Literal.fromFragment('#' + id, fragment, element, consts, data, options);
     }
 
     #first;
@@ -129,7 +128,7 @@ export default class Literal {
 
     // fragment, targets, element, consts, data, options
     constructor(fragment, targets, parent = template.parentElement, consts = {}, data, options = defaults) {
-        const children  = fragment.childNodes;
+        const children = fragment.childNodes;
 
         // The first node may change. The last node is always the last node.
         this.#data    = Signal.of(Data.objectOf(data));
