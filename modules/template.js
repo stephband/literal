@@ -24,7 +24,6 @@ renderer
 ```
 **/
 
-
 import overload            from '../../fn/modules/overload.js';
 import Signal              from '../../fn/modules/signal.js';
 import Data                from '../../fn/modules/data.js';
@@ -107,8 +106,6 @@ export default class Literal {
 
     static fromFragment(identifier, fragment, element, consts = {}, data, options) {
         const compiled = Literal.compile(identifier, fragment, options);
-
-        // fragment, targets, element, consts, data, options
         return new Literal(fragment.cloneNode(true), compiled, element, consts, data, options);
     }
 
@@ -118,7 +115,6 @@ export default class Literal {
         const options  = {
             nostrict: template.hasAttribute && template.hasAttribute('nostrict')
         };
-
         return Literal.fromFragment('#' + id, fragment, element, consts, data, options);
     }
 

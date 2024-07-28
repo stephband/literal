@@ -130,23 +130,23 @@ const compileNode = overload((targets, node) => toType(node), {
         return targets;
     },
 
-    'text': (targets, node, path, options, debug) => {
+    'text': (targets, node, path, options, template) => {
         const string = node.nodeValue;
         if (!isLiteralString(string)) return targets;
 
         const source = decode(string);
         const target = {
+            template,
             path,
             name: indexOf(node),
             source,
-            Renderer: TextRenderer,
-            debug
+            Renderer: TextRenderer
         };
 
         if (window.DEBUG) {
             const parent = node.parentElement;
             const tag    = parent && parent.tagName.toLowerCase();
-            const code   = truncate(64, tag ?
+            const code   = truncate(80, tag ?
                 '<' + tag + '>' + source.trim() + '</' + tag + '>' :
                 source.trim()
             );
@@ -172,11 +172,7 @@ const compileNode = overload((targets, node) => toType(node), {
         node.nodeValue = '';
         targets.push(target);
         return targets;
-    },
-
-    /*'default': () => {
-        throw new Error('Literal: Cannot compile node');
-    }*/
+    }
 });
 
 export default compileNode;

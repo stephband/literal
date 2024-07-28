@@ -163,6 +163,36 @@
 
     <div class="test">
         <template is="literal-html">
+            <h2>location</h2>
+            <p>Includes a template based on the location #hash</p>
+            <p>
+                <a href="#1">#1</a>
+                <a href="#2">#2</a>
+                <a href="#3">#3</a>
+                <a href="#4">#4</a>
+            </p>
+            <pre>(${ this.renderCount }) location.identifier = ${ window.data = data, location.identifier }</pre>
+            ${ location.identifier ? include('#template-' + location.identifier, data) : '' }
+        </template>
+    </div>
+
+    <div class="test">
+        <template is="literal-html">
+            <h2>location</h2>
+            <p>Includes a template based on the location pathname</p>
+            <p>
+                <a href="./1">./1</a>
+                <a href="./2">./2</a>
+                <a href="./3">./3</a>
+                <a href="./4">./4</a>
+            </p>
+            <pre>(${ this.renderCount }) location.identifier = ${ window.data = data, location.pathname }</pre>
+            ${ location.pathname ? include('#template-' + /\w+$/.exec(location.pathname)[0], data) : '' }
+        </template>
+    </div>
+
+    <!--div class="test">
+        <template is="literal-html">
             <h2>is="literal-html"</h2>
             <p>Test attribute renderers.</p>
             <p id="${ '✓' }">String property <code>.id="✓"</code></p>
@@ -380,5 +410,5 @@
             to an existing property triggers a fresh render.</p>
             ${ print(data) }
         </template>
-    </div>
+    </div-->
 </body>

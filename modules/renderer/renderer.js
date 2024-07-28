@@ -169,7 +169,6 @@ export default class Renderer {
 
         this.#data       = signal;
         this.#render     = render;
-
         this.consts      = consts;
         this.element     = element;
         this.renderCount = 0;
@@ -177,6 +176,8 @@ export default class Renderer {
 
         // Assign debug properties and track the number of renderers created
         if (window.DEBUG) {
+            console.log('D', debug);
+
             this.template = debug.template;
             this.path     = debug.path;
             this.code     = debug.code;

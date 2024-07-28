@@ -21,7 +21,7 @@ const assign = Object.assign;
 compileAttributes(array, element, attribute, path, options[, debug])
 **/
 
-export default function compileAttribute(array, element, attribute, path, options, debug) {
+export default function compileAttribute(array, element, attribute, path, options, template) {
     const source = attribute.value;
     if (!isLiteralString(source)) { return; }
 
@@ -49,10 +49,10 @@ export default function compileAttribute(array, element, attribute, path, option
             AttributeRenderer :
         AttributeRenderer ;
 
-    const target = { path, name, source, Renderer, upgradeable, debug };
+    const target = { path, name, source, Renderer, upgradeable, template };
 
     if (window.DEBUG) {
-        const code = truncate(64, '<'
+        const code = truncate(80, '<'
             + tag + ' '
             + name + '="' + source
             + '">') ;
