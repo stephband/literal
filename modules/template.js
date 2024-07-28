@@ -31,7 +31,7 @@ import Data                from '../../fn/modules/data.js';
 import create              from '../../dom/modules/create.js';
 import identify            from '../../dom/modules/identify.js';
 import { pathSeparator }   from './compile/constants.js';
-import Renderer, { stats } from './renderer.js';
+import Renderer, { stats } from './renderer/renderer.js';
 import compileNode         from './compile.js';
 import { groupCollapsed, groupEnd } from './log.js';
 
@@ -43,7 +43,7 @@ const defaults = {};
 
 
 /*
-LiteralRenderer
+Literal
 Descendant paths are stored in the form `"#id>1>12>3"`, enabling fast
 cloning of template instances without retraversing their DOMs looking for
 literal attributes and text.
@@ -96,11 +96,11 @@ export default class Literal {
     }
 
     static isTemplate(object) {
-        return object instanceof LiteralRenderer;
+        return object instanceof Literal;
     }
 
-    static of(html) {
-        return LiteralRenderer.from(create('template', html));
+    static fromHTML(html) {
+        return Literal.fromTemplate(create('template', html));
     }
 
     static fromFragment(fragment, identifier, element, consts = {}, data, options) {
@@ -246,7 +246,7 @@ export default class Literal {
 
         // Last node is not in the DOM
         if (this.content.lastChild === last) {
-            throw new Error('Illegal LiteralRenderer.before() – template is not in the DOM');
+            throw new Error('Illegal Literal.before() – template is not in the DOM');
         }
 
         // First node is not in the DOM

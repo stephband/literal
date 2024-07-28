@@ -129,34 +129,26 @@ export default function LiteralElement(tag, lifecycle = {}, properties = {}) {
         },
 
         connect: function(shadow, internals) {
-            const { renderer } = internals;
+            const { renderer, object, data } = internals;
 
-            if (!internals.initialised) {
-                internals.initialised = true;
-
-                // Get data found in dataset
-                assignDataset(internals.object, this.dataset);
-
-                // Set internal data to object's observer proxy
-                internals.data = Data.of(internals.object);
-            }
+            if (!data) internals.data = Data.of(object);
 
             // We must render synchronously here else rendered 'slotchange'
             // listeners miss the first slotchange... this IS synchronous, right?
-            internals.renderer.push(internals.data);
+            renderer.push(internals.data);
 
             // Connect callback called post-render
             if (lifecycle.connect) lifecycle.connect.call(this, shadow, internals, internals.data);
         },
 
         disconnect: function(shadow, internals) {
-            const { renderer } = internals;
+            const { renderer, data } = internals;
 
             // Make literal renderer go dormant
-            internals.renderer.push(null);
+            renderer.push(null);
 
             // Disconnect callback post render
-            if (lifecycle.disconnect) lifecycle.disconnect.call(this, shadow, internals, internals.data);
+            if (lifecycle.disconnect) lifecycle.disconnect.call(this, shadow, internals, data);
         },
 
         enable:  lifecycle.enable  && function enable(shadow, internals)  { lifecycle.enable.call(this, shadow, internals, internals.data); },
