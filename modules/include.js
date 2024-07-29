@@ -18,7 +18,7 @@ ${ data.array.map(include('#list-item')) }
 ```
 **/
 
-import Data            from '../../fn/modules/data.js';
+import Data            from 'fn/data.js';
 import getById         from './dom/get-by-id.js';
 import Literal         from './template.js';
 import requestTemplate from './request-template.js';

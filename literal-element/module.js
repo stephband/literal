@@ -44,7 +44,7 @@ That may now be authored:
 <p>Current time: <dom-clock interval="3"></dom-clock></p>
 **/
 
-import element    from '../../dom/modules/element.js';
+import element    from 'dom/element.js';
 import lifecycle  from './modules/lifecycle.js';
 import properties from './modules/properties.js';
 

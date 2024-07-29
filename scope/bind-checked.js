@@ -1,8 +1,8 @@
 
-import id        from '../../fn/modules/id.js';
-import isDefined from '../../fn/modules/is-defined.js';
-import set       from '../../fn/modules/set.js';
-//import events    from '../../../dom/modules/events.js';
+import id        from 'fn/id.js';
+import isDefined from 'fn/is-defined.js';
+import set       from 'fn/set.js';
+//import events    from 'dom/events.js';
 //import { observe } from '../data.js';
 
 export default function bindChecked(element, data, path, to, from, setChecked) {

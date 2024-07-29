@@ -1,16 +1,16 @@
 
-export { default as by          } from '../../fn/modules/by.js';
-export { clamp                  } from '../../fn/modules/clamp.js';
-export { default as deg         } from '../../fn/modules/to-deg.js';
-export { default as rad         } from '../../fn/modules/to-rad.js';
-export { default as equals      } from '../../fn/modules/equals.js';
-export { default as matches     } from '../../fn/modules/matches.js';
-export { default as get         } from '../../fn/modules/get-path.js';
-export { default as set         } from '../../fn/modules/set-path.js';
-export { default as slugify     } from '../../fn/modules/slugify.js';
-export { default as toCamelCase } from '../../fn/modules/to-camel-case.js';
-export { default as normalise   } from '../../fn/modules/normalise.js';
-export { default as denormalise } from '../../fn/modules/denormalise.js';
+export { default as by          } from 'fn/by.js';
+export { clamp                  } from 'fn/clamp.js';
+export { default as deg         } from 'fn/to-deg.js';
+export { default as rad         } from 'fn/to-rad.js';
+export { default as equals      } from 'fn/equals.js';
+export { default as matches     } from 'fn/matches.js';
+export { default as get         } from 'fn/get-path.js';
+export { default as set         } from 'fn/set-path.js';
+export { default as slugify     } from 'fn/slugify.js';
+export { default as toCamelCase } from 'fn/to-camel-case.js';
+export { default as normalise   } from 'fn/normalise.js';
+export { default as denormalise } from 'fn/denormalise.js';
 export { default as copy        } from './copy.js';
 export { default as pluralise   } from './pluralise.js';
 export { default as stash       } from './stash.js';

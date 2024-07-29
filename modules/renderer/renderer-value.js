@@ -1,9 +1,9 @@
 
-import id                from '../../../fn/modules/id.js';
-import get               from '../../../fn/modules/get.js';
-import overload          from '../../../fn/modules/overload.js';
-import Signal            from '../../../fn/modules/signal.js';
-import trigger           from '../../../dom/modules/trigger.js';
+import id                from 'fn/id.js';
+import get               from 'fn/get.js';
+import overload          from 'fn/overload.js';
+import Signal            from 'fn/signal.js';
+import trigger           from 'dom/trigger.js';
 import config            from '../config.js';
 import bindValue         from '../../scope/bind-value.js';
 import AttributeRenderer, { toAttributeString } from './renderer-attribute.js';

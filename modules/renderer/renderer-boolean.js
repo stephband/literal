@@ -1,6 +1,6 @@
 
-import Signal            from '../../../fn/modules/signal.js';
-import sum               from '../../../fn/modules/sum.js';
+import Signal            from 'fn/signal.js';
+import sum               from 'fn/sum.js';
 import AttributeRenderer from './renderer-attribute.js';
 import { stats }         from './renderer.js';
 

@@ -4,12 +4,12 @@ import * as path from "https://deno.land/std@0.110.0/path/mod.ts";
 // Absolute path to module
 const moduleAbs = path.dirname(path.fromFileUrl(import.meta.url));
 
-import { addDate } from '../../fn/modules/date.js';
-import { addTime } from '../../fn/modules/time.js';
-import exec        from '../../fn/modules/exec.js';
-import get         from '../../fn/modules/get.js';
-import overload    from '../../fn/modules/overload.js';
-import toType      from '../../fn/modules/to-type.js';
+import { addDate } from 'fn/date.js';
+import { addTime } from 'fn/time.js';
+import exec        from 'fn/exec.js';
+import get         from 'fn/get.js';
+import overload    from 'fn/overload.js';
+import toType      from 'fn/to-type.js';
 
 import read            from './read.js';
 import { rewriteURL, rewriteURLs } from './url.js';

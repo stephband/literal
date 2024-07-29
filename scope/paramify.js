@@ -7,7 +7,7 @@ parameters object. Rejects undefined properties and flattens out
 array values.
 **/
 
-import nothing from '../../fn/modules/nothing.js';
+import nothing from 'fn/nothing.js';
 
 export default function paramify(object) {
     // If this is an object with properties that may be arrays, flatten it

@@ -1,5 +1,5 @@
 
-import Signal from '../../fn/modules/signal.js';
+import Signal from 'fn/signal.js';
 
 function stripHash(hash) {
     return hash.replace(/^#/, '');

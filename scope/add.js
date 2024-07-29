@@ -35,9 +35,9 @@ function toAddType(n) {
     type;
 }
 
-import overload        from '../../fn/modules/overload.js';
-import { addDate }     from '../../fn/modules/date.js';
-import { addTime }     from '../../fn/modules/time.js';
+import overload        from 'fn/overload.js';
+import { addDate }     from 'fn/date.js';
+import { addTime }     from 'fn/time.js';
 
 register('add', overload(toAddType, {
     'date': addDate,

@@ -24,11 +24,11 @@ renderer
 ```
 **/
 
-import overload            from '../../fn/modules/overload.js';
-import Signal              from '../../fn/modules/signal.js';
-import Data                from '../../fn/modules/data.js';
-import create              from '../../dom/modules/create.js';
-import identify            from '../../dom/modules/identify.js';
+import overload            from 'fn/overload.js';
+import Signal              from 'fn/signal.js';
+import Data                from 'fn/data.js';
+import create              from 'dom/create.js';
+import identify            from 'dom/identify.js';
 import { pathSeparator }   from './compile/constants.js';
 import Renderer, { stats } from './renderer/renderer.js';
 import compileNode         from './compile.js';

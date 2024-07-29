@@ -24,9 +24,9 @@ Messages should be styled with the print stylesheet:
 
 **/
 
-import noop    from '../../fn/modules/noop.js';
-import Data    from '../../fn/modules/data.js';
-import create  from '../../dom/modules/create.js';
+import noop    from 'fn/noop.js';
+import Data    from 'fn/data.js';
+import create  from 'dom/create.js';
 import { log } from './log.js';
 
 const linkHTML = '<a class="literal-link" href="https://stephen.band/literal/literal-html/">literal</literal>';

@@ -73,7 +73,7 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
 
 <body>
     <script type="module">
-    import test        from "../../fn/modules/test.js";
+    import test        from "fn/test.js";
     import Renderer     from '../modules/renderer/renderer.js';
     import { Observer } from '../../fn/observer/observer.js';
 /*
@@ -217,9 +217,9 @@ ${ data.three === 'Three' ? '✔' : '' } ${ data.three }</pre>
     }, 4);
 */
 /*
-import create           from '../dom/modules/create.js';
-import Stream           from '../fn/modules/stream.js';
-import IntervalStream   from '../fn/modules/stream/interval-stream.js';
+import create           from 'dom/create.js';
+import Stream           from 'fn/stream.js';
+import IntervalStream   from 'fn/stream/interval-stream.js';
 import Template from './modules/template.js';
 
     test("Template() primitive properties", [], function(equals, done) {

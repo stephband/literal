@@ -1,6 +1,6 @@
 
-import Signal            from '../../../fn/modules/signal.js';
-import toCamelCase       from '../../../fn/modules/to-camel-case.js';
+import Signal            from 'fn/signal.js';
+import toCamelCase       from 'fn/to-camel-case.js';
 import AttributeRenderer, { toAttributeString } from './renderer-attribute.js';
 import { stats }         from './renderer.js';
 

@@ -1,7 +1,7 @@
 
-import { remove }       from '../../../fn/modules/remove.js';
-import Signal, { ObserveSignal } from '../../../fn/modules/signal.js';
-import Data             from '../../../fn/modules/data.js';
+import { remove }       from 'fn/remove.js';
+import Signal, { ObserveSignal } from 'fn/signal.js';
+import Data             from 'fn/data.js';
 import scope            from '../scope.js';
 import { cue, uncue }   from './cue.js';
 import toText           from './to-text.js';

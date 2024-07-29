@@ -1,12 +1,12 @@
 
-import Signal               from '../../fn/modules/signal.js';
-import arg                  from '../../fn/modules/arg.js';
-import nothing              from '../../fn/modules/nothing.js';
-import overload             from '../../fn/modules/overload.js';
-import toCamelCase          from '../../fn/modules/to-camel-case.js';
-import TokenList            from '../../dom/modules/element/token-list.js';
-import updateTokenList      from '../../dom/modules/element/update-token-list.js';
-import { getInternals }     from '../../dom/modules/element.js';
+import Signal               from 'fn/signal.js';
+import arg                  from 'fn/arg.js';
+import nothing              from 'fn/nothing.js';
+import overload             from 'fn/overload.js';
+import toCamelCase          from 'fn/to-camel-case.js';
+import TokenList            from 'dom/element/token-list.js';
+import updateTokenList      from 'dom/element/update-token-list.js';
+import { getInternals }     from 'dom/element.js';
 import requestData          from '../modules/request-data.js';
 
 const define = Object.defineProperty;

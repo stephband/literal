@@ -1,8 +1,8 @@
 
-import id                from '../../../fn/modules/id.js';
-import isDefined         from '../../../fn/modules/is-defined.js';
-import Signal            from '../../../fn/modules/signal.js';
-import trigger           from '../../../dom/modules/trigger.js';
+import id                from 'fn/id.js';
+import isDefined         from 'fn/is-defined.js';
+import Signal            from 'fn/signal.js';
+import trigger           from 'dom/trigger.js';
 import config            from '../config.js';
 import bindChecked       from '../../scope/bind-checked.js';
 import AttributeRenderer from './renderer-attribute.js';

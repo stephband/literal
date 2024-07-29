@@ -1,8 +1,8 @@
 
-import id                from '../../../fn/modules/id.js';
-import nothing           from '../../../fn/modules/nothing.js';
-import overload          from '../../../fn/modules/overload.js';
-import Signal            from '../../../fn/modules/signal.js';
+import id                from 'fn/id.js';
+import nothing           from 'fn/nothing.js';
+import overload          from 'fn/overload.js';
+import Signal            from 'fn/signal.js';
 import toText            from './to-text.js';
 import AttributeRenderer from './renderer-attribute.js';
 import { stats }         from './renderer.js';

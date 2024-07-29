@@ -1,7 +1,7 @@
 
-import id     from '../../fn/modules/id.js';
-import set    from '../../fn/modules/set-path.js';
-//import events from '../../../dom/modules/events.js';
+import id     from 'fn/id.js';
+import set    from 'fn/set-path.js';
+//import events from 'dom/events.js';
 import { getValue, setValue } from '../modules/renderer/renderer-value.js';
 //import { observe } from '../data.js';
 

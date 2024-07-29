@@ -1,6 +1,6 @@
 
 //import composeString from './compose-string.js';
-import Signal            from '../../../fn/modules/signal.js';
+import Signal            from 'fn/signal.js';
 import names  from './property-names.js';
 import Renderer, { stats } from './renderer.js';
 import { printError } from '../print.js';

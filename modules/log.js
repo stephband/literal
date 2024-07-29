@@ -1,5 +1,5 @@
 
-import noop from '../../fn/modules/noop.js';
+import noop from 'fn/noop.js';
 
 const colors = {
     'aqua':   '#00a8a9',

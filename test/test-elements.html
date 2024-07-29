@@ -59,15 +59,15 @@ ${ element.property = 3, '' }
 
     <script type="module">
     import { library } from "./module.js";
-    import events from "../dom/modules/events.js";
+    import events from "dom/events.js";
     const assign = Object.assign;
     assign(library, { events });
     </script>
 
     <script type="module">
-    import test             from "../fn/modules/test.js";
+    import test             from "fn/test.js";
     import defineElement    from "./modules/define-element.js";
-    import { getInternals } from "../dom/modules/element.js";
+    import { getInternals } from "dom/element.js";
 
     const TestElement = defineElement('defined-element', '#defined-literal-element', {}, {
         attribute: {

@@ -6,9 +6,9 @@ processing the literal content is more DOM content this renderer will insert
 that DOM after the text node.
 **/
 
-import Signal           from '../../../fn/modules/signal.js';
-import Data             from '../../../fn/modules/data.js';
-import { isCommentNode, isElementNode, isFragmentNode, isTextNode } from '../../../dom/modules/node.js';
+import Signal           from 'fn/signal.js';
+import Data             from 'fn/data.js';
+import { isCommentNode, isElementNode, isFragmentNode, isTextNode } from 'dom/node.js';
 import include          from '../include.js';
 import deleteRange      from '../dom/delete-range.js';
 import Literal          from '../template.js';

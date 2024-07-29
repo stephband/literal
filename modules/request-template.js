@@ -1,6 +1,6 @@
 
-import cache          from '../../fn/modules/cache.js';
-import { requestGet } from '../../dom/modules/request.js';
+import cache          from 'fn/cache.js';
+import { requestGet } from 'dom/request.js';
 
 export default cache(function requestTemplate(url) {
     return requestGet(url).then((fragment) => {

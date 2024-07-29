@@ -1,8 +1,8 @@
 
-import id              from '../../fn/modules/id.js';
-import noop            from '../../fn/modules/noop.js';
-import overload        from '../../fn/modules/overload.js';
-import toType          from '../../fn/modules/to-type.js';
+import id              from 'fn/id.js';
+import noop            from 'fn/noop.js';
+import overload        from 'fn/overload.js';
+import toType          from 'fn/to-type.js';
 
 import getExtension    from '../modules/get-extension.js';
 import getAbsolute     from './get-absolute.js';

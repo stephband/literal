@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "dom/": "https://stephen.band/dom/modules/",
+    "fn/":  "https://stephen.band/fn/modules/"
+  }
+}

@@ -5,8 +5,8 @@ Includes cloned html content from an external document at the `src` URL, or from
 the content of an element identified by the `src` fragment identifier.
 **/
 
-import create         from '../../dom/modules/create.js';
-import { requestGet } from '../../dom/modules/request.js';
+import create         from 'dom/create.js';
+import { requestGet } from 'dom/request.js';
 
 export default function includeHTML(url) {
     if (!/^#/.test(url)) {

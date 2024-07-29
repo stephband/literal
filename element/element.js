@@ -1,9 +1,9 @@
 
-import cache                     from '../../fn/modules/cache.js';
-import Data                      from '../../fn/modules/data.js';
-import create                    from '../../dom/modules/create.js';
-import element, { getInternals } from '../../dom/modules/element.js';
-import toPrefetchPromise         from '../../dom/modules/element/to-prefetch-promise.js';
+import cache                     from 'fn/cache.js';
+import Data                      from 'fn/data.js';
+import create                    from 'dom/create.js';
+import element, { getInternals } from 'dom/element.js';
+import toPrefetchPromise         from 'dom/element/to-prefetch-promise.js';
 import getById                   from '../modules/dom/get-by-id.js';
 import assignDataset             from '../modules/dom/assign-dataset.js';
 import Literal                   from '../modules/template.js';

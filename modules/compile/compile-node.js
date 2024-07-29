@@ -1,8 +1,8 @@
 
-import id                   from '../../../fn/modules/id.js';
-import overload             from '../../../fn/modules/overload.js';
-import toType               from '../../../dom/modules/to-type.js';
-import decode               from '../../../dom/modules/decode.js';
+import id                   from 'fn/id.js';
+import overload             from 'fn/overload.js';
+import toType               from 'dom/to-type.js';
+import decode               from 'dom/decode.js';
 import indexOf              from '../dom/index-of.js';
 import TextRenderer         from '../renderer/renderer-text.js';
 import { printError }       from '../print.js';

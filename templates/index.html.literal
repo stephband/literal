@@ -24,7 +24,7 @@
         ${ (await comments(
             '../modules/renderer/renderer.js',
             '../element/element.js',
-            '../../fn/modules/nothing.js',
+            'fn/nothing.js',
         ))
         .filter((doc) => (doc.type === 'selector'))
         //.sort(by(get('name')))
@@ -35,7 +35,7 @@
         ${ (await comments(
             '../modules/scope.js',
             '../scope/scope-dom.js',
-            '../../fn/modules/stream.js',
+            'fn/stream.js',
         ))
         .filter((doc) => (doc.type === 'function' || doc.type === 'constructor'))
         .filter((entry) => ['Stream.of', 'Stream.from', 'Stream.combine', 'Stream.merge', 'clock', 'events', 'observe'].includes(entry.name))
@@ -48,23 +48,23 @@
         <h3>Functions</h3>
 
         ${ (await comments(
-            '../../fn/modules/by.js',
-            '../../fn/modules/clamp.js',
-            '../../fn/modules/denormalise.js',
-            '../../fn/modules/equals.js',
-            '../../fn/modules/id.js',
-            '../../fn/modules/is-defined.js',
-            '../../fn/modules/last.js',
-            '../../fn/modules/matches.js',
-            '../../fn/modules/noop.js',
-            '../../fn/modules/normalise.js',
-            '../../fn/modules/nothing.js',
-            '../../fn/modules/overload.js',
-            '../../fn/modules/remove.js',
-            '../../fn/modules/slugify.js',
-            '../../fn/modules/sum.js',
-            '../../dom/modules/delegate.js',
-            '../../dom/modules/trigger.js',
+            'fn/by.js',
+            'fn/clamp.js',
+            'fn/denormalise.js',
+            'fn/equals.js',
+            'fn/id.js',
+            'fn/is-defined.js',
+            'fn/last.js',
+            'fn/matches.js',
+            'fn/noop.js',
+            'fn/normalise.js',
+            'fn/nothing.js',
+            'fn/overload.js',
+            'fn/remove.js',
+            'fn/slugify.js',
+            'fn/sum.js',
+            'dom/delegate.js',
+            'dom/trigger.js',
             '../modules/scope.js',
             '../scope/scope-dom.js',
             '../modules/include.js',
@@ -77,7 +77,7 @@
         .map((doc) => include('../documentation/templates/entry.literal', doc)) }
 
         ${ (await comments(
-            '../../dom/modules/parse-length.js'
+            'dom/parse-length.js'
         ))
         .filter((doc) => (doc.type === 'function' || doc.type === 'constructor') && doc.name !== 'vmin' && doc.name !== 'vmax')
         .map((doc) => include('../documentation/templates/entry.literal', doc)) }

@@ -1,5 +1,5 @@
 
-import { getInternals } from '../../../dom/modules/element.js';
+import { getInternals } from 'dom/element.js';
 import { rewriteURL }   from '../../modules/urls.js';
 import parseNameValues  from '../../modules/parse/parse-name-values.js';
 

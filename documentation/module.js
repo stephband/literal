@@ -6,7 +6,7 @@ import '../../bolt/classes/device.js';
 import DetailsToggle from '../../details-toggle/module.js';
 
 // Events
-import navigate      from '../../dom/modules/navigate.js';
+import navigate      from 'dom/navigate.js';
 
 // Components
 import './classes/nav.js';

@@ -1,5 +1,5 @@
 
-import compileFn  from '../../../fn/modules/compile.js';
+import compileFn  from 'fn/compile.js';
 import { log }    from '../log.js';
 
 const indent = window.DEBUG ? '\n    ' : '' ;

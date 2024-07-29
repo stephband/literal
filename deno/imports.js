@@ -1,7 +1,7 @@
 
 import * as Path from "https://deno.land/std@0.110.0/path/mod.ts";
 
-import overload        from '../../fn/modules/overload.js';
+import overload        from 'fn/overload.js';
 import getExtension    from '../modules/get-extension.js';
 import getAbsolute     from './get-absolute.js';
 import { red, yellow } from './log.js';

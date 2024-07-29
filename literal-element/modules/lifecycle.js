@@ -1,8 +1,8 @@
 
 // Lifecycle for <template is="literal-element">
 
-import nothing          from '../../../fn/modules/nothing.js';
-import { getInternals } from '../../../dom/modules/element.js';
+import nothing          from 'fn/nothing.js';
+import { getInternals } from 'dom/element.js';
 import defineElement    from '../../modules/define-element.js';
 
 const assign = Object.assign;

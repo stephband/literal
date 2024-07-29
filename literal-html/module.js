@@ -6,9 +6,9 @@ make it easy to mix islands of dynamically rendered content into static content.
 **/
 
 
-import noop             from '../../fn/modules/noop.js';
-import Signal           from '../../fn/modules/signal.js';
-import element, { getInternals as Internals } from '../../dom/modules/element.js';
+import noop             from 'fn/noop.js';
+import Signal           from 'fn/signal.js';
+import element, { getInternals as Internals } from 'dom/element.js';
 import assignDataset    from '../modules/dom/assign-dataset.js';
 import requestData      from '../modules/request-data.js';
 import DOMRenderer      from '../modules/template.js';
