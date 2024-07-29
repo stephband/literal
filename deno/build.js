@@ -25,7 +25,7 @@ export default function build(source, target, debug) {
             source: source,
             render: compile(scope, 'data, include, imports, comments', template, source)
         };
-console.log(renderer.render.toString());
+
         return renderer
         .render({}, include, imports, comments)
         .then(scope.DEBUG ?
