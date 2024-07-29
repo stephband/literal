@@ -1,12 +1,12 @@
 
-import messages from './messages.js';
+//import messages from './messages.js';
 
 export default function copy(value) {
     console.log('COPY', value);
 
     return navigator.clipboard
     .writeText(value)
-    .then(function() {
+    /*.then(function() {
         messages.push({
             type: 'pass',
             text: '"' + value + '" copied to clipboard',
@@ -17,5 +17,5 @@ export default function copy(value) {
             type: 'warn',
             text: 'Link not copied to clipboard. Select it and copy it manually.'
         });
-    });
+    });*/
 }

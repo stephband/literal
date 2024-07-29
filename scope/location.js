@@ -13,11 +13,14 @@ const defaults = {
     state:      null
 };
 
-const pathname = Signal.of(window.location.pathname);
-const search   = Signal.of(window.location.search);
-const hash     = Signal.of(window.location.has);
-const href     = Signal.of(window.location.href);
-const state    = Signal.of(JSON.stringify(window.history.state));
+// TODO: Deno/ESBuild don't seem to know that window.location is an object
+const wh       = window.history  || {};
+const wl       = window.location || {};
+const pathname = Signal.of(wl.pathname);
+const search   = Signal.of(wl.search);
+const hash     = Signal.of(wl.has);
+const href     = Signal.of(wl.href);
+const state    = Signal.of(JSON.stringify(wh.state));
 
 const location = {
     /** .base **/
@@ -47,9 +50,9 @@ const location = {
         return pathname.value;
     },
 
-    /** .pathname **/
+    /** .name **/
     get name() {
-        return this.pathname.slice(1);
+        return this.pathname.slice(this.base.length);
     },
 
     /** .search **/
@@ -70,7 +73,7 @@ const location = {
 
 export default location;
 
-export function update() {
+function update() {
     // Update signals
     pathname.value = window.location.pathname;
     search.value   = window.location.search;

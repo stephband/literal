@@ -30,7 +30,7 @@ useful for stashing data for event delegation:
 ```
 **/
 
-import overload from '../../../fn/modules/overload.js';
+import overload from '../../fn/modules/overload.js';
 
 const $stash = Symbol('stash');
 

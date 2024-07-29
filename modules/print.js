@@ -54,7 +54,7 @@ export function printError(renderer, error) {
 
     log('error', renderer.template + ' – ' + renderer.code, '', '', 'red');
     console.log(error);
-console.log(renderer);
+
     return create('pre', {
         class: 'literal-error',
         html: renderer.template

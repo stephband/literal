@@ -1,5 +1,5 @@
 /* Literal 
-   0.9.1
+   0.9.2
    By Stephen Band */
 
-import{a as e}from"./chunk-KZ6ARHTF.js";import{b as a,c as b,k as c,m as d}from"./chunk-AUPHWLOK.js";export{b as Data,a as Signal,c as config,e as default,d as urls};
+import{a as e}from"./chunk-74VCJGDP.js";import{b as a,c as b,j as c,n as d}from"./chunk-WEPF47BV.js";export{b as Data,a as Signal,d as config,e as default,c as urls};

@@ -10,14 +10,14 @@ export const frame = window.requestAnimationFrame;
 // literal so they come at no cost to have them in scope by default. Functions
 // not already used by literal should be put in scope-extended.js
 
-export { default as create     } from '../../../dom/modules/create.js';
-export { default as decode     } from '../../../dom/modules/decode.js';
-export { default as identify   } from '../../../dom/modules/identify.js';
-export { default as isTextNode } from '../../../dom/modules/is-text-node.js';
-export { default as parse      } from '../../../dom/modules/parse.js';
-export { default as request    } from '../../../dom/modules/request.js';
-export { default as toNodeType } from '../../../dom/modules/to-type.js';
-export { default as trigger    } from '../../../dom/modules/trigger.js';
+export { default as create     } from '../../dom/modules/create.js';
+export { default as decode     } from '../../dom/modules/decode.js';
+export { default as identify   } from '../../dom/modules/identify.js';
+export { default as isTextNode } from '../../dom/modules/is-text-node.js';
+export { default as parse      } from '../../dom/modules/parse.js';
+export { default as request    } from '../../dom/modules/request.js';
+export { default as toNodeType } from '../../dom/modules/to-type.js';
+export { default as trigger    } from '../../dom/modules/trigger.js';
 
 // Causes import loop because scope is imported into renderers
 //export { getValue }              from '../renderer/renderer-value.js';

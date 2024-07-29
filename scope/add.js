@@ -1,4 +1,3 @@
-import { register } from '../scope.js';
 
 /**
 add(number|date|time)

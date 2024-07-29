@@ -1,6 +1,6 @@
 
-import { trigger } from './trigger.js';
-import log from './log.js';
+import { trigger } from '../../dopm/modules/trigger.js';
+import log from './modules/log.js';
 
 const location = window.location;
 

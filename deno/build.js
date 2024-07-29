@@ -14,21 +14,21 @@ build(source, target, debug)
 
 export default function build(source, target, debug) {
     // Declare DEBUG in template scope
-    library.DEBUG = debug;
+    //scope.DEBUG = debug;
 
     return read(source)
     .then((template) => {
-        const include  = (url, data) => library.include(source, target, url, data);
-        const imports  = (url)       => library.imports(source, target, url);
-        const comments = (...urls)   => library.comments(source, target, ...urls);
+        const include  = (url, data) => scope.include(source, target, url, data);
+        const imports  = (url)       => scope.imports(source, target, url);
+        const comments = (...urls)   => scope.comments(source, target, ...urls);
         const renderer = {
             source: source,
-            render: compile(library, 'data, include, imports, comments', template, source)
+            render: compile(scope, 'data, include, imports, comments', template, source)
         };
-
+console.log(renderer.render.toString());
         return renderer
         .render({}, include, imports, comments)
-        .then(library.DEBUG ?
+        .then(scope.DEBUG ?
             // TODO: prependComment should not be in scope
             (text) => scope.prependComment(source, target, rewriteURLs(source, target, text)) :
             (text) => rewriteURLs(source, target, text)
