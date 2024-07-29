@@ -23,7 +23,7 @@
 
         ${ (await comments(
             '../modules/renderer/renderer.js',
-            '../modules/define-element.js',
+            '../element/element.js',
             '../../fn/modules/nothing.js',
         ))
         .filter((doc) => (doc.type === 'selector'))
@@ -34,7 +34,7 @@
 
         ${ (await comments(
             '../modules/scope.js',
-            '../modules/scope-dom.js',
+            '../scope/scope-dom.js',
             '../../fn/modules/stream.js',
         ))
         .filter((doc) => (doc.type === 'function' || doc.type === 'constructor'))
@@ -66,7 +66,7 @@
             '../../dom/modules/delegate.js',
             '../../dom/modules/trigger.js',
             '../modules/scope.js',
-            '../modules/scope-dom.js',
+            '../scope/scope-dom.js',
             '../modules/include.js',
             '../scope/paramify.js',
             '../modules/print.js'

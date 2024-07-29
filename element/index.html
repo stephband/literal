@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    undefined
+</head>
+
+<body class="4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid">
+    <header class="x1 4x @2-x2 x-stretch">
+        <h1 class="text-01">Literal <span class="text-06">0.8.3</span></h1>
+    </header>
+
+    <section class="x1 4x @2-x2 x-stretch">
+        <h2 id="element"><code>element()</code></h2>
+<p>Literal wraps the mega-splat of the various Custom Elements APIs into a single
+<code>element()</code> function that aims to make the whole palaver a million times easier
+by cleaning up some gotchas, pitfalls and idiosyncrasies en route.</p>
+<h3 id="how-it-works">How it works</h3>
+<p>Import the <code>element()</code> function, define, register and export a custom element.
+Take this <code>&lt;toggle-button&gt;</code> definition, for example:</p>
+<pre><code class="language-js"><span class="token comment">// Import the element() function</span>
+<span class="token keyword">import</span> element <span class="token keyword">from</span> <span class="token string">'/literal/build/element.js'</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Register &lt;toggle-button> and export its constructor</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">element</span><span class="token punctuation">(</span>
+    <span class="token comment">// Element name</span>
+    <span class="token string">"&lt;toggle-button>"</span><span class="token punctuation">,</span>
+    <span class="token comment">// Define the shadow DOM as a literal template</span>
+    <span class="token punctuation">{</span> shadow<span class="token operator">:</span> <span class="token string">"&lt;p>${ host.active ? 'on' : 'off' }&lt;/p>"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token comment">// Define a boolean attribute and property `active`</span>
+    <span class="token punctuation">{</span> active<span class="token operator">:</span> <span class="token string">"boolean"</span> <span class="token punctuation">}</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>This defines <code>&lt;toggle-button&gt;</code> as an element with one boolean attribute and
+property <code>active</code>. Its shadow DOM is rendered from a literal template which has
+access to a <code>host</code> object, the element, and renders “on” when <code>.active</code> is
+<code>true</code>, and “off” when <code>.active</code> is <code>false</code>.</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>toggle-button</span> <span class="token attr-name">active</span><span class="token punctuation">></span></span>
+</code></pre>
+<pre><code class="language-js"><span class="token keyword">const</span> toggle <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector</span><span class="token punctuation">(</span><span class="token string">'toggle-button'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+toggle<span class="token punctuation">.</span>active <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+</code></pre>
+<h3 id="attributes-and-properties">Attributes and properties</h3>
+<p>The third parameter to <code>element()</code> is an object of attribute and property
+definitions. Literal allows a number of string types as a shorthand for common
+definitions.</p>
+<ul>
+<li><code>&quot;attribute&quot;</code> - defines a string attribute (only)</li>
+<li><code>&quot;property&quot;</code> - defines a property (only)</li>
+<li><code>&quot;boolean&quot;</code> - defines a boolean attribute and a boolean property</li>
+<li><code>&quot;number&quot;</code> - defines a string attribute and a number property</li>
+<li><code>&quot;string&quot;</code> - defines a string attribute and string property</li>
+<li><code>&quot;tokens&quot;</code> - defines a tokens attribute (think <code>class</code>) and a string setter / TokenList getter property</li>
+<li><code>&quot;src&quot;</code>    - defines a URL attribute that links to a data property (TODO)</li>
+<li><code>&quot;module&quot;</code> - defines a URL attribute that … (TODO)</li>
+<li><code>&quot;data&quot;</code> - defines a property exposing literal’s <code>data</code> object. Setting this
+property to an object changes the data being rendered. Getting this property
+returns literal’s <code>data</code> proxy of the object.</li>
+</ul>
+<p>This is useful if you are building a closed system where literal custom elements
+are authored inside literal templates, as data can be passed efficiently from
+template to custom element shadow DOM by the renderer.</p>
+<pre><code class="language-js"><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">element</span><span class="token punctuation">(</span><span class="token string">"&lt;show-text>"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    shadow<span class="token operator">:</span> <span class="token string">"&lt;p>${ data.text }&lt;/p>"</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    data<span class="token operator">:</span>   <span class="token string">"data"</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Data has the text "<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>show-text</span> <span class="token attr-name">data</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>${ data }<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>show-text</span><span class="token punctuation">></span></span>"<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
+</code></pre>
+<p>It is probably less useful for publishing custom elements intended for general
+consumption.</p>
+<p>Changes to properties defined in this way are signalled to Literal’s renderer.
+Literal updates the shadow DOM (not the whole thing, just the parts that need
+updating) on the next animation frame after a change.</p>
+<h3 id="the-element-lifecycle">The element lifecycle</h3>
+<p>The second parameter to <code>element()</code> is a lifecycle object. Apart from the shadow
+template the lifecycle object may contain optional callback functions.</p>
+<pre><code class="language-js"><span class="token punctuation">{</span>
+    shadow<span class="token operator">:</span>     <span class="token comment">// literal html string or '#template-id' or fragment node</span>
+    focusable<span class="token operator">:</span>  <span class="token comment">// true or false</span>
+    mode<span class="token operator">:</span>       <span class="token comment">// 'open' or 'closed' TODO: are we gonna go with open: true?</span>
+
+    <span class="token comment">// Lifecycle handlers</span>
+    construct<span class="token operator">:</span>  <span class="token comment">// fn called during element construction</span>
+    connect<span class="token operator">:</span>    <span class="token comment">// fn called when element added to DOM</span>
+    disconnect<span class="token operator">:</span> <span class="token comment">// fn called when element removed from DOM</span>
+    load<span class="token operator">:</span>       <span class="token comment">// fn called when stylesheets have loaded</span>
+
+    <span class="token comment">// If the element is form-enabled</span>
+    enable<span class="token operator">:</span>     <span class="token comment">// fn called when form element enabled</span>
+    disable<span class="token operator">:</span>    <span class="token comment">// fn called when form element disabled</span>
+    reset<span class="token operator">:</span>      <span class="token comment">// fn called when form element reset</span>
+    restore<span class="token operator">:</span>    <span class="token comment">// fn called when form element restored</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>All callbacks are called with the context <code>this</code> set as the element and
+<code>shadow, internals, data</code> as arguments.</p>
+<h3 id="observing-standard-properties">Observing standard properties</h3>
+<p>Changes to standard properties such as <code>title</code> are not observed. Title can be
+accessed inside the template as <code>${ host.title }</code>, obviously, but Literal can
+only react to <code>toggle.setAttribute(&#39;title&#39;, &#39;text&#39;)</code> and <code>toggle.title = &#39;text&#39;;</code>
+where <code>title</code> is redefined as an observable property.</p>
+<pre><code class="language-js"><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">element</span><span class="token punctuation">(</span><span class="token string">"&lt;toggle-button>"</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    shadow<span class="token operator">:</span> <span class="token string">"&lt;p>${ host.active ? 'on' : 'off' }&lt;/p>"</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    active<span class="token operator">:</span> <span class="token string">"boolean"</span><span class="token punctuation">,</span>
+    title<span class="token operator">:</span>  <span class="token string">"string"</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>In practise this is barely noticeable: it’s rare you need to observe any of the
+standard attributes.</p>
+
+    </section>
+
+    undefined
+    undefined
+    undefined
+    undefined
+
+    <script type="module">
+        import '../build/literal-html/module.js';
+        import '../build/literal-element/module.js';
+    </script>
+</body>
+</html>

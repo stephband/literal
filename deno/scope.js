@@ -36,7 +36,6 @@ const rabsolute   = /^https?:\/\//;
 
 /**
 imports(url)
-
 Imports all exports of a JS module or JSON file.
 **/
 
@@ -163,17 +162,17 @@ const renderInclude = overload((source, target, file) => toExtension(file), {
             read(file).then(extractBody)
         ])
         .then(([data, template]) => {
-            const include  = (src, data) => library.include(file, target, src, data);
-            const imports  = (src)       => library.imports(file, target, CanvasRenderingContext2D);
+            const include  = (src, data) => scope.include(file, target, src, data);
+            const imports  = (src)       => scope.imports(file, target, CanvasRenderingContext2D);
             const comments = (...urls)   => comments(file, target, ...urls);
             const renderer = {
                 source: file,
-                render: compile(library, 'data, include, imports, comments', template, file)
+                render: compile(scope, 'data, include, imports, comments', template, file)
             };
 
             return renderer
             .render(data, include, imports, comments)
-            .then(library.DEBUG ?
+            .then(scope.DEBUG ?
                 (text) => prependComment(file, source, rewriteURLs(file, source, text)) :
                 (text) => rewriteURLs(file, source, text)
             );
@@ -185,17 +184,17 @@ const renderInclude = overload((source, target, file) => toExtension(file), {
             read(file)
         ])
         .then(([data, template]) => {
-            const include  = (src, data) => library.include(file, target, src, data);
-            const imports  = (src)       => library.imports(file, target, src);
+            const include  = (src, data) => scope.include(file, target, src, data);
+            const imports  = (src)       => scope.imports(file, target, src);
             const comments = (...urls)   => comments(file, target, ...urls);
             const renderer = {
                 source: file,
-                render: compile(library, 'data, include, imports, comments', template, file)
+                render: compile(scope, 'data, include, imports, comments', template, file)
             };
 
             return renderer
             .render(data, include, imports, comments)
-            .then(library.DEBUG ?
+            .then(scope.DEBUG ?
                 (text) => prependComment(file, source, rewriteURLs(file, source, text)) :
                 (text) => rewriteURLs(file, source, text)
             );
@@ -294,7 +293,7 @@ export const add = overload(toAddType, {
 render(array, param)
 **/
 
-/*
+
 import renderString        from '../modules/renderer/to-text.js';
 
 const join = (strings) => strings.join('');
@@ -316,7 +315,7 @@ function stringify(value, string) {
     string + renderString(value) ;
 }
 
-function render(strings) {
+export function render(strings) {
     return Promise.all(
         strings.map((string, i) => (i + 1 < arguments.length ?
             stringify(arguments[i + 1], string) :
@@ -325,6 +324,6 @@ function render(strings) {
     )
     .then(join);
 }
-*/
+
 
 
