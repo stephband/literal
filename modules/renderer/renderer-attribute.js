@@ -97,8 +97,6 @@ export default class AttributeRenderer extends Renderer {
             arguments[1] :
             toAttributeString(arguments) ;
 
-console.log('RENDER ATTR', this.name, this.property, value, this.singleExpression, strings, arguments);
-
         return this.property ?
             setProperty(this.element, this.property, value) :
             setAttribute(this.element, this.name, value) ;
