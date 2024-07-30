@@ -48,7 +48,7 @@ function setChecked(element, value, hasValueAttribute) {
 }
 
 export default class CheckedRenderer extends AttributeRenderer {
-    static consts = ['data', 'DATA', 'element', 'host', 'shadow', 'bind'];
+    static consts = ['DATA', 'data', 'element', 'shadow', 'host', 'id'];
 
     constructor(signal, literal, consts, element, name, debug) {
         super(signal, literal, consts, element, 'checked', debug);

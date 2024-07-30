@@ -40,6 +40,8 @@ const cache  = {};
 const nodes  = [];
 const defaults = {};
 
+let id = 0;
+
 
 /*
 Literal
@@ -132,7 +134,9 @@ export default class Literal {
         this.#last    = children[children.length - 1];
         this.content  = fragment;
         this.element  = parent;
-        this.consts   = consts;
+        // id is a template-instance-level const unique string useful for making
+        // DOM ids when a given template is included multiple times
+        this.consts   = assign({}, consts, { id: 'id-' + (++id) });
         this.contents = targets
             // We must find targets in cloned content
             .map(this.#toCompiled, this)

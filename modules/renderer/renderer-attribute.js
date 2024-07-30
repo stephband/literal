@@ -1,10 +1,9 @@
 
-//import composeString from './compose-string.js';
-import Signal            from 'fn/signal.js';
-import names  from './property-names.js';
+import Signal         from 'fn/signal.js';
+import names          from './property-names.js';
 import Renderer, { stats } from './renderer.js';
 import { printError } from '../print.js';
-import toText from './to-text.js';
+import toText         from './to-text.js';
 
 
 const getDescriptor = Object.getOwnPropertyDescriptor;
@@ -49,6 +48,7 @@ export function toAttributeString(values) {
         string += toText(values[n]);
         string += strings[n];
     }
+    return string;
 }
 
 export default class AttributeRenderer extends Renderer {
@@ -96,6 +96,8 @@ export default class AttributeRenderer extends Renderer {
         const value = this.singleExpression ?
             arguments[1] :
             toAttributeString(arguments) ;
+
+console.log('RENDER ATTR', this.name, this.property, value, this.singleExpression, strings, arguments);
 
         return this.property ?
             setProperty(this.element, this.property, value) :

@@ -55,11 +55,13 @@
 
     <template id="template-1">
         <h3>#template-1</h3>
+        <pre>(${ this.renderCount }) id = ${ id }</pre>
         <pre>(${ this.renderCount }) data.value = ${ data.value }</pre>
     </template>
 
     <template id="template-2">
         <h3>#template-2</h3>
+        <pre>(${ this.renderCount }) id = ${ id }</pre>
         <pre>(${ this.renderCount }) data.value = ${ data.value }</pre>
     </template>
 
@@ -134,6 +136,7 @@
         [itemid="✓"]::before,
         [data-test-attr="✓"]::before,
         [test-attr="✓"]::before,
+        [style*="color: var(--green);"]::before,
         .disabled-test:disabled::before,
         .empty-test:empty::before,
         .content-test:not(:empty)::before {
@@ -163,6 +166,10 @@
         <p data-test-attr="${ '✓' }">Dataset property <code>.dataset.testAttr="✓"</code></p>
         <p itemid="${ '✓' }">Microdata attribute <code>itemid="✓"</code></p>
         <p test-attr="${ '✓' }">Non-standard attribute <code>test-attr="✓"</code></p>
+        <p style="color: ${ 'var(--green)' };">Style attribute <code>style="color: \${ 'var(--green)' };"</code> test and expression</p>
+        <p style="${ 'color: var(--green);' }">Style attribute <code>style="\${ 'color: var(--green);' }"</code> single expression</p>
+        <p style="${ { color: 'var(--green)', backgroundColor: 'white' } }">Style attribute <code>style="\${ {color:'var(--green)',backgroundColor:'white'} }"</code> single expression</p>
+        <p style="${ { color: 'var(--green)', 'background-color': 'white' } }">Style attribute <code>style="\${ {color:'var(--green)','background-color':'white'} }"</code> single expression</p>
     </template>
 
     <script type="module">
@@ -176,36 +183,6 @@
 
     <div class="test">
         <template is="literal-html">
-            <h2>location</h2>
-            <p>Includes a template based on the location #hash</p>
-            <p>
-                <a href="#1">#1</a>
-                <a href="#2">#2</a>
-                <a href="#3">#3</a>
-                <a href="#4">#4</a>
-            </p>
-            <pre>(${ this.renderCount }) location.identifier = ${ window.data = data, location.identifier }</pre>
-            ${ location.identifier ? include('#template-' + location.identifier, data) : '' }
-        </template>
-    </div>
-
-    <div class="test">
-        <template is="literal-html">
-            <h2>location</h2>
-            <p>Includes a template based on the location pathname</p>
-            <p>
-                <a href="./1">./1</a>
-                <a href="./2">./2</a>
-                <a href="./3">./3</a>
-                <a href="./4">./4</a>
-            </p>
-            <pre>(${ this.renderCount }) location.identifier = ${ location.pathname }</pre>
-            ${ location.pathname ? include('#template-' + /\w+$/.exec(location.pathname)[0], data) : '' }
-        </template>
-    </div>
-
-    <!--div class="test">
-        <template is="literal-html">
             <h2>is="literal-html"</h2>
             <p>Test attribute renderers.</p>
             <p id="${ '✓' }">String property <code>.id="✓"</code></p>
@@ -213,7 +190,7 @@
         </template>
     </div>
 
-    <table class="striped-table x-bleed test">
+    <!--table class="striped-table x-bleed test">
         <thead>
             <tr>
                 <th style="width: 60%;">Expression</th>
@@ -357,7 +334,7 @@
         <template is="literal-html" data-plonk="1" data-value="Hello" data-template="1">
             <h2>is="literal-html"</h2>
             <p>Asynchronous Stream of Promises of include()s. Render counts in ().</p>
-            <pre>(${  this.renderCount }) data.value = ${ data.value }</pre>
+            <pre>(${ this.renderCount }) data.value = ${ data.value }</pre>
             (${ this.renderCount }) data.plonk = ${ data.plonk }
             ${
                 events('click', element)
@@ -422,6 +399,36 @@
             already read, ie it won't show newly added properties until a change
             to an existing property triggers a fresh render.</p>
             ${ print(data) }
+        </template>
+    </div>
+
+    <div class="test">
+        <template is="literal-html">
+            <h2>location</h2>
+            <p>Includes a template based on the location #hash</p>
+            <p>
+                <a href="#1">#1</a>
+                <a href="#2">#2</a>
+                <a href="#3">#3</a>
+                <a href="#4">#4</a>
+            </p>
+            <pre>(${ this.renderCount }) location.identifier = ${ window.data = data, location.identifier }</pre>
+            ${ location.identifier ? include('#template-' + location.identifier, data) : '' }
+        </template>
+    </div>
+
+    <div class="test">
+        <template is="literal-html">
+            <h2>location</h2>
+            <p>Includes a template based on the location pathname</p>
+            <p>
+                <a href="./1">./1</a>
+                <a href="./2">./2</a>
+                <a href="./3">./3</a>
+                <a href="./4">./4</a>
+            </p>
+            <pre>(${ this.renderCount }) location.identifier = ${ location.pathname }</pre>
+            ${ location.pathname ? include('#template-' + /\w+$/.exec(location.pathname)[0], data) : '' }
         </template>
     </div-->
 </body>

@@ -130,7 +130,7 @@ template renderers, or strings.
 **/
 
 export default class TextRenderer extends Renderer {
-    static consts = ['DATA', 'data', 'element', 'shadow', 'host', 'include', 'print'];
+    static consts = ['DATA', 'data', 'element', 'shadow', 'host', 'id', 'include', 'print'];
 
     constructor(signal, literal, params, element, node, debug) {
         if (window.DEBUG && !isTextNode(node)) {

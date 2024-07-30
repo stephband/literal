@@ -179,7 +179,7 @@ const toValue = overload(get('type'), {
 });
 
 export default class ValueRenderer extends AttributeRenderer {
-    static consts = ['data', 'DATA', 'element', 'host', 'shadow', 'bind'];
+    static consts = ['DATA', 'data', 'element', 'shadow', 'host', 'id'];
 
     constructor(signal, literal, consts, element, name, debug) {
         super(signal, literal, consts, element, 'value', debug);
