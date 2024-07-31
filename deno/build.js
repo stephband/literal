@@ -32,10 +32,10 @@ export default function build(source, target, DEBUG) {
             (text) => rewriteURLs(source, target, text)
         );
     })
-    /*.catch((e) => {
+    .catch((e) => {
         e.message += ' in template ' + source.replace(Deno.cwd() + '/', '');
         throw e;
-    })*/
+    })
     .then((text) => {
         const root = path.parse(target);
         const dir  = root.dir;

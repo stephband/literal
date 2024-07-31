@@ -21,7 +21,6 @@ Messages should be styled with the print stylesheet:
 ```css
 @import "http://stephen.band/literal/modules/print.css";
 ```-->
-
 **/
 
 import noop    from 'fn/noop.js';

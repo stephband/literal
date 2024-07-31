@@ -94,8 +94,9 @@ export default function include(source, target, url, data, DEBUG) {
     */
 
     return renderInclude(source, target, file, data, DEBUG)
-    /*.catch((e) => {
+    .catch((e) => {
         console.log(red + ' ' + yellow, e.constructor.name + ' in', source);
         console.log(red, e.message);
-    });*/
+        return '';
+    });
 };

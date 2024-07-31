@@ -1,14 +1,99 @@
 {
   "version": "3",
+  "packages": {
+    "specifiers": {
+      "jsr:@luca/esbuild-deno-loader@^0.10.3": "jsr:@luca/esbuild-deno-loader@0.10.3",
+      "jsr:@std/assert@^0.213.1": "jsr:@std/assert@0.213.1",
+      "jsr:@std/encoding@0.213": "jsr:@std/encoding@0.213.1",
+      "jsr:@std/jsonc@0.213": "jsr:@std/jsonc@0.213.1",
+      "jsr:@std/path@0.213": "jsr:@std/path@0.213.1"
+    },
+    "jsr": {
+      "@luca/esbuild-deno-loader@0.10.3": {
+        "integrity": "32fc93f7e7f78060234fd5929a740668aab1c742b808c6048b57f9aaea514921",
+        "dependencies": [
+          "jsr:@std/encoding@0.213",
+          "jsr:@std/jsonc@0.213",
+          "jsr:@std/path@0.213"
+        ]
+      },
+      "@std/assert@0.213.1": {
+        "integrity": "24c28178b30c8e0782c18e8e94ea72b16282207569cdd10ffb9d1d26f2edebfe"
+      },
+      "@std/encoding@0.213.1": {
+        "integrity": "fcbb6928713dde941a18ca5db88ca1544d0755ec8fb20fe61e2dc8144b390c62"
+      },
+      "@std/jsonc@0.213.1": {
+        "integrity": "5578f21aa583b7eb7317eed077ffcde47b294f1056bdbb9aacec407758637bfe",
+        "dependencies": [
+          "jsr:@std/assert@^0.213.1"
+        ]
+      },
+      "@std/path@0.213.1": {
+        "integrity": "f187bf278a172752e02fcbacf6bd78a335ed320d080a7ed3a5a59c3e88abc673",
+        "dependencies": [
+          "jsr:@std/assert@^0.213.1"
+        ]
+      }
+    }
+  },
   "remote": {
+    "http://127.0.0.1/dom/modules/assign.js": "4d5b3bbe78015a4b8b41c6650cd429ea0e6226110fbc034b54de492a71f51819",
+    "http://127.0.0.1/dom/modules/create.js": "b3dcb70b61d0a664737d58c97c64de6095eba9012615a2d8292e2529bce50336",
+    "http://127.0.0.1/dom/modules/decode.js": "9607fd28167bf1866305a43145fbcd97a32b608b3662a0216142f405ec460064",
+    "http://127.0.0.1/dom/modules/identify.js": "300f5e8113a89701218bb0ce49f83ce40df01c9a41009fa63359a3c0640a094c",
+    "http://127.0.0.1/dom/modules/is-text-node.js": "976cf472ccd6883a3d60b65e9f9fad8af66f5a39494beb224d961628f8a8a62b",
+    "http://127.0.0.1/dom/modules/node.js": "d11856b018f46a53a139dc42efac6830bb4bc491be5cd8c60d60651e37ec83e4",
+    "http://127.0.0.1/dom/modules/parse.js": "3c0913302b3493ffbfb2123f91ece65596f4b895baa9ed80e0975bc88000afba",
+    "http://127.0.0.1/dom/modules/request.js": "4c186d2153dbde6f68be8c9ccd65f6de629a8b2e2e2dc5b7cada46c815b9bfe5",
+    "http://127.0.0.1/dom/modules/to-type.js": "28d34a1a85d01d9896fc34aeab4bd396796cb5bb143a4bbb8f871d04f50a4b42",
+    "http://127.0.0.1/dom/modules/trigger.js": "1627e3c67609be7eb1e2d36287a03b918130830b752652de414a1b244556c5b3",
+    "http://127.0.0.1/fn/modules/arg.js": "8886e09cb323fe28f0018ab831780a8cf7089afdcd95ad71e3060031ba28f447",
+    "http://127.0.0.1/fn/modules/args.js": "3d3c0ad2e2672d04a0d9d0c25e4dfd0e603e3fe04d7c85b9016c833ec89a8180",
+    "http://127.0.0.1/fn/modules/cache-by-key.js": "df97b87b66b6dbcfe6d0f1a2131a32a9c54a841af38a0def51353d325283a2a8",
+    "http://127.0.0.1/fn/modules/cache.js": "879ee2b7ea4d0d749d6e8f359aee960a5814e4eeff83a7158bf70e3a25851db0",
+    "http://127.0.0.1/fn/modules/capture.js": "9139789b5351ebebde3cb3bc3f9a66ebed5cee3b0cd9ffe868dcf63b4ec65220",
+    "http://127.0.0.1/fn/modules/choose.js": "f7cea32a66325f47c88fc2efb6812ed93b058da8ca6c2b16e24319f18e836623",
+    "http://127.0.0.1/fn/modules/compile.js": "2f42842e01928318b14d927c2b974a591d57cf2f5ca7bfb1ee6aa65f15bb4630",
+    "http://127.0.0.1/fn/modules/curry.js": "b65b5d09c6b82430a9c0e4feb5d31f638cdc46a1ed90192e67c512bad5c5c211",
+    "http://127.0.0.1/fn/modules/data.js": "30af319d2ccb008cd477578eb4fcedeb2f325fb0f9162854486d44bc6bdeff0a",
+    "http://127.0.0.1/fn/modules/exec.js": "5cbade9bbfea82b53d64e0560a7a71b915470f04223266939ed6d48f2df4aafa",
+    "http://127.0.0.1/fn/modules/get.js": "e7c7d9d3eb4d4e74185b1c29feb8559c65466a03545237c20e38630132add474",
+    "http://127.0.0.1/fn/modules/id.js": "9c90e26a082d67afdeb83fb64bd795c469f317dca5850c404d6a6f0aa82331dc",
+    "http://127.0.0.1/fn/modules/is-defined.js": "bb52a475df99e758a311b0a6761b04630e4d6a2f8cc194f286277d79b2e48840",
+    "http://127.0.0.1/fn/modules/last.js": "67aed33a150409aa3135cd25ada243d8b010b6ec1fe9ac73fc539ec08b122c62",
+    "http://127.0.0.1/fn/modules/matches.js": "58e93677c938f140acd0f5c2e2254e565af0439b781c30e2446574b194b5bd1b",
+    "http://127.0.0.1/fn/modules/noop.js": "3be7f93ead642d9f6bc860649ba683cf6d47e37fe7c63c6c8e17c3187140ba96",
+    "http://127.0.0.1/fn/modules/nothing.js": "a630a4e99485f66dceef4f6bcadf2ba933fa7b43968ee6467ddfd34445460be1",
+    "http://127.0.0.1/fn/modules/overload.js": "92a50c40abda323cc5bcbbeb8b69845c11fcc6606bc0dcd8fc914787e2f41891",
+    "http://127.0.0.1/fn/modules/remove.js": "08a63a54d84d0c3e6f8b74d10ca031f2f4fdcfeb56f805a7eb4095f63f405a81",
+    "http://127.0.0.1/fn/modules/self.js": "c0208917a31ade85516ce45834e5bde94688f28f1bf821c867fd7f863a14af68",
+    "http://127.0.0.1/fn/modules/set-path.js": "ad389c6143d4e6a0646009253f2efb80f423f7a9fa21e040c26df6e2ec15e799",
+    "http://127.0.0.1/fn/modules/set.js": "28140258dc78ea99f25a53d867830c68ea48ec8e1635ef39d646b34ab7d8d44f",
+    "http://127.0.0.1/fn/modules/signal.js": "d594e22ed0d29e4ac577035c88b38111e1ddb5749216b269f9c1f6c1678b9080",
+    "http://127.0.0.1/fn/modules/sum.js": "8462d67281302a31d1d140f6f20af6abf027a47f6210241fe5cf71d7b50ac49c",
+    "http://127.0.0.1/fn/modules/to-camel-case.js": "3e614b5c7e25804662b4a759c996bebda621ff1e586a407b723a479e05e8ca5b",
+    "http://127.0.0.1/fn/modules/to-type.js": "35fcde240d7038eb7fea1d7c76f614f14dfa3e6caf99975a37ca85c047ad28ea",
+    "http://localhost/dom/modules/assign.js": "4d5b3bbe78015a4b8b41c6650cd429ea0e6226110fbc034b54de492a71f51819",
+    "http://localhost/dom/modules/create.js": "b3dcb70b61d0a664737d58c97c64de6095eba9012615a2d8292e2529bce50336",
+    "http://localhost/dom/modules/decode.js": "9607fd28167bf1866305a43145fbcd97a32b608b3662a0216142f405ec460064",
+    "http://localhost/dom/modules/identify.js": "300f5e8113a89701218bb0ce49f83ce40df01c9a41009fa63359a3c0640a094c",
+    "http://localhost/dom/modules/is-text-node.js": "976cf472ccd6883a3d60b65e9f9fad8af66f5a39494beb224d961628f8a8a62b",
+    "http://localhost/dom/modules/node.js": "d11856b018f46a53a139dc42efac6830bb4bc491be5cd8c60d60651e37ec83e4",
+    "http://localhost/dom/modules/parse.js": "3c0913302b3493ffbfb2123f91ece65596f4b895baa9ed80e0975bc88000afba",
+    "http://localhost/dom/modules/request.js": "4c186d2153dbde6f68be8c9ccd65f6de629a8b2e2e2dc5b7cada46c815b9bfe5",
+    "http://localhost/dom/modules/to-type.js": "28d34a1a85d01d9896fc34aeab4bd396796cb5bb143a4bbb8f871d04f50a4b42",
+    "http://localhost/dom/modules/trigger.js": "1627e3c67609be7eb1e2d36287a03b918130830b752652de414a1b244556c5b3",
     "http://localhost/fn/modules/arg.js": "8886e09cb323fe28f0018ab831780a8cf7089afdcd95ad71e3060031ba28f447",
     "http://localhost/fn/modules/args.js": "3d3c0ad2e2672d04a0d9d0c25e4dfd0e603e3fe04d7c85b9016c833ec89a8180",
     "http://localhost/fn/modules/by.js": "70d8eafe2507956ed26573ea872f1f382d11fb8830842e2cb4aa0fc53df7cd9b",
+    "http://localhost/fn/modules/cache-by-key.js": "df97b87b66b6dbcfe6d0f1a2131a32a9c54a841af38a0def51353d325283a2a8",
     "http://localhost/fn/modules/cache.js": "879ee2b7ea4d0d749d6e8f359aee960a5814e4eeff83a7158bf70e3a25851db0",
     "http://localhost/fn/modules/capture.js": "9139789b5351ebebde3cb3bc3f9a66ebed5cee3b0cd9ffe868dcf63b4ec65220",
     "http://localhost/fn/modules/choose.js": "f7cea32a66325f47c88fc2efb6812ed93b058da8ca6c2b16e24319f18e836623",
     "http://localhost/fn/modules/clamp.js": "561e3e2d67e45a047109fd66f8d225453f798d25e489c0b5391ef285747a3863",
     "http://localhost/fn/modules/compile-async.js": "5ce0abe9374c6699e62c177aad8cbe5e87f8e2dd29e442248e4342817eec7ce0",
+    "http://localhost/fn/modules/compile.js": "2f42842e01928318b14d927c2b974a591d57cf2f5ca7bfb1ee6aa65f15bb4630",
     "http://localhost/fn/modules/curry.js": "b65b5d09c6b82430a9c0e4feb5d31f638cdc46a1ed90192e67c512bad5c5c211",
     "http://localhost/fn/modules/data.js": "30af319d2ccb008cd477578eb4fcedeb2f325fb0f9162854486d44bc6bdeff0a",
     "http://localhost/fn/modules/date.js": "3c70cafa5433b7164b4f7dc1d347cba7f37963c4d28b38304ba3770bd6c003a5",
@@ -30,6 +115,7 @@
     "http://localhost/fn/modules/remove.js": "08a63a54d84d0c3e6f8b74d10ca031f2f4fdcfeb56f805a7eb4095f63f405a81",
     "http://localhost/fn/modules/self.js": "c0208917a31ade85516ce45834e5bde94688f28f1bf821c867fd7f863a14af68",
     "http://localhost/fn/modules/set-path.js": "ad389c6143d4e6a0646009253f2efb80f423f7a9fa21e040c26df6e2ec15e799",
+    "http://localhost/fn/modules/set.js": "28140258dc78ea99f25a53d867830c68ea48ec8e1635ef39d646b34ab7d8d44f",
     "http://localhost/fn/modules/signal.js": "d594e22ed0d29e4ac577035c88b38111e1ddb5749216b269f9c1f6c1678b9080",
     "http://localhost/fn/modules/slugify.js": "23001399c89ae1470e9fe7466c32d7080d36a5827e6358f7b463ceeb487ae8b2",
     "http://localhost/fn/modules/sum.js": "8462d67281302a31d1d140f6f20af6abf027a47f6210241fe5cf71d7b50ac49c",
@@ -62,6 +148,10 @@
     "https://deno.land/std@0.110.0/path/mod.ts": "4465dc494f271b02569edbb4a18d727063b5dbd6ed84283ff906260970a15d12",
     "https://deno.land/std@0.110.0/path/posix.ts": "34349174b9cd121625a2810837a82dd8b986bbaaad5ade690d1de75bbb4555b2",
     "https://deno.land/std@0.110.0/path/separator.ts": "8fdcf289b1b76fd726a508f57d3370ca029ae6976fcde5044007f062e643ff1c",
-    "https://deno.land/std@0.110.0/path/win32.ts": "2edb2f71f10578ee1168de01a8cbd3c65483e45a46bc2fa3156a0c6bfbd2720d"
+    "https://deno.land/std@0.110.0/path/win32.ts": "2edb2f71f10578ee1168de01a8cbd3c65483e45a46bc2fa3156a0c6bfbd2720d",
+    "https://deno.land/x/denoflate@1.2.1/mod.ts": "f5628e44b80b3d80ed525afa2ba0f12408e3849db817d47a883b801f9ce69dd6",
+    "https://deno.land/x/denoflate@1.2.1/pkg/denoflate.js": "b9f9ad9457d3f12f28b1fb35c555f57443427f74decb403113d67364e4f2caf4",
+    "https://deno.land/x/denoflate@1.2.1/pkg/denoflate_bg.wasm.js": "d581956245407a2115a3d7e8d85a9641c032940a8e810acbd59ca86afd34d44d",
+    "https://deno.land/x/esbuild@v0.23.0/mod.js": "46f2e569b50e4d1f1b379b2f9785a9b9437d52911b849df8797d9ca40ce3e1c9"
   }
 }

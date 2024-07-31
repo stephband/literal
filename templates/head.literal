@@ -18,6 +18,8 @@ ${ data.author && data.author.twitter && (
 ${ data.favicons && data.favicons.map((favicon) => `
 <link rel="icon"${ favicon.type ? ` type="${ favicon.type }"` : '' } href="${ favicon.url }"${ favicon.sizes ? ` sizes="${ favicon.sizes }"` : '' }>`) }
 
+<script type="importmap">${ data.importmap }</script>
+
 <script title="load">
     document.documentElement.className += ' js loading';
     // window.addEventListener('DOMContentLoaded', () => document.documentElement.classList.remove('content-loading'));

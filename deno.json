@@ -1,6 +1,6 @@
 {
   "imports": {
-    "dom/": "http://localhost/dom/modules/",
-    "fn/":  "http://localhost/fn/modules/"
+    "dom/": "../dom/modules/",
+    "fn/":  "../fn/modules/"
   }
 }
