@@ -4,7 +4,7 @@ read(pathname)
 **/
 
 import cache    from 'fn/cache.js';
-import { dimbluedim } from './log.js';
+import { dimbluedim } from '../log.js';
 
 // TextDecoder decodes the Uint8Array to unicode text
 const decoder = new TextDecoder('utf-8');

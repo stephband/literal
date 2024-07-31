@@ -26,3 +26,7 @@ ${ data.favicons && data.favicons.map((favicon) => `
     // class is removed
     window.addEventListener('load', () => window.requestAnimationFrame(() => document.documentElement.classList.remove('loading')));
 </script>
+
+<script type="module">
+    import '../literal-html/module.js';
+</script>

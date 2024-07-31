@@ -6,15 +6,15 @@ Parses documentation comments from files. Returns a promise of an array of
 comments.
 **/
 
-import read            from './read.js';
-import { rewriteURLs } from './url.js';
-import parseComments   from '../modules/parse/parse-comments.js';
-import { getAbsoluteFile } from './scope.js';
-import { red, yellow } from './log.js';
+import parseComments   from '../parse/parse-comments.js';
+import read            from '../files/read.js';
+import getAbsoluteFile from '../files/get-absolute-file.js';
+import { rewriteURLs } from '../urls.js';
+import { red, yellow } from '../log.js';
 
 export default function comments(source, target, ...urls) {
     return Promise.all(urls.map((path) => {
-        const url = path; //getAbsoluteFile(source, path);
+        const url = getAbsoluteFile(source, path);
 
         return read(url)
         .then(parseComments)

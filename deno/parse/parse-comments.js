@@ -9,8 +9,7 @@ import slugify from 'fn/slugify.js';
 
 import { parseString } from './parse-string.js';
 import { parseParams } from './parse-params.js';
-import parseMarkdown   from '../../deno/parse-markdown.js';
-
+import parseMarkdown   from './parse-markdown.js';
 
 const parseParensClose = capture(/^\)\s*/, {}, null);
 

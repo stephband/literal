@@ -1,5 +1,5 @@
 
-import { dimyellowdim } from './log.js';
+import { dimyellowdim } from '../log.js';
 import { readJSON } from './read.js';
 
 const workingdir = Deno.cwd() + '/';

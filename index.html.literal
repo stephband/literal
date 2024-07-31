@@ -21,7 +21,6 @@
 
     <script type="module">
         import './build/literal-html/module.js';
-        import './build/literal-element/module.js';
     </script>
 </body>
 </html>

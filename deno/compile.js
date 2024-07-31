@@ -38,8 +38,7 @@ const indent = '  ';
 // Store render functions against their ids
 const cache = {};
 
-
-export default function compile(scope, params, source, id) {
+export default function compile(scope, params, source, id, DEBUG) {
     if (typeof source !== 'string') {
         throw new Error('Template is not a string');
     }
@@ -47,16 +46,16 @@ export default function compile(scope, params, source, id) {
     const key = id || source;
 
     // Return cached fn
-    if (cache[key]) { return cache[key]; }
+    if (cache[key]) return cache[key];
 
     const code = '\n'
         + (id ? indent + '// Template #' + id + '\n' : '')
         + indent + 'return render`' + source + '`;\n';
 
-    if (window.DEBUG) {
-        console.log(dimgreendim, 'Literal', 'compile', id + ' { ' + params + ' }');
+    if (DEBUG) {
+        console.log(dimgreendim, 'Literal', 'compile', id);
 
-        // scope, paramString, code [, context]        
+        // scope, paramString, code [, context]
         try {
             return cache[key] = compileAsyncFn(scope, params, code);
         }

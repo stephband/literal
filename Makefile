@@ -5,12 +5,12 @@ DEBUG=
 
 # Must format with tabs not spaces
 literal:
-	deno run --allow-read --allow-env --allow-net --allow-write --allow-run --unstable ./deno/make-literal.js ./ debug
+	deno run --allow-read --allow-env --allow-net --allow-write --allow-run ./deno/make-literal.js ./ debug
 
 comments:
 	deno run --allow-read --allow-env --allow-net --allow-write --allow-run --unstable ./deno/make-comments.js ./modules/ ./stuff/ ./documentation/templates/page.literal debug
 
-modules:
+build:
 	rm -rf ./build
 	deno run --allow-read --allow-env --allow-net --allow-write --allow-run ../fn/deno/make-modules.js build \
 		module.css \

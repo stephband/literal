@@ -1,11 +1,11 @@
 
 // Markdown library
 // https://marked.js.org/#/README.md#README.md
-import './libs/marked/marked.min.js';
+import '../libs/marked/marked.min.js';
 
 // Syntax highlighter
 // https://prismjs.com/
-import './libs/prism/prism.js';
+import '../libs/prism/prism.js';
 
 const options = {
     // GitHub Flavoured Markdown
