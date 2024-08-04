@@ -71,8 +71,6 @@ export { default as sum         } from 'fn/sum.js';
 export { default as Data        } from 'fn/data.js';
 export { default as Signal      } from 'fn/signal.js';
 
-export { default as location } from './location.js';
-
 
 
 //const library = {

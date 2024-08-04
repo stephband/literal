@@ -1,18 +1,17 @@
 /**
-<template is="literal-html">
+<template is="literal-shadow">
 
-A `literal-html` template may be placed anywhere in your HTML. It is designed to
-make it easy to mix islands of dynamically rendered content into static content.
+One `literal-shadow` template may be placed inside any element that supports
+a declarative shadowRoot. The content of the template is renderered into the
+shadow DOM of that element.
 
-A `literal-html` template is replaced in the DOM with it's own rendered content.
-
-Note that templates declared as shadow roots with the `shadowrootmode="open"` or
-`shadowrootmode="closed"` attribute cannot also be `is="literal-html"` templates:
-the HTML parser picks them up and treats them as shadows before the custom
-element registry can upgrade them: they cannot be enhanced, sadly. However this
-library provides another template, `<template is="literal-shadow">`
+A `literal-shadow` template is designed to mimic the behaviour of a template
+with a `shadowrootmode="open"` attribute, except the resulting shadow DOM is
+populated with rendered content. Technically, though, the two are not the same,
+and a little magic has to happen behind the scenes. (A `shadowrootmode` template
+is processed by the HTML parser before the custom element registry can upgrade
+it, so they are impossible to enhance with a renderer.)
 **/
-
 
 import Signal         from 'fn/signal.js';
 import element        from 'dom/element.js';
@@ -25,22 +24,20 @@ import { printError } from '../modules/print.js';
 /* Lifecycle */
 
 // tag, template, lifecycle, properties, log
-export default element('<template is="literal-html">', {
+export default element('<template is="literal-shadow">', {
     construct: function(shadow, internals) {
-        internals.initialised = false;
-        internals.pushed      = false;
-        internals.data        = Signal.of();
-        internals.renderer    = DOMRenderer.fromTemplate(this, this.parentElement);
+        internals.pushed = false;
+        internals.data   = Signal.of();
     },
 
     connect: function(shadow, internals) {
         // If already initialised do nothing
-        if (internals.initialised) { return; }
-        internals.initialised = true;
+        if (internals.renderer) { return; }
+        internals.renderer = DOMRenderer.fromTemplate(this, this.parentElement);
 
         // Observe signal listens to signal value changes and calls fn()
-        // immediately if signal already has value, and on next tick after
-        // signal mutates
+        // immediately if signal already value, then on next tick after signal
+        // mutates
         Signal.observe(internals.data, (data) => {
             const { renderer } = internals;
 
@@ -50,7 +47,28 @@ export default element('<template is="literal-html">', {
             // Replace DOM content on first push
             if (internals.pushed) return;
             internals.pushed = true;
-            this.replaceWith(fragment);
+            // EXPERIMENTAL! This is problematic, as replacing
+            // this.parentElement means `element` inside the template will
+            // no longer refer to its real parent
+            const parent = this.parentElement;
+            // Remove this template
+            this.remove();
+            // Extract the parent's contents to a fragment
+            const range = new Range();
+            range.selectNodeContents(parent);
+            const dom = range.extractContents();
+            // The parent can only be given a shadow if it is re-parsed
+            // with a declarative shadow root. We may as well use this
+            // template to parse HTML, it's here and not doing anything.
+            this.setHTMLUnsafe(parent.outerHTML.replace('></', '><template shadowrootmode="open"></template></'));
+            const element = this.content.children[0];
+            const shadow  = element.shadowRoot;
+            // Give the recreated element the original's children
+            element.append(dom);
+            // Give the recreated element's shadow the renderer content
+            shadow.append(fragment);
+            // Replace parent in the DOM with it's freshly shadowed copy
+            parent.replaceWith(element);
         });
 
         // If src or data was not set use data found in dataset
@@ -64,14 +82,14 @@ export default element('<template is="literal-html">', {
     A path to a JSON file or JS module exporting data to be rendered.
 
     ```html
-    <template is="literal-html" src="./data.json">...</template>
-    <template is="literal-html" src="./module.js">...</template>
+    <template is="literal-shadow" src="./data.json">...</template>
+    <template is="literal-shadow" src="./module.js">...</template>
     ```
 
     Named exports are supported via an identifier:
 
     ```html
-    <template is="literal-html" data="./module.js#namedExport">...</template>
+    <template is="literal-shadow" data="./module.js#namedExport">...</template>
     ```
     **/
 
@@ -108,7 +126,7 @@ export default element('<template is="literal-html">', {
     /**
     .data
 
-    The `data` property may be set to an object.
+    The `data` property may be set with a JS object or array.
 
     Getting the `data` property returns the object currently being rendered.
     Sort of. The returned data object is actually a _proxy_ of the set object.
