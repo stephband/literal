@@ -15,7 +15,7 @@ library provides another template, `<template is="literal-shadow">`
 
 
 import Signal         from 'fn/signal.js';
-import element        from 'dom/element.js';
+import element, { getInternals } from 'dom/element.js';
 import assignDataset  from '../modules/dom/assign-dataset.js';
 import requestData    from '../modules/request-data.js';
 import DOMRenderer    from '../modules/template.js';
@@ -81,11 +81,11 @@ export default element('<template is="literal-html">', {
         },
 
         get: function() {
-            return Internals(this).src;
+            return getInternals(this).src;
         },
 
         set: function(url) {
-            const internals = Internals(this);
+            const internals = getInternals(this);
             internals.src = url;
 
             // Cancel existing promise of data
@@ -128,14 +128,14 @@ export default element('<template is="literal-html">', {
         },
 
         get: function() {
-            const internals = Internals(this);
+            const internals = getInternals(this);
             return internals.renderer ?
                 internals.renderer.data :
                 null ;
         },
 
         set: function(object) {
-            const internals = Internals(this);
+            const internals = getInternals(this);
             internals.data.value = object || null;
         }
     }
