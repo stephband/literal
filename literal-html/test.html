@@ -181,34 +181,6 @@
 <body>
     <h1>Tests</h1>
 
-    <!--article class="test">
-        <template is="literal-html" shadowrootmode>
-            <h2>is="literal-html" shadowrootmode="open"</h2>
-            <style>
-                p {
-                    padding: 8px;
-                    background-color: plum;
-                }
-            </style>
-            <p>I am in the shadow DOM, and here is the defautl slot: "<slot></slot>".</p>
-        </template>
-        HELLO
-    </article-->
-
-    <!--article class="test">
-        <template shadowrootmode="closed">
-            <h2>is="literal-html" shadowrootmode="open"</h2>
-            <style>
-                p {
-                    padding: 8px;
-                    background-color: plum;
-                }
-            </style>
-            <p>I am in the shadow DOM.</p>
-        </template>
-    </article-->
-
-
     <article class="test">
         <template is="literal-html">
             <h2>is="literal-html"</h2>
@@ -218,7 +190,7 @@
         </template>
     </article>
 
-    <!--table class="striped-table x-bleed test">
+    <table class="striped-table x-bleed test">
         <thead>
             <tr>
                 <th style="width: 60%;">Expression</th>
@@ -458,5 +430,5 @@
             <pre>(${ this.renderCount }) location.identifier = ${ location.pathname }</pre>
             ${ location.pathname ? include('#template-' + /\w+$/.exec(location.pathname)[0], data) : '' }
         </template>
-    </article-->
+    </article>
 </body>
