@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>TodoMVC: Literal</title>
+
+		<link rel="stylesheet" href="node_modules/todomvc-common/base.css">
+		<link rel="stylesheet" href="node_modules/todomvc-app-css/index.css">
+
+		<script type="importmap">{
+		    "imports": {
+			    "dom/": "http://localhost/dom/modules/",
+			    "fn/":  "http://localhost/fn/modules/"
+		    }
+		}</script>
+
+		<template id="todo-li">
+			<li class="${ data.completed ? 'completed' : '' }">
+				<div class="view">
+					<!-- stash(data) stashes a reference to `data` on the element for pick by event delegation -->
+					<input class="toggle" type="checkbox" checked="${ data.completed }" literal="${ stash(element, data) }">
+					<label>${ data.text }</label>
+					<button class="destroy" name="destroy" value="${ stash(element, data) }"></button>
+				</div>
+				<input class="edit" value="${ data.text }">
+			</li>
+		</template>
+	</head>
+	<body>
+		<template is="literal-html" data-items="[]">
+			<section class="todoapp">
+				${ events('change', element).each(delegate({
+					'.toggle-all': (input) =>
+						data.items.forEach((item) => item.completed = input.checked),
+					'.toggle': (input) =>
+						stash(input).completed = input.checked
+				})) }
+
+				${ events('click', element).each(delegate({
+					'.clear-completed': (input) =>
+						data.items.splice(data.items.indexOf(stash(input)), 1),
+					'.destroy': (input) =>
+						data.items.splice(data.items.indexOf(stash(input)), 1)
+				})) }
+
+				<header class="header">
+					<h1>todos</h1>
+
+					<!-- TODO: put event binding somewhere nicer? -->
+					<input class="new-todo" placeholder="What needs to be done?" autofocus literal="${
+						events('keypress', element).each((e) => {
+							// Ignore all but the Enter key when input has text
+							if (e.which !== 13 || !element.value.trim()) return;
+
+							// Create item, represented by a simple object
+							data.items.push({ completed: false, text: element.value });
+
+							// Empty out the input
+							element.value = '';
+						})
+					}"/>
+				</header>
+
+				<section class="main" hidden="${ !data.items.length }">
+					<input id="toggle-all" class="toggle-all" type="checkbox">
+					<label for="toggle-all">Mark all as complete</label>
+					<ul class="todo-list">${
+						data.items
+						.filter((item) =>
+							location.identifier === '/active' ? !item.completed :
+							location.identifier === '/completed' ? item.completed :
+							true)
+						.map(include('#todo-li'))
+					}</ul>
+				</section>
+
+				<footer class="footer" hidden="${ !data.items.length }">
+					<span class="todo-count">
+						<strong>${ data.items.filter(matches({ completed: false })).length }</strong>
+						${ data.items.filter(matches({ completed: false })).length === 1 ? 'item' : 'items' } left
+					</span>
+
+					<ul class="filters">
+						<li>
+							<a class="${ location.identifier !== '/active' && location.identifier !== '/completed' ? 'selected' : '' }" href="#/">All</a>
+						</li>
+						<li>
+							<a class="${ location.identifier === '/active' ? 'selected' : '' }" href="#/active">Active</a>
+						</li>
+						<li>
+							<a class="${ location.identifier === '/completed' ? 'selected' : '' }" href="#/completed">Completed</a>
+						</li>
+					</ul>
+
+					<button class="clear-completed" hidden="${ !data.items.filter(matches({ completed: true })).length }">Clear completed</button>
+				</footer>
+			</section>
+		</template>
+
+		<footer class="info">
+			<p>Double-click to edit a todo</p>
+			<p>Created by <a href="https://stephen.band">Stephen Band</a></p>
+			<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+		</footer>
+
+		<script src="node_modules/todomvc-common/base.js"></script>
+		<!--script src="js/app.js"></script-->
+		<script type="module">
+			// Use Literal's optional scope functions
+			import '../../scope.js';
+			// Register <template is="literal-html">
+			import '../../literal-html/module.js';
+		</script>
+	</body>
+</html>
