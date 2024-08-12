@@ -30,7 +30,11 @@
 How was the app created? Anything worth sharing about the process of creating the app? Any spec violations?
 
 This implementation of TodoMVC was created using Literal's `<template is="literal-html">`
-element. All the logic is contained in two templates in `index.html`, demonstrating how
+element. The view/controller logic is contained in two templates in `index.html`, while
+the model is exported by `js/app.js`.
+
+
+demonstrating how
 well suited the `literal-html` element is to quick prototyping: import the element, start
 writing HTML with literal expressions. Bosh. No `npm` or any building required.
 

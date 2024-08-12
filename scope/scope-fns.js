@@ -39,14 +39,6 @@ ${ data.array.map(include('#template-id')) }
 
 // Built-ins added to scope with shorter names for template brevity
 
-export const assign  = Object.assign;
-export const entries = Object.entries;
-export const keys    = Object.keys;
-export const values  = Object.values;
-export const ceil    = Math.ceil;
-export const floor   = Math.floor;
-export const round   = (value, n = 1) => Math.round(value / n) * n;
-
 
 // This is the base set of scope functions. These functions are already used by
 // literal so they come at no cost to have them in scope by default. Functions
