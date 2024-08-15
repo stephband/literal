@@ -14,7 +14,7 @@ attribute.
 function setBooleanProperty(node, name, value) {
     if (node[name] === !!value) return;
     node[name] = !!value;
-    if (window.DEUBG) ++stats.property;
+    if (window.DEBUG) ++stats.property;
 }
 
 function setBooleanAttribute(node, name, value) {
@@ -22,7 +22,7 @@ function setBooleanAttribute(node, name, value) {
     if ((node.getAttribute(name) !== null)) {
         if (value) return;
         node.removeAttribute(name);
-        if (window.DEUBG) ++stats.attribute;
+        if (window.DEBUG) ++stats.attribute;
         return;
     }
 

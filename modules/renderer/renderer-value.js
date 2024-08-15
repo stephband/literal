@@ -5,14 +5,13 @@ import overload          from 'fn/overload.js';
 import Signal            from 'fn/signal.js';
 import trigger           from 'dom/trigger.js';
 import config            from '../config.js';
-import bindValue         from '../../scope/bind-value.js';
+import { stash }         from '../stash.js';
 import AttributeRenderer, { toAttributeString } from './renderer-attribute.js';
 import { stats }         from './renderer.js';
 import toText            from './to-text.js';
 
 
-const A      = Array.prototype;
-const $value = Symbol('value');
+const A = Array.prototype;
 
 const enhancedTypes = {
     'select-one':      true,
@@ -28,7 +27,7 @@ const enhancedTypes = {
 
 Literal provides a mechanism for setting and getting values of any type on
 select, checkbox and radio inputs. Where `input.value` always returns a string
-(on uncustomised DOM elements, at least), getValue(element) returns the value
+(on uncustomised DOM elements, at least), `stash(element)` returns the value
 set by a Literal template *before* it was coerced to a string. If no such value
 exists it falls back to returning the string.
 
@@ -40,9 +39,9 @@ events('input', document.body)
 **/
 
 function getElementValue(element) {
-    return $value in element ? element[$value] :
+    return stash.has(element) ? stash.get(element) :
         'value' in element ? element.value :
-        element.getAttribute('value') || undefined ;
+        element.getAttribute('value') ;
 }
 
 export const getValue = overload(get('type'), {
@@ -84,23 +83,19 @@ const types = {
 function setElementValue(element, value) {
     // Don't render into focused nodes, it makes the cursor jump to the
     // end of the field, and we should cede control to the user
-    if (document.activeElement === element) {
-        return 0;
-    }
+    if (document.activeElement === element) return;
 
     const isEnhanced = enhancedTypes[element.type];
 
-    // If value is already set on $value expando do nothing
-    if (isEnhanced && $value in element && element[$value] === value) return;
+    // If value is already stashed do nothing
+    if (isEnhanced && stash.has(element) && stash.get(element) === value) return;
 
     // Refuse to set value that does not conform to input type
     const expectedType = types[element.type];
     if (expectedType && typeof value !== expectedType) return;
 
-    // Where input is an enhanced type set object value as a $value expando
-    if (isEnhanced) {
-        element[$value] = value;
-    }
+    // Where input is an enhanced type stash object
+    if (isEnhanced) stash.set(element, value);
 
     // Convert to string with Literal's text rendering rules
     const string = toText(value);
@@ -154,29 +149,18 @@ export const setValue = overload(get('type'), {
 
 
 /**
-removeValue(element)
-Deletes value expando on element.
-**/
-
-export function removeValue(element) {
-    delete element[$value];
-}
-
-
-/**
 ValueRenderer(fn, element, unused, consts)
 Constructs an object responsible for rendering from a value attribute to a
 value property. Parameter `name` is redundant, but here for symmetry with other
 renderers.
 **/
 
-const toValue = overload(get('type'), {
+const coercer = {
     //'date':      composeDate,
     //'select-multiple': composeArray,
-    'number':     Number,
-    'range':      Number,
-    'default':    id
-});
+    'number': Number,
+    'range':  Number
+};
 
 export default class ValueRenderer extends AttributeRenderer {
     static consts = ['DATA', 'data', 'element', 'shadow', 'host', 'id'];
@@ -190,20 +174,13 @@ export default class ValueRenderer extends AttributeRenderer {
         Signal.evaluate(this, this.evaluate);
     }
 
-    render(strings) {
-        // If arguments contains a single expression use its value
-        const value = toValue(this.element.type, this.singleExpression ?
-            arguments[1] :
+    render(strings, value) {
+        return setValue(this.element,
+            this.singleExpression ?
+                coercer[this.element.type] ?
+                    coercer[this.element.type](value) :
+                value :
             toAttributeString(arguments)
         );
-
-        return setValue(this.element, value);
-    }
-
-    stop() {
-        // Guard against memory leaks by cleaning up $value expando when
-        // the renderer is done.
-        removeValue(this.element);
-        return super.stop();
     }
 }

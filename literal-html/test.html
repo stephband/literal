@@ -181,7 +181,50 @@
 <body>
     <h1>Tests</h1>
 
-    <article class="test">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<template is="literal-html" data-quantity="1">
+    <label class="select-button button pink-bg size-35 font-11 @s-x2 @s-y1 y-end">
+        <select name="quantity" value="${ console.log('Q', data.quantity), data.quantity === 1 ? '25' : data.quantity }">
+            <option value="25">Up to 25 employees</option>
+            <option value="100">Up to 100 employees</option>
+            <option value="250">Up to 250 employees</option>
+            <option value="1000">Up to 1000 employees</option>
+        </select>
+    </label>
+</template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!--article class="test">
         <template is="literal-html">
             <h2>is="literal-html"</h2>
             <p>Test attribute renderers.</p>
@@ -430,5 +473,5 @@
             <pre>(${ this.renderCount }) location.identifier = ${ location.pathname }</pre>
             ${ location.pathname ? include('#template-' + /\w+$/.exec(location.pathname)[0], data) : '' }
         </template>
-    </article>
+    </article-->
 </body>
