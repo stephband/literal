@@ -12,6 +12,8 @@ import { rewriteURLs } from '../urls.js';
 import imports         from './imports.js';
 import * as scope      from '../scope.js';
 
+import { red, yellow } from '../log.js';
+
 /**
 include(url, data)
 Includes a template from `url`, rendering it with properties of `data`
