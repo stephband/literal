@@ -2,6 +2,7 @@
 import id       from 'fn/id.js';
 import overload from 'fn/overload.js';
 import toType   from 'fn/to-type.js';
+import Signal   from 'fn/signal.js';
 
 /**
 Template expressions
@@ -177,9 +178,32 @@ const toText = overload(toType, {
     'object': overload((object) => (object && object.constructor.name), {
         'Array':   (object) => object.map(toText).join(''),
         'RegExp':  (object) => '/' + object.source + '/',
-        'Stream':  () => '',
-        'null':    () => '',
-        'default': (object) => JSON.stringify(object, null, 2)
+
+        // Allow signals to pass through, they get .toString() called when they
+        // are stringified into the DOM.
+        [Signal.name]: id,
+
+        'default': (object) => {
+            // So. Streams and other objects with circular references fail to
+            // stringify. It would be nice if we could catch streams first seeing
+            // as we so regularly return them from expressions (eg. `${ events(...) }`),
+            // but builders have a nasty habit of rewriting constructor names, and
+            // it is difficult to see how to detect them without importing the
+            // Stream constructor, and I don't want to do that because that would
+            // create a dependency on Stream that we don't really need.
+
+            /*
+            try {
+                return JSON.stringify(object, null, 2);
+            }
+            catch(e) {
+                return '';
+            }
+            */
+
+            // But saying that, why are we returning stringified JSON at all?
+            return  '';
+        }
     }),
 
     'default': JSON.stringify

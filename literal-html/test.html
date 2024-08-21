@@ -24,7 +24,14 @@
       }
     }</script>
 
+    <link rel="stylesheet" href="../../bolt/elements/html.css" />
     <link rel="stylesheet" href="../../bolt/elements/table.css" />
+    <link rel="stylesheet" href="../../bolt/elements/label.css" />
+    <link rel="stylesheet" href="../../bolt/elements/input.css" />
+    <link rel="stylesheet" href="../../bolt/elements/input-range.css" />
+    <link rel="stylesheet" href="../../bolt/classes/block.css" />
+    <link rel="stylesheet" href="../../bolt/classes/button.css" />
+    <link rel="stylesheet" href="../../bolt/classes/select-button.css" />
     <link rel="stylesheet" href="../../bolt/classes/striped-table.css" />
 
     <style>
@@ -180,49 +187,6 @@
 
 <body>
     <h1>Tests</h1>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<template is="literal-html" data-quantity="1">
-    <label class="select-button button pink-bg size-35 font-11 @s-x2 @s-y1 y-end">
-        <select name="quantity" value="${ console.log('Q', data.quantity), data.quantity === 1 ? '25' : data.quantity }">
-            <option value="25">Up to 25 employees</option>
-            <option value="100">Up to 100 employees</option>
-            <option value="250">Up to 250 employees</option>
-            <option value="1000">Up to 1000 employees</option>
-        </select>
-    </label>
-</template>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     <!--article class="test">
         <template is="literal-html">
@@ -443,9 +407,113 @@
             to an existing property triggers a fresh render.</p>
             ${ print(data) }
         </template>
-    </article>
+    </article-->
 
-    <article class="test">
+
+
+
+
+
+    <form class="test">
+        <template is="literal-html" data-quantity="1">
+            <h2>Forms</h2>
+            <fieldset>
+                <label for="text-input">input[type="text"]</label>
+                <input type="text" placeholder="Enter text" id="text-input" />
+
+                <label for="color-input">input[type="color"]</label>
+                <input type="color" id="color-input" />
+
+                <label for="date-input">input[type="date"]</label>
+                <input type="date" placeholder="100" id="date-input" />
+
+                <label for="datetime-local-input">input[type="datetime-local"]</label>
+                <input type="datetime-local" placeholder="100" id="datetime-local-input" />
+
+                <label for="email-input">input[type="email"]</label>
+                <input type="email" placeholder="name@example.com" id="email-input" name="email" />
+
+                <label for="file-input">input[type="file"]</label>
+                <input type="file" placeholder="100" id="file-input" />
+
+                <label for="month-input">input[type="month"]</label>
+                <input type="month" placeholder="100" id="month-input" />
+
+                <label for="number-input">input[type="number"]</label>
+                <input type="number" placeholder="100" id="number-input" />
+
+                <label for="password-input">input[type="password"]</label>
+                <input type="password" placeholder="Enter password" id="password-input" />
+
+                <label for="range-input">input[type="range"]</label>
+                <input type="range" value="0" id="range-input" />
+
+                <label for="search-input">input[type="search"]</label>
+                <input type="search" id="search-input" name="search" />
+
+                <label for="tel-input">input[type="tel"]</label>
+                <input type="tel" id="tel-input" name="tel" />
+
+                <label for="time-input">input[type="time"]</label>
+                <input type="time" placeholder="10:00" id="time-input" />
+
+                <label for="url-input">input[type="url"]</label>
+                <input type="url" placeholder="http://cruncher.ch/" id="url-input" />
+
+                <label for="week-input">input[type="week"]</label>
+                <input type="week" placeholder="10:00" id="week-input" />
+            </fieldset>
+
+            <fieldset>
+                <label class="required-label" for="required-input">input[required]</label>
+                <input type="text" required placeholder="Enter text" id="required-input" />
+
+                <label class="required-label" for="error-input">input:invalid</label>
+                <input type="text" required placeholder="Enter text" id="error-input" />
+            </fieldset>
+
+            <fieldset>
+                <label class="block" for="checkbox-input">input[type="checkbox"]</label>
+                <label for="checkbox-input-1">1</label>
+                <input type="checkbox" name="checkbox" value="1" id="checkbox-input-1" />
+                <label for="checkbox-input-2">2</label>
+                <input type="checkbox" name="checkbox" value="2" id="checkbox-input-2" />
+                <label for="checkbox-input-3">3</label>
+                <input type="checkbox" name="checkbox" value="3" id="checkbox-input-3" />
+
+                <label class="block" for="radio-input">input[type="radio"]</label>
+                <label for="radio-input-1">1</label>
+                <input type="radio" name="radio" value="1" id="radio-input-1" />
+                <label for="radio-input-2">2</label>
+                <input type="radio" name="radio" value="2" id="radio-input-2" />
+                <label for="radio-input-3">3</label>
+                <input type="radio" name="radio" value="3" id="radio-input-3" />
+
+                <label for="textarea">textarea</label>
+                <label class="select-button button pink-bg size-35 font-11 @s-x2 @s-y1 y-end" for="select">
+                    <select name="quantity" value="${ console.log('Q', data.quantity), data.quantity === 1 ? '25' : data.quantity }" id="select">
+                        <option value="25">Up to 25 employees</option>
+                        <option value="100">Up to 100 employees</option>
+                        <option value="250">Up to 250 employees</option>
+                        <option value="1000">Up to 1000 employees</option>
+                    </select>
+                </label>
+            </fieldset>
+
+            <fieldset>
+                <label for="textarea">textarea</label>
+                <textarea id="textarea" name="textarea"></textarea>
+            </fieldset>
+        </template>
+    </form>
+
+
+
+
+
+
+
+    <!--article class="test">
         <template is="literal-html">
             <h2>location</h2>
             <p>Includes a template based on the location #hash</p>
