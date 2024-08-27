@@ -47,11 +47,11 @@ function render(t) {
         );
 
         if (t1 - t0 > 0.016666667) {
-            log('render took longer than a frame (16.67ms) ' + ((t1 - t0) * 1000).toPrecision(3) + 'ms', '',
-                'frame t=' + (t / 1000).toFixed(3) + 's'
-                + ' t0=' + t0.toFixed(3) + ','
-                + ' t1=' + t0.toFixed(3),
-                '',
+            log('render', (t / 1000).toFixed(3) + 's',
+                'took longer than a frame',
+                ' t0 ' + t0.toFixed(3) + ','
+                + ' t1 ' + t0.toFixed(3) + ','
+                + ' ' + ((t1 - t0) * 1000).toPrecision(3) + 'ms',
                 '#ba4029');
         }
     }
