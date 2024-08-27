@@ -1,9 +1,8 @@
 
-export default function pluralise(str1, str2, lang, value) {
+export default function pluralise(value, str1, str2, lang) {
     if (typeof value !== 'number') { return; }
 
-    // TODO: We could get lang from the closest parent with lang
-
+    // TODO: We could get lang from the closest parent with lang?
     str1 = str1 || '';
     str2 = str2 || 's';
 
