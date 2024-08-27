@@ -9,3 +9,4 @@ export { default as navigate } from 'dom/navigate.js';
 export { default as location } from 'dom/location.js';
 export { default as paramify } from './paramify.js';
 export { default as style    } from './style.js';
+export { default as safe     } from './safe.js';

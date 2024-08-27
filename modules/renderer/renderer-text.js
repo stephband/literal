@@ -104,7 +104,8 @@ function objectToContents(state, object, i) {
     if (isFragmentNode(object)) {
         // TODO Splice fragment content in... represent in contents
         // with a new object?
-        console.log('TODO');
+        console.log('TODO: support fragments');
+        //contents.splice(i, 0, object);
         //state.i = i;
         return i;
     }
