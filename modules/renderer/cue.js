@@ -77,6 +77,7 @@ export function cue(renderer) {
     // ...or by animation frame
     if (cued === undefined) cued = requestAnimationFrame(render);
     renderers.push(renderer);
+    renderer.status = 'cued';
     return cued;
 }
 
@@ -87,6 +88,9 @@ Removes renderer from the render queue.
 
 export function uncue(renderer) {
     const i = renderers.indexOf(renderer);
-    if (i > 0) renderers.splice(i, 1);
+    if (i > 0) {
+        renderers.splice(i, 1);
+        renderer.status = 'idle';
+    }
     return renderer;
 }

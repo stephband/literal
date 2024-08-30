@@ -45,11 +45,11 @@ Renderer id:           ${ this.id }
 ```
 **/
 
-function callStop(stopable) {
+function stop(stopable) {
     stopable.stop();
 }
 
-function stopPromise() {
+function promiseStop() {
     this.status === 'done';
 }
 
@@ -64,7 +64,7 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
             values[n] = '';
 
             // You can't stop a promise, but we can flag it to be ignored
-            target.stop = stopPromise;
+            target.stop = promiseStop;
             target.then((value) => {
                 if (target.status === 'done') { return; }
                 remove(asyncs, target);
@@ -186,11 +186,10 @@ export default class Renderer {
         if (this.status === 'done' || this.status === 'cued') return;
 
         // Stop async values being rendered
-        this.asyncs && this.asyncs.forEach(callStop);
+        this.asyncs && this.asyncs.forEach(stop);
 
-        // Cue update
+        // Cue evaluation on next frame
         cue(this);
-        this.status = 'cued';
     }
 
     stop() {
@@ -205,7 +204,7 @@ export default class Renderer {
         ObserveSignal.prototype.stop.apply(this);
 
         // Stop async values being rendered
-        this.asyncs && this.asyncs.forEach(callStop);
+        this.asyncs && this.asyncs.forEach(stop);
 
         // Decrement number of active renderers
         if (window.DEBUG) { --Renderer.count; }
@@ -214,7 +213,7 @@ export default class Renderer {
         const stopables = this[$stopables];
         if (stopables) {
             this[$stopables] = undefined;
-            stopables.forEach(callStop);
+            stopables.forEach(stop);
         }
 
         return this;
