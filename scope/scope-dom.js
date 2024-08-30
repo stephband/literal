@@ -16,6 +16,7 @@ export { default as identify   } from 'dom/identify.js';
 export { default as isTextNode } from 'dom/is-text-node.js';
 export { default as parse      } from 'dom/parse.js';
 export { default as request    } from 'dom/request.js';
+export { default as safe       } from './safe.js';
 export { default as toNodeType } from 'dom/to-type.js';
 export { default as trigger    } from 'dom/trigger.js';
 
