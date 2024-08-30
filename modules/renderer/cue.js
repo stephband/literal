@@ -1,5 +1,6 @@
 
 import { log, group, groupEnd } from '../log.js';
+import Signal    from 'fn/signal.js';
 import { stats } from './renderer.js';
 
 const renderers = [];
@@ -19,9 +20,12 @@ function render(t) {
         stats.remove    = 0;
     }
 
-    let n = -1;
-    while (renderers[++n]) {
-        renderers[n].update();
+    let n = -1, renderer;
+    while (renderer = renderers[++n]) {
+        // Evaluating renderer as a signal composes the expressions and renders
+        Signal.evaluate(renderer, renderer.evaluate);
+        renderer.status = 'idle';
+        //renderers[n].update();
     }
 
     if (window.DEBUG && window.DEBUG.literal !== false) {
@@ -73,6 +77,7 @@ export function cue(renderer) {
     // ...or by animation frame
     if (cued === undefined) cued = requestAnimationFrame(render);
     renderers.push(renderer);
+    renderer.status = 'cued';
     return cued;
 }
 
@@ -83,6 +88,9 @@ Removes renderer from the render queue.
 
 export function uncue(renderer) {
     const i = renderers.indexOf(renderer);
-    if (i > 0) renderers.splice(i, 1);
+    if (i > 0) {
+        renderers.splice(i, 1);
+        renderer.status = 'idle';
+    }
     return renderer;
 }
