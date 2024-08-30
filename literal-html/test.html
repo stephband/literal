@@ -414,7 +414,7 @@
 
 
 
-    <form class="test">
+    <!--form class="test">
         <template is="literal-html" data-quantity="1">
             <h2>Forms</h2>
             <fieldset>
@@ -505,11 +505,17 @@
                 <textarea id="textarea" name="textarea"></textarea>
             </fieldset>
         </template>
-    </form>
+    </form-->
 
 
 
-
+    <article class="test">
+        <template is="literal-html" data-html="<span style='background: var(--green);'>HTML</span> added <span style='background: var(--green);'>successfully</span>">
+            <h2>Fragment</h2>
+            <p>Renders a fragment</p>
+            <p>${ safe(data.html) }</p>
+        </template>
+    </article>
 
 
 

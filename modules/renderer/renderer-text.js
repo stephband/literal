@@ -85,7 +85,6 @@ function objectToContents(state, object, i) {
 
     // Object is an array, recurse over its values
     if (Array.isArray(object)) {
-        //state.i = i;
         let n = -1;
         while(++n < object.length) i = objectToContents(state, object[n], i);
         return i;
@@ -96,17 +95,17 @@ function objectToContents(state, object, i) {
         contents[++i].before(toContent(object));
         if (window.DEBUG) ++stats.add;
         contents.splice(i, 0, object);
-        //state.i = i;
         return i;
     }
 
     // Object is a fragment
     if (isFragmentNode(object)) {
-        // TODO Splice fragment content in... represent in contents
-        // with a new object?
-        console.log('TODO: support fragments');
-        //contents.splice(i, 0, object);
-        //state.i = i;
+        let node;
+        while(node = object.firstChild) {
+            contents[++i].before(object.firstChild);
+            if (window.DEBUG) ++stats.add;
+            contents.splice(i, 0, node);
+        }
         return i;
     }
 
@@ -116,7 +115,6 @@ function objectToContents(state, object, i) {
         contents[++i].before(object);
         if (window.DEBUG) ++stats.add;
         contents.splice(i, 0, object);
-        //state.i = i;
         return i;
     }
 
