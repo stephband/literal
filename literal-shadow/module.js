@@ -59,7 +59,7 @@ export default element('<template is="literal-shadow">', {
             const dom = range.extractContents();
             // The parent can only be given a shadow if it is re-parsed
             // with a declarative shadow root. We may as well use this
-            // template to parse HTML, it's here and not doing anything.
+            // template to parse HTML, it's here, and now not doing anything.
             this.setHTMLUnsafe(parent.outerHTML.replace('></', '><template shadowrootmode="open"></template></'));
             const element = this.content.children[0];
             const shadow  = element.shadowRoot;
