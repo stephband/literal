@@ -24,9 +24,7 @@ const properties = {
     status:      { writable: true }
 };
 
-function callStop(stopable) {
-    stopable.stop();
-}
+let id = 0;
 
 
 /**
@@ -47,16 +45,12 @@ Renderer id:           ${ this.id }
 ```
 **/
 
-// Observers
-
-function setCancelled(object) {
-    object.cancelled = true;
+function callStop(stopable) {
+    stopable.stop();
 }
 
-function stopPromises(promises) {
-    if (!promises) { return; }
-    promises.forEach(setCancelled);
-    promises.length = 0;
+function stopPromise() {
+    this.status === 'done';
 }
 
 function renderValue(renderer, args, values, n, object, isRender = false) {
@@ -66,41 +60,38 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
 
         // Is target have .then()?
         if (typeof target.then === 'function') {
-            const promises = renderer.promises || (renderer.promises = []);
+            const asyncs = renderer.asyncs || (renderer.asyncs = []);
             values[n] = '';
+
+            // You can't stop a promise, but we can flag it to be ignored
+            target.stop = stopPromise;
             target.then((value) => {
-                // You can't stop a promise, but we can flag it to be ignored
-                if (target.cancelled) { return; }
-                remove(promises, target);
+                if (target.status === 'done') { return; }
+                remove(asyncs, target);
                 return renderValue(renderer, args, values, n, value, true);
             });
-            promises.push(target);
+
+            asyncs.push(target);
             return;
         }
 
-        // Is target a pipeable Stream?
+        // If target has a .stop() method add it to asyncs, objects stopped on
+        // renderer invalidation and stop.
+        if (typeof target.stop === 'function') {
+            const asyncs = renderer.asyncs || (renderer.asyncs = []);
+            asyncs.push(target);
+        }
+
+        // If target has a .pipe() method render its piped values
         if (typeof target.pipe === 'function') {
-            const streams = renderer.streams || (renderer.streams = []);
             values[n] = '';
             // Do not render synchronous values that are in the stream
             // immediately, as they are about to be rendered by the renderer
             let isRender = false;
             target.pipe({ push: (value) => renderValue(renderer, args, values, n, value, isRender) });
             isRender = true;
-            streams.push(target);
             return;
         }
-
-        /*
-        // Does target have .stop()? We want to call .stop() when this renderer
-        // is stopped.
-        if (typeof target.stop === 'function') {
-            const streams = renderer.streams || (renderer.streams = []);
-            values[n] = '';
-            streams.push(target);
-            return;
-        }
-        */
 
         // Is target an array?
         if (typeof target.length === 'number') {
@@ -167,6 +158,7 @@ export default class Renderer {
             this.template = debug.template;
             this.path     = debug.path;
             this.code     = debug.code;
+            this.id       = this.constructor.name + '#' + (++id) ;
             ++Renderer.count;
         }
     }
@@ -191,38 +183,31 @@ export default class Renderer {
     invalidate() {
         // A renderer, as a consumer, does not have validity or dependent
         // signals to invalidate. It does have status.
-        if (this.status === 'done') return;
-        if (this.status === 'cued') {
-//console.warn(this.constructor.name + ' ' + this.template + ' ' + this.path + ' already cued');
-            return;
-        }
+        if (this.status === 'done' || this.status === 'cued') return;
 
-        // Cue .update()
+        // Stop async values being rendered
+        this.asyncs && this.asyncs.forEach(callStop);
+
+        // Cue update
         cue(this);
         this.status = 'cued';
-    }
-
-    update() {
-        // .update() is called by the cue timer
-        stopPromises(this.promises);
-
-        // Evaluating this as a signal composes the expressions and renders
-        Signal.evaluate(this, this.evaluate);
-        this.status = 'idle';
-        return this;
     }
 
     stop() {
         // Check and set status
         if (this.status === 'done') return this;
-        if (this.status === 'cued') uncue(this);
+        if (this.status === 'cued') {
+            if (window.DEBUG) console.log('Stopping cued renderer. Not the cheapest thing to be doing a lot. We should not really be getting in here, its a sign of something gone awry.');
+            uncue(this);
+        }
 
-        // Sets this.status = 'done'
+        // Set this.status = 'done'
         ObserveSignal.prototype.stop.apply(this);
 
-        stopPromises(this.promises);
-        this.streams && this.streams.forEach(callStop);
+        // Stop async values being rendered
+        this.asyncs && this.asyncs.forEach(callStop);
 
+        // Decrement number of active renderers
         if (window.DEBUG) { --Renderer.count; }
 
         // Call done functions and listeners
@@ -236,7 +221,7 @@ export default class Renderer {
     }
 
     done(stopable) {
-        // Is stream already stopped? Call listener immediately.
+        // If stream is already stopped call listener immediately
         if (this.status === 'done') {
             stopable.stop();
             return this;

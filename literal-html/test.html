@@ -317,7 +317,6 @@
             in ().</p>
             ${
                 events('click', element)
-                //.log('click')
                 .each((e) => ++data.template)
             }
             <pre>(${ this.renderCount }) data.template = ${ data.template }</pre>
@@ -365,18 +364,19 @@
             <p>An intervening paragraph.</p>
             (${ this.renderCount }) data.value = ${ data.value }
         </template>
-    </article>
+    </article-->
 
     <article class="test">
         <template is="literal-html" data-default="2" data-value="Hello">
             <h2>is="literal-html"</h2>
+            <p>Tests template include triggered by an events stream.</p>
             <input class="invisible" type="radio" name="test-2" value="1" id="test-2-value-1" checked="$ { data.default == element.value }" />
             <label class="black-pill-button pill-button button register-btn log-in-btn" for="test-2-value-1">1</label>
             <input class="invisible" type="radio" name="test-2" value="2" id="test-2-value-2" checked="$ { data.default == element.value }" />
             <label class="black-pill-button pill-button button register-btn log-in-btn" for="test-2-value-2">2</label>
             ${
                 events({ type: 'change', select: '[name="test-2"]' }, element)
-                .map((e) => (console.log('CHANGE'), data.default = e.target.value))
+                .map((e) => (data.default = e.target.value))
             }
 
             ${ include('#template-' + data.default, data) }

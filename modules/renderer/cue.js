@@ -1,5 +1,6 @@
 
 import { log, group, groupEnd } from '../log.js';
+import Signal    from 'fn/signal.js';
 import { stats } from './renderer.js';
 
 const renderers = [];
@@ -19,9 +20,12 @@ function render(t) {
         stats.remove    = 0;
     }
 
-    let n = -1;
-    while (renderers[++n]) {
-        renderers[n].update();
+    let n = -1, renderer;
+    while (renderer = renderers[++n]) {
+        // Evaluating renderer as a signal composes the expressions and renders
+        Signal.evaluate(renderer, renderer.evaluate);
+        renderer.status = 'idle';
+        //renderers[n].update();
     }
 
     if (window.DEBUG && window.DEBUG.literal !== false) {
