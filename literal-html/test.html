@@ -366,9 +366,9 @@
     <article class="test">
         <template is="literal-html" data-default="2" data-value="Hello">
             <h2>is="literal-html"</h2>
-            <input class="masked" type="radio" name="test-2" value="1" id="test-2-value-1" checked="$ { data.default == element.value }" />
+            <input class="invisible" type="radio" name="test-2" value="1" id="test-2-value-1" checked="$ { data.default == element.value }" />
             <label class="black-pill-button pill-button button register-btn log-in-btn" for="test-2-value-1">1</label>
-            <input class="masked" type="radio" name="test-2" value="2" id="test-2-value-2" checked="$ { data.default == element.value }" />
+            <input class="invisible" type="radio" name="test-2" value="2" id="test-2-value-2" checked="$ { data.default == element.value }" />
             <label class="black-pill-button pill-button button register-btn log-in-btn" for="test-2-value-2">2</label>
             ${
                 events({ type: 'change', select: '[name="test-2"]' }, element)

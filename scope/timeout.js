@@ -5,6 +5,7 @@ class Timeout {
     }
 
     stop() {
+        console.log('STOP');
         clearTimeout(this.timer);
     }
 }

@@ -22,7 +22,7 @@
         inset 0 -4px 8px -1px #d4b100;*/
     /* Try to not interfere with layout of surrounding content */
     overflow: hidden;
-
+    text-align: left;
     break-inside: avoid;
 }
 
