@@ -4,65 +4,70 @@ import Signal    from 'fn/signal.js';
 import { stats } from './renderer.js';
 
 const renderers = [];
-//const promise   = Promise.resolve(renderers);
-
 let cued;
 
-function render(t) {
-    let t0, t1;
-    if (window.DEBUG && window.DEBUG.literal !== false) {
-        t0 = window.performance.now() / 1000;
-        stats.attribute = 0;
-        stats.property  = 0;
-        stats.token     = 0;
-        stats.text      = 0;
-        stats.add       = 0;
-        stats.remove    = 0;
-    }
+const render = window.DEBUG && window.DEBUG.literal !== false ? function render(t) {
+    let t0 = window.performance.now() / 1000;
 
-    let n = -1, renderer;
+    stats.attribute = 0;
+    stats.property  = 0;
+    stats.token     = 0;
+    stats.text      = 0;
+    stats.add       = 0;
+    stats.remove    = 0;
+
+    let n = -1;
+    let renderer;
     while (renderer = renderers[++n]) {
         // Evaluating renderer as a signal composes the expressions and renders
+        // to the DOM
         Signal.evaluate(renderer, renderer.evaluate);
         renderer.status = 'idle';
-        //renderers[n].update();
     }
 
-    if (window.DEBUG && window.DEBUG.literal !== false) {
-        t1 = window.performance.now() / 1000;
+    let t1 = window.performance.now() / 1000;
+    log('render',
+        // Frame time
+        (t / 1000).toFixed(3) + 's – '
+        // renderers
+        + renderers.length + ' renderer' + (renderers.length === 1 ? '' : 's') + ' fired'
+        // mutations
+        + (stats.remove    ? ', ' + stats.remove    + ' remove'    : '')
+        + (stats.add       ? ', ' + stats.add       + ' add'       : '')
+        + (stats.text      ? ', ' + stats.text      + ' text'      : '')
+        + (stats.property  ? ', ' + stats.property  + ' property'  : '')
+        + (stats.attribute ? ', ' + stats.attribute + ' attribute' : '')
+        + (stats.token     ? ', ' + stats.token     + ' token'     : '')
+        + ' mutations'
+        // Render duration
+        + ' – ' + ((t1 - t0) * 1000).toPrecision(3) + 'ms',
+        //
+        '', '', '#B6BD00'
+    );
 
-        log('render',
-            // Frame time
-            (t / 1000).toFixed(3) + 's – '
-            // renderers
-            + renderers.length + ' renderer' + (renderers.length === 1 ? '' : 's') + ' fired'
-            // mutations
-            + (stats.remove    ? ', ' + stats.remove    + ' remove'    : '')
-            + (stats.add       ? ', ' + stats.add       + ' add'       : '')
-            + (stats.text      ? ', ' + stats.text      + ' text'      : '')
-            + (stats.property  ? ', ' + stats.property  + ' property'  : '')
-            + (stats.attribute ? ', ' + stats.attribute + ' attribute' : '')
-            + (stats.token     ? ', ' + stats.token     + ' token'     : '')
-            + ' mutations'
-            // Render duration
-            + ' – ' + ((t1 - t0) * 1000).toPrecision(3) + 'ms',
-            //
-            '', '', '#B6BD00'
-        );
-
-        if (t1 - t0 > 0.016666667) {
-            log('render', (t / 1000).toFixed(3) + 's',
-                'took longer than a frame',
-                ' t0 ' + t0.toFixed(3) + ','
-                + ' t1 ' + t0.toFixed(3) + ','
-                + ' ' + ((t1 - t0) * 1000).toPrecision(3) + 'ms',
-                '#ba4029');
-        }
+    if (t1 - t0 > 0.016666667) {
+        log('render', (t / 1000).toFixed(3) + 's',
+            'took longer than a frame',
+            ' t0 ' + t0.toFixed(3) + ','
+            + ' t1 ' + t0.toFixed(3) + ','
+            + ' ' + ((t1 - t0) * 1000).toPrecision(3) + 'ms',
+            '#ba4029');
     }
 
     cued = undefined;
     renderers.length = 0;
-}
+} : function render() {
+    let n = -1;
+    let renderer;
+
+    while (renderer = renderers[++n]) {
+        Signal.evaluate(renderer, renderer.evaluate);
+        renderer.status = 'idle';
+    }
+
+    cued = undefined;
+    renderers.length = 0;
+} ;
 
 /**
 cue(renderer)

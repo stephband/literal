@@ -1,10 +1,10 @@
 
-import { remove }       from 'fn/remove.js';
-import Signal, { ObserveSignal } from 'fn/signal.js';
-import Data             from 'fn/data.js';
-import scope            from '../scope.js';
-import { cue, uncue }   from './cue.js';
-import toText           from './to-text.js';
+import { remove }        from 'fn/remove.js';
+import { ObserveSignal } from 'fn/signal.js';
+import Data              from 'fn/data.js';
+import scope             from '../scope.js';
+import { cue, uncue }    from './cue.js';
+import toText            from './to-text.js';
 
 
 const assign     = Object.assign;
@@ -169,8 +169,8 @@ export default class Renderer {
         if (!data) return;
 
         // Update template consts. We are ok to do this even if consts is a
-        // shared object, because consts.data and consts.DATA are only accessed
-        // synchronously by #render().
+        // shared object, because consts are only accessed synchronously by
+        // #render().
         this.consts.data    = Data.of(data);
         this.consts.DATA    = Data.objectOf(data);
         this.consts.element = this.element;
