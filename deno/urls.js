@@ -23,14 +23,14 @@ function rootPath(source, asset) {
     const count = countUpLevels(assetPath);
     const upCount = Math.min(count, sourcePath.length);
 
-    // Make assetPath by stripping up levels and prepending what's 
+    // Make assetPath by stripping up levels and prepending what's
     // left of sourcePath
     sourcePath.length -= upCount;
     assetPath.splice(0, upCount);
     return sourcePath.concat(assetPath);
 }
 
-export function rootURL(source, asset) {    
+export function rootURL(source, asset) {
     return rootPath(source, asset).join('/');
 }
 
@@ -43,7 +43,7 @@ export function rewriteURL(source, target, url) {
     const targetdir = path.dirname(target);
     // Resource path relative to current working directory
     const resource  = path.join(sourcedir, url);
-    
+
     /*
     console.log('====== rewriteURL(source, target, url) ======',
         //'\ntarget:    ' + target,
@@ -55,7 +55,7 @@ export function rewriteURL(source, target, url) {
         '\nrelative:  ' + path.relative(targetdir, resource)
     );
     */
-    
+
     // Resource path relative to module
     const relative = path.relative(targetdir, resource);
 
@@ -68,8 +68,8 @@ export function rewriteURL(source, target, url) {
 /*const rURL = /(url\(\s*['"]?|@import\s*['"]|(?:src|href|cite|action|formaction|codebase|longdesdc|usemap|poster)=['"]?\s*)(?:[a-z]+\:\/\/|[\/\#\$'"]|([\:\.\/\w-\d\%]*))/g;
 
 export function rewriteURLs(source, target, text) {
-    // Check for $2 - if a protocol was found $2 is undefined and we don't 
-    // want to rewrite. Todo: write the regexp to not match protocol:// urls  
+    // Check for $2 - if a protocol was found $2 is undefined and we don't
+    // want to rewrite. Todo: write the regexp to not match protocol:// urls
     return text.replace(rURL, ($0, $1, $2) => (
         $2 ? $1 + rewriteURL(source, target, $2) : $0
     ));

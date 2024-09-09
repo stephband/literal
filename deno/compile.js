@@ -5,7 +5,7 @@
 
 
 
-import compileAsyncFn from 'fn/compile-async.js';
+import compileAsyncFn from '../../fn/compile-async.js';
 import { dimgreendim, dim, red, yellow } from './log.js';
 
 
