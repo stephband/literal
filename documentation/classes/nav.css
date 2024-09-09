@@ -42,7 +42,7 @@ body > nav {
 
 .nav-button {
     --size: calc(1.5 * var(--x-gap));
-    --line-height: 1em;
+    line-height: 1em;
     text-align: left;
     border-radius: 0;
 }
