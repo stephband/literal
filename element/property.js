@@ -28,7 +28,7 @@ const symbols = {};
 const types = {
     attribute: (name, symbol) => ({
         construct: function()      { define(this, symbol, { value: Signal.of('') }); },
-        attribute: function(value) { getInternals(this).data[name] = value; }
+        attribute: function(value) { this[symbol].value = value; }
     }),
 
     property: (name, symbol) => ({
@@ -92,8 +92,8 @@ const types = {
     tokens: (name, symbol) => ({
         construct: function() { define(this, symbol, { value: new TokenList() }); },
         attribute: function(value) { this[name] = value || ''; },
-        get: function() { return this[symbol]; },
-        set: function(value) {
+        get:       function() { return this[symbol]; },
+        set:       function(value) {
             const list = this[symbol];
             updateTokenList(list, (value + '').trim().split(/\s+/));
         }

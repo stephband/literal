@@ -1,6 +1,6 @@
 {
   "imports": {
-    "dom/": "../dom/modules/",
-    "fn/":  "../fn/modules/"
+    "dom/": "https://cdn.jsdelivr.net/gh/stephband/dom@master/modules/",
+    "fn/":  "https://cdn.jsdelivr.net/gh/stephband/fn@master/modules/"
   }
 }

@@ -32,8 +32,8 @@ element(tag, {
         <p>Property <code>string</code> $\{ host.string }</p>
         <p>Property <code>controls</code> $\{ host.controls }</p>`,
 
-    construct: function(host, shadow, data) {},
-    connect:   function(host, shadow, data) {}
+    construct: function(shadow, internals) {},
+    connect:   function(shadow, internals) {}
 }, {
     switch:   'boolean',
     count:    'number',
@@ -89,9 +89,10 @@ export default function LiteralElement(tag, lifecycle = {}, properties = {}) {
 
     // Compile templates
     const template  = create('template', { html: lifecycle.shadow });
-    const templates = Object
-        .entries(lifecycle.templates)
-        .map(([id, html]) => create('template', { id, html }));
+    const templates = lifecycle.templates ?
+        entries(lifecycle.templates)
+        .map(([id, html]) => create('template', { id, html })) :
+        [] ;
 
     // Create templates. This is a crude way to do it, and we should probably
     // isolate templates in the shadow from those outside with a separate
@@ -157,3 +158,5 @@ export default function LiteralElement(tag, lifecycle = {}, properties = {}) {
         restore: lifecycle.restore && function restore(shadow, internals) { lifecycle.restore.call(this, shadow, internals, internals.data); }
     }, props, null, message);
 }
+
+export { getInternals };
