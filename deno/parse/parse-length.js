@@ -1,8 +1,8 @@
 
-import id         from '../../../fn/id.js';
-import overload   from '../../../fn/overload.js';
-import parseValue from '../../../fn/parse-value.js';
-import toType     from '../../../fn/to-type.js';
+import id         from 'fn/id.js';
+import overload   from 'fn/overload.js';
+import parseValue from 'fn/parse-value.js';
+import toType     from 'fn/to-type.js';
 
 /**
 px(value)

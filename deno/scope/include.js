@@ -1,7 +1,7 @@
 
-import exec            from '../../../fn/exec.js';
-import overload        from '../../../fn/overload.js';
-import toType          from '../../../fn/to-type.js';
+import exec            from 'fn/exec.js';
+import overload        from 'fn/overload.js';
+import toType          from 'fn/to-type.js';
 import getAbsoluteFile from '../files/get-absolute-file.js';
 import prependComment  from '../files/prepend-comment.js';
 import parseMarkdown   from '../parse/parse-markdown.js';

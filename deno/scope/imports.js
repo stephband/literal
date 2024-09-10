@@ -1,6 +1,6 @@
 
 import * as path from "https://deno.land/std@0.110.0/path/mod.ts";
-import overload    from '../../../fn/overload.js';
+import overload    from 'fn/overload.js';
 import toExtension from '../files/to-extension.js';
 
 
