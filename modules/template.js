@@ -40,20 +40,16 @@ the standard HTML context, ie SVG elements, in which case the fragment we pass
 to Literal should not be `template.content` but a fragment with an SVG context.
 */
 
-function isSVGElement(element) {
-    return element instanceof SVGElement;
-}
-
 function getContextFragment(element, template) {
-    if (isSVGElement(element)) {
+    if (element instanceof SVGElement) {
         const range = document.createRange();
         const html  = template.innerHTML;
 
-        // Ironically an actual <svg> will not act as the correct context, I
-        // suspect because it itself is an HTML element. Not entirely clear, but
-        // whatever, we must use a <g> or <defs>, either of which permit the
-        // same content as an <svg> context.
-        if (element.tagName.toLowerCase() === 'svg') {
+        // An outer <svg> will not act as the correct context, I suspect because
+        // it is itself an HTML element. Not entirely clear, but whatever, we
+        // must use a <g> or <defs>, either of which permit the same content as
+        // an <svg> context.
+        if (element.ownerSVGElement === null) {
             // Create a <defs>, append it, use it as context
             const defs = create('defs');
             element.appendChild(defs);
@@ -122,6 +118,7 @@ export default class Literal {
             return cache[id];
         }
 
+        // compileNode(renderers, fragment, path, options, debug_string)
         return cache[id] = compileNode([], fragment, '', options, id);
     }
 
@@ -130,8 +127,8 @@ export default class Literal {
     **/
 
     static fromFragment(identifier, fragment, element, consts = {}, data, options) {
-        const compiled = Literal.compile(identifier, fragment, options);
-        return new Literal(fragment.cloneNode(true), compiled, element, consts, data, options);
+        const renderers = Literal.compile(identifier, fragment, options);
+        return new Literal(fragment.cloneNode(true), renderers, element, consts, data, options);
     }
 
     /**
