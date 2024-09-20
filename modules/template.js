@@ -139,8 +139,8 @@ export default class Literal {
         const id        = identify(template, 'literal-');
         const options   = { nostrict: template.hasAttribute && template.hasAttribute('nostrict') };
 
-        // Compile before cloning node – if template has compile errors in DEBUG
-        // mode they are inserted into the template directly
+        // Compile before cloning because where template has compile errors they
+        // are inserted into the content and should be cloned
         const renderers = Literal.compile(id, template.content, options);
         const fragment  = getContextFragment(element, template);
 
