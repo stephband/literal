@@ -212,35 +212,7 @@
 <body>
     <h1>Tests</h1>
 
-    <!--article class="test">
-        <template is="literal-html">
-            <h2>is="literal-html"</h2>
-            <p>Test <code>include()</code> inside <code>&lt;svg&gt;</code>.</p>
-            <svg viewbox="0 0 1 1" with="30" height="30">
-                ${ include('#template-path', data) }
-            </svg>
-            <p>Test <code>include()</code> inside <code>&lt;g&gt;</code>.</p>
-            <svg viewbox="0 0 1 1" with="30" height="30">
-                <g>
-                    ${ include('#template-path', data) }
-                </g>
-            </svg>
-            <p>Test <code>include()</code> inside <code>include()</code> inside <code>&lt;svg&gt;</code>.</p>
-            ${ include('#template-svg', data) }
-            <p>Test <code>include()</code> inside <code>include()</code> inside <code>&lt;g&gt;</code>.</p>
-            ${ include('#template-svg-g', data) }
-        </template>
-    </article-->
-
     <article class="test">
-        <template is="literal-html">
-            <h2>is="literal-html"</h2>
-            <p>Test <code>include()</code> inside <code>&lt;table&gt;</code>.</p>
-            <table>${ include('#template-tbody', data) }</table>
-        </template>
-    </article>
-
-    <!--article class="test">
         <template is="literal-html">
             <h2>is="literal-html"</h2>
             <p>Test attribute renderers.</p>
@@ -465,10 +437,28 @@
         </template>
     </article>
 
-
-
-
-
+    <article class="test">
+        <template is="literal-html">
+            <h2>SVG</h2>
+            <p>Literal renders SVG content from contextual fragments of template
+            content, making raw SVG content in templates work. (Templates are
+            normally HTML-only.)</p>
+            <p>Test <code>include()</code> inside <code>&lt;svg&gt;</code>.</p>
+            <svg viewbox="0 0 1 1" with="30" height="30">
+                ${ include('#template-path', data) }
+            </svg>
+            <p>Test <code>include()</code> inside <code>&lt;g&gt;</code>.</p>
+            <svg viewbox="0 0 1 1" with="30" height="30">
+                <g>
+                    ${ include('#template-path', data) }
+                </g>
+            </svg>
+            <p>Test <code>include()</code> inside <code>include()</code> inside <code>&lt;svg&gt;</code>.</p>
+            ${ include('#template-svg', data) }
+            <p>Test <code>include()</code> inside <code>include()</code> inside <code>&lt;g&gt;</code>.</p>
+            ${ include('#template-svg-g', data) }
+        </template>
+    </article>
 
     <!--form class="test">
         <template is="literal-html" data-quantity="1">
