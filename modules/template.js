@@ -6,7 +6,7 @@ import create              from 'dom/create.js';
 import identify            from 'dom/identify.js';
 import { pathSeparator }   from './compile/constants.js';
 import Renderer, { stats } from './renderer/renderer.js';
-import compileNode         from './compile.js';
+import compileNode         from './compile/compile-node.js';
 import { groupCollapsed, groupEnd } from './log.js';
 
 const assign = Object.assign;
@@ -32,10 +32,12 @@ function getElement(path, node) {
     return path.split(pathSeparator).reduce(getChild, node);
 }
 
+
 /*
 Template context
 A template may be rendered into an element that requires something other than
-the standard HTML context, ie SVG elements.
+the standard HTML context, ie SVG elements, in which case the fragment we pass
+to Literal should not be `template.content` but a fragment with an SVG context.
 */
 
 function isSVGElement(element) {
@@ -69,7 +71,7 @@ function getContextFragment(element, template) {
     }
 
     // Use the template's content fragment directly
-    return template.content;
+    return template.content.cloneNode(true);
 }
 
 /*
@@ -110,17 +112,17 @@ export default class Literal {
     Literal.compile(identifier, fragment, options)
     **/
 
-    static compile(identifier, fragment, options) {
-        if(cache[identifier]) return cache[identifier];
+    static compile(id, fragment, options) {
+        if(cache[id]) return cache[id];
 
         if (window.DEBUG) {
-            groupCollapsed('compile', identifier, 'yellow');
-            cache[identifier] = compileNode(fragment, options, identifier);
+            groupCollapsed('compile', id, 'yellow');
+            cache[id] = compileNode([], fragment, '', options, id);
             groupEnd();
-            return cache[identifier];
+            return cache[id];
         }
 
-        return cache[identifier] = compileNode(fragment, options);
+        return cache[id] = compileNode([], fragment, '', options, id);
     }
 
     /**
@@ -137,11 +139,13 @@ export default class Literal {
     **/
 
     static fromTemplate(template, element, consts = {}, data) {
-        const id       = identify(template, 'literal-');
-        const fragment = getContextFragment(element, template);
-        return Literal.fromFragment('#' + id, fragment, element, consts, data, {
+        const id        = identify(template, 'literal-');
+        const fragment  = getContextFragment(element, template);
+        const renderers = Literal.compile(id, template.content, {
             nostrict: template.hasAttribute && template.hasAttribute('nostrict')
         });
+
+        return new Literal(fragment, renderers, element, consts, data);
     }
 
     /**
@@ -156,7 +160,7 @@ export default class Literal {
     #last;
     #data;
 
-    constructor(fragment, targets, parent = template.parentElement, consts = {}, data, options = defaults) {
+    constructor(fragment, targets, parent = template.parentElement, consts = {}, data) {
         const children = fragment.childNodes;
 
         // The first node may change. The last node is always the last node.

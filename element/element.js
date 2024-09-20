@@ -113,8 +113,7 @@ export default function LiteralElement(tag, lifecycle = {}, properties = {}) {
 
     // tag, lifecycle, properties, stylesheet, message
     return element(tag, {
-        // DEBUG stylesheet for in-DOM prints of errors and logs
-        shadow: window.DEBUG ? '<link rel="stylesheet" href="../module.css">' : '',
+        shadow: '',
 
         construct: function(shadow, internals) {
             // Data object
