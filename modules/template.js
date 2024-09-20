@@ -1,29 +1,4 @@
 
-/**
-Template(template, element, consts, options)
-
-Import the `Template` constructor:
-
-```js
-import Template from './literal/modules/template.js';
-```
-
-The `Template` constructor takes a template element (or the `id` of a
-template element), clones the template's content, and returns a renderer that
-renders data into the content. The renderer updates its DOM nodes in response
-to changing data.
-
-```js
-const renderer = new Template('id');
-const data     = {};
-
-// Cue data for render then add it to the DOM
-renderer
-.push(data)
-.then(() => document.body.append(renderer.content));
-```
-**/
-
 import overload            from 'fn/overload.js';
 import Signal              from 'fn/signal.js';
 import Data                from 'fn/data.js';
@@ -44,21 +19,62 @@ let id = 0;
 
 
 /*
-Literal
-Descendant paths are stored in the form `"#id>1>12>3"`, enabling fast
-cloning of template instances without retraversing their DOMs looking for
-literal attributes and text.
+Template contents
+Descendant paths are stored in the form `"#id>1>12>3"`, enabling fast cloning of
+Literal instances without re-traversing their DOMs looking for template tags.
 */
 
 function getChild(element, index) {
-    return element.childNodes[index] ;
+    return element.childNodes[index];
 }
 
 function getElement(path, node) {
-    return path
-        .split(pathSeparator)
-        .reduce(getChild, node) ;
+    return path.split(pathSeparator).reduce(getChild, node);
 }
+
+/*
+Template context
+A template may be rendered into an element that requires something other than
+the standard HTML context, ie SVG elements.
+*/
+
+function isSVGElement(element) {
+    return element instanceof SVGElement;
+}
+
+function getContextFragment(element, template) {
+    if (isSVGElement(element)) {
+        const range = document.createRange();
+        const html  = template.innerHTML;
+
+        // Ironically an actual <svg> will not act as the correct context, I
+        // suspect because it itself is an HTML element. Not entirely clear, but
+        // whatever, we must use a <g> or <defs>, either of which permit the
+        // same content as an <svg> context.
+        if (element.tagName.toLowerCase() === 'svg') {
+            // Create a <defs>, append it, use it as context
+            const defs = create('defs');
+            element.appendChild(defs);
+            range.selectNode(defs);
+
+            // Create fragment, remove the <defs>, return the fragment
+            const fragment = range.createContextualFragment(html);
+            range.deleteContents();
+            return fragment;
+        }
+
+        // Use element as context to create fragment
+        range.selectNode(element);
+        return range.createContextualFragment(html);
+    }
+
+    // Use the template's content fragment directly
+    return template.content;
+}
+
+/*
+DOM management
+*/
 
 function removeRange(first, last, fragment) {
     if (window.DEBUG && first.parentNode !== last.parentNode) {
@@ -84,7 +100,16 @@ function removeRange(first, last, fragment) {
     fragment.appendChild(dom);
 }
 
+
+/**
+Literal(fragment, targets, element, consts, data, options)
+**/
+
 export default class Literal {
+    /**
+    Literal.compile(identifier, fragment, options)
+    **/
+
     static compile(identifier, fragment, options) {
         if(cache[identifier]) return cache[identifier];
 
@@ -98,33 +123,39 @@ export default class Literal {
         return cache[identifier] = compileNode(fragment, options);
     }
 
-    static isTemplate(object) {
-        return object instanceof Literal;
-    }
-
-    static fromHTML(html) {
-        return Literal.fromTemplate(create('template', html));
-    }
+    /**
+    Literal.fromFragment(identifier, fragment, element, consts, data)
+    **/
 
     static fromFragment(identifier, fragment, element, consts = {}, data, options) {
         const compiled = Literal.compile(identifier, fragment, options);
         return new Literal(fragment.cloneNode(true), compiled, element, consts, data, options);
     }
 
+    /**
+    Literal.fromTemplate(template, element, consts, data)
+    **/
+
     static fromTemplate(template, element, consts = {}, data) {
         const id       = identify(template, 'literal-');
-        const fragment = template.content;
-        const options  = {
+        const fragment = getContextFragment(element, template);
+        return Literal.fromFragment('#' + id, fragment, element, consts, data, {
             nostrict: template.hasAttribute && template.hasAttribute('nostrict')
-        };
-        return Literal.fromFragment('#' + id, fragment, element, consts, data, options);
+        });
+    }
+
+    /**
+    Literal.fromHTML(html, element, consts, data)
+    **/
+
+    static fromHTML(html, element, consts, data) {
+        return Literal.fromTemplate(create('template', html), element, consts, data);
     }
 
     #first;
     #last;
     #data;
 
-    // fragment, targets, element, consts, data, options
     constructor(fragment, targets, parent = template.parentElement, consts = {}, data, options = defaults) {
         const children = fragment.childNodes;
 
@@ -190,7 +221,8 @@ export default class Literal {
     .data
     Read-only property exposing (literal's `data` proxy of) the currently
     rendered object. This is the same object available as `data` inside a
-    literal template. Setting properties on this object causes the DOM to update.
+    literal template. Setting properties on this object causes re-evaluation and
+    possible re-render of the template contents.
     **/
 
     get data() {
@@ -200,8 +232,7 @@ export default class Literal {
 
     /**
     .push(object)
-    Rerenders and binds the DOM to (literal's `data` proxy of) `object`. This is
-    the same object available as `data` inside the template.
+    Re-renders and binds the DOM to (literal's `data` proxy of) `object`.
     **/
 
     push(object) {
@@ -257,7 +288,7 @@ export default class Literal {
     /**
     .remove()
     Removes rendered content from the DOM, placing it back in the
-    `renderer.content` fragment.
+    `.content` fragment.
     **/
 
     remove() {

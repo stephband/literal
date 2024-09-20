@@ -179,6 +179,30 @@
         <p style="${ { color: 'var(--green)', 'background-color': 'white' } }">Style attribute <code>style="\${ {color:'var(--green)','background-color':'white'} }"</code> single expression</p>
     </template>
 
+    <template id="template-path">
+        <path d="M0,0 L1,0 L1,1 L0,1 Z" fill="#B6BD00"></path>
+    </template>
+
+    <template id="template-svg">
+        <svg viewbox="0 0 1 1" with="30" height="30">
+            ${ include('#template-path', data) }
+        </svg>
+    </template>
+
+    <template id="template-svg-g">
+        <svg viewbox="0 0 1 1" with="30" height="30">
+            <g>
+                ${ include('#template-path', data) }
+            </g>
+        </svg>
+    </template>
+
+    <template id="template-tbody">
+        <tbody>
+            <tr><td style="color: ${ 'var(--green)' };">Table <code>tbody</code> test</td></tr>
+        </tbody>
+    </template>
+
     <script type="module">
     import '../scope.js';
     import LiteralHTML from './module.js';
@@ -188,7 +212,35 @@
 <body>
     <h1>Tests</h1>
 
+    <!--article class="test">
+        <template is="literal-html">
+            <h2>is="literal-html"</h2>
+            <p>Test <code>include()</code> inside <code>&lt;svg&gt;</code>.</p>
+            <svg viewbox="0 0 1 1" with="30" height="30">
+                ${ include('#template-path', data) }
+            </svg>
+            <p>Test <code>include()</code> inside <code>&lt;g&gt;</code>.</p>
+            <svg viewbox="0 0 1 1" with="30" height="30">
+                <g>
+                    ${ include('#template-path', data) }
+                </g>
+            </svg>
+            <p>Test <code>include()</code> inside <code>include()</code> inside <code>&lt;svg&gt;</code>.</p>
+            ${ include('#template-svg', data) }
+            <p>Test <code>include()</code> inside <code>include()</code> inside <code>&lt;g&gt;</code>.</p>
+            ${ include('#template-svg-g', data) }
+        </template>
+    </article-->
+
     <article class="test">
+        <template is="literal-html">
+            <h2>is="literal-html"</h2>
+            <p>Test <code>include()</code> inside <code>&lt;table&gt;</code>.</p>
+            <table>${ include('#template-tbody', data) }</table>
+        </template>
+    </article>
+
+    <!--article class="test">
         <template is="literal-html">
             <h2>is="literal-html"</h2>
             <p>Test attribute renderers.</p>
@@ -364,7 +416,7 @@
             <p>An intervening paragraph.</p>
             (${ this.renderCount }) data.value = ${ data.value }
         </template>
-    </article-->
+    </article>
 
     <article class="test">
         <template is="literal-html" data-default="2" data-value="Hello">

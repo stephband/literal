@@ -93,8 +93,8 @@ const compileElement = overload((targets, element) => element.tagName.toLowerCas
     'script':   compileAttributes,
 
     'textarea': (targets, element, path, options, debug) => {
-        // A <textarea> does not have children, its textContent becomes its value
         compileAttributes(targets, element, path, options, debug);
+        // A <textarea> does not have children, its textContent becomes its value
         compileAttribute(targets, element, {
             localName: 'value',
             value:     element.textContent
@@ -105,9 +105,9 @@ const compileElement = overload((targets, element) => element.tagName.toLowerCas
 
     'default': (targets, element, path, options, debug) => {
         // Compiling children first means inner DOM to outer DOM, which allows
-        // `<select>`, for example, to pick up the correct option value. If we
-        // decide to change this order we should still make sure value attribute
-        // is rendered after children.
+        // `<select>`, for example, to pick up the correct option value. (Should
+        // we decide to change this order we must make sure value attribute is
+        // rendered after children.)
         compileChildren(targets, element, path, options, debug);
         compileAttributes(targets, element, path, options, debug);
         return targets;
@@ -155,20 +155,21 @@ const compileNode = overload((targets, node) => toType(node), {
             target.tag  = tag;
             target.code = code;
 
-            // Attempt to compile, and in case of an error replace node with
-            // an error element
+            // Attempt to compile, and in case of an error replace node with an
+            // error element
             try {
                 target.literal = compile(source, scope, TextRenderer.consts, options, code);
+                node.nodeValue = '';
+                targets.push(target);
+                return targets;
             }
             catch(error) {
                 node.replaceWith(printError(target, error));
                 return targets;
             }
         }
-        else {
-            target.literal = compile(source, scope, TextRenderer.consts, options);
-        }
 
+        target.literal = compile(source, scope, TextRenderer.consts, options);
         node.nodeValue = '';
         targets.push(target);
         return targets;
