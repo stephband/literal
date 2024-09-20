@@ -137,10 +137,12 @@ export default class Literal {
 
     static fromTemplate(template, element, consts = {}, data) {
         const id        = identify(template, 'literal-');
+        const options   = { nostrict: template.hasAttribute && template.hasAttribute('nostrict') };
+
+        // Compile before cloning node – if template has compile errors in DEBUG
+        // mode they are inserted into the template directly
+        const renderers = Literal.compile(id, template.content, options);
         const fragment  = getContextFragment(element, template);
-        const renderers = Literal.compile(id, template.content, {
-            nostrict: template.hasAttribute && template.hasAttribute('nostrict')
-        });
 
         return new Literal(fragment, renderers, element, consts, data);
     }

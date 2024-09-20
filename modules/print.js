@@ -34,11 +34,11 @@ const literalCSS = {
     'justify-self':  'stretch',
     'align-self':    'start',
     'text-align':    'left',
-    'font-size':     '0.75rem !important',
+    'font-size':     '0.75rem',
     'font-family':   '"Fira Mono", Menlo, Monaco, "Andale Mono", monospace',
     'font-weight':   'normal',
     'letter-spacing': '-0.05em',
-    'line-height':   '1.5rem !important',
+    'line-height':   '1.5rem',
     'border-width':  '0',
     /* Bottom left corner underlaps <code> corner, we give it a slightly bigger
        radius to avoid aliasing this background color through the edge. */
