@@ -8,7 +8,11 @@ that DOM after the text node.
 
 import Signal           from 'fn/signal.js';
 import Data             from 'fn/data.js';
-import { isCommentNode, isElementNode, isFragmentNode, isTextNode } from 'dom/node.js';
+import isComment        from 'dom/is-comment.js';
+import isElement        from 'dom/is-element.js';
+import isFragment       from 'dom/is-fragment.js';
+import isTextNode       from 'dom/is-text-node.js';
+
 import include          from '../include.js';
 import deleteRange      from '../dom/delete-range.js';
 import Literal          from '../template.js';
@@ -99,7 +103,7 @@ function objectToContents(state, object, i) {
     }
 
     // Object is a fragment
-    if (isFragmentNode(object)) {
+    if (isFragment(object)) {
         let node;
         while(node = object.firstChild) {
             contents[++i].before(object.firstChild);
@@ -110,7 +114,7 @@ function objectToContents(state, object, i) {
     }
 
     // Object is a DOM node
-    if (isTextNode(object) || isElementNode(object) || isCommentNode(object)) {
+    if (isTextNode(object) || isElement(object) || isComment(object)) {
         // Splice node into contents and the DOM
         contents[++i].before(object);
         if (window.DEBUG) ++stats.add;
