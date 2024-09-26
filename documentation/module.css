@@ -1,12 +1,11 @@
 
 @import "../../bolt/elements/html.css";
 @import "../../bolt/elements/svg.css";
-@import "../../bolt/elements/root.css";
 @import "../../bolt/elements/body.css";
 @import "../../bolt/elements/type.css";
 @import "../../bolt/elements/a.css";
 @import "../../bolt/elements/table.css";
-@import "../../bolt/elements/input.css";
+@import "../../bolt/elements/form.css";
 
 @import "../../bolt/classes/button.css";
 @import "../../bolt/classes/list.css";
