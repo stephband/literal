@@ -121,6 +121,7 @@ export default function LiteralElement(tag, lifecycle = {}, properties = {}) {
 
             const consts   = { host: this, shadow, internals };
             const renderer = Literal.fromFragment(name, template.content, this, consts);
+
             shadow.appendChild(renderer.content);
 
             // Call lifecycle.construct()

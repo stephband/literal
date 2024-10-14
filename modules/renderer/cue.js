@@ -4,8 +4,6 @@ import Signal    from 'fn/signal.js';
 import { stats } from './renderer.js';
 
 const renderers = [];
-let cued;
-
 const render = window.DEBUG && window.DEBUG.literal !== false ? function render(t) {
     let t0 = window.performance.now() / 1000;
 
@@ -54,7 +52,6 @@ const render = window.DEBUG && window.DEBUG.literal !== false ? function render(
             '#ba4029');
     }
 
-    cued = undefined;
     renderers.length = 0;
 } : function render() {
     let n = -1;
@@ -65,7 +62,6 @@ const render = window.DEBUG && window.DEBUG.literal !== false ? function render(
         renderer.status = 'idle';
     }
 
-    cued = undefined;
     renderers.length = 0;
 } ;
 
@@ -80,10 +76,10 @@ export function cue(renderer) {
     // Create a new cued render process by promise...
     //if (!cued) cued = promise.then(render);
     // ...or by animation frame
-    if (cued === undefined) cued = requestAnimationFrame(render);
+    if (!renderers.length) requestAnimationFrame(render);
     renderers.push(renderer);
     renderer.status = 'cued';
-    return cued;
+    return renderer;
 }
 
 /**

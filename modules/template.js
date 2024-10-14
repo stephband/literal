@@ -108,7 +108,7 @@ export default class Literal {
     Literal.compile(identifier, fragment, options)
     **/
 
-    static compile(id, fragment, options) {
+    static compile(id, fragment, options = {}) {
         if(cache[id]) return cache[id];
 
         if (window.DEBUG) {
@@ -155,9 +155,9 @@ export default class Literal {
         return Literal.fromTemplate(create('template', html), element, consts, data);
     }
 
+    #data;
     #first;
     #last;
-    #data;
 
     constructor(fragment, targets, parent = template.parentElement, consts = {}, data) {
         const children = fragment.childNodes;
@@ -290,8 +290,8 @@ export default class Literal {
 
     /**
     .remove()
-    Removes rendered content from the DOM, placing it back in the
-    `.content` fragment.
+    Removes rendered content from the DOM and places it back in the `.content`
+    fragment.
     **/
 
     remove() {

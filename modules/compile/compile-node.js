@@ -164,8 +164,6 @@ const compileNode = overload((targets, node) => toType(node), {
                 return targets;
             }
             catch(error) {
-console.log('COMPILE ERROR', node, printError(target, error));
-node.textContent = 'HHHEEEEELLLLPPPPP!!';
                 node.replaceWith(printError(target, error));
                 return targets;
             }

@@ -1,7 +1,7 @@
 
 export default function getById(src) {
-    const id          = src.slice(1);
-    const template    = document.getElementById(id);
+    const id       = src.slice(1);
+    const template = document.getElementById(id);
 
     if (!template) {
         throw new Error('Template ' + src + ' not found');

@@ -1,10 +1,10 @@
 
-import { remove }        from 'fn/remove.js';
-import { ObserveSignal } from 'fn/signal.js';
-import Data              from 'fn/data.js';
-import scope             from '../scope.js';
-import { cue, uncue }    from './cue.js';
-import toText            from './to-text.js';
+import { remove }     from 'fn/remove.js';
+import { Observer }   from 'fn/signal.js';
+import Data           from 'fn/data.js';
+import scope          from '../scope.js';
+import { cue, uncue } from './cue.js';
+import toText         from './to-text.js';
 
 
 const assign     = Object.assign;
@@ -185,7 +185,7 @@ export default class Renderer {
         // signals to invalidate. It does have status.
         if (this.status === 'done' || this.status === 'cued') return;
 
-        // Stop async values being rendered
+        // Stop async values from the last evaluation from being rendered
         this.asyncs && this.asyncs.forEach(stop);
 
         // Cue evaluation on next frame
@@ -200,8 +200,8 @@ export default class Renderer {
             uncue(this);
         }
 
-        // Set this.status = 'done'
-        ObserveSignal.prototype.stop.apply(this);
+        // Set this.status = 'done', removes from signal graph
+        Observer.prototype.stop.apply(this);
 
         // Stop async values being rendered
         this.asyncs && this.asyncs.forEach(stop);

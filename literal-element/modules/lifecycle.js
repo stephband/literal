@@ -39,16 +39,18 @@ export default {
             internals.attributes.reduce(assignProperty, {}) :
             nothing ;
 
-        if (internals.src) {
-            internals.src.then((module) => {
-                // TODO: can't we just pass module as scope? Why not?
-                const scope = assign({}, module);
-                delete scope.default;
-                defineElement(internals.tag, this, module.default || {}, attributes, scope)
-            });
-        }
-        else {
-            defineElement(internals.tag, this, {}, attributes, {});
-        }
+        return [render(() => {
+            if (internals.src) {
+                internals.src.then((module) => {
+                    // TODO: can't we just pass module as scope? Why not?
+                    const scope = assign({}, module);
+                    delete scope.default;
+                    defineElement(internals.tag, this, module.default || {}, attributes, scope)
+                });
+            }
+            else {
+                defineElement(internals.tag, this, {}, attributes, {});
+            }
+        })];
     }
 }

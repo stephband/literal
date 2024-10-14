@@ -16,9 +16,10 @@ library provides another template, `<template is="literal-shadow">`
 
 import Signal         from 'fn/signal.js';
 import element, { getInternals } from 'dom/element.js';
+import createObjectProperty from 'dom/element/create-object-property.js';
 import assignDataset  from '../modules/dom/assign-dataset.js';
 import requestData    from '../modules/request-data.js';
-import DOMRenderer    from '../modules/template.js';
+import Literal        from '../modules/template.js';
 import { printError } from '../modules/print.js';
 
 
@@ -29,8 +30,7 @@ export default element('<template is="literal-html">', {
     construct: function(shadow, internals) {
         internals.initialised = false;
         internals.pushed      = false;
-        internals.data        = Signal.of();
-        internals.renderer    = DOMRenderer.fromTemplate(this, this.parentElement);
+        internals.renderer    = Literal.fromTemplate(this, this.parentElement);
     },
 
     connect: function(shadow, internals) {
@@ -38,25 +38,23 @@ export default element('<template is="literal-html">', {
         if (internals.initialised) { return; }
         internals.initialised = true;
 
-        // Observe signal listens to signal value changes and calls fn()
-        // immediately if signal already has value, and on next tick after
-        // signal mutates
-        Signal.observe(internals.data, (data) => {
-            const { renderer } = internals;
+        // If src or data was not set use data found in dataset
+        if (!internals.promise && !internals.pushed) {
+            this.data = assignDataset({}, this.dataset);
+        }
 
-            if (!data) return;
+        // Render data from signalling properties immediately once, and then
+        // on frame following signal invalidation
+        return [Signal.frame(() => {
+            if (!this.data) return;
+
             const fragment = renderer.push(data);
 
-            // Replace DOM content on first push
+            // Replace DOM content on first push only
             if (internals.pushed) return;
             internals.pushed = true;
             this.replaceWith(fragment);
-        });
-
-        // If src or data was not set use data found in dataset
-        if (!internals.promise && !internals.pushed) {
-            internals.data.value = assignDataset({}, this.dataset);
-        }
+        })];
     }
 }, {
     /**
@@ -117,26 +115,5 @@ export default element('<template is="literal-html">', {
     (well, not quite immediately – literal renders changes on the next frame).
     **/
 
-    data: {
-        attribute: function(json) {
-            try {
-                this.data = JSON.parse(json);
-            }
-            catch(e) {
-                throw new Error('Invalid JSON in <template is="literal-template"> data attribute: "' + json + '"');
-            }
-        },
-
-        get: function() {
-            const internals = getInternals(this);
-            return internals.renderer ?
-                internals.renderer.data :
-                null ;
-        },
-
-        set: function(object) {
-            const internals = getInternals(this);
-            internals.data.value = object || null;
-        }
-    }
+    data: createObjectProperty()
 }, null, 'stephen.band/literal/');
