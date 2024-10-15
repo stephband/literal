@@ -1,10 +1,11 @@
 
 import { remove }     from 'fn/remove.js';
-import { Observer }   from 'fn/signal.js';
+import { FrameObserver } from 'fn/signal.js';
 import Data           from 'fn/data.js';
+import Signal         from 'fn/Signal.js';
 import scope          from '../scope.js';
-import { cue, uncue } from './cue.js';
 import toText         from './to-text.js';
+import { log, group, groupEnd } from '../log.js';
 
 
 const assign     = Object.assign;
@@ -135,10 +136,65 @@ function render(renderer, args) {
 
 /*
 Renderer(signal, fn, consts, element, name, debug)
+TODO: inherit better from Signal FrameObserver??
 */
 
+const observers = [];
+
+const frame = window.DEBUG && window.DEBUG.literal !== false ? function render(t) {
+    // Initialise some stats
+    let t0 = window.performance.now() / 1000;
+    let length = observers.length;
+    stats.attribute = 0;
+    stats.property  = 0;
+    stats.token     = 0;
+    stats.text      = 0;
+    stats.add       = 0;
+    stats.remove    = 0;
+
+    // Do the work
+    let n = -1, signal;
+    while (signal = observers[++n]) Signal.evaluate(signal, signal.evaluate);
+    observers.length = 0;
+
+    // Print some stats
+    let t1 = window.performance.now() / 1000;
+    log('render',
+        // Frame time
+        (t / 1000).toFixed(3) + 's – '
+        // renderers
+        + length + ' renderer' + (length === 1 ? '' : 's') + ' fired'
+        // mutations
+        + (stats.remove    ? ', ' + stats.remove    + ' remove'    : '')
+        + (stats.add       ? ', ' + stats.add       + ' add'       : '')
+        + (stats.text      ? ', ' + stats.text      + ' text'      : '')
+        + (stats.property  ? ', ' + stats.property  + ' property'  : '')
+        + (stats.attribute ? ', ' + stats.attribute + ' attribute' : '')
+        + (stats.token     ? ', ' + stats.token     + ' token'     : '')
+        + ' mutations'
+        // Render duration
+        + ' – ' + ((t1 - t0) * 1000).toPrecision(3) + 'ms',
+        //
+        '', '', '#B6BD00'
+    );
+
+    if (t1 - t0 > 0.016666667) {
+        log('render', (t / 1000).toFixed(3) + 's',
+            'took longer than a frame',
+            ' t0 ' + t0.toFixed(3) + ','
+            + ' t1 ' + t0.toFixed(3) + ','
+            + ' ' + ((t1 - t0) * 1000).toPrecision(3) + 'ms',
+            '#ba4029');
+    }
+} : function frame() {
+    let n = -1, signal;
+    while (signal = observers[++n]) Signal.evaluate(signal, signal.evaluate); // renderer.status = 'idle';
+    observers.length = 0;
+} ;
+
 export default class Renderer {
-    static consts = ['DATA', 'data', 'element', 'shadow', 'host', 'id'];
+    static consts    = ['DATA', 'data', 'element', 'shadow', 'host', 'id'];
+    static observers = observers;
 
     #data;
     #render;
@@ -180,31 +236,42 @@ export default class Renderer {
         return render(this, this.#render(this.consts));
     }
 
-    invalidate() {
+    invalidate(source) {
         // A renderer, as a consumer, does not have validity or dependent
         // signals to invalidate. It does have status.
-        if (this.status === 'done' || this.status === 'cued') return;
+        /*if (this.status === 'done' || this.status === 'cued') return;*/
+
+        FrameObserver.prototype.invalidate.apply(this, arguments);
 
         // Stop async values from the last evaluation from being rendered
         this.asyncs && this.asyncs.forEach(stop);
 
         // Cue evaluation on next frame
-        cue(this);
+        /*cue(this);*/
+    }
+
+    cue() {
+        // If no observers are cued, cue tick() on the next tick
+        if (!observers.length) window.requestAnimationFrame(frame);
+
+        // Add this observer to observers
+        observers.push(this);
     }
 
     stop() {
         // Check and set status
-        if (this.status === 'done') return this;
+        /*if (this.status === 'done') return this;
         if (this.status === 'cued') {
             if (window.DEBUG) console.log('Stopping cued renderer. Not the cheapest thing to be doing a lot. We should not really be getting in here, its a sign of something gone awry.');
             uncue(this);
-        }
+        }*/
 
         // Set this.status = 'done', removes from signal graph
-        Observer.prototype.stop.apply(this);
+        FrameObserver.prototype.stop.apply(this, arguments);
 
         // Stop async values being rendered
         this.asyncs && this.asyncs.forEach(stop);
+        this.status = 'done';
 
         // Decrement number of active renderers
         if (window.DEBUG) { --Renderer.count; }

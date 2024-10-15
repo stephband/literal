@@ -104,6 +104,8 @@ Literal(fragment, targets, element, consts, data, options)
 **/
 
 export default class Literal {
+    static observers = Renderer.observers;
+
     /**
     Literal.compile(identifier, fragment, options)
     **/
@@ -325,5 +327,11 @@ assign(Literal.prototype, {
     Registers `object.stop()` to be called when this renderer is stopped.
     **/
 
-    done: Renderer.prototype.done
+    done: Renderer.prototype.done,
+
+    /*
+    .cue()
+    */
+
+    cue: Renderer.prototype.cue
 });

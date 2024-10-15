@@ -66,14 +66,10 @@ export default function include(src, data, element, consts) {
 
     if (object && object.pipe) {
         return templateRequest
-        .then((template) =>
-            pipe(template, data, element, consts, options)
-        );
+        .then((template) => pipe(template, data, element, consts, options));
     }
 
     return Promise
     .all([templateRequest, dataRequest])
     .then(([template, data]) => Literal.fromTemplate(template, element, consts, data));
 }
-
-

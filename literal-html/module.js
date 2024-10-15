@@ -46,9 +46,10 @@ export default element('<template is="literal-html">', {
         // Render data from signalling properties immediately once, and then
         // on frame following signal invalidation
         return [Signal.frame(() => {
-            if (!this.data) return;
+            const data = this.data;
+            if (!data) return;
 
-            const fragment = renderer.push(data);
+            const fragment = internals.renderer.push(data);
 
             // Replace DOM content on first push only
             if (internals.pushed) return;
