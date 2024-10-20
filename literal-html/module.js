@@ -16,7 +16,7 @@ library provides another template, `<template is="literal-shadow">`
 
 import Signal         from 'fn/signal.js';
 import element, { getInternals } from 'dom/element.js';
-import createObjectProperty from 'dom/element/create-object-property.js';
+import { createObjectAttribute } from 'dom/element/create-attribute.js';
 import assignDataset  from '../modules/dom/assign-dataset.js';
 import requestData    from '../modules/request-data.js';
 import Literal        from '../modules/template.js';
@@ -116,5 +116,5 @@ export default element('<template is="literal-html">', {
     (well, not quite immediately – literal renders changes on the next frame).
     **/
 
-    data: createObjectProperty()
+    data: createObjectAttribute('data')
 }, null, 'stephen.band/literal/');
