@@ -36,37 +36,25 @@ export default element('<template is="literal-html">', {
     },
 
     connect: function(shadow, internals) {
-        const { $data } = internals;
-
-        // If already initialised do nothing
-        if (internals.initialised) { return; }
-        internals.initialised = true;
+        const { $data, renderer } = internals;
 
         // If src or data was not set use data found in dataset
-        if (!internals.promise && !internals.pushed) {
+        if (!internals.initialised && !internals.promise && !internals.pushed) {
+            internals.initialised = true;
             $data.value = assignDataset({}, this.dataset);
         }
 
         // Render data from signalling properties immediately once, and then
-        // on frame following signal invalidation
-        return [Signal.frame(() => {
-            const data = $data.value;
+        // on next tick following a change signal
+        return [Signal.observe($data, (data) => {
             if (!data) return;
 
-            // Evaluate without maintaining signal tree dependencies
-            // Dodgy dodgy dodgy?? We used to have Signal.observe(name, object)
-            // here, whose callback ran AFTER evaluation!!! TODO: should we have
-            // a mechanism where Signal.frame returns a stream, whose pipe
-            // is not inside evaluation? As in Signal.frame().each()
-            // Yes. Yes, we probably should do that.
-            Signal.evaluate({ invalidate: () => {} }, () => {
-                const fragment = internals.renderer.push(data);
+            const fragment = renderer.push(data);
 
-                // Replace DOM content on first push only
-                if (internals.pushed) return;
-                internals.pushed = true;
-                this.replaceWith(fragment);
-            });
+            // Replace DOM content on first push only
+            if (internals.pushed) return;
+            internals.pushed = true;
+            this.replaceWith(fragment);
         })];
     }
 }, {
