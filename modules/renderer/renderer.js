@@ -1,8 +1,7 @@
 
 import { remove }     from 'fn/remove.js';
-import { FrameObserver } from 'fn/signal.js';
+import Signal, { Observer } from 'fn/signal.js';
 import Data           from 'fn/data.js';
-import Signal         from 'fn/Signal.js';
 import scope          from '../scope.js';
 import toText         from './to-text.js';
 import { log, group, groupEnd } from '../log.js';
@@ -136,7 +135,7 @@ function render(renderer, args) {
 
 /*
 Renderer(signal, fn, consts, element, name, debug)
-TODO: inherit better from Signal FrameObserver??
+TODO: inherit better from Signal Observer??
 */
 
 const observers = [];
@@ -241,13 +240,10 @@ export default class Renderer {
         // signals to invalidate. It does have status.
         /*if (this.status === 'done' || this.status === 'cued') return;*/
 
-        FrameObserver.prototype.invalidate.apply(this, arguments);
+        Observer.prototype.invalidate.apply(this, arguments);
 
         // Stop async values from the last evaluation from being rendered
         this.asyncs && this.asyncs.forEach(stop);
-
-        // Cue evaluation on next frame
-        /*cue(this);*/
     }
 
     cue() {
@@ -267,7 +263,7 @@ export default class Renderer {
         }*/
 
         // Set this.status = 'done', removes from signal graph
-        FrameObserver.prototype.stop.apply(this, arguments);
+        Observer.prototype.stop.apply(this, arguments);
 
         // Stop async values being rendered
         this.asyncs && this.asyncs.forEach(stop);

@@ -14,6 +14,7 @@ library provides another template, `<template is="literal-shadow">`
 **/
 
 
+import Data           from 'fn/data.js';
 import Signal         from 'fn/signal.js';
 import element, { getInternals } from 'dom/element.js';
 import { createObjectAttribute } from 'dom/element/create-attribute.js';
@@ -28,33 +29,44 @@ import { printError } from '../modules/print.js';
 // tag, template, lifecycle, properties, log
 export default element('<template is="literal-html">', {
     construct: function(shadow, internals) {
+        internals.$data       = Signal.of();
         internals.initialised = false;
         internals.pushed      = false;
         internals.renderer    = Literal.fromTemplate(this, this.parentElement);
     },
 
     connect: function(shadow, internals) {
+        const { $data } = internals;
+
         // If already initialised do nothing
         if (internals.initialised) { return; }
         internals.initialised = true;
 
         // If src or data was not set use data found in dataset
         if (!internals.promise && !internals.pushed) {
-            this.data = assignDataset({}, this.dataset);
+            $data.value = assignDataset({}, this.dataset);
         }
 
         // Render data from signalling properties immediately once, and then
         // on frame following signal invalidation
         return [Signal.frame(() => {
-            const data = this.data;
+            const data = $data.value;
             if (!data) return;
 
-            const fragment = internals.renderer.push(data);
+            // Evaluate without maintaining signal tree dependencies
+            // Dodgy dodgy dodgy?? We used to have Signal.observe(name, object)
+            // here, whose callback ran AFTER evaluation!!! TODO: should we have
+            // a mechanism where Signal.frame returns a stream, whose pipe
+            // is not inside evaluation? As in Signal.frame().each()
+            // Yes. Yes, we probably should do that.
+            Signal.evaluate({ invalidate: () => {} }, () => {
+                const fragment = internals.renderer.push(data);
 
-            // Replace DOM content on first push only
-            if (internals.pushed) return;
-            internals.pushed = true;
-            this.replaceWith(fragment);
+                // Replace DOM content on first push only
+                if (internals.pushed) return;
+                internals.pushed = true;
+                this.replaceWith(fragment);
+            });
         })];
     }
 }, {
@@ -116,5 +128,19 @@ export default element('<template is="literal-html">', {
     (well, not quite immediately – literal renders changes on the next frame).
     **/
 
-    data: createObjectAttribute('data')
+    data: {
+        attribute: function(json) {
+            this.data = JSON.parse(json);
+        },
+
+        get: function() {
+            const internals = getInternals(this);
+            return Data.of(internals.$data.value);
+        },
+
+        set: function(object) {
+            const internals = getInternals(this);
+            internals.$data.value = object ? Data.objectOf(object) : null;
+        }
+    }
 }, null, 'stephen.band/literal/');
