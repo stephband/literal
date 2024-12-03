@@ -131,4 +131,4 @@ export default element('<template is="literal-html">', {
             internals.$data.value = object ? Data.objectOf(object) : null;
         }
     }
-}, null, 'stephen.band/literal/');
+}, 'stephen.band/literal/');

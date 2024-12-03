@@ -28,14 +28,24 @@ function isWritableProperty(name, object) {
 
 function setProperty(node, name, value) {
     // Seek and set a matching property
-    if (node[name] === value) return 0;
+    if (node[name] === value) return;
     node[name] = value;
     if (window.DEBUG) ++stats.property;
 }
 
 function setAttribute(node, name, value) {
-    if (value === node.getAttribute(name)) return 0;
-    node.setAttribute(name, value);
+    const current = node.getAttribute(name);
+    // Value has not changed
+    if (value === current) return;
+    // Value is null or undefined
+    if (value === null || value === undefined) {
+        if (current === null) return;
+        node.removeAttribute(name);
+    }
+    else {
+        node.setAttribute(name, value);
+    }
+    // Track stats
     if (window.DEBUG) ++stats.attribute;
 }
 
@@ -57,12 +67,15 @@ export default class AttributeRenderer extends Renderer {
     constructor(signal, literal, consts, element, name, debug) {
         super(signal, literal, consts, element, name, debug);
 
+        // Detect un-upgraded (or indeed, upgraded) custom element
+        this.isCustomElement = element.tagName.includes('-');
         this.name = name;
 
         // TODO: property ought to be tested dynamically on custom elements
         // as they can be upgraded at any point
         const property = name in names ? names[name] : name;
         if (property
+            && !this.isCustomElement
             && (property in element)
             && isWritableProperty(property, element)) {
             this.property = property;
@@ -97,8 +110,23 @@ export default class AttributeRenderer extends Renderer {
             arguments[1] :
             toAttributeString(arguments) ;
 
-        return this.property ?
-            setProperty(this.element, this.property, value) :
-            setAttribute(this.element, this.name, value) ;
+        const { element, name, property } = this;
+
+        return this.isCustomElement ?
+            // Does element have property of same name as attribute...
+            name in element ?
+                // and it's writable, set property
+                isWritableProperty(name, element) ?
+                    setProperty(element, name, value) :
+                    // otherwise set the attribute
+                    setAttribute(element, name, value) :
+            typeof value === 'object' ?
+                setProperty(element, name, value) :
+                setAttribute(element, name, value) :
+            // If element has a mapped property name, set it
+            property ?
+                setProperty(element, property, value) :
+                // otherwise set attribute
+                setAttribute(element, name, value) ;
     }
 }
