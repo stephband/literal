@@ -20,7 +20,7 @@ ${ data.array.map(include('#list-item')) }
 
 import Data            from 'fn/data.js';
 import getById         from './dom/get-by-id.js';
-import Literal         from './template.js';
+import Literal, { cache } from './template.js';
 import requestTemplate from './request-template.js';
 import requestData     from './request-data.js';
 
@@ -56,6 +56,13 @@ export default function include(src, data, element, consts) {
 
         // Support object or ... ?
         return Literal.fromTemplate(template, element, consts, data);
+    }
+
+    // If template came from Literal.compileHTML() it is in cache
+    if (cache[src]) {
+        // elment, consts, data
+        const compiled = cache[src];
+        return compiled.render(element, consts, object);
     }
 
     // Template is external to document

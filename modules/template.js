@@ -9,10 +9,10 @@ import Renderer, { stats } from './renderer/renderer.js';
 import compileNode         from './compile/compile-node.js';
 import { groupCollapsed, groupEnd } from './log.js';
 
-const assign = Object.assign;
-const keys   = Object.keys;
-const cache  = {};
-const nodes  = [];
+const assign   = Object.assign;
+const keys     = Object.keys;
+export const cache    = {};
+const nodes    = [];
 const defaults = {};
 
 let id = 0;
@@ -99,6 +99,28 @@ function removeRange(first, last, fragment) {
 }
 
 
+
+/**
+Compiled(id, fragment, options)
+TODO. Currently only used by Literal.compileHTML, should be inveigled
+into everything.
+**/
+
+class Compiled {
+    constructor(id, fragment, options = {}) {
+        this.id       = id;
+        this.content  = fragment;
+        this.contents = compileNode([], fragment, '', options, id);
+        cache[id] = this;
+    }
+
+    render(element, consts, data) {
+        const fragment = getContextFragment(element, this);
+        return new Literal(fragment, this.contents, element, consts, data);
+    }
+}
+
+
 /**
 Literal(fragment, targets, element, consts, data, options)
 **/
@@ -124,6 +146,13 @@ export default class Literal {
         return cache[id] = compileNode([], fragment, '', options, id);
     }
 
+    // EXPERIMENTAL Needed for Soundstage custom elements
+    static compileHTML(id, html, options) {
+        const template = create('template', html);
+        const fragment = template.content;
+        return new Compiled(id, fragment, options);
+    }
+
     /**
     Literal.fromFragment(identifier, fragment, element, consts, data)
     **/
@@ -140,7 +169,6 @@ export default class Literal {
     static fromTemplate(template, element, consts = {}, data) {
         const id        = identify(template, 'literal-');
         const options   = { nostrict: template.hasAttribute && template.hasAttribute('nostrict') };
-
         // Compile before cloning because where template has compile errors they
         // are inserted into the content and should be cloned
         const renderers = Literal.compile(id, template.content, options);
@@ -151,17 +179,21 @@ export default class Literal {
 
     /**
     Literal.fromHTML(html, element, consts, data)
-    **/
-
-    static fromHTML(html, element, consts, data) {
-        return Literal.fromTemplate(create('template', html), element, consts, data);
+    *
+    static fromHTML(html, element, consts, data, options = {}) {
+        // TODO handle context fragment, we should be able to make one from html
+        // string without first making a template?
+        const template  = create('template', html);
+        const renderers = Literal.compile(html, template.content, options);
+        return new Literal(template.content, renderers, element, consts, data);
     }
+    */
 
     #data;
     #first;
     #last;
 
-    constructor(fragment, targets, parent = template.parentElement, consts = {}, data) {
+    constructor(fragment, targets, parent, consts = {}, data) {
         const children = fragment.childNodes;
 
         // The first node may change. The last node is always the last node.
@@ -192,6 +224,8 @@ export default class Literal {
             path ? element.childNodes[name] :
             this.content.childNodes[name] :
         name;
+
+        if (window.DEBUG && !node) throw new Error('Literal – node ' + name + ' not found in template');
 
         // Parameters for new Renderer()
         return { element, node, compiled };
