@@ -75,7 +75,6 @@ export default class AttributeRenderer extends Renderer {
         // as they can be upgraded at any point
         const property = name in names ? names[name] : name;
         if (property
-            && !this.isCustomElement
             && (property in element)
             && isWritableProperty(property, element)) {
             this.property = property;
