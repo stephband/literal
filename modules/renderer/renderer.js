@@ -1,6 +1,6 @@
 
 import remove from 'fn/remove.js';
-import Signal, { Observer } from 'fn/signal.js';
+import Signal, { FrameObserver } from 'fn/signal.js';
 import Data   from 'fn/data.js';
 import scope  from '../scope.js';
 import toText from './to-text.js';
@@ -133,13 +133,9 @@ function render(renderer, args) {
 }
 
 
+
+
 /*
-Renderer(signal, fn, consts, element, name, debug)
-TODO: inherit better from Signal Observer??
-*/
-
-const observers = [];
-
 const frame = window.DEBUG && window.DEBUG.literal !== false ? function render(t) {
     // Initialise some stats
     let t0 = window.performance.now() / 1000;
@@ -185,15 +181,19 @@ const frame = window.DEBUG && window.DEBUG.literal !== false ? function render(t
             + ' ' + ((t1 - t0) * 1000).toPrecision(3) + 'ms',
             '#ba4029');
     }
-} : function frame() {
-    let n = -1, signal;
-    while (signal = observers[++n]) Signal.evaluate(signal, signal.evaluate); // renderer.status = 'idle';
-    observers.length = 0;
 } ;
+*/
+
+
+/*
+Renderer(signal, fn, consts, element, name, debug)
+Renderer is a special version of a FrameObserver signal that does not
+immediately evaluate itself (else we'd call super()). It uses FrameObserver's
+render queue and access to the signal graph.
+*/
 
 export default class Renderer {
-    static consts    = ['DATA', 'data', 'element', 'shadow', 'host', 'id'];
-    static observers = observers;
+    static consts = ['DATA', 'data', 'element', 'shadow', 'host', 'id'];
 
     #data;
     #render;
@@ -240,18 +240,10 @@ export default class Renderer {
         // signals to invalidate. It does have status.
         /*if (this.status === 'done' || this.status === 'cued') return;*/
 
-        Observer.prototype.invalidate.apply(this, arguments);
+        FrameObserver.prototype.invalidate.apply(this, arguments);
 
         // Stop async values from the last evaluation from being rendered
         this.asyncs && this.asyncs.forEach(stop);
-    }
-
-    cue() {
-        // If no observers are cued, cue tick() on the next tick
-        if (!observers.length) window.requestAnimationFrame(frame);
-
-        // Add this observer to observers
-        observers.push(this);
     }
 
     stop() {
@@ -263,7 +255,7 @@ export default class Renderer {
         }*/
 
         // Set this.status = 'done', removes from signal graph
-        Observer.prototype.stop.apply(this, arguments);
+        FrameObserver.prototype.stop.apply(this, arguments);
 
         // Stop async values being rendered
         this.asyncs && this.asyncs.forEach(stop);
@@ -294,6 +286,8 @@ export default class Renderer {
         return this;
     }
 }
+
+Renderer.prototype.cue = FrameObserver.prototype.cue;
 
 if (window.DEBUG) {
     Renderer.count = 0;
