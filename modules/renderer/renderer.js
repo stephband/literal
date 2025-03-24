@@ -1,9 +1,9 @@
 
-import { remove }     from 'fn/remove.js';
+import remove from 'fn/remove.js';
 import Signal, { Observer } from 'fn/signal.js';
-import Data           from 'fn/data.js';
-import scope          from '../scope.js';
-import toText         from './to-text.js';
+import Data   from 'fn/data.js';
+import scope  from '../scope.js';
+import toText from './to-text.js';
 import { log, group, groupEnd } from '../log.js';
 
 

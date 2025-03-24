@@ -1,9 +1,11 @@
 
 import Template     from './modules/template.js';
+import include      from './modules/include.js';
 import scope        from './modules/scope.js';
 import { compiled } from './modules/compile/compile.js';
 
 Template.scope    = scope;
+Template.include  = include;
 Template.compiled = compiled;
 
 export default Template;

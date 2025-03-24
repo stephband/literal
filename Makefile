@@ -1,4 +1,4 @@
-DEBUG=
+ DEBUG=
 
 # Tell make to ignore existing folders and allow overwriting existing files
 .PHONY: modules literal comments documentation build

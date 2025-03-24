@@ -11,7 +11,7 @@ import { groupCollapsed, groupEnd } from './log.js';
 
 const assign   = Object.assign;
 const keys     = Object.keys;
-export const cache    = {};
+export const cache = {};
 const nodes    = [];
 const defaults = {};
 
@@ -101,12 +101,12 @@ function removeRange(first, last, fragment) {
 
 
 /**
-Compiled(id, fragment, options)
+Template(id, fragment, options)
 TODO. Currently only used by Literal.compileHTML, should be inveigled
 into everything.
 **/
 
-class Compiled {
+class Template {
     constructor(id, fragment, options = {}) {
         this.id       = id;
         this.content  = fragment;
@@ -150,7 +150,7 @@ export default class Literal {
     static compileHTML(id, html, options) {
         const template = create('template', html);
         const fragment = template.content;
-        return new Compiled(id, fragment, options);
+        return new Template(id, fragment, options);
     }
 
     /**
@@ -207,12 +207,12 @@ export default class Literal {
         this.consts   = assign({}, consts, { id: 'id-' + (++id) });
         this.contents = targets
             // We must find targets in cloned content
-            .map(this.#toCompiled, this)
+            .map(this.#toTemplate, this)
             // before we create renderers for them, as renderers may mutate the DOM
             .map(this.#toRenderer, this);
     }
 
-    #toCompiled(compiled) {
+    #toTemplate(compiled) {
         const { path, name } = compiled;
 
         // Where `.path` exists find the element at the end of the path
