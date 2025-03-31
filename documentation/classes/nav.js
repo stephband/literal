@@ -1,6 +1,6 @@
 
-import { clamp } from 'fn/clamp.js';
-import events    from 'dom/events.js';
+import clamp  from 'fn/clamp.js';
+import events from 'dom/events.js';
 
 
 events({ type: 'scroll', capture: true }, window)

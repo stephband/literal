@@ -205,6 +205,16 @@
     <script type="module">
     import '../scope.js';
     import LiteralHTML from './module.js';
+
+    // Test JS API
+    import Literal from '../module.js';
+
+    // Test compiling from html string
+    const inner    = Literal.compileHTML('inner', '<span title="✓">rendered</span>');
+    const outer    = Literal.compileHTML('outer', '<div class="barf">${ data.greeting } ${ include("inner", {}) }</div>');
+    const renderer = outer.render(document.body, {}, { greeting: 'Literal.compileHTML()' });
+
+    document.body.append(renderer.content);
     </script>
 </head>
 

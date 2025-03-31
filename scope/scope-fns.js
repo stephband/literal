@@ -50,6 +50,7 @@ export { default as cache       } from 'fn/cache.js';
 export { default as capture     } from 'fn/capture.js';
 export { default as choose      } from 'fn/choose.js';
 export { default as exec        } from 'fn/exec.js';
+export { default as get         } from 'fn/get.js';
 export { default as id          } from 'fn/id.js';
 export { default as isDefined   } from 'fn/is-defined.js';
 export { default as last        } from 'fn/last.js';
