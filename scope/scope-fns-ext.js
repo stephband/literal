@@ -1,7 +1,7 @@
 
 export { default as by          } from 'fn/by.js';
-export { clamp                  } from 'fn/clamp.js';
-export { wrap                   } from 'fn/wrap.js';
+export { default as clamp       } from 'fn/clamp.js';
+export { default as wrap        } from 'fn/wrap.js';
 export { default as deg         } from 'fn/to-deg.js';
 export { default as rad         } from 'fn/to-rad.js';
 export { default as equals      } from 'fn/equals.js';
