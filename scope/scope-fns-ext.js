@@ -1,13 +1,13 @@
 
 export { default as by          } from 'fn/by.js';
-export { clamp                  } from 'fn/clamp.js';
-export { wrap                   } from 'fn/wrap.js';
+export { default as clamp       } from 'fn/clamp.js';
+export { default as wrap        } from 'fn/wrap.js';
 export { default as deg         } from 'fn/to-deg.js';
 export { default as rad         } from 'fn/to-rad.js';
 export { default as equals      } from 'fn/equals.js';
 export { default as matches     } from 'fn/matches.js';
-export { default as get         } from 'fn/get-path.js';
-export { default as set         } from 'fn/set-path.js';
+export { default as getPath     } from 'fn/get-path.js';
+export { default as setPath     } from 'fn/set-path.js';
 export { default as slugify     } from 'fn/slugify.js';
 export { default as toCamelCase } from 'fn/to-camel-case.js';
 export { default as normalise   } from 'fn/normalise.js';
