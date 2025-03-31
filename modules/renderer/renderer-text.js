@@ -28,6 +28,10 @@ function stop(node) {
     node && typeof node === 'object' && node.stop && node.stop();
 }
 
+function notInDOM(node) {
+    return node.parentNode === null;
+}
+
 function setNodeValue(node, value) {
     const nodeValue = node.nodeValue;
 
@@ -104,13 +108,11 @@ function objectToContents(state, object, i) {
 
     // Object is a fragment
     if (isFragment(object)) {
-        let node;
-        while(node = object.firstChild) {
-            contents[++i].before(object.firstChild);
-            if (window.DEBUG) ++stats.add;
-            contents.splice(i, 0, node);
-        }
-        return i;
+        const l = object.childNodes.length;
+        const m = contents[++i];
+        contents.splice(i, 0, ...object.childNodes);
+        m.before(object);
+        return i + l - 1;
     }
 
     // Object is a DOM node
@@ -195,6 +197,20 @@ export default class TextRenderer extends Renderer {
         // Last is the original text node
         const contents = this.contents;
         const last     = contents[contents.length - 1];
+
+        // An edge case. If element is contenteditable it may be children have
+        // been removed from the DOM (user deleted them from contenteditable).
+        // This presents a problem because Literal uses text nodes as content
+        // placeholders and we don't know what child index contents should have
+        // inside element. But for now, we're just going to plonk content back
+        // into element in last place. Less than ideal.
+        if (contents.find(notInDOM)) {
+            console.warn('Literal: contents have been removed from the DOM, attempting to replace them');
+            // Empty out element
+            this.element.innerHTML = '';
+            // Append children back in
+            this.element.append.apply(this.element, contents);
+        }
 
         // Use `this` as an accumulator for .string. It's an internal object
         // anyway, so this should not leak, but I admit doing this is a bit naff.
