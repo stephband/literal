@@ -9,8 +9,7 @@ A `literal-html` template is replaced in the DOM with it's own rendered content.
 Note that templates declared as shadow roots with the `shadowrootmode="open"` or
 `shadowrootmode="closed"` attribute cannot also be `is="literal-html"` templates:
 the HTML parser picks them up and treats them as shadows before the custom
-element registry can upgrade them: they cannot be enhanced, sadly. However this
-library provides another template, `<template is="literal-shadow">`
+element registry can upgrade them: they cannot be enhanced, sadly.
 **/
 
 

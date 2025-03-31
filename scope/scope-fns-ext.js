@@ -14,7 +14,7 @@ export { default as normalise   } from 'fn/normalise.js';
 export { default as denormalise } from 'fn/denormalise.js';
 export { default as copy        } from './copy.js';
 export { default as pluralise   } from './pluralise.js';
-export { default as stash       } from './stash.js';
+//export { default as stash       } from './stash.js';
 export { default as timeout     } from './timeout.js';
 
 //const library = {
