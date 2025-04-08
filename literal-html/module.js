@@ -98,7 +98,7 @@ export default element('<template is="literal-html">', {
                 if (p.cancelled) { return; }
                 this.data = data;
             })
-            .catch((error) => element.replaceWith(printError(this, error)));
+            .catch((error) => this.replaceWith(printError(this, error)));
         }
     },
 
