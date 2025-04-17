@@ -8,6 +8,7 @@ import { compiled } from './modules/compile/compile.js';
 Template.scope    = scope;
 Template.stash    = stash;
 Template.include  = include;
+Template.render   = (id, data, element, consts) => include(id, data, element, consts).content;
 Template.compiled = compiled;
 
 export default Template;
