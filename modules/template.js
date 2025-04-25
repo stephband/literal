@@ -1,7 +1,8 @@
 
 import overload            from 'fn/overload.js';
-import Signal              from 'fn/signal.js';
 import Data                from 'fn/data.js';
+import Signal              from 'fn/signal.js';
+import Stopable            from 'fn/stream/stopable.js';
 import create              from 'dom/create.js';
 import identify            from 'dom/identify.js';
 import { pathSeparator }   from './compile/constants.js';
@@ -131,7 +132,6 @@ export default class Literal {
     /**
     Literal.compile(identifier, fragment, options)
     **/
-
     static compile(id, fragment, options = {}) {
         if(cache[id]) return cache[id];
 
@@ -156,7 +156,6 @@ export default class Literal {
     /**
     Literal.fromFragment(identifier, fragment, element, consts, data)
     **/
-
     static fromFragment(identifier, fragment, element, consts = {}, data, options) {
         const renderers = Literal.compile(identifier, fragment, options);
         return new Literal(fragment.cloneNode(true), renderers, element, consts, data, options);
@@ -165,7 +164,6 @@ export default class Literal {
     /**
     Literal.fromTemplate(template, element, consts, data)
     **/
-
     static fromTemplate(template, element, consts = {}, data) {
         const id        = identify(template, 'literal-');
         const options   = { nostrict: template.hasAttribute && template.hasAttribute('nostrict') };
@@ -195,6 +193,9 @@ export default class Literal {
 
     constructor(fragment, targets, parent, consts = {}, data) {
         const children = fragment.childNodes;
+
+        // Mix in in stopable. We need to do this because we don't call super()
+        new Stopable(this);
 
         // The first node may change. The last node is always the last node.
         this.#data    = Signal.of(Data.objectOf(data));
@@ -242,7 +243,6 @@ export default class Literal {
     .firstNode
     .lastNode
     */
-
     get firstNode() {
         // Has #first become the last node of a TextRenderer? Note that it is
         // perfectly possible to have a template with no content renderers.
@@ -263,7 +263,6 @@ export default class Literal {
     literal template. Setting properties on this object causes re-evaluation and
     possible re-render of the template contents.
     **/
-
     get data() {
         const data = this.#data.value;
         return Data.of(data) || data;
@@ -273,7 +272,6 @@ export default class Literal {
     .push(object)
     Re-renders and binds the DOM to (literal's `data` proxy of) `object`.
     **/
-
     push(object) {
         if (this.status === 'done') throw new Error('Renderer is done, cannot .push() data');
 
@@ -308,7 +306,6 @@ export default class Literal {
     /**
     .before()
     **/
-
     before() {
         const first = this.firstNode;
         const last  = this.lastNode;
@@ -329,7 +326,6 @@ export default class Literal {
     Removes rendered content from the DOM and places it back in the `.content`
     fragment.
     **/
-
     remove() {
         const first = this.firstNode;
         const last  = this.lastNode;
@@ -353,19 +349,16 @@ assign(Literal.prototype, {
     .stop()
     Stops renderer.
     **/
-
     stop: Renderer.prototype.stop,
 
     /**
     .done(object)
     Registers `object.stop()` to be called when this renderer is stopped.
     **/
-
     done: Renderer.prototype.done,
 
     /*
     .cue()
     */
-
     cue: Renderer.prototype.cue
 });

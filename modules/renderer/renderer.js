@@ -1,9 +1,10 @@
 
-import remove from 'fn/remove.js';
+import remove   from 'fn/remove.js';
+import Stopable from 'fn/stream/stopable.js';
 import Signal, { FrameObserver } from 'fn/signal.js';
-import Data   from 'fn/data.js';
-import scope  from '../scope.js';
-import toText from './to-text.js';
+import Data     from 'fn/data.js';
+import scope    from '../scope.js';
+import toText   from './to-text.js';
 import { log, group, groupEnd } from '../log.js';
 
 
@@ -199,6 +200,9 @@ export default class Renderer {
     #render;
 
     constructor(signal, render, consts, element, name, debug) {
+        // Mix in Stopable
+        new Stopable(this);
+
         Object.defineProperties(this, properties);
 
         this.#data       = signal;
@@ -236,10 +240,6 @@ export default class Renderer {
     }
 
     invalidate(source) {
-        // A renderer, as a consumer, does not have validity or dependent
-        // signals to invalidate. It does have status.
-        /*if (this.status === 'done' || this.status === 'cued') return;*/
-
         FrameObserver.prototype.invalidate.apply(this, arguments);
 
         // Stop async values from the last evaluation from being rendered
@@ -247,13 +247,6 @@ export default class Renderer {
     }
 
     stop() {
-        // Check and set status
-        /*if (this.status === 'done') return this;
-        if (this.status === 'cued') {
-            if (window.DEBUG) console.log('Stopping cued renderer. Not the cheapest thing to be doing a lot. We should not really be getting in here, its a sign of something gone awry.');
-            uncue(this);
-        }*/
-
         // Set this.status = 'done', removes from signal graph
         FrameObserver.prototype.stop.apply(this, arguments);
 
@@ -265,29 +258,14 @@ export default class Renderer {
         if (window.DEBUG) { --Renderer.count; }
 
         // Call done functions and listeners
-        const stopables = this[$stopables];
-        if (stopables) {
-            this[$stopables] = undefined;
-            stopables.forEach(stop);
-        }
+        Stopable.prototype.stop.apply(this);
 
-        return this;
-    }
-
-    done(stopable) {
-        // If stream is already stopped call listener immediately
-        if (this.status === 'done') {
-            stopable.stop();
-            return this;
-        }
-
-        const stopables = this[$stopables] || (this[$stopables] = []);
-        stopables.push(stopable);
         return this;
     }
 }
 
-Renderer.prototype.cue = FrameObserver.prototype.cue;
+Renderer.prototype.cue  = FrameObserver.prototype.cue;
+Renderer.prototype.done = Stopable.prototype.done;
 
 if (window.DEBUG) {
     Renderer.count = 0;
