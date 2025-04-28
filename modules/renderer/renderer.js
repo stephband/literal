@@ -1,10 +1,10 @@
 
-import remove from 'fn/remove.js';
+import remove   from 'fn/remove.js';
 import Stopable from 'fn/stream/stopable.js';
 import Signal, { FrameObserver } from 'fn/signal.js';
-import Data   from 'fn/data.js';
-import scope  from '../scope.js';
-import toText from './to-text.js';
+import Data     from 'fn/data.js';
+import scope    from '../scope.js';
+import toText   from './to-text.js';
 import { log, group, groupEnd } from '../log.js';
 
 
@@ -201,9 +201,10 @@ export default class Renderer extends FrameObserver {
     #render;
 
     constructor(signal, render, consts, element, name, debug) {
+        // Initialise FrameSignal
         super();
 
-        // Mix in stopable
+        // Mix in Stopable
         new Stopable(this);
 
         Object.defineProperties(this, properties);
@@ -260,8 +261,8 @@ export default class Renderer extends FrameObserver {
         // Decrement number of active renderers
         if (window.DEBUG) { --Renderer.count; }
 
-        // Call done() functions and listeners
-        Stopables.prototype.stop.apply(this);
+        // Call done functions and listeners
+        Stopable.prototype.stop.apply(this);
 
         return this;
     }

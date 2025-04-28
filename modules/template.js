@@ -1,7 +1,8 @@
 
 import overload            from 'fn/overload.js';
-import Signal              from 'fn/signal.js';
 import Data                from 'fn/data.js';
+import Signal              from 'fn/signal.js';
+import Stopable            from 'fn/stream/stopable.js';
 import create              from 'dom/create.js';
 import identify            from 'dom/identify.js';
 import { pathSeparator }   from './compile/constants.js';
@@ -199,8 +200,6 @@ export default class Literal extends Renderer {
         this.#first   = children[0];
         this.#last    = children[children.length - 1];
         this.content  = fragment;
-        // id is a template-instance-level const unique string useful for making
-        // DOM ids when a given template is included multiple times
         this.contents = targets
             // We must find targets in cloned content
             .map(this.#toTemplate, this)
