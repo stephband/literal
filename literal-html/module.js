@@ -44,8 +44,9 @@ export default element('<template is="literal-html">', {
         }
 
         // Render data from signalling properties immediately once, and then
-        // on next tick following a change signal
-        return [Signal.observe($data, (data) => {
+        // on next tick following a change
+        return Signal.tick(() => {
+            const data = $data.value;
             if (!data) return;
 
             const fragment = renderer.push(data);
@@ -54,7 +55,7 @@ export default element('<template is="literal-html">', {
             if (internals.pushed) return;
             internals.pushed = true;
             this.replaceWith(fragment);
-        })];
+        });
     }
 }, {
     /**

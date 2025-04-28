@@ -1,5 +1,6 @@
 
 import remove from 'fn/remove.js';
+import Stopable from 'fn/stream/stopable.js';
 import Signal, { FrameObserver } from 'fn/signal.js';
 import Data   from 'fn/data.js';
 import scope  from '../scope.js';
@@ -7,7 +8,8 @@ import toText from './to-text.js';
 import { log, group, groupEnd } from '../log.js';
 
 
-const assign     = Object.assign;
+const assign = Object.assign;
+const define = Object.defineProperties;
 const $stopables = Symbol('stopables');
 
 export const stats = {
@@ -192,13 +194,18 @@ immediately evaluate itself (else we'd call super()). It uses FrameObserver's
 render queue and access to the signal graph.
 */
 
-export default class Renderer {
+export default class Renderer extends FrameObserver {
     static consts = ['DATA', 'data', 'element', 'shadow', 'host', 'id'];
 
     #data;
     #render;
 
     constructor(signal, render, consts, element, name, debug) {
+        super();
+
+        // Mix in stopable
+        new Stopable(this);
+
         Object.defineProperties(this, properties);
 
         this.#data       = signal;
@@ -209,7 +216,7 @@ export default class Renderer {
         this.status      = 'idle';
 
         // Assign debug properties and track the number of renderers created
-        if (window.DEBUG) {
+        if (window.DEBUG && debug) {
             this.template = debug.template;
             this.path     = debug.path;
             this.code     = debug.code;
@@ -236,26 +243,15 @@ export default class Renderer {
     }
 
     invalidate(source) {
-        // A renderer, as a consumer, does not have validity or dependent
-        // signals to invalidate. It does have status.
-        /*if (this.status === 'done' || this.status === 'cued') return;*/
-
-        FrameObserver.prototype.invalidate.apply(this, arguments);
+        super.invalidate(source);
 
         // Stop async values from the last evaluation from being rendered
         this.asyncs && this.asyncs.forEach(stop);
     }
 
     stop() {
-        // Check and set status
-        /*if (this.status === 'done') return this;
-        if (this.status === 'cued') {
-            if (window.DEBUG) console.log('Stopping cued renderer. Not the cheapest thing to be doing a lot. We should not really be getting in here, its a sign of something gone awry.');
-            uncue(this);
-        }*/
-
-        // Set this.status = 'done', removes from signal graph
-        FrameObserver.prototype.stop.apply(this, arguments);
+        // Remove from signal graph
+        super.stop();
 
         // Stop async values being rendered
         this.asyncs && this.asyncs.forEach(stop);
@@ -264,30 +260,16 @@ export default class Renderer {
         // Decrement number of active renderers
         if (window.DEBUG) { --Renderer.count; }
 
-        // Call done functions and listeners
-        const stopables = this[$stopables];
-        if (stopables) {
-            this[$stopables] = undefined;
-            stopables.forEach(stop);
-        }
+        // Call done() functions and listeners
+        Stopables.prototype.stop.apply(this);
 
-        return this;
-    }
-
-    done(stopable) {
-        // If stream is already stopped call listener immediately
-        if (this.status === 'done') {
-            stopable.stop();
-            return this;
-        }
-
-        const stopables = this[$stopables] || (this[$stopables] = []);
-        stopables.push(stopable);
         return this;
     }
 }
 
-Renderer.prototype.cue = FrameObserver.prototype.cue;
+define(Renderer.prototype, {
+    done: Object.getOwnPropertyDescriptor(Stopable.prototype, 'done')
+});
 
 if (window.DEBUG) {
     Renderer.count = 0;
