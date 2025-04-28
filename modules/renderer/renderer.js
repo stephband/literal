@@ -1,7 +1,7 @@
 
 import remove   from 'fn/remove.js';
 import Stopable from 'fn/stream/stopable.js';
-import Signal, { FrameObserver } from 'fn/signal.js';
+import { FrameSignal } from 'fn/signal.js';
 import Data     from 'fn/data.js';
 import scope    from '../scope.js';
 import toText   from './to-text.js';
@@ -10,7 +10,7 @@ import { log, group, groupEnd } from '../log.js';
 
 const assign = Object.assign;
 const define = Object.defineProperties;
-const $stopables = Symbol('stopables');
+
 
 export const stats = {
     attribute: 0,
@@ -189,12 +189,12 @@ const frame = window.DEBUG && window.DEBUG.literal !== false ? function render(t
 
 /*
 Renderer(signal, fn, consts, element, name, debug)
-Renderer is a special version of a FrameObserver signal that does not
-immediately evaluate itself (else we'd call super()). It uses FrameObserver's
+Renderer is a special version of a FrameSignal signal that does not
+immediately evaluate itself (else we'd call super()). It uses FrameSignal's
 render queue and access to the signal graph.
 */
 
-export default class Renderer extends FrameObserver {
+export default class Renderer extends FrameSignal {
     static consts = ['DATA', 'data', 'element', 'shadow', 'host', 'id'];
 
     #data;
