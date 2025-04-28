@@ -14,48 +14,28 @@ element registry can upgrade them: they cannot be enhanced, sadly.
 
 
 import Data           from 'fn/data.js';
-import Signal         from 'fn/signal.js';
 import element, { getInternals } from 'dom/element.js';
-import { createObjectAttribute } from 'dom/element/create-attribute.js';
 import assignDataset  from '../modules/dom/assign-dataset.js';
 import requestData    from '../modules/request-data.js';
 import Literal        from '../modules/template.js';
 import { printError } from '../modules/print.js';
 
 
-/* Lifecycle */
-
-// tag, template, lifecycle, properties, log
 export default element('<template is="literal-html">', {
     construct: function(shadow, internals) {
-        internals.$data       = Signal.of();
-        internals.initialised = false;
-        internals.pushed      = false;
-        internals.renderer    = Literal.fromTemplate(this, this.parentElement);
+        internals.connected = false;
+        internals.pushed    = false;
+        internals.renderer  = Literal.fromTemplate(this, this.parentElement);
     },
 
     connect: function(shadow, internals) {
-        const { $data, renderer } = internals;
+        const { renderer } = internals;
 
         // If src or data was not set use data found in dataset
-        if (!internals.initialised && !internals.promise && !internals.pushed) {
-            internals.initialised = true;
-            $data.value = assignDataset({}, this.dataset);
+        if (!internals.connected && !internals.promise && !internals.pushed) {
+            internals.connected = true;
+            this.data = assignDataset({}, this.dataset);
         }
-
-        // Render data from signalling properties immediately once, and then
-        // on next tick following a change
-        return Signal.tick(() => {
-            const data = $data.value;
-            if (!data) return;
-
-            const fragment = renderer.push(data);
-
-            // Replace DOM content on first push only
-            if (internals.pushed) return;
-            internals.pushed = true;
-            this.replaceWith(fragment);
-        });
     }
 }, {
     /**
@@ -123,12 +103,22 @@ export default element('<template is="literal-html">', {
 
         get: function() {
             const internals = getInternals(this);
-            return Data.of(internals.$data.value);
+            return Data.of(internals.data);
         },
 
         set: function(object) {
             const internals = getInternals(this);
-            internals.$data.value = object ? Data.objectOf(object) : null;
+            const renderer  = internals.renderer;
+
+            const data = internals.data = Data.objectOf(object);
+            if (!data) return;
+
+            const fragment = renderer.push(data);
+
+            // Replace DOM content on first render
+            if (internals.pushed) return;
+            internals.pushed = true;
+            this.replaceWith(fragment);
         }
     }
 }, 'stephen.band/literal/');
