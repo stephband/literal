@@ -54,11 +54,13 @@ function setNodeValue(node, value) {
     }
 }
 
+/*
 function toContent(object) {
     return object.content ?
         toContent(object.content) :
         object ;
 }
+*/
 
 function objectToContents(state, object, i) {
     // Object may be a primitive, a DOM node or fragment, a LiteralTemplate or
@@ -72,7 +74,8 @@ function objectToContents(state, object, i) {
         return i;
     }
 
-    // If there is a string to splice in
+    // If there is a string to splice in we must do that before dealing with
+    // object
     if (string) {
         // And content is a text node, but not the last text node, update it
         if (++i < contents.length - 1 && isTextNode(contents[i])) {
@@ -86,12 +89,12 @@ function objectToContents(state, object, i) {
             if (window.DEBUG) ++stats.add;
             contents.splice(i, 0, node);
         }
-
+        // Reset string accumulator
         state.string = '';
     }
 
-    // It is possible that the template has returned the same object
-    // again, in which case we do nothing. Unlikely, but possible.
+    // It is possible that the template has returned the same object at the same
+    // index again, in which case we do nothing. Not hugely likely, but possible.
     if (object === contents[++i]) return i;
     --i;
 
@@ -102,9 +105,20 @@ function objectToContents(state, object, i) {
         return i;
     }
 
-    // Object is a freshly rendered Literal Template
+    // Object is a Literal Template
     if (object instanceof Literal) {
-        contents[++i].before(toContent(object));
+        // Literal Template has been previously rendered
+        if (object.includeRenderCount === state.renderCount) {
+            // Remove object DOM nodes back to object.content
+            object.remove();
+            // Get current index of object
+            const i = contents.indexOf(object);
+            // Splice it out of contents
+            contents.splice(i, 1);
+        }
+
+        // Add content into DOM and splice object into contents
+        contents[++i].before(object.content);
         if (window.DEBUG) ++stats.add;
         contents.splice(i, 0, object);
         return i;
@@ -181,16 +195,21 @@ export default class TextRenderer extends Renderer {
     }
 
     include(template, data) {
-        const object   = Data.objectOf(data);
-        const contents = this.contents;
+        const object      = Data.objectOf(data);
+        const contents    = this.contents;
+        const renderCount = this.renderCount;
 
         // Look through contents from latest includeIndex to see if ...
-        let n = this.includeIndex - 1;
+        let n = -1;
         while (contents[++n] !== undefined) {
             // ... included template/object pair already has a renderer
-            if (contents[n].template === template && contents[n].object === object) {
-                // And if it does, advance includeIndex and return it
-                this.includeIndex = n;
+            if (contents[n].template === template
+                && contents[n].object === object
+                && contents[n].includeRenderCount !== renderCount) {
+                // Keep a note of which render this was re-included on to avoid
+                // trying to re-include the same renderer twice in one render
+                contents[n].includeRenderCount = renderCount;
+                // Return it
                 return contents[n];
             }
         }
@@ -200,13 +219,6 @@ export default class TextRenderer extends Renderer {
     }
 
     evaluate() {
-        // Avoid an edge case and optimise include search. It is possible to
-        // have two renderers for the same template/object pair already in
-        // contents, and we do not want include to pick up the first of them
-        // more than once. Reset an includes index at the beginning of each
-        // evaluation.
-        this.includeIndex = 0;
-
         if (window.DEBUG) {
             try {
                 return super.evaluate();
@@ -246,7 +258,7 @@ export default class TextRenderer extends Renderer {
         // anyway, so this should not leak, but I admit doing this is a bit naff.
         // It does avoid creating any more objects though.
         this.string = '';
-
+//if (contents && arguments[1]) console.log('PRE', Array.from(contents), Array.from(arguments[1]));
         // Loop over strings, zip objects into string
         let n = -1;
         let i = -1;
@@ -255,7 +267,7 @@ export default class TextRenderer extends Renderer {
             this.string += strings[n];
             i = objectToContents(this, arguments[n + 1], i);
         }
-
+//if (contents) console.log('POST', Array.from(contents));
         // Set the last string on the last text node
         setNodeValue(last, this.string + strings[n]);
 
