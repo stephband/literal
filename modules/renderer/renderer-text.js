@@ -29,6 +29,10 @@ function stop(node) {
 }
 
 function notInDOM(node) {
+if (node.parentNode === null) {
+    debugger
+    console.log('NODE NOT IN DOM', node);
+}
     return node.parentNode === null;
 }
 
@@ -145,8 +149,8 @@ export default class TextRenderer extends Renderer {
         const consts = assign({}, params, {
             // Make a partially applicable include()
             include: (url, data) => data === undefined ?
-                (data) => include(url, data, this.element, this.consts) :
-                include(url, data, this.element, this.consts),
+                (data) => this.include(url, data) :
+                this.include(url, data),
 
             print:   (...args) => print(this, ...args)
         });
@@ -165,7 +169,7 @@ export default class TextRenderer extends Renderer {
     }
 
     get firstNode() {
-        // The first item in contents may be a LiteralTemplate
+        // The first item in contents may be a Template
         return this.contents[0].firstNode ?
             this.contents[0].firstNode :
             this.contents[0] ;
@@ -176,7 +180,33 @@ export default class TextRenderer extends Renderer {
         return this.contents[this.contents.length - 1];
     }
 
+    include(template, data) {
+        const object   = Data.objectOf(data);
+        const contents = this.contents;
+
+        // Look through contents from latest includeIndex to see if ...
+        let n = this.includeIndex - 1;
+        while (contents[++n] !== undefined) {
+            // ... included template/object pair already has a renderer
+            if (contents[n].template === template && contents[n].object === object) {
+                // And if it does, advance includeIndex and return it
+                this.includeIndex = n;
+                return contents[n];
+            }
+        }
+
+        // Return a new
+        return include(template, data, this.element, this.consts);
+    }
+
     evaluate() {
+        // Avoid an edge case and optimise include search. It is possible to
+        // have two renderers for the same template/object pair already in
+        // contents, and we do not want include to pick up the first of them
+        // more than once. Reset an includes index at the beginning of each
+        // evaluation.
+        this.includeIndex = 0;
+
         if (window.DEBUG) {
             try {
                 return super.evaluate();

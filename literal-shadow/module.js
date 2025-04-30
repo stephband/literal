@@ -148,7 +148,7 @@ export default element('<template is="literal-shadow">', {
         get: function() {
             const internals = Internals(this);
             return internals.renderer ?
-                internals.renderer.data :
+                Data.of(internals.renderer.data) :
                 null ;
         },
 

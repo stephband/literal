@@ -106,7 +106,7 @@ Template(id, fragment, options)
 TODO. Currently only used by Literal.compileHTML, should be inveigled
 into everything.
 **/
-
+/*
 class Template {
     constructor(id, fragment, options = {}) {
         this.id       = id;
@@ -116,10 +116,12 @@ class Template {
     }
 
     render(element, consts, data) {
+        console.log('WO TNWO');
         const fragment = getContextFragment(element, this);
         return new Literal(fragment, this.contents, element, consts, data);
     }
 }
+*/
 
 
 /**
@@ -145,32 +147,31 @@ export default class Literal extends Renderer {
     }
 
     // EXPERIMENTAL Needed for Soundstage custom elements
-    static compileHTML(id, html, options) {
+    /*static compileHTML(id, html, options) {
         const template = create('template', html);
         const fragment = template.content;
         return new Template(id, fragment, options);
-    }
+    }*/
 
     /**
     Literal.fromFragment(identifier, fragment, element, consts, data)
     **/
     static fromFragment(identifier, fragment, element, consts = {}, data, options) {
         const renderers = Literal.compile(identifier, fragment, options);
-        return new Literal(fragment.cloneNode(true), renderers, element, consts, data, options);
+        return new Literal(fragment.cloneNode(true), renderers, element, consts, data, identifier);
     }
 
     /**
     Literal.fromTemplate(template, element, consts, data)
     **/
     static fromTemplate(template, element, consts = {}, data) {
-        const id        = identify(template, 'literal-');
+        const id        = '#' + identify(template, 'literal-');
         const options   = { nostrict: template.hasAttribute && template.hasAttribute('nostrict') };
         // Compile before cloning because where template has compile errors they
         // are inserted into the content and should be cloned
         const renderers = Literal.compile(id, template.content, options);
         const fragment  = getContextFragment(element, template);
-
-        return new Literal(fragment, renderers, element, consts, data);
+        return new Literal(fragment, renderers, element, consts, data, id);
     }
 
     /**
@@ -189,16 +190,19 @@ export default class Literal extends Renderer {
     #first;
     #last;
 
-    constructor(fragment, targets, parent, consts = {}, data) {
+    constructor(fragment, targets, parent, consts = {}, data, templateId = '') {
         const children = fragment.childNodes;
 
         // Defines .element, .consts
-        super(null, null, assign({}, consts, { id: 'id-' + (++id) }), parent);
+        super(null, null, assign({}, consts, { id: templateId + '-' + (++id) }), parent);
 
+        // A signal of data object
+        this.object   = Data.objectOf(data);
+        this.#data    = Signal.of(this.object);
         // The first node may change. The last node is always the last node.
-        this.#data    = Signal.of(Data.objectOf(data));
         this.#first   = children[0];
         this.#last    = children[children.length - 1];
+        this.template = templateId;
         this.content  = fragment;
         this.contents = targets
             // We must find targets in cloned content
@@ -258,8 +262,8 @@ export default class Literal extends Renderer {
     possible re-render of the template contents.
     **/
     get data() {
-        const data = this.#data.value;
-        return Data.of(data) || data;
+        // Note we are binding to a signal here, potentially
+        return this.#data.value;
     }
 
     // This isn't really a render signal
@@ -277,14 +281,15 @@ export default class Literal extends Renderer {
         object = Data.objectOf(object);
 
         // Dedup
-        if (this.#data.value === object) return;
+        if (this.object === object) return;
 
         // If we are coming out of sleep put content back in the DOM
-        if (this.#data.value === null && object !== null) {
+        if (this.object === null && object !== null) {
             this.lastNode.before(this.content);
         }
 
         // Causes renderers dependent on this signal to .invalidate()
+        this.object = object;
         this.#data.value = object;
 
         // If object is null put template to sleep: remove all but the last node
