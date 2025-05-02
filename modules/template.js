@@ -1,22 +1,14 @@
 
-import overload            from 'fn/overload.js';
-import Data                from 'fn/data.js';
-import Signal              from 'fn/signal.js';
-import Stopable            from 'fn/stream/stopable.js';
-import create              from 'dom/create.js';
-import identify            from 'dom/identify.js';
-import { pathSeparator }   from './compile/constants.js';
-import Renderer, { stats } from './renderer/renderer.js';
-import compileNode         from './compile/compile-node.js';
-import { groupCollapsed, groupEnd } from './log.js';
+import Data        from 'fn/data.js';
+import create      from 'dom/create.js';
+import identify    from 'dom/identify.js';
+import compileNode from './compile/compile-node.js';
+import Renderer    from './renderer/renderer-template.js';
+import { pathSeparator } from './compile/constants.js';
 
-const assign   = Object.assign;
-const keys     = Object.keys;
-export const cache = {};
-const nodes    = [];
-const defaults = {};
 
-let id = 0;
+const assign = Object.assign;
+const cache  = {};
 
 
 /*
@@ -71,278 +63,103 @@ function getContextFragment(element, template) {
     return template.content.cloneNode(true);
 }
 
-/*
-DOM management
-*/
+function toTemplate(compiled) {
+    const { path, name } = compiled;
 
-function removeRange(first, last, fragment) {
-    if (window.DEBUG && first.parentNode !== last.parentNode) {
-        throw new Error('first and last not children of same parent')
-    }
+    // Where `.path` exists find the element at the end of the path
+    const element = path ? getElement(path, this.content) : this.element ;
 
-    if (first === last) {
-        fragment.prepend(last);
-        if (window.DEBUG) ++stats.remove;
-        return;
-    }
+    // Text renderer expects a text node that must always come from the
+    // cloned content fragment
+    const node = typeof name === 'number' ?
+        path ? element.childNodes[name] :
+        this.content.childNodes[name] :
+    name;
 
-    // Select range of nodes managed by this template
-    const range = new Range();
-    range.setStartBefore(first);
-    range.setEndAfter(last);
+    if (window.DEBUG && !node) throw new Error('Literal – node ' + name + ' not found in template');
 
-    // Remove range content from DOM
-    const dom = range.extractContents();
-    if (window.DEBUG) ++stats.remove;
-
-    // And place into this.content fragment
-    fragment.appendChild(dom);
+    // Parameters for new Renderer()
+    return { element, node, compiled };
 }
 
+function toRenderer({ element, node, compiled }) {
+    const { Renderer, literal } = compiled;
+    return new Renderer(literal, this.parameters, element, node, compiled);
+}
 
 
 /**
 Template(id, fragment, options)
-TODO. Currently only used by Literal.compileHTML, should be inveigled
-into everything.
+Parses `fragment` for literal tags and creates an object that serves as a
+factory for creating renderers of the template via `template.createRenderer()`.
+The template is cached against `id`, further calls with the same id return the
+same template.
 **/
-/*
-class Template {
+export default class Template {
     constructor(id, fragment, options = {}) {
+        if (cache[id]) return cache[id];
         this.id       = id;
         this.content  = fragment;
-        this.contents = compileNode([], fragment, '', options, id);
+        this.compiled = compileNode([], fragment, '', options, id);
         cache[id] = this;
     }
 
-    render(element, consts, data) {
-        console.log('WO TNWO');
-        const fragment = getContextFragment(element, this);
-        return new Literal(fragment, this.contents, element, consts, data);
-    }
-}
-*/
-
-
-/**
-Literal(fragment, targets, element, consts, data, options)
-**/
-
-export default class Literal extends Renderer {
     /**
-    Literal.compile(identifier, fragment, options)
+    .createRenderer(element, data, parameters)
     **/
-    static compile(id, fragment, options = {}) {
-        if(cache[id]) return cache[id];
+    createRenderer(element, data, parameters = {}) {
+        const fragment = getContextFragment(element, this);
 
-        if (window.DEBUG) {
-            groupCollapsed('compile', id, 'yellow');
-            cache[id] = compileNode([], fragment, '', options, id);
-            groupEnd();
-            return cache[id];
-        }
+        // TEMP. Do parameters differently
+        this.parameters = assign({}, parameters, {
+            data: Data.of(data),
+            DATA: Data.objectOf(data)
+        });
 
-        // compileNode(renderers, fragment, path, options, debug_string)
-        return cache[id] = compileNode([], fragment, '', options, id);
+        const renderers = this.compiled
+            // We must find targets in cloned content
+            .map(toTemplate, this)
+            // before we create renderers for them, as renderers may mutate the DOM
+            .map(toRenderer, this) ;
+
+        return new Renderer(fragment, renderers, parameters, element, this);
     }
 
-    // EXPERIMENTAL Needed for Soundstage custom elements
-    /*static compileHTML(id, html, options) {
+    /**
+    Template.get(id)
+    **/
+    static get(id) {
+        if (cache[id]) return cache[id];
+        // Assume id is of the form `#id`
+        const template = document.getElementById(id.slice(1));
+        const options  = { nostrict: template.hasAttribute && template.hasAttribute('nostrict') };
+        return new Template(id, template.content, options);
+    }
+
+    /**
+    Template.fromHTML(id, html, options)
+    **/
+    static fromHTML(id, html, options = {}) {
+        if (cache[id]) throw new Error('Template.fromHTML() id "' + id + '" already registered');
         const template = create('template', html);
         const fragment = template.content;
         return new Template(id, fragment, options);
-    }*/
+    }
 
     /**
-    Literal.fromFragment(identifier, fragment, element, consts, data)
+    Template.fromFragment(id, fragment, options)
     **/
-    static fromFragment(identifier, fragment, element, consts = {}, data, options) {
-        const renderers = Literal.compile(identifier, fragment, options);
-        return new Literal(fragment.cloneNode(true), renderers, element, consts, data, identifier);
+    static fromFragment(id, fragment, options = {}) {
+        if (cache[id]) throw new Error('Template.fromFragment() id "' + id + '" already registered');
+        return new Template(id, fragment, options);
     }
 
     /**
-    Literal.fromTemplate(template, element, consts, data)
+    Template.fromTemplate(template)
     **/
-    static fromTemplate(template, element, consts = {}, data) {
-        const id        = '#' + identify(template, 'literal-');
-        const options   = { nostrict: template.hasAttribute && template.hasAttribute('nostrict') };
-        // Compile before cloning because where template has compile errors they
-        // are inserted into the content and should be cloned
-        const renderers = Literal.compile(id, template.content, options);
-        const fragment  = getContextFragment(element, template);
-        return new Literal(fragment, renderers, element, consts, data, id);
-    }
-
-    /**
-    Literal.fromHTML(html, element, consts, data)
-    *
-    static fromHTML(html, element, consts, data, options = {}) {
-        // TODO handle context fragment, we should be able to make one from html
-        // string without first making a template?
-        const template  = create('template', html);
-        const renderers = Literal.compile(html, template.content, options);
-        return new Literal(template.content, renderers, element, consts, data);
-    }
-    */
-
-    #data;
-    #first;
-    #last;
-
-    constructor(fragment, targets, parent, consts = {}, data, templateId = '') {
-        const children = fragment.childNodes;
-
-        // Defines .element, .consts
-        super(null, null, assign({}, consts, { id: templateId + '-' + (++id) }), parent);
-
-        // A signal of data object
-        this.object   = Data.objectOf(data);
-        this.#data    = Signal.of(this.object);
-        // The first node may change. The last node is always the last node.
-        this.#first   = children[0];
-        this.#last    = children[children.length - 1];
-        this.template = templateId;
-        this.content  = fragment;
-        this.contents = targets
-            // We must find targets in cloned content
-            .map(this.#toTemplate, this)
-            // before we create renderers for them, as renderers may mutate the DOM
-            .map(this.#toRenderer, this);
-    }
-
-    #toTemplate(compiled) {
-        const { path, name } = compiled;
-
-        // Where `.path` exists find the element at the end of the path
-        const element = path ? getElement(path, this.content) : this.element ;
-
-        // Text renderer expects a text node that must always come from the
-        // cloned content fragment
-        const node = typeof name === 'number' ?
-            path ? element.childNodes[name] :
-            this.content.childNodes[name] :
-        name;
-
-        if (window.DEBUG && !node) throw new Error('Literal – node ' + name + ' not found in template');
-
-        // Parameters for new Renderer()
-        return { element, node, compiled };
-    }
-
-    #toRenderer({ element, node, compiled }) {
-        const { Renderer, literal } = compiled;
-        const renderer = new Renderer(this.#data, literal, this.consts, element, node, compiled);
-        this.done(renderer);
-        return renderer;
-    }
-
-    /*
-    .firstNode
-    .lastNode
-    */
-    get firstNode() {
-        // Has #first become the last node of a TextRenderer? Note that it is
-        // perfectly possible to have a template with no content renderers.
-        const renderer = this.contents && this.contents[0];
-        return renderer && this.#first === renderer.lastNode ?
-            renderer.firstNode :
-            this.#first ;
-    }
-
-    get lastNode() {
-        return this.#last;
-    }
-
-    /**
-    .data
-    Read-only property exposing (literal's `data` proxy of) the currently
-    rendered object. This is the same object available as `data` inside a
-    literal template. Setting properties on this object causes re-evaluation and
-    possible re-render of the template contents.
-    **/
-    get data() {
-        // Note we are binding to a signal here, potentially
-        return this.#data.value;
-    }
-
-    // This isn't really a render signal
-    evaluate() {}
-    invalidate() {}
-
-    /**
-    .push(object)
-    Re-renders and binds the DOM to (literal's `data` proxy of) `object`.
-    **/
-    push(object) {
-        if (this.status === 'done') throw new Error('Renderer is done, cannot .push() data');
-
-        // Make sure we have the raw object
-        object = Data.objectOf(object);
-
-        // Dedup
-        if (this.object === object) return;
-
-        // If we are coming out of sleep put content back in the DOM
-        if (this.object === null && object !== null) {
-            this.lastNode.before(this.content);
-        }
-
-        // Causes renderers dependent on this signal to .invalidate()
-        this.object = object;
-        this.#data.value = object;
-
-        // If object is null put template to sleep: remove all but the last node
-        // to the content fragment and blank out the last text node, which we
-        // leave in the DOM to serve as a marker for reentry of rendered content
-        if (object === null) {
-            if (this.firstNode !== this.lastNode) {
-                removeRange(this.firstNode, this.lastNode.previousSibling, this.content);
-            }
-
-            this.lastNode.textContent = '';
-        }
-
-        return this.content;
-    }
-
-    /**
-    .before()
-    **/
-    before() {
-        const first = this.firstNode;
-        const last  = this.lastNode;
-
-        // Last node is not in the DOM
-        if (this.content.lastChild === last) {
-            throw new Error('Illegal Literal.before() – template is not in the DOM');
-        }
-
-        // First node is not in the DOM
-        return this.content.firstChild === first ?
-            last.before.apply(last, arguments) :
-            first.before.apply(first, arguments) ;
-    }
-
-    /**
-    .remove()
-    Removes rendered content from the DOM and places it back in the `.content`
-    fragment.
-    **/
-    remove() {
-        const first = this.firstNode;
-        const last  = this.lastNode;
-
-        // Check if we are in the DOM. Can't remove if we're not in the DOM.
-        if (this.content.lastChild === last) {
-            return;
-        }
-
-        if (this.content.firstChild === first) {
-            this.content.appendChild(last);
-            return;
-        }
-
-        removeRange(first, last, this.content);
+    static fromTemplate(template) {
+        const id = '#' + identify(template, 'literal-');
+        const options = { nostrict: template.hasAttribute && template.hasAttribute('nostrict') };
+        return new Template(id, template.content, options);
     }
 }

@@ -62,7 +62,7 @@ export function toAttributeString(values) {
 }
 
 export default class AttributeRenderer extends Renderer {
-    static consts = Renderer.consts;
+    //static consts = Renderer.consts;
 
     constructor(signal, literal, consts, element, name, debug) {
         super(signal, literal, consts, element, name, debug);

@@ -1,6 +1,0 @@
-
-<pre>test/include.html.literal</pre>
-
-${ include('../include-1.literal', {}) }
-${ include('../includes/include-3.literal', {}) }
-${ include('./includes/include-5.literal', {}) }

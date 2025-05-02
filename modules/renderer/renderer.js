@@ -1,59 +1,10 @@
 
 import remove   from 'fn/remove.js';
-import Stopable from 'fn/stream/stopable.js';
-import { FrameSignal } from 'fn/signal.js';
 import Data     from 'fn/data.js';
-import scope    from '../scope.js';
-import toText   from './to-text.js';
-import { log, group, groupEnd } from '../log.js';
+import Signal, { FrameSignal } from 'fn/signal.js';
+import Template from '../template.js';
 
-
-const assign = Object.assign;
-const define = Object.defineProperties;
-
-
-export const stats = {
-    attribute: 0,
-    property:  0,
-    token:     0,
-    text:      0,
-    remove:    0,
-    add:       0
-};
-
-const properties = {
-    renderCount: { writable: true },
-    status:      { writable: true }
-};
-
-let id = 0;
-
-
-/**
-data
-The main object passed into the template carrying data. This object is special.
-When it mutates, the DOM re-renders.
-**/
-
-/**
-this
-The current renderer. Normally you wouldn't reference `this` in a template
-unless you want to print information about the renderer of the current text
-or attribute.
-
-```html
-Renderer render count: ${ this.renderCount }
-Renderer id:           ${ this.id }
-```
-**/
-
-function stop(stopable) {
-    stopable.stop();
-}
-
-function promiseStop() {
-    this.status === 'done';
-}
+//const ids = {};
 
 function renderValue(renderer, args, values, n, object, isRender = false) {
     if (object && typeof object === 'object') {
@@ -113,165 +64,134 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
     }
 }
 
-function render(renderer, args) {
-    const strings = args[0];
-
-    // Flag the literal as containing exactly 1 expression optionally
-    // surrounded by whitespace, which allows for some optimisations
-    // further down the line, particularly for attribute renderers. We
-    // need only do this on first render.
-    if (renderer.singleExpression === undefined) {
-        renderer.singleExpression = strings.length === 2
-            && !/\S/.test(strings[0])
-            && !/\S/.test(strings[1]) ;
-    }
-
-    let n = 0;
-    while (strings[++n] !== undefined) {
-        renderValue(renderer, args, args, n, args[n]);
-    }
-
-    renderer.render.apply(renderer, args);
-}
-
-
-
-
-/*
-const frame = window.DEBUG && window.DEBUG.literal !== false ? function render(t) {
-    // Initialise some stats
-    let t0 = window.performance.now() / 1000;
-    let length = observers.length;
-    stats.attribute = 0;
-    stats.property  = 0;
-    stats.token     = 0;
-    stats.text      = 0;
-    stats.add       = 0;
-    stats.remove    = 0;
-
-    // Do the work
-    let n = -1, signal;
-    while (signal = observers[++n]) Signal.evaluate(signal, signal.evaluate);
-    observers.length = 0;
-
-    // Print some stats
-    let t1 = window.performance.now() / 1000;
-    log('render',
-        // Frame time
-        (t / 1000).toFixed(3) + 's – '
-        // renderers
-        + length + ' renderer' + (length === 1 ? '' : 's') + ' fired'
-        // mutations
-        + (stats.remove    ? ', ' + stats.remove    + ' remove'    : '')
-        + (stats.add       ? ', ' + stats.add       + ' add'       : '')
-        + (stats.text      ? ', ' + stats.text      + ' text'      : '')
-        + (stats.property  ? ', ' + stats.property  + ' property'  : '')
-        + (stats.attribute ? ', ' + stats.attribute + ' attribute' : '')
-        + (stats.token     ? ', ' + stats.token     + ' token'     : '')
-        + ' mutations'
-        // Render duration
-        + ' – ' + ((t1 - t0) * 1000).toPrecision(3) + 'ms',
-        //
-        '', '', '#B6BD00'
-    );
-
-    if (t1 - t0 > 0.016666667) {
-        log('render', (t / 1000).toFixed(3) + 's',
-            'took longer than a frame',
-            ' t0 ' + t0.toFixed(3) + ','
-            + ' t1 ' + t0.toFixed(3) + ','
-            + ' ' + ((t1 - t0) * 1000).toPrecision(3) + 'ms',
-            '#ba4029');
-    }
-} ;
-*/
-
-
-/*
-Renderer(signal, fn, consts, element, name, debug)
-Renderer is a special version of a FrameSignal signal that does not
-immediately evaluate itself (else we'd call super()). It uses FrameSignal's
-render queue and access to the signal graph.
-*/
-
 export default class Renderer extends FrameSignal {
     static consts = ['DATA', 'data', 'element', 'shadow', 'host', 'id'];
 
-    #data;
-    #render;
-
-    constructor(signal, render, consts, element, name, debug) {
-        // Initialise FrameSignal
+    constructor(literal, parameters) {
+        // Super does not evaluate immediately when no fn passed in. This should
+        // change, possibly, so we dont have to evaluate deliberately here ...
+        // or maybe we do need to wait for object set up
         super();
 
-        // Mix in Stopable
-        new Stopable(this);
+        //if (!ids[template]) ids[template] = 0;
+        //this.id         = template + '-' + ++ids[template];
+        //this.template   = template;
+        this.count      = 0;
+        this.literate   = literal;
+        this.parameters = parameters;
+        this.renderers  = [];
+    }
 
-        Object.defineProperties(this, properties);
+    invalidate(input) {
+        // Static observers list
+        const observers = this.constructor.observers;
 
-        this.#data       = signal;
-        this.#render     = render;
-        this.consts      = consts;
-        this.element     = element;
-        this.renderCount = 0;
-        this.status      = 'idle';
+        // If the observer is already cued do nothing
+        if (observers.indexOf(this) !== -1) return;
 
-        // Assign debug properties and track the number of renderers created
-        if (window.DEBUG && debug) {
-            this.template = debug.template;
-            this.path     = debug.path;
-            this.code     = debug.code;
-            this.id       = this.constructor.name + '#' + (++id) ;
-            ++Renderer.count;
-        }
+        // Verify that input signal has the right to invalidate this
+        //if (input && !hasInput(this, input)) return;
+
+        // Clear inputs
+        //clearInputs(this);
+
+        this.cue();
     }
 
     evaluate() {
-        // Bind this renderer to current data
-        const data = this.#data.value;
-        if (!data) return;
+        // Renderer may have been stopped as part of this frame's evaluation
+        // in which case it has not been removed from observers
+        if (this.status === 'done') return;
 
-        // Update template consts. We are ok to do this even if consts is a
-        // shared object, because consts are only accessed synchronously by
-        // #render().
-        this.consts.data    = Data.of(data);
-        this.consts.DATA    = Data.objectOf(data);
-        this.consts.element = this.element;
+        // Render count
+        ++this.count;
 
-        // Render!
-        ++this.renderCount;
-        return render(this, this.#render(this.consts));
+console.log(this.id + ' evaluate ' + this.count);
+
+        const { parameters } = this;
+        const args    = this.literate(parameters);
+        const strings = args[0];
+
+        // Flag the literal as containing exactly 1 expression optionally
+        // surrounded by whitespace, which allows for some optimisations
+        // further down the line, particularly for attribute renderers. We
+        // need only do this on first render.
+        if (this.singleExpression === undefined) {
+            this.singleExpression = strings.length === 2
+                && !/\S/.test(strings[0])
+                && !/\S/.test(strings[1]) ;
+        }
+
+        let n = 0;
+        while (strings[++n] !== undefined) renderValue(this, args, args, n, args[n]);
+        this.render.apply(this, args);
     }
 
-    invalidate(source) {
-        super.invalidate(source);
+    render(strings) {
+console.log('XXXXX', strings, Array.from(arguments).slice(1));
 
-        // Stop async values from the last evaluation from being rendered
-        this.asyncs && this.asyncs.forEach(stop);
+
+
+
+        // Diff arguments against .renderers and update DOM accordingly???
+        let n = 0;
+        while (arguments[++n]) {
+            if (this.renderers[n] === arguments[n]) continue;
+            const oldRenderer = this.renderers[n];
+
+            if (oldRenderer) {
+                console.log('DESTROY', oldRenderer);
+
+                // Can this upset the observers queue? We are currently evaluating
+                // renderers in the observers queue, and if oldRenderer happens to
+                // be earlier in the queue the current index could become de-synced
+                // when oldRenderer is removed
+                oldRenderer.stop();
+            }
+
+
+            this.renderers[n] = arguments[n];
+        }
+
+        if (this.renderers.length > arguments.length) {
+            n = arguments.length - 2;
+            while (this.renderers[++n]) {
+                console.log('DESTROY', this.renderers[n]);
+
+                // Can this upset the observers queue? We are currently evaluating
+                // renderers in the observers queue, and if oldRenderer happens to
+                // be earlier in the queue the current index could become de-synced...
+                this.renderers[n].stop();
+            }
+            this.renderers.length = arguments.length - 1;
+        }
     }
+
+    /*
+    include(identifier, fn, data) {
+        if (data === undefined || data === null) return;
+
+        // If a renderer already exists for this template/data pair...
+        let n = -1;
+        while (this.renderers[++n]) if (
+            this.renderers[n].template === template &&
+            this.renderers[n].data === data
+        ) {
+            // ...return it
+            return this.renderers[n];
+        }
+
+        // Return new template renderer
+        return Template
+        .get(identifer)
+        .createRenderer(this.element, this.parameters, data);
+    }
+    */
 
     stop() {
-        // Remove from signal graph
-        super.stop();
-
-        // Stop async values being rendered
-        this.asyncs && this.asyncs.forEach(stop);
-        this.status = 'done';
-
-        // Decrement number of active renderers
-        if (window.DEBUG) { --Renderer.count; }
-
-        // Call done functions and listeners
-        Stopable.prototype.stop.apply(this);
-
-        return this;
+console.log(this.id + ' stop()');
+        return super.stop();
     }
 }
 
-define(Renderer.prototype, {
-    done: Object.getOwnPropertyDescriptor(Stopable.prototype, 'done')
-});
-
-if (window.DEBUG) {
-    Renderer.count = 0;
-}
+export const stats = {};

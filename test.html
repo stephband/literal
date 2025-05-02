@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Stephen" />
+    <meta name="description" content="Documentation for Literal. Literal puts JS into your HTML. Literal defines a custom include element that parses and renders templates written as JS Literals, in a small library under 15kB minified and gzipped." />
+    <meta name="viewport" content="width=device-width" />
+
+    <script>
+        window.DEBUG = true;
+    </script>
+
+    <script type="importmap">{
+      "imports": {
+        "dom/":  "../dom/modules/",
+        "fn/":   "../fn/modules/"
+      }
+    }</script>
+
+    <link rel="stylesheet" href="../../bolt/elements/html.css" />
+    <link rel="stylesheet" href="../../bolt/elements/type.css" />
+    <link rel="stylesheet" href="../../bolt/elements/table.css" />
+    <link rel="stylesheet" href="../../bolt/elements/form.css" />
+    <link rel="stylesheet" href="../../bolt/elements/input-range.css" />
+    <link rel="stylesheet" href="../../bolt/classes/text.css" />
+    <link rel="stylesheet" href="../../bolt/classes/block.css" />
+    <link rel="stylesheet" href="../../bolt/classes/button.css" />
+    <link rel="stylesheet" href="../../bolt/classes/select-button.css" />
+    <link rel="stylesheet" href="../../bolt/classes/striped-table.css" />
+
+    <template id="test-template-1">
+        <p title="${ data.a }">b: ${ data.b }</p>
+    </template>
+
+    <template id="test-template-2">
+        <p>a: ${ data.a } b: ${ data.b }</p>
+    </template>
+</head>
+<body>
+    <div id="parent"></div>
+    <script type="module">
+    import './modules/test/template.js';
+    </script>
+</body>

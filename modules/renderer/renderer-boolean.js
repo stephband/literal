@@ -49,7 +49,7 @@ export function toAttributeBoolean(values) {
 
 
 export default class BooleanRenderer extends AttributeRenderer {
-    static consts = AttributeRenderer.consts;
+    //static consts = AttributeRenderer.consts;
 
     /* Only needed to evaluate */
     constructor(signal, literal, consts, element, name, debug) {

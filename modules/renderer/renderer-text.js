@@ -12,10 +12,8 @@ import isComment        from 'dom/is-comment.js';
 import isElement        from 'dom/is-element.js';
 import isFragment       from 'dom/is-fragment.js';
 import isTextNode       from 'dom/is-text-node.js';
-
-import include          from '../include.js';
 import deleteRange      from '../dom/delete-range.js';
-import Literal          from '../template.js';
+import TemplateRenderer from './renderer-template.js';
 import print, { printError } from '../print.js';
 import toText           from './to-text.js';
 import Renderer, { stats } from './renderer.js';
@@ -69,7 +67,7 @@ function objectToContents(state, object, i) {
 
     // If object is not a node or renderer, append to string. Array.isArray()
     // does return true for a proxy of an array.
-    if (!(object instanceof Literal) && !(object instanceof Node) && !Array.isArray(object)) {
+    if (!(object instanceof TemplateRenderer) && !(object instanceof Node) && !Array.isArray(object)) {
         state.string += toText(object);
         return i;
     }
@@ -106,7 +104,7 @@ function objectToContents(state, object, i) {
     }
 
     // Object is a Literal Template
-    if (object instanceof Literal) {
+    if (object instanceof TemplateRenderer) {
         // Literal Template has been previously rendered
         if (object.includeRenderCount === state.renderCount) {
             // Remove object DOM nodes back to object.content
@@ -155,21 +153,16 @@ template renderers, or strings.
 export default class TextRenderer extends Renderer {
     static consts = ['DATA', 'data', 'element', 'shadow', 'host', 'id', 'include', 'print'];
 
-    constructor(signal, literal, params, element, node, debug) {
+    constructor(literal, parameters, element, node, debug) {
         if (window.DEBUG && !isTextNode(node)) {
             throw new TypeError('TextRenderer() node not a text node');
         }
 
-        const consts = assign({}, params, {
-            // Make a partially applicable include()
-            include: (url, data) => data === undefined ?
-                (data) => this.include(url, data) :
-                this.include(url, data),
-
-            print:   (...args) => print(this, ...args)
-        });
-
-        super(signal, literal, consts, element, node, debug);
+        super(literal, assign({}, parameters, {
+            element,
+            include: (template, fn, data) => this.include(template, fn, data),
+            //print:   (...args) => print(this, ...args)
+        }));
 
         // Contents may contain Nodes and LiteralTemplates, but the last item
         // in contents will always be the original text node
@@ -179,7 +172,8 @@ export default class TextRenderer extends Renderer {
         // A synchronous evaluation while data signal value is undefined binds
         // this renderer to changes to that signal. If signal value is a `data`
         // object evaluation renders the renderer immediately.
-        Signal.evaluate(this, this.evaluate);
+        //Signal.evaluate(this, this.evaluate);
+        if (Signal.evaluate(this, this.evaluate) || Signal.hasInvalidDependency) this.cue();
     }
 
     get firstNode() {
@@ -194,6 +188,24 @@ export default class TextRenderer extends Renderer {
         return this.contents[this.contents.length - 1];
     }
 
+    include(identifier, fn, data) {
+        if (data === undefined || data === null) return;
+
+        // If a renderer already exists for this template/data pair...
+        let n = -1;
+        while (this.renderers[++n]) if (
+            this.renderers[n].template === template &&
+            this.renderers[n].data === data
+        ) {
+            // ...return it
+            return this.renderers[n];
+        }
+
+        // Return new template renderer
+        return TemplateRenderer.from(identifer, this.element, this.parameters);
+    }
+
+    /*
     include(template, data) {
         const object      = Data.objectOf(data);
         const contents    = this.contents;
@@ -217,6 +229,7 @@ export default class TextRenderer extends Renderer {
         // Return a new
         return include(template, data, this.element, this.consts);
     }
+    */
 
     evaluate() {
         if (window.DEBUG) {
@@ -238,7 +251,7 @@ export default class TextRenderer extends Renderer {
     render(strings) {
         // Last is the original text node
         const contents = this.contents;
-        const last     = contents[contents.length - 1];
+        const last = contents[contents.length - 1];
 
         // An edge case. If element is contenteditable it may be children have
         // been removed from the DOM (user deleted them from contenteditable).
