@@ -1,19 +1,14 @@
 
-import Template     from './modules/template.js';
-import include      from './modules/include.js';
-import stash        from './modules/stash.js';
-import scope        from './modules/scope.js';
+import Data    from 'fn/data.js';
+import Signal  from 'fn/signal.js';
+import Literal from './modules/literal.js';
+import stash   from './modules/stash.js';
+import scope   from './modules/scope.js';
 import { compiled } from './modules/compile/compile.js';
 
-Template.scope    = scope;
-Template.stash    = stash;
-Template.include  = include;
-Template.render   = (id, data, element, consts) => include(id, data, element, consts).content;
-Template.compiled = compiled;
+Literal.scope  = scope;
+Literal.stash  = stash;
 
-export default Template;
-
+export { Literal as default, Data, Signal, compiled };
 export { default as config } from './modules/config.js';
-export { default as Data }   from 'fn/data.js';
-export { default as Signal } from 'fn/signal.js';
 export { urls }              from './modules/urls.js';

@@ -43,8 +43,6 @@ function updateTokens(list, cached, tokens, count = 0) {
 }
 
 export default class TokensRenderer extends AttributeRenderer {
-    //static consts = AttributeRenderer.consts;
-
     constructor(signal, literal, consts, element, name, debug) {
         super(signal, literal, consts, element, name, debug);
 
@@ -60,7 +58,7 @@ export default class TokensRenderer extends AttributeRenderer {
 
     render(strings) {
         // Set permanent tokens from strings on first render
-        if (this.renderCount === 1) {
+        if (this.count === 1) {
             const tokens = strings.join(' ').trim();
             if (tokens) {
                 const array = tokens.split(/\s+/);

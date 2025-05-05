@@ -10,7 +10,7 @@ function toMap(urls, [path1, path2]) {
 }
 
 export function urls(object) {
-    entries(object).reduce(toMap, map);
+    return entries(object).reduce(toMap, map);
 }
 
 export function rewriteURL(path) {

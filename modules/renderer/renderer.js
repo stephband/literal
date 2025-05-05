@@ -67,19 +67,19 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
 export default class Renderer extends FrameSignal {
     static consts = ['DATA', 'data', 'element', 'shadow', 'host', 'id'];
 
-    constructor(literal, parameters) {
-        // Super does not evaluate immediately when no fn passed in. This should
-        // change, possibly, so we dont have to evaluate deliberately here ...
-        // or maybe we do need to wait for object set up
+    constructor(fn, parameters) {
+        // FrameSignal does not evaluate immediately when no fn passed in. This
+        // should change, possibly, so we dont have to evaluate deliberately
+        // here ... or maybe we do need to wait for object set up, so we must
+        // evaluate in the sub class constructor ? Yup.
         super();
 
         //if (!ids[template]) ids[template] = 0;
         //this.id         = template + '-' + ++ids[template];
         //this.template   = template;
         this.count      = 0;
-        this.literate   = literal;
+        this.fn         = fn;
         this.parameters = parameters;
-        this.renderers  = [];
     }
 
     invalidate(input) {
@@ -106,10 +106,8 @@ export default class Renderer extends FrameSignal {
         // Render count
         ++this.count;
 
-console.log(this.id + ' evaluate ' + this.count);
-
-        const { parameters } = this;
-        const args    = this.literate(parameters);
+        const { fn, parameters } = this;
+        const args    = fn(parameters);
         const strings = args[0];
 
         // Flag the literal as containing exactly 1 expression optionally
@@ -126,67 +124,6 @@ console.log(this.id + ' evaluate ' + this.count);
         while (strings[++n] !== undefined) renderValue(this, args, args, n, args[n]);
         this.render.apply(this, args);
     }
-
-    render(strings) {
-console.log('XXXXX', strings, Array.from(arguments).slice(1));
-
-
-
-
-        // Diff arguments against .renderers and update DOM accordingly???
-        let n = 0;
-        while (arguments[++n]) {
-            if (this.renderers[n] === arguments[n]) continue;
-            const oldRenderer = this.renderers[n];
-
-            if (oldRenderer) {
-                console.log('DESTROY', oldRenderer);
-
-                // Can this upset the observers queue? We are currently evaluating
-                // renderers in the observers queue, and if oldRenderer happens to
-                // be earlier in the queue the current index could become de-synced
-                // when oldRenderer is removed
-                oldRenderer.stop();
-            }
-
-
-            this.renderers[n] = arguments[n];
-        }
-
-        if (this.renderers.length > arguments.length) {
-            n = arguments.length - 2;
-            while (this.renderers[++n]) {
-                console.log('DESTROY', this.renderers[n]);
-
-                // Can this upset the observers queue? We are currently evaluating
-                // renderers in the observers queue, and if oldRenderer happens to
-                // be earlier in the queue the current index could become de-synced...
-                this.renderers[n].stop();
-            }
-            this.renderers.length = arguments.length - 1;
-        }
-    }
-
-    /*
-    include(identifier, fn, data) {
-        if (data === undefined || data === null) return;
-
-        // If a renderer already exists for this template/data pair...
-        let n = -1;
-        while (this.renderers[++n]) if (
-            this.renderers[n].template === template &&
-            this.renderers[n].data === data
-        ) {
-            // ...return it
-            return this.renderers[n];
-        }
-
-        // Return new template renderer
-        return Template
-        .get(identifer)
-        .createRenderer(this.element, this.parameters, data);
-    }
-    */
 
     stop() {
 console.log(this.id + ' stop()');

@@ -11,8 +11,6 @@ Constructs an object responsible for rendering to the `.dataset` property.
 **/
 
 export default class DatasetRenderer extends AttributeRenderer {
-    //static consts = AttributeRenderer.consts;
-
     constructor(signal, literal, consts, element, name, debug) {
         super(signal, literal, consts, element, name, debug);
 

@@ -137,7 +137,7 @@ export function printDebug(renderer, error) {
         }),
 
         create('span', {
-            text: renderer.renderCount,
+            text: renderer.count,
             style: literalCountCSS
         })
     ];

@@ -34,10 +34,26 @@
     <template id="test-template-2">
         <p>a: ${ data.a } b: ${ data.b }</p>
     </template>
+
+    <template id="test-template-3">
+        <p>a: ${ data.a } b: ${ data.b }</p>
+    </template>
+
+    <template id="test-template-4">
+        ${ include('#test-template-3', data.object) }
+    </template>
+
+    <template id="test-template-5">
+        ${ data.array.map(include('#test-template-3')) }
+    </template>
 </head>
 <body>
-    <div id="parent"></div>
+    <div id="parent-2"></div>
+    <div id="parent-3"></div>
+    <div id="parent-4"></div>
+    <div id="parent-5"></div>
     <script type="module">
     import './modules/test/template.js';
+    import './modules/test/literal.js';
     </script>
 </body>

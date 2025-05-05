@@ -6,20 +6,21 @@ processing the literal content is more DOM content this renderer will insert
 that DOM after the text node.
 **/
 
-import Signal           from 'fn/signal.js';
-import Data             from 'fn/data.js';
-import isComment        from 'dom/is-comment.js';
-import isElement        from 'dom/is-element.js';
-import isFragment       from 'dom/is-fragment.js';
-import isTextNode       from 'dom/is-text-node.js';
-import deleteRange      from '../dom/delete-range.js';
-import TemplateRenderer from './renderer-template.js';
-import print, { printError } from '../print.js';
-import toText           from './to-text.js';
+import Signal      from 'fn/signal.js';
+import Data        from 'fn/data.js';
+import isComment   from 'dom/is-comment.js';
+import isElement   from 'dom/is-element.js';
+import isFragment  from 'dom/is-fragment.js';
+import isTextNode  from 'dom/is-text-node.js';
+import deleteRange from '../dom/delete-range.js';
+import toText      from './to-text.js';
 import Renderer, { stats } from './renderer.js';
+import Literal     from '../literal.js';
+import print, { printError } from '../print.js';
 
 
 const assign = Object.assign;
+const define = Object.defineProperties;
 
 
 function stop(node) {
@@ -52,28 +53,21 @@ function setNodeValue(node, value) {
     }
 }
 
-/*
-function toContent(object) {
-    return object.content ?
-        toContent(object.content) :
-        object ;
-}
-*/
-
-function objectToContents(state, object, i) {
+function objectToContents(renderer, object, i) {
     // Object may be a primitive, a DOM node or fragment, a LiteralTemplate or
     // an array of any of these.
-    let { string, contents } = state;
+    let { string, contents } = renderer;
 
     // If object is not a node or renderer, append to string. Array.isArray()
     // does return true for a proxy of an array.
-    if (!(object instanceof TemplateRenderer) && !(object instanceof Node) && !Array.isArray(object)) {
-        state.string += toText(object);
+    if (!(object instanceof Literal)
+     && !(object instanceof Node)
+     && !Array.isArray(object)) {
+        renderer.string += toText(object);
         return i;
     }
 
-    // If there is a string to splice in we must do that before dealing with
-    // object
+    // If there is a string to splice in we must do that before dealing with object
     if (string) {
         // And content is a text node, but not the last text node, update it
         if (++i < contents.length - 1 && isTextNode(contents[i])) {
@@ -88,35 +82,37 @@ function objectToContents(state, object, i) {
             contents.splice(i, 0, node);
         }
         // Reset string accumulator
-        state.string = '';
+        renderer.string = '';
     }
 
     // It is possible that the template has returned the same object at the same
-    // index again, in which case we do nothing. Not hugely likely, but possible.
+    // index again, in which case we do nothing. Not hugely likely, but possible,
+    // so we may as well do the optimum thing: nothing.
     if (object === contents[++i]) return i;
     --i;
 
     // Object is an array, recurse over its values
     if (Array.isArray(object)) {
         let n = -1;
-        while(++n < object.length) i = objectToContents(state, object[n], i);
+        while(++n < object.length) i = objectToContents(renderer, object[n], i);
         return i;
     }
 
     // Object is a Literal Template
-    if (object instanceof TemplateRenderer) {
+    if (object instanceof Literal) {
+        // Get current index of object
+        const k = contents.indexOf(object);
         // Literal Template has been previously rendered
-        if (object.includeRenderCount === state.renderCount) {
-            // Remove object DOM nodes back to object.content
+        if (k !== -1) {
+            console.log('YES YES YES');
+            // Remove object DOM nodes back to object.fragment
             object.remove();
-            // Get current index of object
-            const i = contents.indexOf(object);
             // Splice it out of contents
-            contents.splice(i, 1);
+            contents.splice(k, 1);
         }
 
         // Add content into DOM and splice object into contents
-        contents[++i].before(object.content);
+        contents[++i].before(object.fragment);
         if (window.DEBUG) ++stats.add;
         contents.splice(i, 0, object);
         return i;
@@ -151,28 +147,34 @@ template renderers, or strings.
 **/
 
 export default class TextRenderer extends Renderer {
-    static consts = ['DATA', 'data', 'element', 'shadow', 'host', 'id', 'include', 'print'];
-
-    constructor(literal, parameters, element, node, debug) {
+    constructor(fn, parameters, element, node, id) {
         if (window.DEBUG && !isTextNode(node)) {
             throw new TypeError('TextRenderer() node not a text node');
         }
 
-        super(literal, assign({}, parameters, {
+        // Defines .fn, .parameters
+        super(fn, assign({}, parameters, {
             element,
-            include: (template, fn, data) => this.include(template, fn, data),
+            include: (identifier, data) => {
+                return data === undefined ?
+                    (data) => this.include(identifier, data) :
+                    this.include(identifier, data) ;
+            },
             //print:   (...args) => print(this, ...args)
         }));
 
-        // Contents may contain Nodes and LiteralTemplates, but the last item
-        // in contents will always be the original text node
+        // A useful id for debugging only, really
+        this.id = id;
+        // The last item in contents will always be the original text node
         this.contents = [node];
-        this.string   = '';
+        // String accumulator for render cycle, private
+        this.string = '';
+        // The last node is always the last node and ever shall be
+        define(this, { lastNode: { value: node }});
 
         // A synchronous evaluation while data signal value is undefined binds
         // this renderer to changes to that signal. If signal value is a `data`
         // object evaluation renders the renderer immediately.
-        //Signal.evaluate(this, this.evaluate);
         if (Signal.evaluate(this, this.evaluate) || Signal.hasInvalidDependency) this.cue();
     }
 
@@ -183,53 +185,28 @@ export default class TextRenderer extends Renderer {
             this.contents[0] ;
     }
 
-    get lastNode() {
-        // The last item in contents is always the original text node
-        return this.contents[this.contents.length - 1];
-    }
+    include(identifier, data) {
+        const { contents, parameters } = this;
 
-    include(identifier, fn, data) {
-        if (data === undefined || data === null) return;
+        // We cannot render values that do not accept properties
+        if (data === undefined || data === null) {
+            throw new Error('No data passed in to include()');
+        }
 
-        // If a renderer already exists for this template/data pair...
+        // If a renderer already exists in contents for this template/data pair...
         let n = -1;
-        while (this.renderers[++n]) if (
-            this.renderers[n].template === template &&
-            this.renderers[n].data === data
+        while (contents[++n]) if (
+            contents[n] instanceof Literal &&
+            contents[n].template === identifier &&
+            contents[n].data === data
         ) {
             // ...return it
-            return this.renderers[n];
+            return contents[n];
         }
 
         // Return new template renderer
-        return TemplateRenderer.from(identifer, this.element, this.parameters);
+        return Literal.from(identifier, data, parameters);
     }
-
-    /*
-    include(template, data) {
-        const object      = Data.objectOf(data);
-        const contents    = this.contents;
-        const renderCount = this.renderCount;
-
-        // Look through contents from latest includeIndex to see if ...
-        let n = -1;
-        while (contents[++n] !== undefined) {
-            // ... included template/object pair already has a renderer
-            if (contents[n].template === template
-                && contents[n].object === object
-                && contents[n].includeRenderCount !== renderCount) {
-                // Keep a note of which render this was re-included on to avoid
-                // trying to re-include the same renderer twice in one render
-                contents[n].includeRenderCount = renderCount;
-                // Return it
-                return contents[n];
-            }
-        }
-
-        // Return a new
-        return include(template, data, this.element, this.consts);
-    }
-    */
 
     evaluate() {
         if (window.DEBUG) {
@@ -249,15 +226,15 @@ export default class TextRenderer extends Renderer {
     }
 
     render(strings) {
+        const { contents } = this;
         // Last is the original text node
-        const contents = this.contents;
         const last = contents[contents.length - 1];
 
         // An edge case. If element is contenteditable it may be children have
         // been removed from the DOM (user deleted them from contenteditable).
         // This presents a problem because Literal uses text nodes as content
         // placeholders and we don't know what child index contents should have
-        // inside element. But for now, we're just going to plonk content back
+        // inside element. For now, we're just going to plonk content back
         // into element in last place. Less than ideal.
         if (contents.find(notInDOM)) {
             console.warn('Literal: contents have been removed from the DOM, attempting to replace them');
@@ -271,7 +248,7 @@ export default class TextRenderer extends Renderer {
         // anyway, so this should not leak, but I admit doing this is a bit naff.
         // It does avoid creating any more objects though.
         this.string = '';
-//if (contents && arguments[1]) console.log('PRE', Array.from(contents), Array.from(arguments[1]));
+
         // Loop over strings, zip objects into string
         let n = -1;
         let i = -1;
@@ -280,7 +257,7 @@ export default class TextRenderer extends Renderer {
             this.string += strings[n];
             i = objectToContents(this, arguments[n + 1], i);
         }
-//if (contents) console.log('POST', Array.from(contents));
+
         // Set the last string on the last text node
         setNodeValue(last, this.string + strings[n]);
 
@@ -289,13 +266,22 @@ export default class TextRenderer extends Renderer {
             const mid = contents[i].firstNode || contents[i];
             deleteRange(mid, last);
             if (window.DEBUG) ++stats.remove;
+            // Can this upset the observers queue? We are currently evaluating
+            // renderers in the observers queue, and if old renderer happens to
+            // be earlier in the queue the current index could become de-synced
+            // when it is removed... but can it be earlier?
             contents.splice(i, contents.length - i - 1).forEach(stop);
         }
     }
 
     stop() {
+        // Now, so we actually need to stop contents? Don't the signals made
+        // while instantiating this renderer - don't they stop automatically?
+        // I guess not if they were created asynchronously?
         this.contents.forEach(stop);
         this.contents.length = 0;
         return super.stop.apply(this);
     }
+
+    static consts = ['DATA', 'data', 'element', 'shadow', 'host', 'id', 'include', 'print'];
 }

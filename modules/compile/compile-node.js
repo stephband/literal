@@ -124,12 +124,10 @@ const compileNode = overload((targets, node) => toType(node), {
     'doctype':  id,
     'document': compileChildren,
     'fragment': compileChildren,
-
     'element': (targets, element, path, options, debug) => {
         compileElement(targets, element, (path ? path + pathSeparator : '') + indexOf(element), options, debug);
         return targets;
     },
-
     'text': (targets, node, path, options, template) => {
         const string = node.nodeValue;
         if (!isLiteralString(string)) return targets;

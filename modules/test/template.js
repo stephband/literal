@@ -1,3 +1,4 @@
+
 import run      from 'fn/test.js';
 import Template from '../template.js';
 
@@ -52,16 +53,5 @@ run(
     test(template.content.firstElementChild.textContent);
     test(template.compiled.length);
     test(template2 === template);
-    done();
-});
-
-run(
-'Template.get()',
-[],
-(test, done) => {
-    const element  = document.getElementById('parent');
-    const template = Template.get('#test-template-2');
-    const renderer = template.createRenderer(element, { a: 1, b: 2 });
-
     done();
 });

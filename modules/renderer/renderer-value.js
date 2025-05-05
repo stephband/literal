@@ -163,8 +163,6 @@ const coercer = {
 };
 
 export default class ValueRenderer extends AttributeRenderer {
-    //static consts = ['DATA', 'data', 'element', 'shadow', 'host', 'id'];
-
     constructor(signal, literal, consts, element, name, debug) {
         super(signal, literal, consts, element, 'value', debug);
 
