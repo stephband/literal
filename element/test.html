@@ -129,17 +129,17 @@
             p: `
                 <h3>#p</h3>
                 <p>Shadow include.</p>
-                <p><code>(\${ this.renderCount }) host.text = \${ host.text }</code></p>
+                <p><code>(\${ this.count }) host.text = \${ host.text }</code></p>
             `
         },
 
         shadow: `
-            <p><code>(\${ this.renderCount }) host.switch   = \${ host.switch }</code></p>
-            <p><code>(\${ this.renderCount }) host.count    = \${ host.count }</code></p>
-            <p><code>(\${ this.renderCount }) host.text     = \${ host.text }</code></p>
-            <p><code>(\${ this.renderCount }) host.controls = \${ host.controls }</code></p>
-            <p><code>(\${ this.renderCount }) host.data     = \${ host.data }</code></p>
-            <p><code>(\${ this.renderCount }) data.count    = \${ data.count }</code></p>
+            <p><code>(\${ this.count }) host.switch   = \${ host.switch }</code></p>
+            <p><code>(\${ this.count }) host.count    = \${ host.count }</code></p>
+            <p><code>(\${ this.count }) host.text     = \${ host.text }</code></p>
+            <p><code>(\${ this.count }) host.controls = \${ host.controls }</code></p>
+            <p><code>(\${ this.count }) host.data     = \${ host.data }</code></p>
+            <p><code>(\${ this.count }) data.count    = \${ data.count }</code></p>
             \${ include('#p', data) }
         `
     }, {

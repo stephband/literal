@@ -49,15 +49,6 @@ export function toAttributeBoolean(values) {
 
 
 export default class BooleanRenderer extends AttributeRenderer {
-    constructor(signal, literal, consts, element, name, debug) {
-        super(signal, literal, consts, element, name, debug);
-
-        // A synchronous evaluation while data signal value is undefined binds
-        // this renderer to changes to that signal. If signal value is an `data`
-        // object it renders the renderer immediately.
-        Signal.evaluate(this, this.evaluate);
-    }
-
     render(strings) {
         // If arguments contains a single expression use its value
         const value = this.singleExpression ?

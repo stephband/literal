@@ -1,4 +1,5 @@
 
+import id          from 'fn/id.js';
 import create      from 'dom/create.js';
 import identify    from 'dom/identify.js';
 import compileNode from './compile/compile-node.js';
@@ -15,14 +16,19 @@ factory for creating renderers of the template. This object is cached against
 `id`, further calls with the same id return the same object.
 **/
 
-export default class Template {
+export default class Template extends id {
     constructor(id, fragment, options = {}) {
         // If cached against id, return cached instance
         if (cache[id]) return cache[id];
 
-        this.id       = id;
-        this.content  = fragment;
-        this.compiled = compileNode([], fragment, '', options, id);
+        // Set 4th argument up as this, allowing this to be a DOM template
+        super(arguments[3]);
+
+        // Identifier is a cache key, in the case of a template in the DOM it is
+        // its fragment identifier, it may be a url or anything else
+        this.identifier = id;
+        this.compiled   = compileNode([], fragment, '', options, id);
+        if (!this.content) this.content = fragment;
 
         // Cache template
         cache[id] = this;
@@ -35,24 +41,13 @@ export default class Template {
     }
 
     /**
-    Template.get(id)
-    **/
-    static get(id) {
-        if (cache[id]) return cache[id];
-        // Assume id is of the form `#id`
-        const template = document.getElementById(id.slice(1));
-        const options  = { nostrict: template.hasAttribute && template.hasAttribute('nostrict') };
-        return new Template(id, template.content, options);
-    }
-
-    /**
     Template.fromHTML(id, html, options)
     **/
     static fromHTML(id, html, options = {}) {
         if (cache[id]) throw new Error('Template.fromHTML() id "' + id + '" already registered');
         const template = create('template', html);
         const fragment = template.content;
-        return new Template(id, fragment, options);
+        return new Template(id, fragment, options, template);
     }
 
     /**
@@ -66,12 +61,18 @@ export default class Template {
     /**
     Template.fromTemplate(template)
     **/
-    static fromTemplate(template) {
-        const id = '#' + identify(template, 'literal-');
-        const options = {
-            nostrict: template.hasAttribute && template.hasAttribute('nostrict')
-        };
+    static fromTemplate(template, settings) {
+        const identifier = '#' + identify(template, 'literal-');
+        const consts = template.getAttribute('consts');
+        const options = assign({}, settings, {
+            nostrict: template.hasAttribute ?
+                template.hasAttribute('nostrict') :
+                undefined,
+            consts: consts ?
+                consts.trim().split(/\s*[\s,]\s*/) :
+                undefined
+        });
 
-        return new Template(id, template.content, options);
+        return new Template(identifier, template.content, options, template);
     }
 }

@@ -10,7 +10,7 @@ run(
     const html = '<div class="test" attribute="${ attr }">Test ${ name } content <span>${ value }</span></div>';
     const template = Template.fromHTML(id, html);
 
-    test(template.id);
+    test(template.identifier);
     test(template.content.firstElementChild.tagName);
     test(template.content.firstElementChild.getAttribute('attribute'));
     test(template.content.firstElementChild.textContent.trim());
@@ -32,7 +32,7 @@ run(
     fragment.appendChild(span2);
     const template = Template.fromFragment(id, fragment);
 
-    test(template.id);
+    test(template.identifier);
     test(template.content.firstElementChild.tagName);
     test(template.content.firstElementChild.textContent);
     test(template.content.lastElementChild.textContent);
@@ -46,9 +46,9 @@ run(
 (test, done) => {
     const element  = document.getElementById('test-template-1');
     const template = Template.fromTemplate(element);
-    const template2 = Template.get('#test-template-1');
+    const template2 = new Template('#test-template-1', element.content);
 
-    test(template.id);
+    test(template.identifier);
     test(template.content.firstElementChild.tagName);
     test(template.content.firstElementChild.textContent);
     test(template.compiled.length);

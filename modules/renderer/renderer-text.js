@@ -104,7 +104,6 @@ function objectToContents(renderer, object, i) {
         const k = contents.indexOf(object);
         // Literal Template has been previously rendered
         if (k !== -1) {
-            console.log('YES YES YES');
             // Remove object DOM nodes back to object.fragment
             object.remove();
             // Splice it out of contents
@@ -160,11 +159,11 @@ export default class TextRenderer extends Renderer {
                     (data) => this.include(identifier, data) :
                     this.include(identifier, data) ;
             },
-            //print:   (...args) => print(this, ...args)
+            print:   (...args) => print(this, ...args)
         }));
 
-        // A useful id for debugging only, really
-        this.id = id;
+        // Only for edge case in render()
+        this.element = element;
         // The last item in contents will always be the original text node
         this.contents = [node];
         // String accumulator for render cycle, private
@@ -197,7 +196,7 @@ export default class TextRenderer extends Renderer {
         let n = -1;
         while (contents[++n]) if (
             contents[n] instanceof Literal &&
-            contents[n].template === identifier &&
+            contents[n].template.identifier === identifier &&
             contents[n].data === data
         ) {
             // ...return it
@@ -205,7 +204,7 @@ export default class TextRenderer extends Renderer {
         }
 
         // Return new template renderer
-        return Literal.from(identifier, data, parameters);
+        return Literal.create(identifier, data, parameters);
     }
 
     evaluate() {

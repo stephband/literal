@@ -163,15 +163,6 @@ const coercer = {
 };
 
 export default class ValueRenderer extends AttributeRenderer {
-    constructor(signal, literal, consts, element, name, debug) {
-        super(signal, literal, consts, element, 'value', debug);
-
-        // A synchronous evaluation while data signal value is undefined binds
-        // this renderer to changes to signal. If signal has value this also
-        // renders the renderer immediately.
-        Signal.evaluate(this, this.evaluate);
-    }
-
     render(strings, value) {
         return setValue(this.element,
             this.singleExpression ?

@@ -46,12 +46,17 @@
     <template id="test-template-5">
         ${ data.array.map(include('#test-template-3')) }
     </template>
+
+    <template id="test-template-6" consts="thing">
+        ${ thing }
+    </template>
 </head>
 <body>
     <div id="parent-2"></div>
     <div id="parent-3"></div>
     <div id="parent-4"></div>
     <div id="parent-5"></div>
+    <div id="parent-6"></div>
     <script type="module">
     import './modules/test/template.js';
     import './modules/test/literal.js';

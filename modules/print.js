@@ -96,7 +96,7 @@ const literalCountCSS = {
 
 export function printError(renderer, error) {
     // TODO: get the data in here!
-    log('error', renderer.template + ' – ' + renderer.code, '', '', 'red');
+    log('error', renderer.identifier + ' – ' + renderer.code, '', '', 'red');
     console.log(error);
 
     return create('pre', {
@@ -129,7 +129,7 @@ export function printDebug(renderer, error) {
         + (typeof renderer.name === 'string' ? '>' + renderer.name : '') ;
 
     const children = [
-        renderer.template + ' ',
+        renderer.template.identifier + ' ',
 
         create('small', {
             text:  (fullpath ? '> ' + fullpath.replace(/>/g, ' > ') : ''),

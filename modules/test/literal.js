@@ -31,14 +31,14 @@ run('Literal.fromTemplate(template, element, data)', [
     });
 });
 
-run('Literal.from("#id", element, { a, b })', [
+run('Literal.create("#id", element, { a, b })', [
     'a: 1 b: 2',
     'a: 3 b: 2',
     'a: 3 b: 4'
 ], (test, done) => {
     const element  = document.getElementById('parent-3');
     const object   = { a: 1, b: 2 };
-    const renderer = Literal.from('#test-template-3', object, { element });
+    const renderer = Literal.create('#test-template-3', object, { element });
     const data     = Data(object);
 
     element.appendChild(renderer.fragment);
@@ -57,14 +57,14 @@ run('Literal.from("#id", element, { a, b })', [
     });
 });
 
-run('Literal.from("#id", element, { object { a, b } })', [
+run('Literal.create("#id", element, { object { a, b } })', [
     'a: 1 b: 2',
     'a: 3 b: 2',
     'a: 3 b: 4'
 ], (test, done) => {
     const element  = document.getElementById('parent-4');
     const object   = { object: { a: 1, b: 2 } };
-    const renderer = Literal.from('#test-template-4', object, { element });
+    const renderer = Literal.create('#test-template-4', object, { element });
     const data     = Data(object);
 
     element.appendChild(renderer.fragment);
@@ -83,15 +83,16 @@ run('Literal.from("#id", element, { object { a, b } })', [
     });
 });
 
-run('Literal.from("#id", element, { array [{ a, b }, { a, b}] })', [
+run('Literal.create("#id", element, { array [{ a, b }, { a, b}] })', [
     'a: 1 b: 2\n    \n        a: 3 b: 4',
     'a: 3 b: 4', true,
     'a: 5 b: 6\n    \n        a: 3 b: 4', true,
+    'a: 5 b: 6\n    \n        a: 7 b: 4',
     ''
 ], (test, done) => {
     const element  = document.getElementById('parent-5');
     const object   = { array: [{ a: 1, b: 2 }, { a: 3, b: 4 }] };
-    const renderer = Literal.from('#test-template-5', object, { element });
+    const renderer = Literal.create('#test-template-5', object, { element });
     const data     = Data(object);
 
     element.appendChild(renderer.fragment);
@@ -117,13 +118,35 @@ run('Literal.from("#id", element, { array [{ a, b }, { a, b}] })', [
                 const p3 = element.querySelector('p + p');
                 // Has the paragraph been persistent?
                 test(p1 === p3);
-                // Test empty array
-                data.array = [];
+                // Test moved object/renderer is still live
+                data.array[1].a = 7;
                 requestAnimationFrame(() => {
                     test(element.textContent.trim());
-                    requestAnimationFrame(done);
+                    // Test empty array
+                    data.array = [];
+                    requestAnimationFrame(() => {
+                        test(element.textContent.trim());
+                        requestAnimationFrame(done);
+                    });
                 });
             });
         });
+    });
+});
+
+run('<template consts>', [
+    '0'
+], (test, done) => {
+    const element  = document.getElementById('parent-6');
+    const object   = { thing: 0 };
+    const renderer = Literal.create('#test-template-6', object, { element });
+    const data     = Data(object);
+
+    element.appendChild(renderer.fragment);
+
+    // Test data array
+    requestAnimationFrame(() => {
+        test(element.textContent.trim());
+        requestAnimationFrame(done);
     });
 });

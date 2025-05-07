@@ -11,11 +11,6 @@ Constructs an object responsible for rendering to the `.dataset` property.
 **/
 
 export default class StyleRenderer extends AttributeRenderer {
-    constructor(signal, literal, consts, element, name, debug) {
-        super(signal, literal, consts, element, 'style', debug);
-        Signal.evaluate(this, this.evaluate);
-    }
-
     render(strings) {
         // Intercept single expressions that evaluate to an object, treat object
         // as object of CSS property:value rules

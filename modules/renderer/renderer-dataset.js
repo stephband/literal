@@ -11,8 +11,8 @@ Constructs an object responsible for rendering to the `.dataset` property.
 **/
 
 export default class DatasetRenderer extends AttributeRenderer {
-    constructor(signal, literal, consts, element, name, debug) {
-        super(signal, literal, consts, element, name, debug);
+    constructor(fn, parameters, element, name, debug) {
+        super(fn, parameters, element, name, debug, false);
 
         // data-prop-thing to propThing
         this.property = toCamelCase(name.replace(/^data-/, ''));

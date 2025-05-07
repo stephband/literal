@@ -1,3 +1,4 @@
+
 /**
 <template is="literal-html">
 
@@ -17,23 +18,24 @@ import Data           from 'fn/data.js';
 import element, { getInternals } from 'dom/element.js';
 import assignDataset  from '../modules/dom/assign-dataset.js';
 import requestData    from '../modules/request-data.js';
-import Literal        from '../modules/template.js';
+import Template       from '../modules/template.js';
+import Literal        from '../modules/literal.js';
 import { printError } from '../modules/print.js';
 
 
 export default element('<template is="literal-html">', {
-    construct: function(shadow, internals) {
-        internals.connected = false;
-        internals.pushed    = false;
-        internals.renderer  = Literal.fromTemplate(this, this.parentElement);
+    construct: function(shadow, state) {
+        state.connected = false;
+        state.rendered  = false;
+        state.template  = Template.fromTemplate(this);
     },
 
-    connect: function(shadow, internals) {
-        const { renderer } = internals;
+    connect: function(shadow, state) {
+        const { renderer } = state;
 
         // If src or data was not set use data found in dataset
-        if (!internals.connected && !internals.promise && !internals.pushed) {
-            internals.connected = true;
+        if (!state.connected && !state.promise && !state.renderer) {
+            state.connected = true;
             this.data = assignDataset({}, this.dataset);
         }
     }
@@ -53,7 +55,6 @@ export default element('<template is="literal-html">', {
     <template is="literal-html" data="./module.js#namedExport">...</template>
     ```
     **/
-
     src: {
         attribute: function(url) {
             this.src = url;
@@ -64,17 +65,17 @@ export default element('<template is="literal-html">', {
         },
 
         set: function(url) {
-            const internals = getInternals(this);
-            internals.src = url;
+            const state = getInternals(this);
+            state.src = url;
 
             // Cancel existing promise of data
-            if (internals.promise) {
-                internals.promise.cancelled = true;
-                internals.promise = undefined;
+            if (state.promise) {
+                state.promise.cancelled = true;
+                state.promise = undefined;
             }
 
-            // Set internals.promise
-            const p = internals.promise = requestData(url)
+            // Set state.promise
+            const p = state.promise = requestData(url)
             .then((data) => {
                 if (p.cancelled) { return; }
                 this.data = data;
@@ -95,30 +96,36 @@ export default element('<template is="literal-html">', {
     observing, so changes to this data are reflected in the DOM immediately
     (well, not quite immediately – literal renders changes on the next frame).
     **/
-
     data: {
         attribute: function(json) {
             this.data = JSON.parse(json);
         },
 
         get: function() {
-            const internals = getInternals(this);
-            return Data.of(internals.data);
+            const state = getInternals(this);
+            return state.renderer && state.renderer.data;
         },
 
         set: function(object) {
-            const internals = getInternals(this);
-            const renderer  = internals.renderer;
+            const state = getInternals(this);
 
-            const data = internals.data = Data.objectOf(object);
-            if (!data) return;
+            if (state.renderer) state.renderer.remove();
+            if (!object) return;
+            state.renderer = new Literal(
+                state.template,
+                state.object,
+                { element: this.parentElement }
+            );
 
-            const fragment = renderer.push(data);
-
-            // Replace DOM content on first render
-            if (internals.pushed) return;
-            internals.pushed = true;
-            this.replaceWith(fragment);
+            this.replaceWith(state.renderer.fragment);
         }
     }
+
+
+    /**
+    .consts=""
+    A list of property names found on `data` that are set as consts inside the
+    template.
+    **/
+    // No definition for consts, it's picked up by Template.fromTemplate()
 }, 'stephen.band/literal/');

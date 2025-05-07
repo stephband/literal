@@ -1,38 +1,48 @@
 
-import remove   from 'fn/remove.js';
-import Data     from 'fn/data.js';
-import Signal, { FrameSignal } from 'fn/signal.js';
-import Template from '../template.js';
+import remove  from 'fn/remove.js';
+import Data    from 'fn/data.js';
+import { FrameSignal } from 'fn/signal.js';
+import Literal from '../literal.js';
 
-//const ids = {};
+
+function stop(stopable) {
+    stopable.stop();
+}
+
+function promiseStop() {
+    this.status === 'done';
+}
 
 function renderValue(renderer, args, values, n, object, isRender = false) {
     if (object && typeof object === 'object') {
         // Avoid having property gets registered as observers
         const target = Data.objectOf(object);
 
+        // Don't add literals to stopables
+        if (target instanceof Literal) return;
+
         // Is target have .then()?
         if (typeof target.then === 'function') {
-            const asyncs = renderer.asyncs || (renderer.asyncs = []);
+            const stopables = renderer.stopables || (renderer.stopables = []);
             values[n] = '';
 
             // You can't stop a promise, but we can flag it to be ignored
             target.stop = promiseStop;
             target.then((value) => {
                 if (target.status === 'done') { return; }
-                remove(asyncs, target);
+                remove(stopables, target);
                 return renderValue(renderer, args, values, n, value, true);
             });
 
-            asyncs.push(target);
+            stopables.push(target);
             return;
         }
 
-        // If target has a .stop() method add it to asyncs, objects stopped on
+        // If target has a .stop() method add it to stopables, objects stopped on
         // renderer invalidation and stop.
         if (typeof target.stop === 'function') {
-            const asyncs = renderer.asyncs || (renderer.asyncs = []);
-            asyncs.push(target);
+            const stopables = renderer.stopables || (renderer.stopables = []);
+            stopables.push(target);
         }
 
         // If target has a .pipe() method render its piped values
@@ -67,16 +77,10 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
 export default class Renderer extends FrameSignal {
     static consts = ['DATA', 'data', 'element', 'shadow', 'host', 'id'];
 
-    constructor(fn, parameters) {
-        // FrameSignal does not evaluate immediately when no fn passed in. This
-        // should change, possibly, so we dont have to evaluate deliberately
-        // here ... or maybe we do need to wait for object set up, so we must
-        // evaluate in the sub class constructor ? Yup.
+    constructor(fn, parameters, debug) {
+        // FrameSignal does not evaluate immediately when no fn passed in
         super();
-
-        //if (!ids[template]) ids[template] = 0;
-        //this.id         = template + '-' + ++ids[template];
-        //this.template   = template;
+        this.debug      = debug;
         this.count      = 0;
         this.fn         = fn;
         this.parameters = parameters;
@@ -95,19 +99,22 @@ export default class Renderer extends FrameSignal {
         // Clear inputs
         //clearInputs(this);
 
+        if (this.stopables) this.stopables.forEach(stop);
+
         this.cue();
     }
 
     evaluate() {
         // Renderer may have been stopped as part of this frame's evaluation
-        // in which case it has not been removed from observers
-        if (this.status === 'done') return;
+        // in which case it has not been removed from observers...
+        // TODO: check, not sure this is necessary
+        //if (this.status === 'done') return;
 
         // Render count
         ++this.count;
 
         const { fn, parameters } = this;
-        const args    = fn(parameters);
+        const args = fn(parameters);
         const strings = args[0];
 
         // Flag the literal as containing exactly 1 expression optionally
@@ -126,7 +133,7 @@ export default class Renderer extends FrameSignal {
     }
 
     stop() {
-console.log(this.id + ' stop()');
+        if (this.stopables) this.stopables.forEach(stop);
         return super.stop();
     }
 }

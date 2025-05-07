@@ -34,8 +34,7 @@ export default function compile(source, scope, consts, options = {}, message) {
     // weird, and probably bad. If we are going to use nostrict mode it would
     // probably be best to devise some way of enforcing the base data object to
     // be a prototype-less object of some sort.
-    const code = indent + (options.nostrict ? '' : '"use strict";')
-        + indent + 'const {' + consts.join(',') + '} = arguments[0];'
+    const code = (options.consts && options.consts.length ? indent + 'const {' + options.consts.join(',') + '} = DATA;' : '')
         + indent + (options.nostrict ? 'with(data) ' : '')
         + 'return args`' + source + '`;\n';
 
@@ -44,7 +43,7 @@ export default function compile(source, scope, consts, options = {}, message) {
 
     if (window.DEBUG) {
         const t0 = window.performance.now();
-        const fn = compileFn(scope, '', code);
+        const fn = compileFn(scope, '{' + consts.join(',') + '}', code, null, !options.nostrict);
         const t1 = window.performance.now();
 
         // Log this compile
@@ -54,6 +53,6 @@ export default function compile(source, scope, consts, options = {}, message) {
         return compiled[code] = fn;
     }
 
-    // The quick version
-    return compiled[code] = compileFn(scope, '', code);
+    // The quick version scope, parameters, code, context, strict
+    return compiled[code] = compileFn(scope, '{' + consts.join(',') + '}', code, null, !options.nostrict);
 }

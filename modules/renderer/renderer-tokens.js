@@ -43,8 +43,8 @@ function updateTokens(list, cached, tokens, count = 0) {
 }
 
 export default class TokensRenderer extends AttributeRenderer {
-    constructor(signal, literal, consts, element, name, debug) {
-        super(signal, literal, consts, element, name, debug);
+    constructor(fn, parameters, element, name, debug) {
+        super(fn, parameters, element, name, debug, false);
 
         // Renderer properties
         this.list   = element[this.property];

@@ -105,20 +105,17 @@ Literal(template, parameters, element)
 export default class Literal {
     #first;
 
-    constructor(template, data, parameters = {}) {
-        // Make id from template id plus count
-        if (!ids[template.id]) ids[template.id] = 0;
-        this.id = template.id + '-' + (++ids[template.id]);
+    constructor(template, object, parameters = {}) {
         // Expose data in order to perform include comparisons
-        this.data = Data.of(data);
+        this.data = Data.of(object);
         // Expose template id in order to perform include comparisons
-        this.template = template.id;
+        this.template = template;
         // Make fragment from element context where necessary
         this.fragment = getContextFragment(template, parameters.element);
         // Assemble parameters
         this.parameters = assign({}, parameters, {
-            data: Data.of(data),
-            DATA: Data.objectOf(data)
+            data: this.data,
+            DATA: Data.objectOf(object)
         });
 
         const children = this.fragment.childNodes;
@@ -191,16 +188,20 @@ export default class Literal {
     .stop()
     **/
     stop() {
-console.log('Literal.stop() renderers:', this.renderers.length);
         this.renderers.forEach(stop);
         return this;
     }
 
     /**
-    Literal.from(identifier, element, parameters)
+    Literal.create(identifier, element, parameters)
     **/
-    static from(identifier, data, parameters) {
-        const template = Template.get(identifier);
+    static create(identifier, data, parameters) {
+        // Assume identifier is of the form `#id`
+        const element = document.getElementById(identifier.slice(1));
+        //const fragment = element.content;
+        //const options  = { nostrict: element.hasAttribute && element.hasAttribute('nostrict') };
+        //const template = new Template(identifier, fragment, options, element);
+        const template = Template.fromTemplate(element);
         return new Literal(template, data, parameters);
     }
 
@@ -223,8 +224,8 @@ console.log('Literal.stop() renderers:', this.renderers.length);
     /**
     Literal.fromTemplate(template, element, parameters, options)
     **/
-    static fromTemplate(templateElement, data, parameters, options) {
-        const template = Template.fromTemplate(templateElement, options);
+    static fromTemplate(element, data, parameters, options) {
+        const template = Template.fromTemplate(element, options);
         return new Literal(template, data, parameters);
     }
 
