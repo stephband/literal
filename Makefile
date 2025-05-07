@@ -5,16 +5,16 @@
 
 # Must format with tabs not spaces
 literal:
-	deno run --allow-read --allow-env --allow-net --allow-write --allow-run ./deno/make-literal.js ./ debug
+	deno run --allow-all ./deno/make-literal.js ./ debug
 
 comments:
-	deno run --allow-read --allow-env --allow-net --allow-write --allow-run ./deno/make-comments.js ./modules/ ./stuff/ ./documentation/templates/page.literal debug
+	deno run --allow-all ./deno/make-comments.js ./modules/ ./stuff/ ./documentation/templates/page.literal debug
 
 build:
 	rm -rf ./build
-	deno run --allow-read --allow-env --allow-net --allow-write --allow-run --reload --config ./deno.json ../fn/deno/make-modules.js build ./module.js ./literal-html/module.js
+	deno run --allow-all --reload --config ./deno.json ../fn/deno/make-modules.js build ./module.js ./literal-html/module.js
 
 documentation:
 	rm -rf ./documentation/build
-	deno run --allow-read --allow-env --allow-net --allow-write --allow-run --config ./deno.json ../fn/deno/make-modules.js documentation/build documentation/module.js documentation/module.css
-	deno run --allow-read --allow-env --allow-net --allow-write --allow-run --config ./deno.json ../fn/deno/make-modules.js documentation/build/details-toggle/shadow.css ../details-toggle/shadow.css
+	deno run --allow-all --config ./deno.json ../fn/deno/make-modules.js documentation/build documentation/module.js documentation/module.css
+	deno run --allow-all --config ./deno.json ../fn/deno/make-modules.js documentation/build/details-toggle/shadow.css ../details-toggle/shadow.css
