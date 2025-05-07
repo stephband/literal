@@ -12,12 +12,7 @@ comments:
 
 build:
 	rm -rf ./build
-	deno run --allow-read --allow-env --allow-net --allow-write --allow-run --config ./deno.json ../fn/deno/make-modules.js build \
-		module.js \
-		literal-html/module.js \
-		element/element.js \
-		data/clock.js \
-		#module.css
+	deno run --allow-read --allow-env --allow-net --allow-write --allow-run --reload --config ./deno.json ../fn/deno/make-modules.js build ./module.js ./literal-html/module.js
 
 documentation:
 	rm -rf ./documentation/build

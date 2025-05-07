@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../module.js"],
+  "sourcesContent": ["\nimport Data    from 'fn/data.js';\nimport Signal  from 'fn/signal.js';\nimport Literal from './modules/literal.js';\nimport stash   from './modules/stash.js';\nimport scope   from './modules/scope.js';\nimport { compiled } from './modules/compile/compile.js';\n\nLiteral.scope  = scope;\nLiteral.stash  = stash;\n\nexport { Literal as default, Data, Signal, compiled };\nexport { default as config } from './modules/config.js';\nexport { urls }              from './modules/urls.js';\n"],
+  "mappings": ";;+EAQAA,EAAQ,MAASC,EACjBD,EAAQ,MAASE",
+  "names": ["Literal", "scope_default", "stash_default"]
+}
