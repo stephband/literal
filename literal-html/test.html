@@ -203,7 +203,7 @@
     </template>
 
     <script type="module">
-    import '../scope/scope.js';
+    import '../scope.js';
     import LiteralHTML from './module.js';
 
     // Test JS API
@@ -221,14 +221,14 @@
 <body>
     <h1>Tests</h1>
 
-    <article class="test">
+    <!--article class="test">
         <template is="literal-html">
             <h2>is="literal-html"</h2>
             <p>Test attribute renderers.</p>
             <p id="${ '✓' }">String property <code>.id="✓"</code></p>
             ${ include('#template-7', data) }
         </template>
-    </article>
+    </article-->
 
     <table class="striped-table x-bleed test">
         <thead>

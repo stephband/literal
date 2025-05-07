@@ -14,7 +14,7 @@ Compiles a literal template string to a function.
 // Store render functions against their source
 export const compiled = {};
 
-export default function compile(source, scope, consts, options = {}, message) {
+export default function compile(source, scope, consts, options = {}, template) {
     // Hey hey, we are not in 'strict mode' inside compiled functions by default
     // so we CAN use with(), making `${ data.name }` available as simply `${ name }`
     // in a template... but let's make it opt-in (for the moment at least). There
@@ -47,7 +47,7 @@ export default function compile(source, scope, consts, options = {}, message) {
         const t1 = window.performance.now();
 
         // Log this compile
-        log('compile', (t1 - t0).toPrecision(3) + 'ms – ' + message, undefined, undefined, 'yellow');
+        log('compile', (t1 - t0).toPrecision(3) + 'ms – ' + template.identifier, undefined, undefined, 'yellow');
 
         // Add fn to cache
         return compiled[code] = fn;

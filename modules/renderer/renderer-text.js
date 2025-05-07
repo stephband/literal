@@ -146,7 +146,7 @@ template renderers, or strings.
 **/
 
 export default class TextRenderer extends Renderer {
-    constructor(fn, parameters, element, node, id) {
+    constructor(fn, parameters, element, node, debug) {
         if (window.DEBUG && !isTextNode(node)) {
             throw new TypeError('TextRenderer() node not a text node');
         }
@@ -159,8 +159,8 @@ export default class TextRenderer extends Renderer {
                     (data) => this.include(identifier, data) :
                     this.include(identifier, data) ;
             },
-            print:   (...args) => print(this, ...args)
-        }));
+            print: (...args) => print(this, ...args)
+        }), debug);
 
         // Only for edge case in render()
         this.element = element;

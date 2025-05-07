@@ -2,18 +2,17 @@
 /**
 requestData(url)
 
-Takes a `url` pointing to either a `.json` file, in which case it fetches and
-parses it, or a `.js` file, which it imports as a module, and returns a
-promise representing the result.
+Takes a `url` pointing to either a `.json` file (in which case it fetches and
+parses it) or a `.js` file (which it imports as a module), and returns a
+promise of the result.
 
 ```
 requestData('./path/to/data.json');
 ```
 
-Where a `url` to a module is relative it is normalised to `window.location` so
-that imports written in templates are treated relative to their location
-(dynamic `import()` would otherwise try and import relative to this
-`request.js` module).
+Where a `url` to a module is a relative URL it is normalised to `window.location`
+so that imports written in templates are treated correctly (dynamic `import()`
+would otherwise try and import relative to this module).
 
 ```
 requestData('./path/to/module.js');
@@ -26,7 +25,9 @@ imported.
 ```
 requestData('./path/to/module#named');
 ```
+**/
 
+/*
 If the fragment identifier is also post-fixed with parameters then that named
 export is treated as a constructor function and called:
 
@@ -39,18 +40,17 @@ To construct a default export use the name `default`:
 ```
 requestData('./path/to/module#default("parameter")');
 ```
-**/
+*/
 
 import get            from 'fn/get.js';
 import overload       from 'fn/overload.js';
 import cache          from 'fn/cache-by-key.js';
-import { requestGet } from 'dom/request.js';
 import { rewriteURL } from './urls.js';
 
 const rextension = /\.([\w-]+)(?:#|\?|$)/;
 const empty      = [];
 
-const requestData = overload((url) => (rextension.exec(url.pathname) || empty)[1], {
+const request = overload((url) => (rextension.exec(url.pathname) || empty)[1], {
     js: cache((url) => {
         // Get named import from hash
         const src  = url.origin + url.pathname + url.search;
@@ -59,13 +59,19 @@ const requestData = overload((url) => (rextension.exec(url.pathname) || empty)[1
         return import(src).then(get(name));
     }),
 
-    default: cache(requestGet)
+    default: cache((url) => fetch(url).then((response) => {
+        if (!response.ok) {
+            throw new Error(`Literal failed to fetch data – ${response.status}`);
+        }
+
+        return response.json();
+    }))
 });
 
-export default function(path) {
+export default function requestData(path) {
     // Get rewritten URL
     const url = rewriteURL(path);
 
     // Return promise of data
-    return requestData(url);
+    return request(url);
 }

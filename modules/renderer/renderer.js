@@ -80,6 +80,7 @@ export default class Renderer extends FrameSignal {
     constructor(fn, parameters, debug) {
         // FrameSignal does not evaluate immediately when no fn passed in
         super();
+
         this.debug      = debug;
         this.count      = 0;
         this.fn         = fn;

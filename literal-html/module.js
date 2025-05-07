@@ -113,7 +113,7 @@ export default element('<template is="literal-html">', {
             if (!object) return;
             state.renderer = new Literal(
                 state.template,
-                state.object,
+                object,
                 { element: this.parentElement }
             );
 

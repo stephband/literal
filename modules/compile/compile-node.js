@@ -156,7 +156,7 @@ const compileNode = overload((targets, node) => toType(node), {
             // Attempt to compile, and in case of an error replace node with an
             // error element
             try {
-                target.literal = compile(source, scope, TextRenderer.consts, options, code);
+                target.literal = compile(source, scope, TextRenderer.consts, options, template);
                 node.nodeValue = '';
                 targets.push(target);
                 return targets;
@@ -167,7 +167,7 @@ const compileNode = overload((targets, node) => toType(node), {
             }
         }
 
-        target.literal = compile(source, scope, TextRenderer.consts, options);
+        target.literal = compile(source, scope, TextRenderer.consts, options, template);
         node.nodeValue = '';
         targets.push(target);
         return targets;

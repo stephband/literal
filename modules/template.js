@@ -27,7 +27,7 @@ export default class Template extends id {
         // Identifier is a cache key, in the case of a template in the DOM it is
         // its fragment identifier, it may be a url or anything else
         this.identifier = id;
-        this.compiled   = compileNode([], fragment, '', options, id);
+        this.compiled   = compileNode([], fragment, '', options, this);
         if (!this.content) this.content = fragment;
 
         // Cache template

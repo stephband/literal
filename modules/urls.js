@@ -14,7 +14,7 @@ export function urls(object) {
 }
 
 export function rewriteURL(path) {
-    // Rewrite relative import URLs to be absolute, taking the page as their
+    // Rewrite relative import URLs to be absolute, taking location as their
     // relative root (if we don't do this import() assumes the location of
     // the script as relative root).
     const url = new URL(path, window.location);
