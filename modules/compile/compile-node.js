@@ -18,10 +18,10 @@ const assign = Object.assign;
 
 
 /*
-compileChildren(targets, element, path, options, debug)
+compileChildren(targets, element, path, options, template)
 */
 
-function compileChildren(targets, element, path, options, debug) {
+function compileChildren(targets, element, path, options, template) {
     // Children may mutate during compile, and we only want to compile
     // current children
     const children = Array.from(element.childNodes);
@@ -54,7 +54,7 @@ function compileChildren(targets, element, path, options, debug) {
                 }
             }
 
-            compileNode(targets, children[n], path, options, debug);
+            compileNode(targets, children[n], path, options, template);
         }
     }
 
@@ -63,16 +63,16 @@ function compileChildren(targets, element, path, options, debug) {
 
 
 /*
-compileAttributes(targets, node, path, options, debug)
+compileAttributes(targets, node, path, options, template)
 */
 
-function compileAttributes(targets, element, path, options, debug) {
+function compileAttributes(targets, element, path, options, template) {
     // Attributes may be removed during parsing so copy the list before looping
     const attributes = Array.from(element.attributes);
     let n = -1, attribute;
 
     while (attribute = attributes[++n]) {
-        compileAttribute(targets, element, attribute, path, options, debug);
+        compileAttribute(targets, element, attribute, path, options, template);
     }
 
     return targets;
@@ -80,7 +80,7 @@ function compileAttributes(targets, element, path, options, debug) {
 
 
 /*
-compileElement(targets, node, path, options, debug)
+compileElement(targets, node, path, options, template)
 */
 
 const compileElement = overload((targets, element) => element.tagName.toLowerCase(), {
@@ -92,31 +92,31 @@ const compileElement = overload((targets, element) => element.tagName.toLowerCas
     // Do not parse the inner DOM of scripts
     'script':   compileAttributes,
 
-    'textarea': (targets, element, path, options, debug) => {
-        compileAttributes(targets, element, path, options, debug);
+    'textarea': (targets, element, path, options, template) => {
+        compileAttributes(targets, element, path, options, template);
         // A <textarea> does not have children, its textContent becomes its value
         compileAttribute(targets, element, {
             localName: 'value',
             value:     element.textContent
-        }, path, options, debug);
+        }, path, options, template);
         element.textContent = '';
         return targets;
     },
 
-    'default': (targets, element, path, options, debug) => {
+    'default': (targets, element, path, options, template) => {
         // Compiling children first means inner DOM to outer DOM, which allows
         // `<select>`, for example, to pick up the correct option value. (Should
         // we decide to change this order we must make sure value attribute is
         // rendered after children.)
-        compileChildren(targets, element, path, options, debug);
-        compileAttributes(targets, element, path, options, debug);
+        compileChildren(targets, element, path, options, template);
+        compileAttributes(targets, element, path, options, template);
         return targets;
     }
 });
 
 
 /**
-compileNode(targets, node, path, options, debug)
+compileNode(targets, node, path, options, template)
 **/
 
 const compileNode = overload((targets, node) => toType(node), {
@@ -124,8 +124,8 @@ const compileNode = overload((targets, node) => toType(node), {
     'doctype':  id,
     'document': compileChildren,
     'fragment': compileChildren,
-    'element': (targets, element, path, options, debug) => {
-        compileElement(targets, element, (path ? path + pathSeparator : '') + indexOf(element), options, debug);
+    'element': (targets, element, path, options, template) => {
+        compileElement(targets, element, (path ? path + pathSeparator : '') + indexOf(element), options, template);
         return targets;
     },
     'text': (targets, node, path, options, template) => {
@@ -156,7 +156,7 @@ const compileNode = overload((targets, node) => toType(node), {
             // Attempt to compile, and in case of an error replace node with an
             // error element
             try {
-                target.literal = compile(source, scope, TextRenderer.consts, options, template);
+                target.literal = compile(source, scope, TextRenderer.consts, options, code);
                 node.nodeValue = '';
                 targets.push(target);
                 return targets;
@@ -167,7 +167,7 @@ const compileNode = overload((targets, node) => toType(node), {
             }
         }
 
-        target.literal = compile(source, scope, TextRenderer.consts, options, template);
+        target.literal = compile(source, scope, TextRenderer.consts, options);
         node.nodeValue = '';
         targets.push(target);
         return targets;

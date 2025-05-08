@@ -77,11 +77,11 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
 export default class Renderer extends FrameSignal {
     static consts = ['DATA', 'data', 'element', 'shadow', 'host', 'id'];
 
-    constructor(fn, parameters, debug) {
+    constructor(fn, parameters, compiled) {
         // FrameSignal does not evaluate immediately when no fn passed in
         super();
 
-        this.debug      = debug;
+        this.compiled   = compiled;
         this.count      = 0;
         this.fn         = fn;
         this.parameters = parameters;

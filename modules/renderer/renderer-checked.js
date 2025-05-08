@@ -47,8 +47,8 @@ function setChecked(element, value, hasValueAttribute) {
 }
 
 export default class CheckedRenderer extends AttributeRenderer {
-    constructor(fn, parameters, element, name, debug) {
-        super(fn, parameters, element, 'checked', debug, false);
+    constructor(fn, parameters, element, name, compiled) {
+        super(fn, parameters, element, 'checked', compiled, false);
 
         // Flag whether element has a value attribute
         this.hasValue = isDefined(element.getAttribute('value'));

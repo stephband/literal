@@ -88,9 +88,9 @@ function toTemplate(compiled) {
 }
 
 function toRenderer({ element, node, compiled }) {
-    const { id, parameters } = this;
+    const { parameters } = this;
     const { Renderer, literal } = compiled;
-    return new Renderer(literal, parameters, element, node, id + '-' + (compiled.path ? compiled.path + '-' : '') + compiled.name);
+    return new Renderer(literal, parameters, element, node, compiled);
 }
 
 function stop(renderer) {
@@ -99,7 +99,7 @@ function stop(renderer) {
 
 
 /**
-Literal(template, parameters, element)
+Literal(template, data, parameters)
 **/
 
 export default class Literal {

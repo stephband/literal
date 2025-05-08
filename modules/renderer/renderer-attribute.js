@@ -50,8 +50,8 @@ export function toAttributeString(values) {
 }
 
 export default class AttributeRenderer extends Renderer {
-    constructor(fn, parameters, element, name, debug, isEvaluate) {
-        super(fn, assign({}, parameters, { element }), debug);
+    constructor(fn, parameters, element, name, compiled, isEvaluate) {
+        super(fn, assign({}, parameters, { element }), compiled);
 
         // Detect un-upgraded (or indeed, upgraded) custom element
         this.isCustomElement = element.tagName.includes('-');
@@ -78,7 +78,7 @@ export default class AttributeRenderer extends Renderer {
             }
             catch(error) {
                 // Error object, renderer, DATA
-                const elem = printError(this, error);
+                const elem = printError(this.compiled, error);
                 this.element.before(elem);
                 return;
             }
