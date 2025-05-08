@@ -61,14 +61,14 @@
 
     <template id="template-1">
         <h3>#template-1</h3>
-        <pre>(${ data }) id = ${ id }</pre>
-        <pre>(${ data }) data.value = ${ data.value }</pre>
+        <pre>id = ${ id }</pre>
+        <pre>data.value = ${ data.value }</pre>
     </template>
 
     <template id="template-2">
         <h3>#template-2</h3>
-        <pre>(${ data }) id = ${ id }</pre>
-        <pre>(${ data }) data.value = ${ data.value }</pre>
+        <pre>id = ${ id }</pre>
+        <pre>data.value = ${ data.value }</pre>
     </template>
 
     <template id="template-3">
@@ -321,7 +321,7 @@
         <template is="literal-html" data-state="1" data-value="Hello">
             <h2>is="literal-html"</h2>
             <p hidden="${ data.state }">Render counts in ().</p>
-            <p title="${ data.state }" class="${ data.state }">(${ data }) ${ data.state }</p>
+            <p title="${ data.state }" class="${ data.state }">${ data.state }</p>
             ${ include('#template-1', data) }
             ${ include('#template-2', data) }
         </template>
@@ -332,10 +332,9 @@
             <h2>is="literal-html"</h2>
             <p>Render counts in ().</p>
             <p class="${ 'hello world' }">${ 'Hello world' }</p>
-            <pre>(${ data }) data = ${ data }</pre>
-            <pre>(${ data }) data.state = ${ data.state }</pre>
-            <pre>(${ data }) data.value = ${ data.value }</pre>
-            (${ data })
+            <pre>data = ${ data }</pre>
+            <pre>data.state = ${ data.state }</pre>
+            <pre>data.value = ${ data.value }</pre>
             ${ include('#template-' + data.template, data) }
             ${ include('#template-2', data) }
         </template>
@@ -352,7 +351,7 @@
                 events('click', element)
                 .each((e) => ++data.template)
             }
-            <pre>(${ data }) data.template = ${ data.template }</pre>
+            <pre>data.template = ${ data.template }</pre>
             ${ include('#template-' + ((data.template) % 2 + 1), data) }
         </template>
     </article>
@@ -364,7 +363,7 @@
             the recommended way of doing things. These includes are not cued: an
             include() with data renders a template instantly on click. Render
             counts in ().</p>
-            <pre>(${ data }) data.template = ${ data.template }</pre>
+            <pre>data.template = ${ data.template }</pre>
             ${
                 events('click', element)
                 //.log('click')
@@ -373,18 +372,18 @@
         </template>
     </article>
 
-    <article class="test">
+    <!--article class="test">
         <template is="literal-html" data-plonk="1" data-value="Hello" data-template="1">
             <h2>is="literal-html"</h2>
             <p>Asynchronous Stream of Promises of include()s. Render counts in ().</p>
-            <pre>(${ data }) data.value = ${ data.value }</pre>
-            (${ data }) data.plonk = ${ data.plonk }
+            <pre>data.value = ${ data.value }</pre>
+            data.plonk = ${ data.plonk }
             ${
                 events('click', element)
                 .map((e) => request().then(include('#template-' + ((++data.template) % 2 + 1), data)))
             }
         </template>
-    </article>
+    </article-->
 
     <article class="test">
         <template is="literal-html" data-value="Hello World">
@@ -395,7 +394,7 @@
             ${ '' }
             ${ include('#template-1', data) }
             <p>An intervening paragraph.</p>
-            (${ data }) data.value = ${ data.value }
+            data.value = ${ data.value }
         </template>
     </article>
 
@@ -572,7 +571,7 @@
                 <a href="#3">#3</a>
                 <a href="#4">#4</a>
             </p>
-            <pre>(${ data }) location.identifier = ${ window.data = data, location.identifier }</pre>
+            <pre>location.identifier = ${ window.data = data, location.identifier }</pre>
             ${ location.identifier ? include('#template-' + location.identifier, data) : '' }
         </template>
     </article>
@@ -587,7 +586,7 @@
                 <a href="./3">./3</a>
                 <a href="./4">./4</a>
             </p>
-            <pre>(${ data }) location.identifier = ${ location.pathname }</pre>
+            <pre>location.identifier = ${ location.pathname }</pre>
             ${ location.pathname ? include('#template-' + /\w+$/.exec(location.pathname)[0], data) : '' }
         </template>
     </article-->

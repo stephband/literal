@@ -1,17 +1,17 @@
 
-import id                   from 'fn/id.js';
-import overload             from 'fn/overload.js';
-import toType               from 'dom/to-type.js';
-import decode               from 'dom/decode.js';
-import indexOf              from '../dom/index-of.js';
-import TextRenderer         from '../renderer/renderer-text.js';
-import { printError }       from '../print.js';
-import scope                from '../scope.js';
-import compile              from './compile.js';
-import { pathSeparator }    from './constants.js';
-import isLiteralString      from './is-literal-string.js';
-import truncate             from './truncate.js';
-import compileAttribute     from './compile-attribute.js';
+import id                from 'fn/id.js';
+import overload          from 'fn/overload.js';
+import toType            from 'dom/to-type.js';
+import decode            from 'dom/decode.js';
+import indexOf           from '../dom/index-of.js';
+import TextRenderer      from '../renderer/renderer-text.js';
+import { printError }    from '../print.js';
+import scope             from '../scope.js';
+import compile           from './compile.js';
+import { pathSeparator } from './constants.js';
+import isLiteralString   from './is-literal-string.js';
+import truncate          from './truncate.js';
+import compileAttribute  from './compile-attribute.js';
 
 
 const assign = Object.assign;

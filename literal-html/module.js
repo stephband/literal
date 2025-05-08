@@ -25,9 +25,9 @@ import { printError } from '../modules/print.js';
 
 export default element('<template is="literal-html">', {
     construct: function(shadow, state) {
-        state.connected = false;
-        state.rendered  = false;
-        state.template  = Template.fromTemplate(this);
+        state.template = Template.fromTemplate(this);
+        // Debugging info for printError()
+        if (window.DEBUG) state.code = `<template is="literal-html" id="${ this.id }">`;
     },
 
     connect: function(shadow, state) {
@@ -75,12 +75,11 @@ export default element('<template is="literal-html">', {
             }
 
             // Set state.promise
-            const p = state.promise = requestData(url)
-            .then((data) => {
-                if (p.cancelled) { return; }
-                this.data = data;
-            })
-            .catch((error) => this.replaceWith(printError(this, error)));
+            const p = requestData(url)
+            .then((data) => { if (!p.cancelled) this.data = data; })
+            .catch((error) => this.replaceWith(printError(state, error)));
+
+            state.promise = p;
         }
     },
 

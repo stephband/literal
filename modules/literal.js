@@ -131,9 +131,8 @@ export default class Literal {
             .map(toRenderer, this);
     }
 
-    /*
-    .firstNode
-    */
+    /** .firstNode **/
+    /** .lastNode **/
     get firstNode() {
         // Has #first become the last node of a TextRenderer? Note that it is
         // perfectly possible to have a template with no content renderers.

@@ -97,15 +97,17 @@ const literalCountCSS = {
 
 
 export function printError(compiled, error) {
+    const template = compiled.template;
+
     // TODO: get the data in here!
-    log('error', compiled.identifier + ' – ' + compiled.code, '', '', 'red');
+    log('error', template.identifier + ' – ' + compiled.code, '', '', 'red');
 
     return create('pre', {
         children: [
-            compiled.template.identifier + ' ',
+            template.identifier + ' ',
 
             create('small', {
-                text:  compiled.code/*.replace(/</g, '&lt;').replace(/>/g, '&gt;')*/,
+                text:  compiled.code,
                 style: literalSmallCSS
             }),
 

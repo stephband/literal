@@ -154,15 +154,10 @@ export default class TextRenderer extends Renderer {
         // Defines .fn, .parameters
         super(fn, assign({}, parameters, {
             element,
-            include: (identifier, data) => {
-                return data === undefined ?
-                    (data) => this.include(identifier, data) :
-                    this.include(identifier, data) ;
-            },
-            print: (...args) => {
-                //const string = id + '-' + (compiled.path ? compiled.path + '-' : '') + compiled.name;
-                return print(this, ...args);
-            }
+            include: (identifier, data) => data === undefined ?
+                (data) => this.include(identifier, data) :
+                this.include(identifier, data),
+            print: (...args) => print(this, ...args)
         }), compiled);
 
         // Only for edge case in render()
