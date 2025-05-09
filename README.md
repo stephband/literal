@@ -19,10 +19,10 @@ HTML `<template>`s are allowed pretty much anywhere in a document, so
 `literal-html` templates enable you to freely mix islands of dynamically
 rendered content into your HTML.
 
-Import `literal-html/module.js` to start rendering `literal-html` templates:
+Import `literal-html/element.js` to start rendering `literal-html` templates:
 
 ```html
-<script type="module" src="./build/literal-html/module.js"></script>
+<script type="module" src="./build/literal-html/element.js"></script>
 ```
 
 Every Literal template has a `data` object. In this example the default export

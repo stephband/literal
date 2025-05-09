@@ -49,10 +49,10 @@ HTML <code>&lt;template&gt;</code>s are allowed pretty much anywhere in a docume
 <code>literal-html</code> templates enable you to freely mix islands of dynamically
 rendered content into your HTML.</p>
 <h3 id="register-literal-html">Register <code>literal-html</code></h3>
-<p>Importing <code>./build/literal-html/module.js</code> from the <a href="https://github.com/stephband/literal/">repository</a>
+<p>Importing <code>./build/literal-html/element.js</code> from the <a href="https://github.com/stephband/literal/">repository</a>
 registers <code>&lt;template is=&quot;literal-html&quot;&gt;</code> as a customised built-in template
 element. (Support is polyfilled in Safari, who <a href="https://github.com/WebKit/standards-positions/issues/97%5D">refuse to implement customised built-ins</a>).</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://stephen.band/literal/build/literal-html/module.js<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>module<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://stephen.band/literal/build/literal-html/element.js<span class="token punctuation">"</span></span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>module<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
 </code></pre>
 <h3 id="author-a-literal-html-template">Author a <code>literal-html</code> template</h3>
 <p>Where no <code>src</code> or <code>data</code> attribute is declared the template is rendered
@@ -455,7 +455,7 @@ Literal for animating a bit of style:</p>
 
 
     <script type="module">
-        import '../build/literal-html/module.js';
+        import '../build/literal-html/element.js';
     </script>
 </body>
 </html>

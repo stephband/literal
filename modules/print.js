@@ -96,7 +96,7 @@ const literalCountCSS = {
 };
 
 
-export function printError(compiled, error) {
+export const printError = window.DEBUG ? function printError(compiled, error) {
     const template = compiled.template;
 
     // TODO: get the data in here!
@@ -125,9 +125,9 @@ export function printError(compiled, error) {
 
         style: assign({ 'color': 'white', 'background-color': '#DC0F0E' }, literalCSS)
     });
-}
+} : noop ;
 
-export function printDebug(renderer, error) {
+export const printDebug = window.DEBUG ? function printDebug(renderer, error) {
     const compiled = renderer.compiled;
     const template = compiled.template;
     const fullpath = compiled.path
@@ -170,7 +170,7 @@ export function printDebug(renderer, error) {
         children: children,
         style: assign({ 'color': 'white', 'background-color': '#46789a' }, literalCSS)
     });
-}
+} : noop ;
 
 export default function print(renderer, object) {
     return object instanceof Error ?

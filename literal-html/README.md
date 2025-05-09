@@ -9,12 +9,12 @@ rendered content into your HTML.
 
 ### Register `literal-html`
 
-Importing `./build/literal-html/module.js` from the [repository](https://github.com/stephband/literal/)
+Importing `./build/literal-html/element.js` from the [repository](https://github.com/stephband/literal/)
 registers `<template is="literal-html">` as a customised built-in template
 element. (Support is polyfilled in Safari, who [refuse to implement customised built-ins](https://github.com/WebKit/standards-positions/issues/97])).
 
 ```html
-<script src="https://stephen.band/literal/build/literal-html/module.js" type="module"></script>
+<script src="https://stephen.band/literal/build/literal-html/element.js" type="module"></script>
 ```
 
 

@@ -34,7 +34,7 @@
 </script>
 
 <script type="module">
-    import './literal-html/module.js';
+    import './literal-html/element.js';
 </script>
 
 
@@ -76,8 +76,8 @@ DOM-first live data-binding renderer.</p>
 HTML <code>&lt;template&gt;</code>s are allowed pretty much anywhere in a document, so
 <code>literal-html</code> templates enable you to freely mix islands of dynamically
 rendered content into your HTML.</p>
-<p>Import <code>literal-html/module.js</code> to start rendering <code>literal-html</code> templates:</p>
-<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>module<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./build/literal-html/module.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
+<p>Import <code>literal-html/element.js</code> to start rendering <code>literal-html</code> templates:</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>module<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./build/literal-html/element.js<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token script"></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">></span></span>
 </code></pre>
 <p>Every Literal template has a <code>data</code> object. In this example the default export
 of <code>clock.js</code> is imported as <code>data</code> and its <code>time</code> property rendered:</p>
@@ -389,7 +389,7 @@ to put these in the <code>&lt;head&gt;</code>, but you don’t have to.</p>
 
 
     <script type="module">
-        import './build/literal-html/module.js';
+        import './build/literal-html/element.js';
     </script>
 </body>
 </html>

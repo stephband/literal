@@ -15,6 +15,6 @@ before importing the templates.
 
 ```js
 import './my-literal-setup.js';
-import './literal/literal-html/module.js';
+import './literal/literal-html/element.js';
 import './literal/literal-element/module.js';
 ```
