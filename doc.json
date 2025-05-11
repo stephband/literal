@@ -1,0 +1,1384 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "name": "default",
+      "isDefault": true,
+      "location": {
+        "filename": "file:///Users/stephband/Sites/literal/literal-html/element.js",
+        "line": 56,
+        "col": 0,
+        "byteIndex": 1947
+      },
+      "declarationKind": "export",
+      "jsDoc": {
+        "doc": "A `literal-html` template may be placed anywhere in your HTML. It is designed to\nmake it easy to mix islands of dynamically rendered content into static content.\n\nA `literal-html` template is replaced in the DOM with it's own rendered content.\n",
+        "tags": [
+          {
+            "kind": "unsupported",
+            "value": "@element <template is=\"literal-html\">\n"
+          },
+          {
+            "kind": "unsupported",
+            "value": "@attribute {string} src\nA path to a `.js` module or JSON file of data to be rendered.\n\n```html\n<template is=\"literal-html\" src=\"./data.js\">...</template>\n<template is=\"literal-html\" src=\"./data.json\">...</template>\n```\n"
+          },
+          {
+            "kind": "unsupported",
+            "value": "@attribute {string} consts\nA list of property names of `data` made accessible as constants inside a\ntemplate.\n\n```html\n<template is=\"literal-html\" src=\"./data.js\" const=\"\"></template>\n```\n"
+          },
+          {
+            "kind": "unsupported",
+            "value": "@attribute {string} data-*\nWhere a `src` attribute is not present the template's `data` object is read from\n`data-*` attributes.\n"
+          },
+          {
+            "kind": "property",
+            "name": "src",
+            "type": "string",
+            "doc": "A path to a `.js` module or JSON file of data to be rendered.\n\n```html\n<template is=\"literal-html\" src=\"./data.js\">...</template>\n<template is=\"literal-html\" src=\"./data.json\">...</template>\n```\n"
+          },
+          {
+            "kind": "property",
+            "name": "data",
+            "type": "object",
+            "doc": "Data object rendered by the template. Getting the `data` property returns the\nobservable data proxy of the data object currently being rendered. Changes to\nthis data are rendered in the DOM on the next animation frame."
+          }
+        ]
+      },
+      "kind": "variable",
+      "variableDef": {
+        "tsType": null,
+        "kind": "var"
+      }
+    },
+    {
+      "name": "Literal",
+      "isDefault": true,
+      "location": {
+        "filename": "file:///Users/stephband/Sites/literal/modules/literal.js",
+        "line": 105,
+        "col": 0,
+        "byteIndex": 3132
+      },
+      "declarationKind": "export",
+      "jsDoc": {
+        "doc": "Literal(template, data, parameters)"
+      },
+      "kind": "class",
+      "classDef": {
+        "defName": "Literal",
+        "isAbstract": false,
+        "constructors": [
+          {
+            "accessibility": null,
+            "hasBody": true,
+            "name": "constructor",
+            "params": [
+              {
+                "kind": "identifier",
+                "name": "template",
+                "optional": false,
+                "tsType": null
+              },
+              {
+                "kind": "identifier",
+                "name": "object",
+                "optional": false,
+                "tsType": null
+              },
+              {
+                "kind": "assign",
+                "left": {
+                  "kind": "identifier",
+                  "name": "parameters",
+                  "optional": false,
+                  "tsType": null
+                },
+                "right": "[UNSUPPORTED]",
+                "tsType": null
+              }
+            ],
+            "location": {
+              "filename": "file:///Users/stephband/Sites/literal/modules/literal.js",
+              "line": 108,
+              "col": 4,
+              "byteIndex": 3180
+            }
+          }
+        ],
+        "properties": [],
+        "indexSignatures": [],
+        "methods": [
+          {
+            "jsDoc": {
+              "doc": ".lastNode *"
+            },
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": false,
+            "name": "firstNode",
+            "kind": "getter",
+            "functionDef": {
+              "params": [],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/literal/modules/literal.js",
+              "line": 136,
+              "col": 4,
+              "byteIndex": 4299
+            }
+          },
+          {
+            "jsDoc": {
+              "doc": ".before()"
+            },
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": false,
+            "name": "before",
+            "kind": "method",
+            "functionDef": {
+              "params": [],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/literal/modules/literal.js",
+              "line": 148,
+              "col": 4,
+              "byteIndex": 4696
+            }
+          },
+          {
+            "jsDoc": {
+              "doc": ".remove()\n    Removes rendered content from the DOM and places it back in the `.content`\n    fragment."
+            },
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": false,
+            "name": "remove",
+            "kind": "method",
+            "functionDef": {
+              "params": [],
+              "returnType": {
+                "repr": "void",
+                "kind": "keyword",
+                "keyword": "void"
+              },
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/literal/modules/literal.js",
+              "line": 168,
+              "col": 4,
+              "byteIndex": 5295
+            }
+          },
+          {
+            "jsDoc": {
+              "doc": ".stop()"
+            },
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": false,
+            "name": "stop",
+            "kind": "method",
+            "functionDef": {
+              "params": [],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/literal/modules/literal.js",
+              "line": 189,
+              "col": 4,
+              "byteIndex": 5799
+            }
+          },
+          {
+            "jsDoc": {
+              "doc": "Literal.create(identifier, element, parameters)"
+            },
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": true,
+            "name": "create",
+            "kind": "method",
+            "functionDef": {
+              "params": [
+                {
+                  "kind": "identifier",
+                  "name": "identifier",
+                  "optional": false,
+                  "tsType": null
+                },
+                {
+                  "kind": "identifier",
+                  "name": "data",
+                  "optional": false,
+                  "tsType": null
+                },
+                {
+                  "kind": "identifier",
+                  "name": "parameters",
+                  "optional": false,
+                  "tsType": null
+                }
+              ],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/literal/modules/literal.js",
+              "line": 197,
+              "col": 4,
+              "byteIndex": 5946
+            }
+          },
+          {
+            "jsDoc": {
+              "doc": "Literal.fromFragment(fragment, element, parameters, options)"
+            },
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": true,
+            "name": "fromFragment",
+            "kind": "method",
+            "functionDef": {
+              "params": [
+                {
+                  "kind": "identifier",
+                  "name": "fragment",
+                  "optional": false,
+                  "tsType": null
+                },
+                {
+                  "kind": "identifier",
+                  "name": "data",
+                  "optional": false,
+                  "tsType": null
+                },
+                {
+                  "kind": "identifier",
+                  "name": "parameters",
+                  "optional": false,
+                  "tsType": null
+                },
+                {
+                  "kind": "identifier",
+                  "name": "options",
+                  "optional": false,
+                  "tsType": null
+                }
+              ],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/literal/modules/literal.js",
+              "line": 210,
+              "col": 4,
+              "byteIndex": 6541
+            }
+          },
+          {
+            "jsDoc": {
+              "doc": "Literal.fromHTML(html, element, options, parameters)"
+            },
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": true,
+            "name": "fromHTML",
+            "kind": "method",
+            "functionDef": {
+              "params": [
+                {
+                  "kind": "identifier",
+                  "name": "html",
+                  "optional": false,
+                  "tsType": null
+                },
+                {
+                  "kind": "identifier",
+                  "name": "data",
+                  "optional": false,
+                  "tsType": null
+                },
+                {
+                  "kind": "identifier",
+                  "name": "parameters",
+                  "optional": false,
+                  "tsType": null
+                },
+                {
+                  "kind": "identifier",
+                  "name": "options",
+                  "optional": false,
+                  "tsType": null
+                }
+              ],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/literal/modules/literal.js",
+              "line": 218,
+              "col": 4,
+              "byteIndex": 6819
+            }
+          },
+          {
+            "jsDoc": {
+              "doc": "Literal.fromTemplate(template, element, parameters, options)"
+            },
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": true,
+            "name": "fromTemplate",
+            "kind": "method",
+            "functionDef": {
+              "params": [
+                {
+                  "kind": "identifier",
+                  "name": "element",
+                  "optional": false,
+                  "tsType": null
+                },
+                {
+                  "kind": "identifier",
+                  "name": "data",
+                  "optional": false,
+                  "tsType": null
+                },
+                {
+                  "kind": "identifier",
+                  "name": "parameters",
+                  "optional": false,
+                  "tsType": null
+                },
+                {
+                  "kind": "identifier",
+                  "name": "options",
+                  "optional": false,
+                  "tsType": null
+                }
+              ],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/literal/modules/literal.js",
+              "line": 226,
+              "col": 4,
+              "byteIndex": 7089
+            }
+          },
+          {
+            "jsDoc": {
+              "doc": "Literal.render(identifier, data, element)\n    Returns a rendered (or about-to-be-rendered-on-the-next-frame) fragment\n    from template identified by `identifier`."
+            },
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": true,
+            "name": "render",
+            "kind": "method",
+            "functionDef": {
+              "params": [
+                {
+                  "kind": "identifier",
+                  "name": "id",
+                  "optional": false,
+                  "tsType": null
+                },
+                {
+                  "kind": "identifier",
+                  "name": "data",
+                  "optional": false,
+                  "tsType": null
+                },
+                {
+                  "kind": "identifier",
+                  "name": "element",
+                  "optional": false,
+                  "tsType": null
+                }
+              ],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/literal/modules/literal.js",
+              "line": 236,
+              "col": 4,
+              "byteIndex": 7464
+            }
+          }
+        ],
+        "extends": null,
+        "implements": [],
+        "typeParams": [],
+        "superTypeParams": []
+      }
+    },
+    {
+      "name": "Data",
+      "isDefault": true,
+      "location": {
+        "filename": "file:///Users/stephband/Sites/fn/modules/data.js",
+        "line": 150,
+        "col": 0,
+        "byteIndex": 5162
+      },
+      "declarationKind": "export",
+      "kind": "function",
+      "functionDef": {
+        "defName": "Data",
+        "params": [
+          {
+            "kind": "identifier",
+            "name": "object",
+            "optional": false,
+            "tsType": null
+          },
+          {
+            "kind": "identifier",
+            "name": "force",
+            "optional": false,
+            "tsType": null
+          }
+        ],
+        "returnType": null,
+        "hasBody": true,
+        "isAsync": false,
+        "isGenerator": false,
+        "typeParams": []
+      }
+    },
+    {
+      "name": "Data",
+      "isDefault": false,
+      "location": {
+        "filename": "file:///Users/stephband/Sites/fn/modules/data.js",
+        "line": 189,
+        "col": 5,
+        "byteIndex": 6598
+      },
+      "declarationKind": "export",
+      "jsDoc": {
+        "doc": "Additional properties on the `default` function."
+      },
+      "kind": "namespace",
+      "namespaceDef": {
+        "elements": [
+          {
+            "name": "of",
+            "isDefault": false,
+            "location": {
+              "filename": "file:///Users/stephband/Sites/fn/modules/data.js",
+              "line": 189,
+              "col": 5,
+              "byteIndex": 6598
+            },
+            "declarationKind": "declare",
+            "jsDoc": {
+              "doc": "Get the data proxy of `object`. The data proxy is a wrapper that observes\nmutations. There is only ever one data proxy of `object`, and calls to\n`Data.of(object)` always return that data proxy.\n\nNot all objects may be proxied. Frozen objects, unextensible objects, and\nvarious others like Sets, Maps and DOM and WebAudio nodes are deemed\nimmutable or otherwise unobservable. They return `undefined`.\n\n_Getting_ a property of a data proxy while evaluating a signal registers the\nsignal as dependent on the property. _Setting_ a property of a data proxy\nnotifies dependent signals.\n\nGetting a property of a data proxy returns a data proxy of that property\nof `object`. In this way access chains like `data.property.value` are also\nobserved.\n",
+              "tags": [
+                {
+                  "kind": "param",
+                  "name": "object",
+                  "type": "object",
+                  "doc": "An object or array.\n"
+                },
+                {
+                  "kind": "param",
+                  "name": "force",
+                  "type": "boolean",
+                  "doc": "Forces the creation of a data proxy where `object` would otherwise be deemed\nimmutable. DOM nodes are considered immutable, for example, but not because they\nreally are immutable, more in order to prevent you calling node methods on a\nnode's observer proxy, a source of hard-to-trace errors. Pass in `force` as\n`true` if you know what you are doing.\n"
+                },
+                {
+                  "kind": "return",
+                  "type": "object",
+                  "doc": "The data proxy of `object`."
+                }
+              ]
+            },
+            "kind": "variable",
+            "variableDef": {
+              "tsType": {
+                "repr": "",
+                "kind": "fnOrConstructor",
+                "fnOrConstructor": {
+                  "constructor": false,
+                  "tsType": {
+                    "repr": "unknown",
+                    "kind": "keyword",
+                    "keyword": "unknown"
+                  },
+                  "params": [
+                    {
+                      "kind": "identifier",
+                      "name": "object",
+                      "optional": false,
+                      "tsType": null
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "force",
+                      "optional": false,
+                      "tsType": null
+                    }
+                  ],
+                  "typeParams": []
+                }
+              },
+              "kind": "const"
+            }
+          },
+          {
+            "name": "objectOf",
+            "isDefault": false,
+            "location": {
+              "filename": "file:///Users/stephband/Sites/fn/modules/data.js",
+              "line": 203,
+              "col": 5,
+              "byteIndex": 6863
+            },
+            "declarationKind": "declare",
+            "jsDoc": {
+              "doc": "Get the un-proxied `object` wrapped by `Data.of(object)` (or, if `data` is\nalready an un-proxied object, `data`).\n",
+              "tags": [
+                {
+                  "kind": "param",
+                  "name": "data",
+                  "type": "object",
+                  "doc": "A data proxy.\n"
+                },
+                {
+                  "kind": "return",
+                  "type": "object",
+                  "doc": "The un-wrapped, un-proxied object."
+                }
+              ]
+            },
+            "kind": "variable",
+            "variableDef": {
+              "tsType": {
+                "repr": "",
+                "kind": "fnOrConstructor",
+                "fnOrConstructor": {
+                  "constructor": false,
+                  "tsType": {
+                    "repr": "unknown",
+                    "kind": "keyword",
+                    "keyword": "unknown"
+                  },
+                  "params": [
+                    {
+                      "kind": "identifier",
+                      "name": "object",
+                      "optional": false,
+                      "tsType": null
+                    }
+                  ],
+                  "typeParams": []
+                }
+              },
+              "kind": "const"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Data",
+      "isDefault": false,
+      "location": {
+        "filename": "file:///Users/stephband/Sites/fn/modules/data.js",
+        "line": 189,
+        "col": 5,
+        "byteIndex": 6598
+      },
+      "declarationKind": "export",
+      "jsDoc": {
+        "doc": "Additional properties on the `default` function."
+      },
+      "kind": "namespace",
+      "namespaceDef": {
+        "elements": [
+          {
+            "name": "of",
+            "isDefault": false,
+            "location": {
+              "filename": "file:///Users/stephband/Sites/fn/modules/data.js",
+              "line": 189,
+              "col": 5,
+              "byteIndex": 6598
+            },
+            "declarationKind": "declare",
+            "jsDoc": {
+              "doc": "Get the data proxy of `object`. The data proxy is a wrapper that observes\nmutations. There is only ever one data proxy of `object`, and calls to\n`Data.of(object)` always return that data proxy.\n\nNot all objects may be proxied. Frozen objects, unextensible objects, and\nvarious others like Sets, Maps and DOM and WebAudio nodes are deemed\nimmutable or otherwise unobservable. They return `undefined`.\n\n_Getting_ a property of a data proxy while evaluating a signal registers the\nsignal as dependent on the property. _Setting_ a property of a data proxy\nnotifies dependent signals.\n\nGetting a property of a data proxy returns a data proxy of that property\nof `object`. In this way access chains like `data.property.value` are also\nobserved.\n",
+              "tags": [
+                {
+                  "kind": "param",
+                  "name": "object",
+                  "type": "object",
+                  "doc": "An object or array.\n"
+                },
+                {
+                  "kind": "param",
+                  "name": "force",
+                  "type": "boolean",
+                  "doc": "Forces the creation of a data proxy where `object` would otherwise be deemed\nimmutable. DOM nodes are considered immutable, for example, but not because they\nreally are immutable, more in order to prevent you calling node methods on a\nnode's observer proxy, a source of hard-to-trace errors. Pass in `force` as\n`true` if you know what you are doing.\n"
+                },
+                {
+                  "kind": "return",
+                  "type": "object",
+                  "doc": "The data proxy of `object`."
+                }
+              ]
+            },
+            "kind": "variable",
+            "variableDef": {
+              "tsType": {
+                "repr": "",
+                "kind": "fnOrConstructor",
+                "fnOrConstructor": {
+                  "constructor": false,
+                  "tsType": {
+                    "repr": "unknown",
+                    "kind": "keyword",
+                    "keyword": "unknown"
+                  },
+                  "params": [
+                    {
+                      "kind": "identifier",
+                      "name": "object",
+                      "optional": false,
+                      "tsType": null
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "force",
+                      "optional": false,
+                      "tsType": null
+                    }
+                  ],
+                  "typeParams": []
+                }
+              },
+              "kind": "const"
+            }
+          },
+          {
+            "name": "objectOf",
+            "isDefault": false,
+            "location": {
+              "filename": "file:///Users/stephband/Sites/fn/modules/data.js",
+              "line": 203,
+              "col": 5,
+              "byteIndex": 6863
+            },
+            "declarationKind": "declare",
+            "jsDoc": {
+              "doc": "Get the un-proxied `object` wrapped by `Data.of(object)` (or, if `data` is\nalready an un-proxied object, `data`).\n",
+              "tags": [
+                {
+                  "kind": "param",
+                  "name": "data",
+                  "type": "object",
+                  "doc": "A data proxy.\n"
+                },
+                {
+                  "kind": "return",
+                  "type": "object",
+                  "doc": "The un-wrapped, un-proxied object."
+                }
+              ]
+            },
+            "kind": "variable",
+            "variableDef": {
+              "tsType": {
+                "repr": "",
+                "kind": "fnOrConstructor",
+                "fnOrConstructor": {
+                  "constructor": false,
+                  "tsType": {
+                    "repr": "unknown",
+                    "kind": "keyword",
+                    "keyword": "unknown"
+                  },
+                  "params": [
+                    {
+                      "kind": "identifier",
+                      "name": "object",
+                      "optional": false,
+                      "tsType": null
+                    }
+                  ],
+                  "typeParams": []
+                }
+              },
+              "kind": "const"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Signal",
+      "isDefault": true,
+      "location": {
+        "filename": "file:///Users/stephband/Sites/fn/modules/signal.js",
+        "line": 94,
+        "col": 0,
+        "byteIndex": 2963
+      },
+      "declarationKind": "export",
+      "jsDoc": {
+        "doc": "Signal\n\nA signal is an object that represents a value that may change. A signal has\nessentially one property, `.value`. A state signal can have its `.value`\nwritten, a compute signal's `.value` may only be read.\n\nThe `Signal` constructor is not called directly, but calling `Signal.of(value)`\ncreates a state signal, and `Signal.from(fn)` creates a compute signal."
+      },
+      "kind": "class",
+      "classDef": {
+        "defName": "Signal",
+        "isAbstract": false,
+        "constructors": [
+          {
+            "accessibility": null,
+            "hasBody": true,
+            "name": "constructor",
+            "params": [
+              {
+                "kind": "identifier",
+                "name": "name",
+                "optional": false,
+                "tsType": null
+              }
+            ],
+            "location": {
+              "filename": "file:///Users/stephband/Sites/fn/modules/signal.js",
+              "line": 255,
+              "col": 4,
+              "byteIndex": 7983
+            }
+          }
+        ],
+        "properties": [],
+        "indexSignatures": [],
+        "methods": [
+          {
+            "jsDoc": {
+              "doc": "Signal.isSignal(object)\n\n    Returns `true` where `object` is an instance of `Signal`.\n\n    This guarantees that `object` has a gettable `value` property. This is not\n    true of an Observer, which is not really a signal at all – it cannot\n    have dependencies – but is only evaluated as one when invalidated."
+            },
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": true,
+            "name": "isSignal",
+            "kind": "method",
+            "functionDef": {
+              "params": [
+                {
+                  "kind": "identifier",
+                  "name": "object",
+                  "optional": false,
+                  "tsType": null
+                }
+              ],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/fn/modules/signal.js",
+              "line": 105,
+              "col": 4,
+              "byteIndex": 3333
+            }
+          },
+          {
+            "jsDoc": {
+              "doc": "Signal.of()\n    Signal.of(value)\n\n    Creates a state signal that has essentially one property, `.value`.\n    When `.value` is set the signal becomes invalid, stale, out of date,\n    irrelevant, historic, old, and any signals that depend on it are invalidated."
+            },
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": true,
+            "name": "of",
+            "kind": "method",
+            "functionDef": {
+              "params": [
+                {
+                  "kind": "identifier",
+                  "name": "value",
+                  "optional": false,
+                  "tsType": null
+                }
+              ],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/fn/modules/signal.js",
+              "line": 118,
+              "col": 4,
+              "byteIndex": 3693
+            }
+          },
+          {
+            "jsDoc": {
+              "doc": "Signal.from(fn)\n    Signal.from(promise)\n    Signal.from(stream)\n\n    Creates a compute signal from a function, where `fn` computes a value by\n    reading other signals' values. This signal is then invalidated when any of\n    the read signals are invalidated.\n\n    Creates a state signal from a promise or stream that invalidates\n    dependencies as the promise or streams' values resolve."
+            },
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": true,
+            "name": "from",
+            "kind": "method",
+            "functionDef": {
+              "params": [
+                {
+                  "kind": "identifier",
+                  "name": "fn",
+                  "optional": false,
+                  "tsType": null
+                },
+                {
+                  "kind": "identifier",
+                  "name": "context",
+                  "optional": false,
+                  "tsType": null
+                }
+              ],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/fn/modules/signal.js",
+              "line": 135,
+              "col": 4,
+              "byteIndex": 4173
+            }
+          },
+          {
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": true,
+            "name": "compute",
+            "kind": "method",
+            "functionDef": {
+              "params": [
+                {
+                  "kind": "identifier",
+                  "name": "fn",
+                  "optional": false,
+                  "tsType": null
+                },
+                {
+                  "kind": "identifier",
+                  "name": "context",
+                  "optional": false,
+                  "tsType": null
+                }
+              ],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/fn/modules/signal.js",
+              "line": 152,
+              "col": 4,
+              "byteIndex": 4552
+            }
+          },
+          {
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": true,
+            "name": "fromProperty",
+            "kind": "method",
+            "functionDef": {
+              "params": [
+                {
+                  "kind": "identifier",
+                  "name": "name",
+                  "optional": false,
+                  "tsType": null
+                },
+                {
+                  "kind": "identifier",
+                  "name": "object",
+                  "optional": false,
+                  "tsType": null
+                }
+              ],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/fn/modules/signal.js",
+              "line": 156,
+              "col": 4,
+              "byteIndex": 4640
+            }
+          },
+          {
+            "jsDoc": {
+              "doc": "Signal.frame(fn, initial)\n    Returns an observe signal, a form of compute signal that calls `fn` once\n    immediately, and then on every animation frame following the invalidation\n    of any signal read during the execution of `fn`."
+            },
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": true,
+            "name": "frame",
+            "kind": "method",
+            "functionDef": {
+              "params": [
+                {
+                  "kind": "identifier",
+                  "name": "fn",
+                  "optional": false,
+                  "tsType": null
+                }
+              ],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/fn/modules/signal.js",
+              "line": 168,
+              "col": 4,
+              "byteIndex": 5011
+            }
+          },
+          {
+            "jsDoc": {
+              "doc": "Signal.tick(fn, initial)\n    Returns an observe signal, a form of compute signal that calls `fn` once\n    immediately, and then on every tick following the invalidation of any signal\n    read during the execution of `fn`."
+            },
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": true,
+            "name": "tick",
+            "kind": "method",
+            "functionDef": {
+              "params": [
+                {
+                  "kind": "identifier",
+                  "name": "fn",
+                  "optional": false,
+                  "tsType": null
+                }
+              ],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/fn/modules/signal.js",
+              "line": 180,
+              "col": 4,
+              "byteIndex": 5369
+            }
+          },
+          {
+            "jsDoc": {
+              "doc": "Signal.temporal(name, object)\n    Creates a signal with an `.invalidateUntil(time)` method that maintains\n    invalidity until `time` is reached."
+            },
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": true,
+            "name": "temporal",
+            "kind": "method",
+            "functionDef": {
+              "params": [
+                {
+                  "kind": "identifier",
+                  "name": "name",
+                  "optional": false,
+                  "tsType": null
+                },
+                {
+                  "kind": "identifier",
+                  "name": "object",
+                  "optional": false,
+                  "tsType": null
+                }
+              ],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/fn/modules/signal.js",
+              "line": 191,
+              "col": 4,
+              "byteIndex": 5649
+            }
+          },
+          {
+            "jsDoc": {
+              "doc": "Signal.evaluate(object, fn[, context])\n\n    A function for building objects that behave as compute or observe signals.\n\n    Evaluates `object` as a signal by applying it to `fn` and returning the\n    result. Signals read during `fn()` have `object` registered as a dependent,\n    so `object.invalidate()` is called when any of those signals are invalidated.\n    It's the same function as that used internally to evaluate signals.\n\n    Typically `object.invalidate()` would cue a `Signal.evaluate(object, fn)` at\n    some point in the future. (It is ill-advised to `Signal.evaluate(object, fn)`\n    synchronously inside `.invalidate()`, although this should only lead to\n    wasted cycles, not bad results... errm, in most cases, at least.)"
+            },
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": true,
+            "name": "evaluate",
+            "kind": "method",
+            "functionDef": {
+              "params": [
+                {
+                  "kind": "identifier",
+                  "name": "signal",
+                  "optional": false,
+                  "tsType": null
+                },
+                {
+                  "kind": "identifier",
+                  "name": "fn",
+                  "optional": false,
+                  "tsType": null
+                },
+                {
+                  "kind": "assign",
+                  "left": {
+                    "kind": "identifier",
+                    "name": "context",
+                    "optional": false,
+                    "tsType": null
+                  },
+                  "right": "signal",
+                  "tsType": null
+                }
+              ],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/fn/modules/signal.js",
+              "line": 211,
+              "col": 4,
+              "byteIndex": 6499
+            }
+          },
+          {
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": true,
+            "name": "hasInvalidDependency",
+            "kind": "getter",
+            "functionDef": {
+              "params": [],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/fn/modules/signal.js",
+              "line": 239,
+              "col": 4,
+              "byteIndex": 7516
+            }
+          },
+          {
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": true,
+            "name": "evaluating",
+            "kind": "getter",
+            "functionDef": {
+              "params": [],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/fn/modules/signal.js",
+              "line": 251,
+              "col": 4,
+              "byteIndex": 7913
+            }
+          },
+          {
+            "jsDoc": {
+              "doc": ".valueOf()\n\n    Enables direct use in some expressions like addition or string concatenation.\n    This may prove to be less useful than we think. For one thing, logging a\n    signal object now evaluates it, affecting the outcome."
+            },
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": false,
+            "name": "valueOf",
+            "kind": "method",
+            "functionDef": {
+              "params": [],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/fn/modules/signal.js",
+              "line": 277,
+              "col": 4,
+              "byteIndex": 8683
+            }
+          },
+          {
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": false,
+            "name": "toString",
+            "kind": "method",
+            "functionDef": {
+              "params": [],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/fn/modules/signal.js",
+              "line": 288,
+              "col": 4,
+              "byteIndex": 8822
+            }
+          },
+          {
+            "accessibility": null,
+            "optional": false,
+            "isAbstract": false,
+            "isStatic": false,
+            "name": "toJSON",
+            "kind": "method",
+            "functionDef": {
+              "params": [],
+              "returnType": null,
+              "hasBody": true,
+              "isAsync": false,
+              "isGenerator": false,
+              "typeParams": []
+            },
+            "location": {
+              "filename": "file:///Users/stephband/Sites/fn/modules/signal.js",
+              "line": 292,
+              "col": 4,
+              "byteIndex": 8879
+            }
+          }
+        ],
+        "extends": null,
+        "implements": [],
+        "typeParams": [],
+        "superTypeParams": []
+      }
+    },
+    {
+      "name": "element",
+      "location": {
+        "filename": "file:///Users/stephband/Sites/literal/literal-html/element.js",
+        "line": 2,
+        "col": 0,
+        "byteIndex": 1
+      },
+      "declarationKind": "private",
+      "kind": "import",
+      "importDef": {
+        "src": "file:///Users/stephband/Sites/dom/modules/element.js",
+        "imported": "default"
+      }
+    },
+    {
+      "name": "getInternals",
+      "location": {
+        "filename": "file:///Users/stephband/Sites/literal/literal-html/element.js",
+        "line": 2,
+        "col": 0,
+        "byteIndex": 1
+      },
+      "declarationKind": "private",
+      "kind": "import",
+      "importDef": {
+        "src": "file:///Users/stephband/Sites/dom/modules/element.js",
+        "imported": "getInternals"
+      }
+    },
+    {
+      "name": "assignDataset",
+      "location": {
+        "filename": "file:///Users/stephband/Sites/literal/literal-html/element.js",
+        "line": 3,
+        "col": 0,
+        "byteIndex": 57
+      },
+      "declarationKind": "private",
+      "kind": "import",
+      "importDef": {
+        "src": "file:///Users/stephband/Sites/literal/modules/dom/assign-dataset.js",
+        "imported": "default"
+      }
+    },
+    {
+      "name": "requestData",
+      "location": {
+        "filename": "file:///Users/stephband/Sites/literal/literal-html/element.js",
+        "line": 4,
+        "col": 0,
+        "byteIndex": 120
+      },
+      "declarationKind": "private",
+      "kind": "import",
+      "importDef": {
+        "src": "file:///Users/stephband/Sites/literal/modules/request-data.js",
+        "imported": "default"
+      }
+    },
+    {
+      "name": "Template",
+      "location": {
+        "filename": "file:///Users/stephband/Sites/literal/literal-html/element.js",
+        "line": 5,
+        "col": 0,
+        "byteIndex": 177
+      },
+      "declarationKind": "private",
+      "kind": "import",
+      "importDef": {
+        "src": "file:///Users/stephband/Sites/literal/modules/template.js",
+        "imported": "default"
+      }
+    },
+    {
+      "name": "printError",
+      "location": {
+        "filename": "file:///Users/stephband/Sites/literal/literal-html/element.js",
+        "line": 6,
+        "col": 0,
+        "byteIndex": 230
+      },
+      "declarationKind": "private",
+      "kind": "import",
+      "importDef": {
+        "src": "file:///Users/stephband/Sites/literal/modules/print.js",
+        "imported": "printError"
+      }
+    },
+    {
+      "name": "Literal",
+      "location": {
+        "filename": "file:///Users/stephband/Sites/literal/literal-html/element.js",
+        "line": 7,
+        "col": 0,
+        "byteIndex": 280
+      },
+      "declarationKind": "private",
+      "kind": "import",
+      "importDef": {
+        "src": "file:///Users/stephband/Sites/literal/module.js",
+        "imported": "default"
+      }
+    },
+    {
+      "name": "Data",
+      "location": {
+        "filename": "file:///Users/stephband/Sites/literal/literal-html/element.js",
+        "line": 7,
+        "col": 0,
+        "byteIndex": 280
+      },
+      "declarationKind": "private",
+      "kind": "import",
+      "importDef": {
+        "src": "file:///Users/stephband/Sites/literal/module.js",
+        "imported": "Data"
+      }
+    },
+    {
+      "name": "Signal",
+      "location": {
+        "filename": "file:///Users/stephband/Sites/literal/literal-html/element.js",
+        "line": 7,
+        "col": 0,
+        "byteIndex": 280
+      },
+      "declarationKind": "private",
+      "kind": "import",
+      "importDef": {
+        "src": "file:///Users/stephband/Sites/literal/module.js",
+        "imported": "Signal"
+      }
+    }
+  ]
+}

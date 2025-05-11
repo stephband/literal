@@ -6,6 +6,7 @@ Find .xxx.literal template files and build them to .xxx files.
 // Directories
 const workingdir = Deno.cwd() + '/';
 
+import './deno-2-support.js';
 import select from './files/select.js';
 import build  from './build.js';
 import { dim, green } from './log.js';

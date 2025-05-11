@@ -1,11 +1,10 @@
 
 # Literal <span class="text-06">0.8.3</span>
 
-Literal enhances **HTML `<template>`** with **JS literal expressions** and a
-DOM-first live data-binding renderer.
+Literal enhances the **`<template>` element** with **JS literal expressions**
+and **incremental DOM rendering** in reaction to changes in a **signal graph**.
 
 - [`<template is="literal-html">` documentation](https://stephen.band/literal/literal-html/)
-- [`<template is="literal-element">` documentation](https://stephen.band/literal/literal-element/)
 - [Scope and expressions in Literal templates](https://stephen.band/literal/templates/)
 - [Repository on github.com](https://github.com/stephband/literal/)
 
@@ -78,56 +77,4 @@ file and an array of tasks is mapped to a collection of `<li>`s:
 
 
 - Read more about [`literal-html` templates](https://stephen.band/literal/literal-html/)
-- Read more about [Literal template expressions](https://stephen.band/literal/templates/)
-
-### `<template is="literal-element">`
-
-A `literal-element` template declares a **custom element** and defines its
-**shadow DOM**, allowing you to author custom elements entirely within HTML.
-
-Import `literal-element/module.js` to start rendering `literal-element` elements:
-
-```html
-<script type="module" src="./build/literal-element/module.js"></script>
-```
-
-Here's a declaration of a bare-bones '`<my-toggle>`' element. It is recommended
-to put these in the `<head>`, but you don't have to.
-
-```html
-<template is="literal-element" tag="my-toggle" attributes="active:boolean">
-    <button type="button">
-        <!-- Render button text -->
-        ${ data.active ? 'Hide' : 'Show' } slotted content
-        <!-- Listen to events on the button -->
-        ${ events('click', element).each(() => data.active = !data.active) }
-    </button>
-    <slot hidden="${ !data.active }"></slot>
-</template>
-```
-
-The custom element can now be authored as:
-
-```html
-<my-toggle>
-    <p>This paragraph is shown when my-toggle is active.</p>
-</my-toggle>
-```
-
-<div class="demo-block block">
-<template is="literal-element" tag="my-toggle" attributes="active:boolean">
-    <button type="button">
-        <!-- Render button text -->
-        ${ data.active ? 'Hide' : 'Show' } slotted content
-        <!-- Listen to events on the button -->
-        ${ events('click', element).each(() => data.active = !data.active) }
-    </button>
-    <slot hidden="${ !data.active }"></slot>
-</template>
-<my-toggle>
-    <p>This paragraph is shown when my-toggle is active.</p>
-</my-toggle>
-</div>
-
-- Read more about [`literal-element` templates](https://stephen.band/literal/literal-element/)
 - Read more about [Literal template expressions](https://stephen.band/literal/templates/)

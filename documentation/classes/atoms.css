@@ -1,4 +1,4 @@
-/* Literal template "/Users/stephband/Sites/literal/documentation/classes/atoms.css.literal" */
+/* Literal template "/documentation/classes/atoms.css.literal" */
 
 
 /**
@@ -223,6 +223,7 @@ Define the vertical grid gap (with units).
 
 
 
+
 .columns,
 .columns {
     --x-gap: 1.4em;
@@ -237,6 +238,10 @@ Define the vertical grid gap (with units).
 .\32 -columns  { columns: 2 !important; }
 .\33 -columns  { columns: 3 !important; }
 .\34 -columns  { columns: 4 !important; }
+.\35 -columns  { columns: 5 !important; }
+.\36 -columns  { columns: 6 !important; }
+
+
 
 
 .flex,
@@ -247,21 +252,26 @@ Define the vertical grid gap (with units).
 
 .flex {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     column-gap: var(--x-gap);
     row-gap:    var(--y-gap);
 }
 
-.flex > *       { flex: 0 0 auto; margin: 0; }
-.flex > li      { display: block; }
+.flex > *  { flex: 0 0 auto; margin: 0; }
+.flex > li { display: block; }
 
-.x-flex         { flex-direction: row; }
-.y-flex         { flex-direction: column; }
+.wrap      { flex-wrap: wrap; }
+.no-wrap   { flex-wrap: nowrap; }
+
+.x-flex    { flex-direction: row; }
+.y-flex    { flex-direction: column; }
 
 .y-flex > .x-start  { align-self: start; }
 .y-flex > .x-center { align-self: center; }
 .y-flex > .x-end    { align-self: end; }
 
-/* Keep focus box-shadows over the top of their siblings */
+/* Attempt to keep focus box-shadows over the top of their siblings */
 .flex *              { z-index: 0; }
 .flex .select-button { z-index: 1; }
 .flex *:focus        { z-index: 2; }
@@ -287,6 +297,9 @@ Define the vertical grid gap (with units).
     /* Stretch by default */
     justify-items: stretch;
     align-items: stretch;
+
+    /* Make grids behave as centered wraps by default. */
+    margin: 0 auto;
 }
 
 a.grid,
@@ -335,16 +348,22 @@ a.grid:focus {
 .\32 x-grid  { grid-template-columns: repeat(2,  minmax(0, 1fr)); }
 .\33 x-grid  { grid-template-columns: repeat(3,  minmax(0, 1fr)); }
 .\34 x-grid  { grid-template-columns: repeat(4,  minmax(0, 1fr)); }
+.\35 x-grid  { grid-template-columns: repeat(5,  minmax(0, 1fr)); }
+.\36 x-grid  { grid-template-columns: repeat(6,  minmax(0, 1fr)); }
 
 .x1 { grid-column-start: 1 !important; }
 .x2 { grid-column-start: 2 !important; }
 .x3 { grid-column-start: 3 !important; }
 .x4 { grid-column-start: 4 !important; }
+.x5 { grid-column-start: 5 !important; }
+.x6 { grid-column-start: 6 !important; }
 
 .\31 x { grid-column-end: span 1 !important; }
 .\32 x { grid-column-end: span 2 !important; }
 .\33 x { grid-column-end: span 3 !important; }
 .\34 x { grid-column-end: span 4 !important; }
+.\35 x { grid-column-end: span 5 !important; }
+.\36 x { grid-column-end: span 6 !important; }
 .nx { grid-column-end: -1 !important; }
 
 .x-end {
@@ -409,6 +428,18 @@ a.grid:focus {
     margin-right: calc(var(--x-gap) / -2);
     max-width:    calc(100% + var(--x-gap));
     width:        calc(100% + var(--x-gap));
+}
+
+.x-bleed > * > tr > th:first-child,
+.x-bleed > * > tr > td:first-child {
+    /* Make bled tables cell content align with grid column start */
+    padding-left: calc(0.5 * var(--x-gap));
+}
+
+.x-bleed > * > tr > th:last-child,
+.x-bleed > * > tr > td:last-child {
+    /* Make bled tables cell content align with grid column end */
+    padding-right: calc(0.5 * var(--x-gap));
 }
 
 .x-floodl {
@@ -556,7 +587,14 @@ a.grid:focus {
 
 
 
-.size-18 { --size: 1.125rem; }.size-24 { --size: 1.5rem; }.size-30 { --size: 1.875rem; }.size-36 { --size: 2.25rem; }.size-42 { --size: 2.625rem; }.size-48 { --size: 3rem; }.size-60 { --size: 3.75rem; }
+
+.size-18 { --size: 1.125rem; }
+.size-24 { --size: 1.5rem; }
+.size-30 { --size: 1.875rem; }
+.size-36 { --size: 2.25rem; }
+.size-42 { --size: 2.625rem; }
+.size-48 { --size: 3rem; }
+.size-60 { --size: 3.75rem; }
 
 .margin-0         { margin-top: 0      !important; }
 .margin-8         { margin-top: 0.5rem !important; }
@@ -607,6 +645,7 @@ a.grid:focus {
 
 
 
+
 .columns,
 .\@1-columns {
     --x-gap: 2.1em;
@@ -623,6 +662,11 @@ a.grid:focus {
 .\@1-4-columns  { columns: 4 !important; }
 .\@1-5-columns  { columns: 5 !important; }
 .\@1-6-columns  { columns: 6 !important; }
+.\@1-7-columns  { columns: 7 !important; }
+.\@1-8-columns  { columns: 8 !important; }
+.\@1-9-columns  { columns: 9 !important; }
+
+
 
 
 .flex,
@@ -633,21 +677,26 @@ a.grid:focus {
 
 .\@1-flex {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     column-gap: var(--x-gap);
     row-gap:    var(--y-gap);
 }
 
-.\@1-flex > *       { flex: 0 0 auto; margin: 0; }
-.\@1-flex > li      { display: block; }
+.\@1-flex > *  { flex: 0 0 auto; margin: 0; }
+.\@1-flex > li { display: block; }
 
-.\@1-x-flex         { flex-direction: row; }
-.\@1-y-flex         { flex-direction: column; }
+.\@1-wrap      { flex-wrap: wrap; }
+.\@1-no-wrap   { flex-wrap: nowrap; }
+
+.\@1-x-flex    { flex-direction: row; }
+.\@1-y-flex    { flex-direction: column; }
 
 .\@1-y-flex > .x-start  { align-self: start; }
 .\@1-y-flex > .x-center { align-self: center; }
 .\@1-y-flex > .x-end    { align-self: end; }
 
-/* Keep focus box-shadows over the top of their siblings */
+/* Attempt to keep focus box-shadows over the top of their siblings */
 .\@1-flex *              { z-index: 0; }
 .\@1-flex .select-button { z-index: 1; }
 .\@1-flex *:focus        { z-index: 2; }
@@ -673,6 +722,9 @@ a.grid:focus {
     /* Stretch by default */
     justify-items: stretch;
     align-items: stretch;
+
+    /* Make grids behave as centered wraps by default. */
+    margin: 0 auto;
 }
 
 a.\@1-grid,
@@ -723,6 +775,9 @@ a.\@1-grid:focus {
 .\@1-4x-grid  { grid-template-columns: repeat(4,  minmax(0, 1fr)); }
 .\@1-5x-grid  { grid-template-columns: repeat(5,  minmax(0, 1fr)); }
 .\@1-6x-grid  { grid-template-columns: repeat(6,  minmax(0, 1fr)); }
+.\@1-7x-grid  { grid-template-columns: repeat(7,  minmax(0, 1fr)); }
+.\@1-8x-grid  { grid-template-columns: repeat(8,  minmax(0, 1fr)); }
+.\@1-9x-grid  { grid-template-columns: repeat(9,  minmax(0, 1fr)); }
 
 .\@1-x1 { grid-column-start: 1 !important; }
 .\@1-x2 { grid-column-start: 2 !important; }
@@ -730,6 +785,9 @@ a.\@1-grid:focus {
 .\@1-x4 { grid-column-start: 4 !important; }
 .\@1-x5 { grid-column-start: 5 !important; }
 .\@1-x6 { grid-column-start: 6 !important; }
+.\@1-x7 { grid-column-start: 7 !important; }
+.\@1-x8 { grid-column-start: 8 !important; }
+.\@1-x9 { grid-column-start: 9 !important; }
 
 .\@1-1x { grid-column-end: span 1 !important; }
 .\@1-2x { grid-column-end: span 2 !important; }
@@ -737,6 +795,9 @@ a.\@1-grid:focus {
 .\@1-4x { grid-column-end: span 4 !important; }
 .\@1-5x { grid-column-end: span 5 !important; }
 .\@1-6x { grid-column-end: span 6 !important; }
+.\@1-7x { grid-column-end: span 7 !important; }
+.\@1-8x { grid-column-end: span 8 !important; }
+.\@1-9x { grid-column-end: span 9 !important; }
 .\@1-nx { grid-column-end: -1 !important; }
 
 .\@1-x-end {
@@ -801,6 +862,18 @@ a.\@1-grid:focus {
     margin-right: calc(var(--x-gap) / -2);
     max-width:    calc(100% + var(--x-gap));
     width:        calc(100% + var(--x-gap));
+}
+
+.\@1-x-bleed > * > tr > th:first-child,
+.\@1-x-bleed > * > tr > td:first-child {
+    /* Make bled tables cell content align with grid column start */
+    padding-left: calc(0.5 * var(--x-gap));
+}
+
+.\@1-x-bleed > * > tr > th:last-child,
+.\@1-x-bleed > * > tr > td:last-child {
+    /* Make bled tables cell content align with grid column end */
+    padding-right: calc(0.5 * var(--x-gap));
 }
 
 .\@1-x-floodl {
@@ -1000,6 +1073,7 @@ a.\@1-grid:focus {
 
 
 
+
 .columns,
 .\@2-columns {
     --x-gap: 2.1em;
@@ -1017,6 +1091,13 @@ a.\@1-grid:focus {
 .\@2-5-columns  { columns: 5 !important; }
 .\@2-6-columns  { columns: 6 !important; }
 .\@2-7-columns  { columns: 7 !important; }
+.\@2-8-columns  { columns: 8 !important; }
+.\@2-9-columns  { columns: 9 !important; }
+.\@2-10-columns  { columns: 10 !important; }
+.\@2-11-columns  { columns: 11 !important; }
+.\@2-12-columns  { columns: 12 !important; }
+
+
 
 
 .flex,
@@ -1027,21 +1108,26 @@ a.\@1-grid:focus {
 
 .\@2-flex {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     column-gap: var(--x-gap);
     row-gap:    var(--y-gap);
 }
 
-.\@2-flex > *       { flex: 0 0 auto; margin: 0; }
-.\@2-flex > li      { display: block; }
+.\@2-flex > *  { flex: 0 0 auto; margin: 0; }
+.\@2-flex > li { display: block; }
 
-.\@2-x-flex         { flex-direction: row; }
-.\@2-y-flex         { flex-direction: column; }
+.\@2-wrap      { flex-wrap: wrap; }
+.\@2-no-wrap   { flex-wrap: nowrap; }
+
+.\@2-x-flex    { flex-direction: row; }
+.\@2-y-flex    { flex-direction: column; }
 
 .\@2-y-flex > .x-start  { align-self: start; }
 .\@2-y-flex > .x-center { align-self: center; }
 .\@2-y-flex > .x-end    { align-self: end; }
 
-/* Keep focus box-shadows over the top of their siblings */
+/* Attempt to keep focus box-shadows over the top of their siblings */
 .\@2-flex *              { z-index: 0; }
 .\@2-flex .select-button { z-index: 1; }
 .\@2-flex *:focus        { z-index: 2; }
@@ -1067,6 +1153,9 @@ a.\@1-grid:focus {
     /* Stretch by default */
     justify-items: stretch;
     align-items: stretch;
+
+    /* Make grids behave as centered wraps by default. */
+    margin: 0 auto;
 }
 
 a.\@2-grid,
@@ -1118,6 +1207,11 @@ a.\@2-grid:focus {
 .\@2-5x-grid  { grid-template-columns: repeat(5,  minmax(0, 1fr)); }
 .\@2-6x-grid  { grid-template-columns: repeat(6,  minmax(0, 1fr)); }
 .\@2-7x-grid  { grid-template-columns: repeat(7,  minmax(0, 1fr)); }
+.\@2-8x-grid  { grid-template-columns: repeat(8,  minmax(0, 1fr)); }
+.\@2-9x-grid  { grid-template-columns: repeat(9,  minmax(0, 1fr)); }
+.\@2-10x-grid  { grid-template-columns: repeat(10,  minmax(0, 1fr)); }
+.\@2-11x-grid  { grid-template-columns: repeat(11,  minmax(0, 1fr)); }
+.\@2-12x-grid  { grid-template-columns: repeat(12,  minmax(0, 1fr)); }
 
 .\@2-x1 { grid-column-start: 1 !important; }
 .\@2-x2 { grid-column-start: 2 !important; }
@@ -1126,6 +1220,11 @@ a.\@2-grid:focus {
 .\@2-x5 { grid-column-start: 5 !important; }
 .\@2-x6 { grid-column-start: 6 !important; }
 .\@2-x7 { grid-column-start: 7 !important; }
+.\@2-x8 { grid-column-start: 8 !important; }
+.\@2-x9 { grid-column-start: 9 !important; }
+.\@2-x10 { grid-column-start: 10 !important; }
+.\@2-x11 { grid-column-start: 11 !important; }
+.\@2-x12 { grid-column-start: 12 !important; }
 
 .\@2-1x { grid-column-end: span 1 !important; }
 .\@2-2x { grid-column-end: span 2 !important; }
@@ -1134,6 +1233,11 @@ a.\@2-grid:focus {
 .\@2-5x { grid-column-end: span 5 !important; }
 .\@2-6x { grid-column-end: span 6 !important; }
 .\@2-7x { grid-column-end: span 7 !important; }
+.\@2-8x { grid-column-end: span 8 !important; }
+.\@2-9x { grid-column-end: span 9 !important; }
+.\@2-10x { grid-column-end: span 10 !important; }
+.\@2-11x { grid-column-end: span 11 !important; }
+.\@2-12x { grid-column-end: span 12 !important; }
 .\@2-nx { grid-column-end: -1 !important; }
 
 .\@2-x-end {
@@ -1198,6 +1302,18 @@ a.\@2-grid:focus {
     margin-right: calc(var(--x-gap) / -2);
     max-width:    calc(100% + var(--x-gap));
     width:        calc(100% + var(--x-gap));
+}
+
+.\@2-x-bleed > * > tr > th:first-child,
+.\@2-x-bleed > * > tr > td:first-child {
+    /* Make bled tables cell content align with grid column start */
+    padding-left: calc(0.5 * var(--x-gap));
+}
+
+.\@2-x-bleed > * > tr > th:last-child,
+.\@2-x-bleed > * > tr > td:last-child {
+    /* Make bled tables cell content align with grid column end */
+    padding-right: calc(0.5 * var(--x-gap));
 }
 
 .\@2-x-floodl {
@@ -1360,13 +1476,13 @@ a.\@2-grid:focus {
 }
 
 
-/* .\@3-atom, 80em (1280px) */
+/* .\@3-atom, 70em (1120px) */
 
-@media screen and (max-width: 79.9375em) {
+@media screen and (max-width: 69.9375em) {
     .\@3-shown          { display: none !important; }
 }
 
-@media (min-width: 80em) {
+@media (min-width: 70em) {
     .\@3-hidden         { display: none !important; }
 /**
 .fixed
@@ -1397,6 +1513,7 @@ a.\@2-grid:focus {
 
 
 
+
 .columns,
 .\@3-columns {
     --x-gap: 2.1em;
@@ -1416,6 +1533,14 @@ a.\@2-grid:focus {
 .\@3-7-columns  { columns: 7 !important; }
 .\@3-8-columns  { columns: 8 !important; }
 .\@3-9-columns  { columns: 9 !important; }
+.\@3-10-columns  { columns: 10 !important; }
+.\@3-11-columns  { columns: 11 !important; }
+.\@3-12-columns  { columns: 12 !important; }
+.\@3-13-columns  { columns: 13 !important; }
+.\@3-14-columns  { columns: 14 !important; }
+.\@3-15-columns  { columns: 15 !important; }
+
+
 
 
 .flex,
@@ -1426,21 +1551,26 @@ a.\@2-grid:focus {
 
 .\@3-flex {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     column-gap: var(--x-gap);
     row-gap:    var(--y-gap);
 }
 
-.\@3-flex > *       { flex: 0 0 auto; margin: 0; }
-.\@3-flex > li      { display: block; }
+.\@3-flex > *  { flex: 0 0 auto; margin: 0; }
+.\@3-flex > li { display: block; }
 
-.\@3-x-flex         { flex-direction: row; }
-.\@3-y-flex         { flex-direction: column; }
+.\@3-wrap      { flex-wrap: wrap; }
+.\@3-no-wrap   { flex-wrap: nowrap; }
+
+.\@3-x-flex    { flex-direction: row; }
+.\@3-y-flex    { flex-direction: column; }
 
 .\@3-y-flex > .x-start  { align-self: start; }
 .\@3-y-flex > .x-center { align-self: center; }
 .\@3-y-flex > .x-end    { align-self: end; }
 
-/* Keep focus box-shadows over the top of their siblings */
+/* Attempt to keep focus box-shadows over the top of their siblings */
 .\@3-flex *              { z-index: 0; }
 .\@3-flex .select-button { z-index: 1; }
 .\@3-flex *:focus        { z-index: 2; }
@@ -1466,6 +1596,9 @@ a.\@2-grid:focus {
     /* Stretch by default */
     justify-items: stretch;
     align-items: stretch;
+
+    /* Make grids behave as centered wraps by default. */
+    margin: 0 auto;
 }
 
 a.\@3-grid,
@@ -1519,6 +1652,12 @@ a.\@3-grid:focus {
 .\@3-7x-grid  { grid-template-columns: repeat(7,  minmax(0, 1fr)); }
 .\@3-8x-grid  { grid-template-columns: repeat(8,  minmax(0, 1fr)); }
 .\@3-9x-grid  { grid-template-columns: repeat(9,  minmax(0, 1fr)); }
+.\@3-10x-grid  { grid-template-columns: repeat(10,  minmax(0, 1fr)); }
+.\@3-11x-grid  { grid-template-columns: repeat(11,  minmax(0, 1fr)); }
+.\@3-12x-grid  { grid-template-columns: repeat(12,  minmax(0, 1fr)); }
+.\@3-13x-grid  { grid-template-columns: repeat(13,  minmax(0, 1fr)); }
+.\@3-14x-grid  { grid-template-columns: repeat(14,  minmax(0, 1fr)); }
+.\@3-15x-grid  { grid-template-columns: repeat(15,  minmax(0, 1fr)); }
 
 .\@3-x1 { grid-column-start: 1 !important; }
 .\@3-x2 { grid-column-start: 2 !important; }
@@ -1529,6 +1668,12 @@ a.\@3-grid:focus {
 .\@3-x7 { grid-column-start: 7 !important; }
 .\@3-x8 { grid-column-start: 8 !important; }
 .\@3-x9 { grid-column-start: 9 !important; }
+.\@3-x10 { grid-column-start: 10 !important; }
+.\@3-x11 { grid-column-start: 11 !important; }
+.\@3-x12 { grid-column-start: 12 !important; }
+.\@3-x13 { grid-column-start: 13 !important; }
+.\@3-x14 { grid-column-start: 14 !important; }
+.\@3-x15 { grid-column-start: 15 !important; }
 
 .\@3-1x { grid-column-end: span 1 !important; }
 .\@3-2x { grid-column-end: span 2 !important; }
@@ -1539,6 +1684,12 @@ a.\@3-grid:focus {
 .\@3-7x { grid-column-end: span 7 !important; }
 .\@3-8x { grid-column-end: span 8 !important; }
 .\@3-9x { grid-column-end: span 9 !important; }
+.\@3-10x { grid-column-end: span 10 !important; }
+.\@3-11x { grid-column-end: span 11 !important; }
+.\@3-12x { grid-column-end: span 12 !important; }
+.\@3-13x { grid-column-end: span 13 !important; }
+.\@3-14x { grid-column-end: span 14 !important; }
+.\@3-15x { grid-column-end: span 15 !important; }
 .\@3-nx { grid-column-end: -1 !important; }
 
 .\@3-x-end {
@@ -1603,6 +1754,18 @@ a.\@3-grid:focus {
     margin-right: calc(var(--x-gap) / -2);
     max-width:    calc(100% + var(--x-gap));
     width:        calc(100% + var(--x-gap));
+}
+
+.\@3-x-bleed > * > tr > th:first-child,
+.\@3-x-bleed > * > tr > td:first-child {
+    /* Make bled tables cell content align with grid column start */
+    padding-left: calc(0.5 * var(--x-gap));
+}
+
+.\@3-x-bleed > * > tr > th:last-child,
+.\@3-x-bleed > * > tr > td:last-child {
+    /* Make bled tables cell content align with grid column end */
+    padding-right: calc(0.5 * var(--x-gap));
 }
 
 .\@3-x-floodl {

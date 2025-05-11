@@ -4,12 +4,17 @@ body {
 }
 
 body.grid {
-    padding-top:    var(--y-gap);
+    padding-top:    0;
     padding-bottom: 0;
     padding-left:   var(--x-gap);
     padding-right:  var(--x-gap);
 }
 
+body > header {
+    height: auto;
+}
+
 body > hr {
     margin-top: var(--y-gap);
 }
+

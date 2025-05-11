@@ -36,7 +36,7 @@ import translate   from './modules/scope/translate.js';
 import paramify    from './modules/scope/paramify.js';
 import style       from './modules/scope/style.js';
 
-Object.assign(scope, {
+export default Object.assign(scope, {
     by,
     capture,
     choose,

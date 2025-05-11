@@ -1,27 +1,57 @@
 
-/**
-<template is="literal-html">
+import element, { getInternals } from 'dom/element.js';
+import assignDataset  from '../modules/dom/assign-dataset.js';
+import requestData    from '../modules/request-data.js';
+import Template       from '../modules/template.js';
+import { printError } from '../modules/print.js';
+import Literal, { Data, Signal } from '../module.js';
 
+/**
 A `literal-html` template may be placed anywhere in your HTML. It is designed to
 make it easy to mix islands of dynamically rendered content into static content.
 
 A `literal-html` template is replaced in the DOM with it's own rendered content.
 
-Note that templates declared as shadow roots with the `shadowrootmode="open"` or
-`shadowrootmode="closed"` attribute cannot also be `is="literal-html"` templates:
-the HTML parser picks them up and treats them as shadows before the custom
-element registry can upgrade them: they cannot be enhanced, sadly.
+@element <template is="literal-html">
+
+@attribute {string} src
+A path to a `.js` module or JSON file of data to be rendered.
+
+```html
+<template is="literal-html" src="./data.js">...</template>
+<template is="literal-html" src="./data.json">...</template>
+```
+
+@attribute {string} consts
+A list of property names of `data` made accessible as constants inside a
+template.
+
+```html
+<template is="literal-html" src="./data.js" const=""></template>
+```
+
+@attribute {string} data-*
+Where a `src` attribute is not present the template's `data` object is read from
+`data-*` attributes.
+
+@property {string} src
+A path to a `.js` module or JSON file of data to be rendered.
+
+```html
+<template is="literal-html" src="./data.js">...</template>
+<template is="literal-html" src="./data.json">...</template>
+```
+
+@property {object} data
+Data object rendered by the template. Getting the `data` property returns the
+observable data proxy of the data object currently being rendered. Changes to
+this data are rendered in the DOM on the next animation frame.
 **/
 
-
-import Data           from 'fn/data.js';
-import element, { getInternals } from 'dom/element.js';
-import assignDataset  from '../modules/dom/assign-dataset.js';
-import requestData    from '../modules/request-data.js';
-import Template       from '../modules/template.js';
-import Literal        from '../modules/literal.js';
-import { printError } from '../modules/print.js';
-
+// Note that templates declared as shadow roots with the `shadowrootmode="open"` or
+// `shadowrootmode="closed"` attribute cannot also be `is="literal-html"` templates:
+// the HTML parser picks them up and treats them as shadows before the custom
+// element registry can upgrade them: they cannot be enhanced, sadly.
 
 export default element('<template is="literal-html">', {
     construct: function(shadow, state) {
@@ -40,21 +70,6 @@ export default element('<template is="literal-html">', {
         }
     }
 }, {
-    /**
-    src=""
-    A path to a JSON file or JS module exporting data to be rendered.
-
-    ```html
-    <template is="literal-html" src="./data.json">...</template>
-    <template is="literal-html" src="./module.js">...</template>
-    ```
-
-    Named exports are supported via an identifier:
-
-    ```html
-    <template is="literal-html" data="./module.js#namedExport">...</template>
-    ```
-    **/
     src: {
         attribute: function(url) {
             this.src = url;
@@ -83,26 +98,10 @@ export default element('<template is="literal-html">', {
         }
     },
 
-
-    /**
-    .data
-
-    The `data` property may be set to an object.
-
-    Getting the `data` property returns the object currently being rendered.
-    Sort of. The returned data object is actually a _proxy_ of the set object.
-    This data proxy monitors mutations which the Literal template is already
-    observing, so changes to this data are reflected in the DOM immediately
-    (well, not quite immediately – literal renders changes on the next frame).
-    **/
     data: {
-        attribute: function(json) {
-            this.data = JSON.parse(json);
-        },
-
         get: function() {
-            const state = getInternals(this);
-            return state.renderer && state.renderer.data;
+            const { renderer } = getInternals(this);
+            return renderer && renderer.data;
         },
 
         set: function(object) {
@@ -119,12 +118,7 @@ export default element('<template is="literal-html">', {
             this.replaceWith(state.renderer.fragment);
         }
     }
-
-
-    /**
-    .consts=""
-    A list of property names found on `data` that are set as consts inside the
-    template.
-    **/
-    // No definition for consts, it's picked up by Template.fromTemplate()
 }, 'stephen.band/literal/');
+
+
+export { Literal, Data, Signal };

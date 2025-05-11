@@ -1,6 +1,6 @@
 [
-    { "prefix": "",      "width": 0,    "column-gap": "1.4em", "row-gap": "1.4em", "columns": 4, "rows": 6 },
-    { "prefix": "\\@1-", "width": 768,  "column-gap": "2.1em", "row-gap": "2.1em", "columns": 6, "rows": 6 },
-    { "prefix": "\\@2-", "width": 980,  "column-gap": "2.1em", "row-gap": "2.8em", "columns": 7, "rows": 6 },
-    { "prefix": "\\@3-", "width": 1280, "column-gap": "2.1em", "row-gap": "4.2em", "columns": 9, "rows": 6 }
+    { "prefix": "",      "width": 0,    "column-gap": "1.4em", "row-gap": "1.4em", "columns": 6, "rows": 6 },
+    { "prefix": "\\@1-", "width": 768,  "column-gap": "2.1em", "row-gap": "2.1em", "columns": 9, "rows": 6 },
+    { "prefix": "\\@2-", "width": 980,  "column-gap": "2.1em", "row-gap": "2.8em", "columns": 12, "rows": 6 },
+    { "prefix": "\\@3-", "width": 1120, "column-gap": "2.1em", "row-gap": "4.2em", "columns": 15, "rows": 6 }
 ]

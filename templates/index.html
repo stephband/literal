@@ -1,49 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<title>Literal</title>
-
-<meta charset="utf-8" />
-<meta name="author" content="Stephen Band" />
-<meta name="description" content="Literal enhances HTML templates with JS literal expressions for data binding, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
-<meta name="viewport" content="width=device-width" />
-
-
-<meta name="twitter:card" content="summary">
-<meta name="twitter:site" content="@stephband">
-<meta property="og:title" content="Literal" />
-<meta property="og:description" content="Literal enhances HTML templates with JS literal expressions for data binding, and provides a declarative way of creating custom elements, all in a small library weighing in at 15kB minified and gzipped." />
-<meta property="og:image" content="undefined" />
-<meta property="og:url" content="https://stephen.band/literal" />
-
-
-
-
-<script type="importmap"></script>
-
-<script title="load">
-    document.documentElement.className += ' js loading';
-    // window.addEventListener('DOMContentLoaded', () => document.documentElement.classList.remove('content-loading'));
-    // Wait for other load handlers to run first - Bolt does a few things on
-    // load (eg. targetable scrolls) and we want them to run before the loading
-    // class is removed
-    window.addEventListener('load', () => window.requestAnimationFrame(() => document.documentElement.classList.remove('loading')));
-</script>
-
-<script type="module">
-    import '../literal-html/element.js';
-</script>
-
-
-<script title="debug">
-    window.DEBUG = true;
-    window.detailsToggleStylesheet = 'https://stephen.band/literal/documentation/build/details-toggle/shadow.css';
-</script>
-
-<link rel="stylesheet" href="https://stephen.band/literal/documentation/build/module.css">
-<link rel="preload" as="style" href="https://stephen.band/literal/documentation/build/details-toggle/shadow.css">
-
+    
 
     <link rel="stylesheet" href="../literal-include/module.css" />
 </head>
@@ -54,7 +12,7 @@
     </header>
 
     <section class="x1 4x @2-x2 x-stretch" id="template-scope">
-
+        
     </section>
 
     <div class="x1 4x @1-3x @1-y3 @2-x2 x-stretch y-start">
