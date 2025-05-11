@@ -53,10 +53,24 @@
                the left edge of the first letter 'l'. (It should be 7.6x but
                something something something.) The logo SVG includes space that
                keep the top left hand white space square. */
-            --size: calc(7.5 * (var(--x-gap) + min(100vw, 81.1098348829em) / 15));
+            --size: calc(13.4 * var(--x-gap));
 
             padding-left: var(--size);
             height: calc(var(--size) * 618 / 2128);
+        }
+
+        @media (min-width: 800px) {
+
+        }
+
+        @media (min-width: 1120px) {
+            .logo-thumb {
+                /* Logo size is 7.5x the gap from the left edge of the window to
+                   the left edge of the first letter 'l'. (It should be 7.6x but
+                   something something something.) The logo SVG includes space that
+                   keep the top left hand white space square. */
+                --size: calc(7.5 * (var(--x-gap) + min(100vw, 81.1098348829em) / 15));
+            }
         }
 
         header > .logo-thumb {
@@ -104,12 +118,12 @@
     Object.assign(Literal.scope, scope);
     </script>
 </head>
-<body class="4x-grid @1-6x-grid @2-7x-grid @3-15x-grid grid y-start-grid">
-    <header class="@3-15x x-flood y-start">
+<body class="6x-grid @1-9x-grid @2-12x-grid @3-15x-grid grid y-start-grid">
+    <header class="@2-12x @3-15x x-flood y-start">
         <h1 class="logo-thumb thumb" style="background-image: url(./assets/literal.svg);">Literal</h1>
     </header>
 
-    <div class="x2 @3-8x text-05">
+    <div class="x1 @3-x2 @2-10x @3-8x text-05">
         <p>Literal enhances the <strong><code>&lt;template&gt;</code> element</strong>
         with <strong>JS literal expressions</strong> and an <strong>incremental renderer</strong>
         that reacts to updates in a <strong>signal graph</strong>. It is designed for HTML
@@ -118,7 +132,7 @@
         <p>Weighs under 15kB bundled and gzipped.</p>
     </div>
 
-    <div class="x2 @3-4x">
+    <div class="x1 @3-x2 @2-4x">
         <p>Literal's entry point is the <code>literal-html</code> template:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>${ 'Hello planet' }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
@@ -126,7 +140,7 @@
 </code></pre>
     </div>
 
-    <div class="x6 @3-4x">
+    <div class="@2-4x">
         <p>Which is replaced in the DOM with its own rendered content:</p>
         <template is="literal-html" src="./data/data.json">
             <p>${ 'Hello planet' }</p>
@@ -142,7 +156,7 @@
         </template>
     </div-->
 
-    <div class="x2 @3-6x">
+    <div class="x1 @3-x2 @2-6x">
         <h4>Import data</h4>
         <p>Data is sourced with the <code>src</code> attribute, which imports
         <code>.js</code> modules or fetches&nbsp;JSON. It is accessed inside a
@@ -160,7 +174,7 @@
 </code></pre>
     </div>
 
-    <div class="@3-6x">
+    <div class="@2-6x">
         <h4>Include other templates</h4>
         <p>Besides a <code>data</code> object, templates have other objects
         and functions in-scope. The <code>include()</code> function includes
@@ -180,7 +194,7 @@
 </code></pre>
     </div>
 
-    <div class="x2 @3-12x">
+    <div class="x1 @3-x2 @2-12x">
         <h4>Try it</h4>
         <p>Literal is written as vanilla JavaScript modules, and runs perfectly
         happily in the browser without any build/compile step. The dev version
@@ -195,7 +209,7 @@
 </code></pre>
     </div>
 
-    <div class="@3-x7 @3-8x invert x-flood text-10" style="padding: var(--x-gap); padding-right: ;">
+    <div class="@3-x7 @2-8x invert x-flood text-10" style="padding: var(--x-gap); padding-right: ;">
         <h5>Extend the template scope</h5>
 
         <p>You are free to put any functions and objects you like into literal's

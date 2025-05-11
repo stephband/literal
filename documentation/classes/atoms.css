@@ -608,13 +608,13 @@ a.grid:focus {
 .margin-96        { margin-top: 6rem   !important; }
 
 
-/* .\@1-atom, 48em (768px) */
+/* .\@1-atom, 33.75em (540px) */
 
-@media screen and (max-width: 47.9375em) {
+@media screen and (max-width: 33.6875em) {
     .\@1-shown          { display: none !important; }
 }
 
-@media (min-width: 48em) {
+@media (min-width: 33.75em) {
     .\@1-hidden         { display: none !important; }
 /**
 .fixed
@@ -1036,13 +1036,13 @@ a.\@1-grid:focus {
 }
 
 
-/* .\@2-atom, 61.25em (980px) */
+/* .\@2-atom, 50em (800px) */
 
-@media screen and (max-width: 61.1875em) {
+@media screen and (max-width: 49.9375em) {
     .\@2-shown          { display: none !important; }
 }
 
-@media (min-width: 61.25em) {
+@media (min-width: 50em) {
     .\@2-hidden         { display: none !important; }
 /**
 .fixed
