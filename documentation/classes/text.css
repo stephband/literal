@@ -6,6 +6,7 @@ https://stephen.band/font-size/?breakpoints=417,1440&.text--2=128,144&.text--1=6
 
 */
 
+/*
 @font-face {
     font-family: Euclid;
     src: url('https://stephen.band/slide-show/docs/fonts/Euclid/EuclidCircularA-Regular-WebTrial.woff') format('woff');
@@ -24,6 +25,7 @@ https://stephen.band/font-size/?breakpoints=417,1440&.text--2=128,144&.text--1=6
     font-family: MartianMono;
     src: url('https://stephen.band/slide-show/docs/fonts/Martian-Mono/MartianMonoVF.woff2') format('woff2');
 }
+*/
 
 .text-00,
 .text-01, h1,
@@ -37,7 +39,7 @@ https://stephen.band/font-size/?breakpoints=417,1440&.text--2=128,144&.text--1=6
 .text-10,
 .text-11,
 .text-12 {
-    font-family: Euclid, Helvetica, Arial, sans-serif;
+    font-family: system-ui, Helvetica, Arial, sans-serif;
     font-style: none;
     text-transform: none;
     margin: 0;

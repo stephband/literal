@@ -5,6 +5,7 @@ import AttributeRenderer from '../renderer/renderer-attribute.js';
 import BooleanRenderer   from '../renderer/renderer-boolean.js';
 import CheckedRenderer   from '../renderer/renderer-checked.js';
 import DatasetRenderer   from '../renderer/renderer-dataset.js';
+import OnRenderer        from '../renderer/renderer-on.js';
 import StyleRenderer     from '../renderer/renderer-style.js';
 import TokensRenderer    from '../renderer/renderer-tokens.js';
 import ValueRenderer     from '../renderer/renderer-value.js';
@@ -46,6 +47,7 @@ export default function compileAttribute(array, element, attribute, path, option
             property === 'value'   ? ValueRenderer :
             property === 'checked' ? CheckedRenderer :
             property === 'style'   ? StyleRenderer :
+            property.startsWith('on') ? OnRenderer :
             typeof element[property] === 'boolean' ? BooleanRenderer :
             typeof element[property] === 'object' && element[property].add && element[property].remove ? TokensRenderer :
             AttributeRenderer :

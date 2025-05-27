@@ -9,11 +9,19 @@
         window.DEBUG = true;
     </script>
 
-    <script type="importmap">{
+    <!--script type="importmap">{
         "imports": {
             "dom/":  "https://cdn.jsdelivr.net/gh/stephband/dom@master/modules/",
             "fn/":   "https://cdn.jsdelivr.net/gh/stephband/fn@master/modules/",
             "bolt/": "https://cdn.jsdelivr.net/gh/stephband/bolt-2@main/"
+        }
+    }</script-->
+
+    <script type="importmap">{
+        "imports": {
+            "dom/":     "../dom/modules/",
+            "fn/":      "../fn/modules/",
+            "bolt/":    "../bolt/"
         }
     }</script>
 
@@ -125,12 +133,16 @@
 
     <div class="x1 @3-x2 @2-10x @3-8x text-05">
         <p>Literal enhances the <strong><code>&lt;template&gt;</code> element</strong>
-        with <strong>JS literal expressions</strong> and an <strong>incremental renderer</strong>
+        with <strong>literal expressions</strong> and a <strong>DOM renderer</strong>
         that reacts to updates in a <strong>signal graph</strong>. It is designed for HTML
         authors who want to enhance content with <strong>islands of interactivity</strong>
         without having some framework take over the document.</p>
         <p>Weighs under 15kB bundled and gzipped.</p>
     </div>
+
+    <h3 class="x1 @3-x2 @2-8x">
+        <code>&lt;template is="literal-html"&gt;</code>
+    </h3>
 
     <div class="x1 @3-x2 @2-4x">
         <p>Literal's entry point is the <code>literal-html</code> template:</p>
@@ -159,8 +171,15 @@
     <div class="x1 @3-x2 @2-6x">
         <h4>Import data</h4>
         <p>Data is sourced with the <code>src</code> attribute, which imports
-        <code>.js</code> modules or fetches&nbsp;JSON. It is accessed inside a
-        template via the <code>data</code> constant:</p>
+        <code>.js</code> modules or fetches&nbsp;JSON. Inside the template this
+        data is available as the constant <code>data</code>:</p>
+<pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>li-template<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>${ data.text }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
+</code></pre>
+
+        <p>Templates that share a <code>src</code> share a <code>data</code> object.
+        Changes to data in one template are rendered in the other:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>li-template<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>${ data.text }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
