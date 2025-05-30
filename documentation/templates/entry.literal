@@ -3,7 +3,7 @@ ${ data.type === 'text' ? `
 <h2 class="text-02" id="${ slugify(data.name) }">${ data.name }</h2>
 ${ data.body }
 ` : `
-<details class="${ data.type }-details-toggle" id="${ data.id }">
+<details class="${ data.type }-details" id="${ data.id }">
     <summary class="${ data.type }-text text-05">
         <code class="${
             data.type === 'attribute' ? 'token' :

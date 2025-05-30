@@ -3,8 +3,22 @@ ${ include('../../templates/head.literal', data) }
 
 <script title="debug">
     window.DEBUG = true;
-    window.detailsToggleStylesheet = 'https://stephen.band/literal/documentation/build/details-toggle/shadow.css';
 </script>
 
+${ /*<script type="importmap">{
+    "imports": {
+        "dom/":  "../../dom/modules/",
+        "fn/":   "../../fn/modules/",
+        "bolt/": "../../bolt/"
+    }
+}</script>*/ }
+
+<script type="importmap">{
+    "imports": {
+        "dom/":  "https://cdn.jsdelivr.net/gh/stephband/dom@master/modules/",
+        "fn/":   "https://cdn.jsdelivr.net/gh/stephband/fn@master/modules/",
+        "bolt/": "https://cdn.jsdelivr.net/gh/stephband/bolt-2@main/"
+    }
+}</script>
+
 <link rel="stylesheet" href="../build/module.css">
-<link rel="preload" as="style" href="https://stephen.band/literal/documentation/build/details-toggle/shadow.css">

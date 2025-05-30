@@ -1,0 +1,12 @@
+
+details {
+    --bleed: var(--x-gap);
+    transition: margin-top 0.3s linear;
+}
+
+h3 + details, .text-03 + details { margin-top: 0.666666667em; }
+p + details { margin-top: 1.4em; }
+hr + details { margin-top: 1.4em; }
+details + hr { margin-top: 1.4em; }
+details + details { margin-top: 0.466666667em; }
+details[open] + details { margin-top: 2.1em; }

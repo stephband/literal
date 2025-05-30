@@ -87,9 +87,9 @@ body > nav {
 }
 
 
-/** .nav-details-toggle **/
+/** .nav-details **/
 
-.nav-details-toggle {
+.nav-details {
     --padding-left: calc(0.3333333 * var(--x-gap));
     --padding-right: calc(0.3333333 * var(--x-gap));
 
@@ -109,12 +109,12 @@ body > nav {
         box-shadow 0.3s linear;
 }
 
-.nav-details-toggle[open] {
+.nav-details[open] {
     border: 2px solid rgba(20, 27, 30, var(--nav-scroll-ratio));
     box-shadow: 0.1em 0.3em 0.9em rgba(20, 27, 30, calc(0.4 * var(--nav-scroll-ratio)));
 }
 
-.nav-details-toggle > .nav-thumb {
+.nav-details > .nav-thumb {
     position: absolute;
     top: 0;
     right: -2px;
@@ -132,11 +132,11 @@ body > nav {
         border-color 0.3s linear;
 }
 
-.nav-details-toggle[open] > .nav-thumb {
+.nav-details[open] > .nav-thumb {
     border-color: rgba(20, 27, 30, var(--nav-scroll-ratio));
 }
 
-.nav-details-toggle > .nav-button {
+.nav-details > .nav-button {
     margin-left: 0;
     margin-right: 0;
     width: 100%;

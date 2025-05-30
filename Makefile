@@ -20,4 +20,3 @@ documentation:
 	rm -rf ./documentation/build
 	deno run --allow-read --allow-write --allow-net --allow-env --allow-run --no-lock --reload --config ./deno.json https://cdn.jsdelivr.net/gh/stephband/fn@master/deno/make-modules.js documentation/build documentation/module.js
 	deno run --allow-read --allow-write --allow-net --allow-env --allow-run --no-lock --reload --config ./deno.json https://cdn.jsdelivr.net/gh/stephband/fn@master/deno/make-css.js documentation/build documentation/module.css
-	#deno run --allow-read --allow-write --allow-net --allow-env --allow-run --config ./deno.json https://cdn.jsdelivr.net/gh/stephband/fn@master/deno/make-css.js documentation/build/details-toggle/shadow.css ../details-toggle/shadow.css
