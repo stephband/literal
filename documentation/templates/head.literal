@@ -11,7 +11,7 @@ ${ /*<script type="importmap">{
         "fn/":   "../../fn/modules/",
         "bolt/": "../../bolt/"
     }
-}</script>*/ }
+}</script>*/ '' }
 
 <script type="importmap">{
     "imports": {

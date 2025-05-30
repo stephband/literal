@@ -14,7 +14,6 @@ build:
 	rm -rf ./deno.lock
 	rm -rf ./build
 	deno run --allow-read --allow-write --allow-net --allow-env --allow-run --no-lock --reload --config ./deno.json ../fn/deno/make-modules.js build ./module.js ./literal-html/element.js
-	#deno run --allow-read --allow-write --allow-net --allow-env --allow-run --no-lock --reload --config ./deno.json https://cdn.jsdelivr.net/gh/stephband/fn@master/deno/make-modules.js --debug build-debug ./module.js ./literal-html/element.js
 
 documentation:
 	rm -rf ./documentation/build
