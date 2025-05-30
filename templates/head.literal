@@ -29,6 +29,14 @@ ${ data.favicons && data.favicons.map((favicon) => `
     window.addEventListener('load', () => window.requestAnimationFrame(() => document.documentElement.classList.remove('loading')));
 </script>
 
+<script type="importmap">{
+    "imports": {
+        "dom/":  "https://cdn.jsdelivr.net/gh/stephband/dom@master/modules/",
+        "fn/":   "https://cdn.jsdelivr.net/gh/stephband/fn@master/modules/",
+        "bolt/": "https://cdn.jsdelivr.net/gh/stephband/bolt-2@main/"
+    }
+}</script>
+
 <script type="module">
     import '../literal-html/element.js';
 </script>

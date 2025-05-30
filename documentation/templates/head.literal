@@ -1,24 +1,8 @@
 
-${ include('../../templates/head.literal', data) }
-
 <script title="debug">
     window.DEBUG = true;
 </script>
 
-${ /*<script type="importmap">{
-    "imports": {
-        "dom/":  "../../dom/modules/",
-        "fn/":   "../../fn/modules/",
-        "bolt/": "../../bolt/"
-    }
-}</script>*/ '' }
-
-<script type="importmap">{
-    "imports": {
-        "dom/":  "https://cdn.jsdelivr.net/gh/stephband/dom@master/modules/",
-        "fn/":   "https://cdn.jsdelivr.net/gh/stephband/fn@master/modules/",
-        "bolt/": "https://cdn.jsdelivr.net/gh/stephband/bolt-2@main/"
-    }
-}</script>
+${ include('../../templates/head.literal', data) }
 
 <link rel="stylesheet" href="../build/module.css">
