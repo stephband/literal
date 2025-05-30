@@ -132,11 +132,11 @@
     </header>
 
     <div class="x1 @3-x2 @2-10x @3-8x text-05">
-        <p>Literal enhances the <strong><code>&lt;template&gt;</code> element</strong>
-        with <strong>literal expressions</strong> and a <strong>DOM renderer</strong>
-        that reacts to updates in a <strong>signal graph</strong>. It is designed for HTML
-        authors who want to enhance content with <strong>islands of interactivity</strong>
-        without having some framework take over the document.</p>
+        <p>Literal enhances the <strong><code>&lt;template&gt;</code></strong> element
+        with a <strong>reactive DOM renderer</strong> that evaluates <strong>literal expressions</strong>
+        and binds updates to a <strong>signal graph</strong>. It is a view layer designed
+        for HTML authors to enhance content.</p>
+
         <p>Weighs under 15kB bundled and gzipped.</p>
     </div>
 
@@ -178,15 +178,16 @@
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 </code></pre>
 
-        <p>Templates that share a <code>src</code> share a <code>data</code> object.
-        Changes to data in one template are rendered in the other:</p>
+        <p>For quick prototyping, you can, alternatively, declare data using
+                <code>data-*</code>&nbsp;attributes:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>li-template<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>${ data.text }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 </code></pre>
 
-        <p>For quick prototyping, you can, alternatively, declare data using
-        <code>data-*</code>&nbsp;attributes:</p>
+        <h4>Share <code>data</code> between templates</h4>
+        <p>Templates that share a <code>src</code> share a <code>data</code> object.
+        Changes to data in one template are rendered in the other:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>li-template<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>${ data.text }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
@@ -194,10 +195,12 @@
     </div>
 
     <div class="@2-6x">
-        <h4>Include other templates</h4>
+        <h4>Include a template</h4>
         <p>Besides a <code>data</code> object, templates have other objects
-        and functions in-scope. The <code>include()</code> function includes
-        other&nbsp;templates:</p>
+        and functions in-scope.</p>
+
+        <p>The <code>include()</code> function includes
+        another template:</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>li-template<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>${ data.text }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
@@ -206,19 +209,73 @@
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span>${ data.tasks.map(include('#li-template')) }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 </code></pre>
-        <p>Use <code>include()</code> to map an array of objects to&nbsp;templates:</p>
+
+        <template id="todo-li">
+            <li>${ data.text }</li>
+        </template>
+
+        <template is="literal-html" src="./data/todo.json">
+            <ul>${ include('#todo-li', data.tasks[0]) }</ul>
+        </template>
+
+        <h4>Map arrays to template includes</h4>
+        <p>Templates have no explicit looping mechanism, but support mapping arrays
+        to templates. The <code>include()</code> function is partially applicable,
+        and that's helpful for</p>
 <pre><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span> <span class="token attr-name">is</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>literal-html<span class="token punctuation">"</span></span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./data/todo.json<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span>${ data.tasks.map(include('#li-template')) }<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">></span></span>
 </code></pre>
+
+        <template is="literal-html" src="./data/todo.json">
+            <ul>${ data.tasks.map(include('#todo-li')) }</ul>
+        </template>
+    </div>
+
+    <div class="x1 @3-x2 @2-10x @3-8x">
+        <h4>Features</h4>
+        <ul style="padding-left: 0;">
+            <li>
+                <strong>Frame rate rendering</strong><br/>
+                DOM renders are throttled to animation frames.
+            </li>
+            <li>
+                <strong>Minimal garbage collection</strong><br/>
+                avoids creating new objects and functions, wherever possible,
+                minimising garbage collection.
+            </li>
+            <li>
+                <strong>Minimal DOM manipulation</strong><br/>
+                Literal has dedicated renderers for boolean, class, dataset,
+                value, checked, onevent and regular attributes, as well as text
+                nodes. Unnecessary renders are avoided by diffing against the DOM,
+                and care is taken not to disrupt user input in focused form fields.
+            </li>
+        </ul>
+<!--
+        What makes Literal unique is that it implements reactive templates with a signal-based system (using FrameSignal from
+          'fn/signal.js') without requiring:
+
+          - A component model architecture
+          - A build step or transpilation
+          - Specialized state management solutions
+          - Framework-specific tooling
+          - Virtual DOM reconciliation
+
+
+        Literal's reactivity works by:
+          1. Using proxies (via Data.of()) to track property access
+          2. The FrameSignal class to batch updates on animation frames
+          3. Specialized renderers that only update what changed
+-->
     </div>
 
     <div class="x1 @3-x2 @2-12x">
         <h4>Try it</h4>
-        <p>Literal is written as vanilla JavaScript modules, and runs perfectly
-        happily in the browser without any build/compile step. The dev version
-        can be run with logs and inline messages turned on by setting a
-        <code>DEBUG</code> flag:</p>
+        <p>Literal is written as vanilla JavaScript modules, and happily runs
+        in the browser without any build/compile step. The dev version can be
+        run with logs and inline messages turned on by setting a <code>DEBUG</code>
+        flag:</p>
 <pre><code class="language-html">&lt;!-- Enable debug messages --&gt;
 &lt;script&gt;window.DEBUG = true;&lt;/script&gt;
 &lt;!-- Import and register template is="literal-html" --&gt;
@@ -235,26 +292,6 @@
         shared template scope. Simply assign them to the <code>Literal.scope</code>
         object – which must be done before a template is compiled.</p>
     </div>
-
-    <div class="x2 @3-4x invert">Hey</div>
-    <div class="x6 @3-4x invert">Hey</div>
-    <div class="x10 @3-4x invert">Hey</div>
-
-    <!--div class="invert" id="x1"></div>
-    <div class="invert" id="x2"></div>
-    <div class="invert" id="x3"></div>
-    <div class="invert" id="x4"></div>
-    <div class="invert" id="x5"></div>
-    <div class="invert" id="x6"></div>
-    <div class="invert" id="x7"></div>
-    <div class="invert" id="x8"></div>
-    <div class="invert" id="x9"></div>
-    <div class="invert" id="x10"></div>
-    <div class="invert" id="x11"></div>
-    <div class="invert" id="x12"></div>
-    <div class="invert" id="x13"></div>
-    <div class="invert" id="x14"></div>
-    <div class="invert" id="x15"></div-->
 
     <footer class="@3-15x x-flood y-start invert">
 

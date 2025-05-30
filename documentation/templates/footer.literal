@@ -2,16 +2,17 @@
 <footer class="x1 4x @1-6x @2-7x @3-9x 4x-grid @1-6x-grid @2-7x-grid @3-9x-grid grid grid footer">
     <div class="x1 4x @1-2x @2-x2 x-stretch y-start">
         <h3>Elements</h3>
-        <a class="block" href="https://stephen.band/literal/literal-html/"><code>&lt;literal-html&gt;</code></a>
-        <a class="block" href="https://stephen.band/literal/literal-element/"><code>&lt;literal-element&gt;</code></a>
+        <a class="block" href="https://stephen.band/literal/literal-html/"><code>&lt;template is="literal-html"&gt;</code></a>
         <a class="block" href="https://stephen.band/slide-show/"><code>&lt;slide-show&gt;</code></a>
         <a class="block" href="https://stephen.band/details-toggle/"><code>&lt;details-toggle&gt;</code></a>
         <a class="block" href="https://stephen.band/form-elements/rotary-input/"><code>&lt;rotary-input&gt;</code></a>
         <a class="block" href="https://stephen.band/form-elements/range-input/"><code>&lt;range-input&gt;</code></a>
         <a class="block" href="https://stephen.band/form-elements/y-input/"><code>&lt;y-input&gt;</code></a>
         <a class="block" href="https://stephen.band/form-elements/xy-input/"><code>&lt;xy-input&gt;</code></a>
+        <a class="block" href="https://stephen.band/form-elements/normal-input/"><code>&lt;normal-input&gt;</code></a>
         <a class="block" href="https://stephen.band/form-elements/number-control/"><code>&lt;number-control&gt;</code></a>
         <a class="block" href="https://stephen.band/form-elements/select-control/"><code>&lt;select-control&gt;</code></a>
+        <a class="block" href="https://stephen.band/form-elements/menu-select/"><code>&lt;select is="menu-select"&gt;</code></a>
     </div>
 
     <div class="x1 4x @1-2x @1-x3 @2-x4 x-stretch y-start">
