@@ -4,6 +4,8 @@ OnRenderer(fn, parameters, element, name, compiled)
 Constructs an object responsible for rendering an `onevent` attribute.
 **/
 
+const assign = Object.assign;
+
 export default class OnRenderer {
     constructor(fn, parameters, element, name, compiled) {
         this.compiled   = compiled;
@@ -11,7 +13,7 @@ export default class OnRenderer {
         this.element    = element;
         this.fn         = fn;
         this.name       = name;
-        this.parameters = parameters;
+        this.parameters = assign({}, parameters, { element });
 
         const type = name.slice(2);
         element.addEventListener(type, this);

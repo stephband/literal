@@ -20,6 +20,7 @@ import toCamelCase from 'fn/to-camel-case.js';
 import deg         from 'fn/to-deg.js';
 import rad         from 'fn/to-rad.js';
 import wrap        from 'fn/wrap.js';
+
 import delegate    from 'dom/delegate.js';
 import events      from 'dom/events.js';
 import isValid     from 'dom/is-valid.js';

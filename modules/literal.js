@@ -221,7 +221,7 @@ export default class Literal {
     }
 
     /**
-    Literal.fromTemplate(template, element, parameters, options)
+    Literal.fromTemplate(template, data, parameters, options)
     **/
     static fromTemplate(element, data, parameters, options) {
         const template = Template.fromTemplate(element, options);
@@ -234,7 +234,7 @@ export default class Literal {
     from template identified by `identifier`.
     **/
     static render(id, data, element) {
-        const literal = Literal.from(id, data, { element });
+        const literal = Literal.create(id, data, { element });
         return literal.fragment;
     }
 }
