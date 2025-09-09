@@ -5,7 +5,7 @@ import Literal from './modules/literal.js';
 import scope   from './modules/scope.js';
 import { compiled } from './modules/compile/compile.js';
 
-Literal.scope  = scope;
+Literal.scope = scope;
 
 export { Literal as default, Data, Signal, compiled };
 export { default as config } from './modules/config.js';
