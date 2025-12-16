@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width" />
 
 ${ data.author && data.author.twitter && (
-(!window.twitterCardValidateWarning && console.log('Validate the twitter card at https://cards-dev.twitter.com/validator'), window.twitterCardValidateWarning = true), `
+(!window.twitterCardValidateWarning && console.log('Validate the twitter card at https://cards-dev.twitter.com/validator. Card images should have an aspect ratio of 1.91:1.'), window.twitterCardValidateWarning = true), `
 <meta name="twitter:card" content="summary">
 <meta name="twitter:site" content="${ data.author.twitter }">
 <meta property="og:title" content="${ data.title }" />
