@@ -34,14 +34,12 @@ const resolveData = overload(toType, {
     }
 });
 
-function renderFile([source, target, file, data, template, DEBUG, DDD]) {
-    const include  = (src, data) => data ?
-        scope.include(file, target, src, data, DEBUG) :
-        Promise.resolve('') ;
+function renderFile([source, target, file, data, template, DEBUG, paramNames, paramValues]) {
+    const include  = (src, data) => include(file, target, src, data, DEBUG, paramNames, ...paramValues);
     const comments = (...urls) => comments(file, target, ...urls);
-    const render   = compile(scope, 'data, include, imports, comments', template, file, DEBUG);
+    const render   = compile(scope, 'data, include, comments' + (paramNames ? ', ' + paramNames : ''), template, file, DEBUG);
 
-    return render(data, include, null, comments)
+    return render(data, include, comments, ...paramValues)
     .then(DEBUG ?
         (text) => prependComment(file, source, rewriteURLs(file, source, text)) :
         (text) => rewriteURLs(file, source, text)
@@ -49,12 +47,12 @@ function renderFile([source, target, file, data, template, DEBUG, DDD]) {
 }
 
 const renderInclude = overload((source, target, file) => toExtension(file), {
-    '.html.literal': (source, target, file, data, DEBUG) => Promise
-        .all([source, target, file, resolveData(data, source, target), read(file).then(extractBody), DEBUG, data])
+    '.html.literal': (source, target, file, data, DEBUG, paramNames, paramValues) => Promise
+        .all([source, target, file, resolveData(data, source, target), read(file).then(extractBody), DEBUG, paramNames, paramValues])
         .then(renderFile),
 
-    '.literal': (source, target, file, data, DEBUG) => Promise
-        .all([source, target, file, resolveData(data, source, target), read(file), DEBUG, data])
+    '.literal': (source, target, file, data, DEBUG, paramNames, paramValues) => Promise
+        .all([source, target, file, resolveData(data, source, target), read(file), DEBUG, paramNames, paramValues])
         .then(renderFile),
 
     '.html': (source, target, file) => read(file)
@@ -82,7 +80,7 @@ function extractBody(html) {
     return html.slice(pre.index + pre[0].length, post.index);
 }
 
-export default function include(source, target, url, data, DEBUG) {
+export default function include(source, target, url, data, DEBUG, paramNames, ...paramValues) {
     // Get absolute OS file path
     const file = getAbsoluteFile(source, url);
 
@@ -95,7 +93,7 @@ export default function include(source, target, url, data, DEBUG) {
     );
     */
 
-    return renderInclude(source, target, file, data, DEBUG)
+    return renderInclude(source, target, file, data, DEBUG, paramNames, paramValues)
     .catch((e) => {
         console.log(red + ' ' + yellow, e.constructor.name + ' in', source);
         console.log(red, e.message);

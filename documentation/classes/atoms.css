@@ -305,6 +305,7 @@ Define the vertical grid gap (with units).
 a.grid,
 a.grid:hover,
 a.grid:focus {
+    /* If a link is a grid we probably don't want it to be underlined */
     text-decoration: none;
 }
 
@@ -322,12 +323,8 @@ a.grid:focus {
     grid-auto-flow: dense;
 }
 
-.y-start-grid {
-    align-content: start;
-}
-
-.y-center-grid {
-    align-content: center;
+.x-sub-grid {
+    grid-template-columns: subgrid;
 }
 
 .x-start-grid {
@@ -340,6 +337,22 @@ a.grid:focus {
 
 .x-end-grid {
     justify-content: end;
+}
+
+.y-sub-grid {
+    grid-template-rows: subgrid;
+}
+
+.y-start-grid {
+    align-content: start;
+}
+
+.y-center-grid {
+    align-content: center;
+}
+
+.y-end-grid {
+    align-content: center;
 }
 
 /* x */
@@ -366,12 +379,6 @@ a.grid:focus {
 .\36 x { grid-column-end: span 6 !important; }
 .nx { grid-column-end: -1 !important; }
 
-.x-end {
-    justify-self: end !important;
-    margin-left: auto;
-    margin-right: 0;
-}
-
 .x-start {
     justify-self: start !important;
     margin-left: 0;
@@ -384,26 +391,18 @@ a.grid:focus {
     margin-right: auto;
 }
 
+.x-end {
+    justify-self: end !important;
+    margin-left: auto;
+    margin-right: 0;
+}
+
 .x-stretch {
     justify-self: stretch !important;
     margin-left: 0;
     margin-right: 0;
     max-width: 100%;
     width: 100%;
-}
-
-.x-unbleedl {
-    margin-left:  calc(0.5 * var(--x-gap));
-    margin-right: 0;
-    max-width:    calc(100% - 0.5 * var(--x-gap));
-    width:        calc(100% - 0.5 * var(--x-gap));
-}
-
-.x-unbleedr {
-    margin-left:  0;
-    margin-right: calc(0.5 * var(--x-gap));
-    max-width:    calc(100% - 0.5 * var(--x-gap));
-    width:        calc(100% - 0.5 * var(--x-gap));
 }
 
 .x-bleedl {
@@ -730,6 +729,7 @@ a.grid:focus {
 a.\@1-grid,
 a.\@1-grid:hover,
 a.\@1-grid:focus {
+    /* If a link is a grid we probably don't want it to be underlined */
     text-decoration: none;
 }
 
@@ -747,12 +747,8 @@ a.\@1-grid:focus {
     grid-auto-flow: dense;
 }
 
-.\@1-y-start-grid {
-    align-content: start;
-}
-
-.\@1-y-center-grid {
-    align-content: center;
+.\@1-x-sub-grid {
+    grid-template-columns: subgrid;
 }
 
 .\@1-x-start-grid {
@@ -765,6 +761,22 @@ a.\@1-grid:focus {
 
 .\@1-x-end-grid {
     justify-content: end;
+}
+
+.\@1-y-sub-grid {
+    grid-template-rows: subgrid;
+}
+
+.\@1-y-start-grid {
+    align-content: start;
+}
+
+.\@1-y-center-grid {
+    align-content: center;
+}
+
+.\@1-y-end-grid {
+    align-content: center;
 }
 
 /* x */
@@ -800,12 +812,6 @@ a.\@1-grid:focus {
 .\@1-9x { grid-column-end: span 9 !important; }
 .\@1-nx { grid-column-end: -1 !important; }
 
-.\@1-x-end {
-    justify-self: end !important;
-    margin-left: auto;
-    margin-right: 0;
-}
-
 .\@1-x-start {
     justify-self: start !important;
     margin-left: 0;
@@ -818,26 +824,18 @@ a.\@1-grid:focus {
     margin-right: auto;
 }
 
+.\@1-x-end {
+    justify-self: end !important;
+    margin-left: auto;
+    margin-right: 0;
+}
+
 .\@1-x-stretch {
     justify-self: stretch !important;
     margin-left: 0;
     margin-right: 0;
     max-width: 100%;
     width: 100%;
-}
-
-.\@1-x-unbleedl {
-    margin-left:  calc(0.5 * var(--x-gap));
-    margin-right: 0;
-    max-width:    calc(100% - 0.5 * var(--x-gap));
-    width:        calc(100% - 0.5 * var(--x-gap));
-}
-
-.\@1-x-unbleedr {
-    margin-left:  0;
-    margin-right: calc(0.5 * var(--x-gap));
-    max-width:    calc(100% - 0.5 * var(--x-gap));
-    width:        calc(100% - 0.5 * var(--x-gap));
 }
 
 .\@1-x-bleedl {
@@ -1161,6 +1159,7 @@ a.\@1-grid:focus {
 a.\@2-grid,
 a.\@2-grid:hover,
 a.\@2-grid:focus {
+    /* If a link is a grid we probably don't want it to be underlined */
     text-decoration: none;
 }
 
@@ -1178,12 +1177,8 @@ a.\@2-grid:focus {
     grid-auto-flow: dense;
 }
 
-.\@2-y-start-grid {
-    align-content: start;
-}
-
-.\@2-y-center-grid {
-    align-content: center;
+.\@2-x-sub-grid {
+    grid-template-columns: subgrid;
 }
 
 .\@2-x-start-grid {
@@ -1196,6 +1191,22 @@ a.\@2-grid:focus {
 
 .\@2-x-end-grid {
     justify-content: end;
+}
+
+.\@2-y-sub-grid {
+    grid-template-rows: subgrid;
+}
+
+.\@2-y-start-grid {
+    align-content: start;
+}
+
+.\@2-y-center-grid {
+    align-content: center;
+}
+
+.\@2-y-end-grid {
+    align-content: center;
 }
 
 /* x */
@@ -1240,12 +1251,6 @@ a.\@2-grid:focus {
 .\@2-12x { grid-column-end: span 12 !important; }
 .\@2-nx { grid-column-end: -1 !important; }
 
-.\@2-x-end {
-    justify-self: end !important;
-    margin-left: auto;
-    margin-right: 0;
-}
-
 .\@2-x-start {
     justify-self: start !important;
     margin-left: 0;
@@ -1258,26 +1263,18 @@ a.\@2-grid:focus {
     margin-right: auto;
 }
 
+.\@2-x-end {
+    justify-self: end !important;
+    margin-left: auto;
+    margin-right: 0;
+}
+
 .\@2-x-stretch {
     justify-self: stretch !important;
     margin-left: 0;
     margin-right: 0;
     max-width: 100%;
     width: 100%;
-}
-
-.\@2-x-unbleedl {
-    margin-left:  calc(0.5 * var(--x-gap));
-    margin-right: 0;
-    max-width:    calc(100% - 0.5 * var(--x-gap));
-    width:        calc(100% - 0.5 * var(--x-gap));
-}
-
-.\@2-x-unbleedr {
-    margin-left:  0;
-    margin-right: calc(0.5 * var(--x-gap));
-    max-width:    calc(100% - 0.5 * var(--x-gap));
-    width:        calc(100% - 0.5 * var(--x-gap));
 }
 
 .\@2-x-bleedl {
@@ -1604,6 +1601,7 @@ a.\@2-grid:focus {
 a.\@3-grid,
 a.\@3-grid:hover,
 a.\@3-grid:focus {
+    /* If a link is a grid we probably don't want it to be underlined */
     text-decoration: none;
 }
 
@@ -1621,12 +1619,8 @@ a.\@3-grid:focus {
     grid-auto-flow: dense;
 }
 
-.\@3-y-start-grid {
-    align-content: start;
-}
-
-.\@3-y-center-grid {
-    align-content: center;
+.\@3-x-sub-grid {
+    grid-template-columns: subgrid;
 }
 
 .\@3-x-start-grid {
@@ -1639,6 +1633,22 @@ a.\@3-grid:focus {
 
 .\@3-x-end-grid {
     justify-content: end;
+}
+
+.\@3-y-sub-grid {
+    grid-template-rows: subgrid;
+}
+
+.\@3-y-start-grid {
+    align-content: start;
+}
+
+.\@3-y-center-grid {
+    align-content: center;
+}
+
+.\@3-y-end-grid {
+    align-content: center;
 }
 
 /* x */
@@ -1692,12 +1702,6 @@ a.\@3-grid:focus {
 .\@3-15x { grid-column-end: span 15 !important; }
 .\@3-nx { grid-column-end: -1 !important; }
 
-.\@3-x-end {
-    justify-self: end !important;
-    margin-left: auto;
-    margin-right: 0;
-}
-
 .\@3-x-start {
     justify-self: start !important;
     margin-left: 0;
@@ -1710,26 +1714,18 @@ a.\@3-grid:focus {
     margin-right: auto;
 }
 
+.\@3-x-end {
+    justify-self: end !important;
+    margin-left: auto;
+    margin-right: 0;
+}
+
 .\@3-x-stretch {
     justify-self: stretch !important;
     margin-left: 0;
     margin-right: 0;
     max-width: 100%;
     width: 100%;
-}
-
-.\@3-x-unbleedl {
-    margin-left:  calc(0.5 * var(--x-gap));
-    margin-right: 0;
-    max-width:    calc(100% - 0.5 * var(--x-gap));
-    width:        calc(100% - 0.5 * var(--x-gap));
-}
-
-.\@3-x-unbleedr {
-    margin-left:  0;
-    margin-right: calc(0.5 * var(--x-gap));
-    max-width:    calc(100% - 0.5 * var(--x-gap));
-    width:        calc(100% - 0.5 * var(--x-gap));
 }
 
 .\@3-x-bleedl {

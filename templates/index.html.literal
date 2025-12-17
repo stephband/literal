@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     ${ include("../documentation/templates/head.literal", "../package.json") }
-
     <link rel="stylesheet" href="../literal-include/module.css" />
 </head>
 
