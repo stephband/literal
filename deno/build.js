@@ -23,7 +23,7 @@ export default function build(source, target, DEBUG) {
             scope.include(source, target, url, data, DEBUG) :
             Promise.resolve('') ;
         const comments = (...urls)   => scope.comments(source, target, ...urls);
-        const render   = compile(scope, 'data, include, imports, comments', template, source, DEBUG);
+        const render   = compile(scope, 'data, include, imports, comments', {}, template, source, DEBUG);
 
         return render({}, include, null, comments)
         .then(DEBUG ?

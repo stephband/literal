@@ -27,8 +27,11 @@ function logError(source, template, e) {
 
 
 /**
-Literal(params, template)
-Returns a function that renders a literal template.
+compile(scope, params, consts, source, id, DEBUG)
+Returns a function that renders a literal template, where `scope` is an object
+of values placed in the function's scope, `params` is a string of parameter names,
+`consts` is a string of const names for constants destructured from the first
+argument, `source` is the template literal source, and `id` an identifier for the cache.
 **/
 
 const indent = '  ';
@@ -36,7 +39,7 @@ const indent = '  ';
 // Store render functions against their ids
 const cache = {};
 
-export default function compile(scope, params, source, id, DEBUG) {
+export default function compile(scope, params, consts, source, id, DEBUG) {
     if (typeof source !== 'string') {
         throw new Error('Template is not a string');
     }
@@ -48,6 +51,7 @@ export default function compile(scope, params, source, id, DEBUG) {
 
     const code = '\n'
         + (id ? indent + '// Template #' + id + '\n' : '')
+        + (consts ? indent + 'const { ' + consts + ' } = arguments[0];\n' : '')
         + indent + 'return render`' + source + '`;\n';
 
     if (DEBUG) {

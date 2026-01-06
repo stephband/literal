@@ -37,7 +37,7 @@ const resolveData = overload(toType, {
 function renderFile([source, target, file, data, template, DEBUG, paramNames, paramValues]) {
     const include  = (src, data) => include(file, target, src, data, DEBUG, paramNames, ...paramValues);
     const comments = (...urls) => comments(file, target, ...urls);
-    const render   = compile(scope, 'data, include, comments' + (paramNames ? ', ' + paramNames : ''), template, file, DEBUG);
+    const render   = compile(scope, 'data, include, comments' + (paramNames ? ', ' + paramNames : ''), {}, template, file, DEBUG);
 
     return render(data, include, comments, ...paramValues)
     .then(DEBUG ?
@@ -99,4 +99,4 @@ export default function include(source, target, url, data, DEBUG, paramNames, ..
         console.log(red, e.message);
         return '';
     });
-};
+}
