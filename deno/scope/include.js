@@ -79,7 +79,7 @@ export default function include(source, target, url, DEBUG, constNames, consts =
     // Get absolute OS file path
     const filepath = getAbsoluteFile(source, url);
 
-    /**/
+    /*
     console.log('====== include(url, scope) ======',
         '\ntarget: ' + target,
         '\nsource: ' + source,
