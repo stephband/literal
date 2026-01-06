@@ -46,7 +46,7 @@ const renderInclude = overload((source, target, filepath) => toExtension(filepat
         .all([source, target, filepath, read(filepath).then(extractBody), DEBUG, constNames, consts, resolveData(data, source, target)])
         .then(renderFile),
 
-    '.literal': (source, target, filepath, DEBUG, constNames, data) => Promise
+    '.literal': (source, target, filepath, DEBUG, constNames, consts, data) => Promise
         .all([source, target, filepath, read(filepath), DEBUG, constNames, consts, resolveData(data, source, target)])
         .then(renderFile),
 
