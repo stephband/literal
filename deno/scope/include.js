@@ -9,7 +9,7 @@ import toExtension     from '../files/to-extension.js';
 import read            from '../files/read.js';
 import compile         from '../compile.js';
 import { rewriteURLs } from '../urls.js';
-import * as scope      from '../scope.js';
+import scope           from '../scope.js';
 import imports         from './imports.js';
 
 import { red, yellow } from '../log.js';

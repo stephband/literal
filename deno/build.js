@@ -5,7 +5,7 @@ import { ensureDir }   from "https://deno.land/std@0.110.0/fs/mod.ts";
 import read            from './files/read.js';
 import prependComment  from './files/prepend-comment.js';
 import compile         from './compile.js';
-import * as scope      from './scope.js';
+import scope           from './scope.js';
 import { rewriteURLs } from './urls.js';
 import { dimyellow }   from './log.js';
 
