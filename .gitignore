@@ -8,8 +8,11 @@ yarn-error.log*
 lerna-debug.log*
 .nova*
 .zed*
+AGENTS.md
 CLAUDE.md
 .claude/
+*.local
+*.local.*
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json

@@ -19,6 +19,7 @@ import Literal     from '../literal.js';
 import print, { printError } from '../print.js';
 
 
+const DEBUG  = globalThis.DEBUG;
 const assign = Object.assign;
 const define = Object.defineProperties;
 
@@ -28,10 +29,6 @@ function stop(node) {
 }
 
 function notInDOM(node) {
-if (node.parentNode === null) {
-    debugger
-    console.log('NODE NOT IN DOM', node);
-}
     return node.parentNode === null;
 }
 
@@ -42,13 +39,13 @@ function setNodeValue(node, value) {
     if (nodeValue) {
         if (nodeValue !== value) {
             node.nodeValue = value;
-            if (window.DEBUG) ++stats.text;
+            if (DEBUG) ++stats.text;
         }
     }
     else {
         if (value) {
             node.nodeValue = value;
-            if (window.DEBUG) ++stats.text;
+            if (DEBUG) ++stats.text;
         }
     }
 }
@@ -78,7 +75,7 @@ function objectToContents(renderer, object, i) {
         else {
             const node = document.createTextNode(string);
             contents[i].before(node);
-            if (window.DEBUG) ++stats.add;
+            if (DEBUG) ++stats.add;
             contents.splice(i, 0, node);
         }
         // Reset string accumulator
@@ -86,8 +83,8 @@ function objectToContents(renderer, object, i) {
     }
 
     // It is possible that the template has returned the same object at the same
-    // index again, in which case we do nothing. Not hugely likely, but possible,
-    // so we may as well do the optimum thing: nothing.
+    // index again. Not hugely likely, but possible, so we may as well do the
+    // optimum thing: nothing.
     if (object === contents[++i]) return i;
     --i;
 
@@ -112,7 +109,7 @@ function objectToContents(renderer, object, i) {
 
         // Add content into DOM and splice object into contents
         contents[++i].before(object.fragment);
-        if (window.DEBUG) ++stats.add;
+        if (DEBUG) ++stats.add;
         contents.splice(i, 0, object);
         return i;
     }
@@ -130,7 +127,7 @@ function objectToContents(renderer, object, i) {
     if (isTextNode(object) || isElement(object) || isComment(object)) {
         // Splice node into contents and the DOM
         contents[++i].before(object);
-        if (window.DEBUG) ++stats.add;
+        if (DEBUG) ++stats.add;
         contents.splice(i, 0, object);
         return i;
     }
@@ -147,7 +144,7 @@ template renderers, or strings.
 
 export default class TextRenderer extends Renderer {
     constructor(fn, parameters, element, node, compiled) {
-        if (window.DEBUG && !isTextNode(node)) {
+        if (DEBUG && !isTextNode(node)) {
             throw new TypeError('TextRenderer() node not a text node');
         }
 
@@ -206,7 +203,7 @@ export default class TextRenderer extends Renderer {
     }
 
     evaluate() {
-        if (window.DEBUG) {
+        if (DEBUG) {
             try {
                 return super.evaluate();
             }
@@ -262,7 +259,7 @@ export default class TextRenderer extends Renderer {
         if (contents[++i] !== last) {
             const mid = contents[i].firstNode || contents[i];
             deleteRange(mid, last);
-            if (window.DEBUG) ++stats.remove;
+            if (DEBUG) ++stats.remove;
             // Can this upset the observers queue? We are currently evaluating
             // renderers in the observers queue, and if old renderer happens to
             // be earlier in the queue the current index could become de-synced

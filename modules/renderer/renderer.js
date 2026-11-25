@@ -10,7 +10,7 @@ function stop(stopable) {
 }
 
 function promiseStop() {
-    this.status === 'done';
+    this.status = 'done';
 }
 
 function renderValue(renderer, args, values, n, object, isRender = false) {
@@ -88,21 +88,13 @@ export default class Renderer extends FrameSignal {
     }
 
     invalidate(input) {
-        // Static observers list
-        const observers = this.constructor.observers;
-
-        // If the observer is already cued do nothing
-        if (observers.indexOf(this) !== -1) return;
-
-        // Verify that input signal has the right to invalidate this
-        //if (input && !hasInput(this, input)) return;
-
-        // Clear inputs
-        //clearInputs(this);
-
-        if (this.stopables) this.stopables.forEach(stop);
-
-        this.cue();
+        const cued = super.invalidate(input);
+        if (!cued) return;
+        if (this.stopables) {
+            this.stopables.forEach(stop);
+            this.stopables.length = 0;
+        }
+        return cued;
     }
 
     evaluate() {
@@ -134,7 +126,10 @@ export default class Renderer extends FrameSignal {
     }
 
     stop() {
-        if (this.stopables) this.stopables.forEach(stop);
+        if (this.stopables) {
+            this.stopables.forEach(stop);
+            this.stopables.length = 0;
+        }
         return super.stop();
     }
 }

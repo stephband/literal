@@ -173,38 +173,33 @@ const toText = overload(toType, {
 
     'symbol': (value) => value.toString(),
 
-    'undefined': (value) => '',
+    'undefined': () => '',
 
-    'object': overload((object) => (object && object.constructor.name), {
-        'Array':   (object) => object.map(toText).join(''),
-        'RegExp':  (object) => '/' + object.source + '/',
+    'object': (object) => {
+        if (Array.isArray(object))    return object.map(toText).join('');
+        if (object instanceof Signal) return toText(object.value);
+        if (object instanceof RegExp) return '/' + object.source + '/';
 
-        // Allow signals to pass through, they get .toString() called when they
-        // are stringified into the DOM.
-        [Signal.name]: id,
+        // So. Streams and other objects with circular references fail to
+        // stringify. It would be nice if we could catch streams first seeing
+        // as we so regularly return them from expressions (eg. `${ events(...) }`),
+        // but builders have a nasty habit of rewriting constructor names, and
+        // it is difficult to see how to detect them without importing the
+        // Stream constructor, and I don't want to do that because that would
+        // create a dependency on Stream that we don't really need.
 
-        'default': (object) => {
-            // So. Streams and other objects with circular references fail to
-            // stringify. It would be nice if we could catch streams first seeing
-            // as we so regularly return them from expressions (eg. `${ events(...) }`),
-            // but builders have a nasty habit of rewriting constructor names, and
-            // it is difficult to see how to detect them without importing the
-            // Stream constructor, and I don't want to do that because that would
-            // create a dependency on Stream that we don't really need.
-
-            /*
-            try {
-                return JSON.stringify(object, null, 2);
-            }
-            catch(e) {
-                return '';
-            }
-            */
-
-            // But saying that, why are we returning stringified JSON at all?
-            return  '';
+        /*
+        try {
+            return JSON.stringify(object, null, 2);
         }
-    }),
+        catch(e) {
+            return '';
+        }
+        */
+
+        // But saying that, why are we returning stringified JSON at all?
+        return '';
+    },
 
     'default': JSON.stringify
 });

@@ -17,7 +17,6 @@ export default class OnRenderer {
 
         const type = name.slice(2);
         element.addEventListener(type, this);
-        element.removeAttribute(name);
     }
 
     handleEvent(e) {
@@ -30,10 +29,9 @@ export default class OnRenderer {
     }
 
     stop() {
-        //if (this.stopables) this.stopables.forEach(stop);
         const type = this.name.slice(2);
         this.element.removeEventListener(type, this);
-        return super.stop();
+        return this;
     }
 
     static consts = ['DATA', 'data', 'element', 'shadow', 'host', 'e'];
