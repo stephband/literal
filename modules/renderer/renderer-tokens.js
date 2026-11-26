@@ -1,14 +1,10 @@
 
-import id                from 'fn/id.js';
 import nothing           from 'fn/nothing.js';
-import overload          from 'fn/overload.js';
 import Signal            from 'fn/signal.js';
 import toText            from './to-text.js';
 import AttributeRenderer from './renderer-attribute.js';
 import { stats }         from './renderer.js';
 
-
-const A       = Array.prototype;
 
 /**
 TokensRenderer(signal, literal, consts, element, name)
@@ -56,6 +52,18 @@ export default class TokensRenderer extends AttributeRenderer {
         Signal.evaluate(this, this.evaluate);
     }
 
+    renderSingle(value) {
+        // Single expression has no static tokens; split trimmed value directly
+        const text   = toText(value).trim();
+        const tokens = text ?
+            text.split(/\s+/) :
+            nothing ;
+
+        // Set new tokens, remove unused tokens
+        updateTokens(this.list, this.tokens, tokens);
+        this.tokens = tokens;
+    }
+
     render(strings) {
         // Set permanent tokens from strings on first render
         if (this.count === 1) {
@@ -75,9 +83,10 @@ export default class TokensRenderer extends AttributeRenderer {
             if (text) string += ' ' + text;
         }
 
-        // Split into tokens
-        const tokens = string ?
-            string.trim().split(/\s+/) :
+        // Split trimmed tokens (guards against whitespace-only strings)
+        const trimmed = string.trim();
+        const tokens  = trimmed ?
+            trimmed.split(/\s+/) :
             nothing ;
 
         // Set new tokens, remove unused tokens

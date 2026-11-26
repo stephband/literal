@@ -5,16 +5,19 @@ import { log }    from '../log.js';
 const indent = window.DEBUG ? '\n    ' : '' ;
 
 /**
-compile(source, scope, consts)
-compile(source, scope, consts, options, debug)
-Compiles a literal template string `source` to a function that, when called,
+compileExpression(source, scope, consts, options, debug)
+compileLiteral(source, scope, consts, options, debug)
+Compiles a JS expression or literal template string `source` to a function that
 runs in a scope with all the properties of `scope` defined as constants. `debug`
 is an optional debug string.
 (`options.nostrict = true` enables template rendering `with(data)`.)
 **/
 
-// Store render functions against their source
+// Store render functions against their generated code
 export const compiled = {};
+
+// Match a bare `${ expr }` with no surrounding text or whitespace
+export const rsingle = /^\$\{([\s\S]+)\}$/;
 
 // By default compiled functions are not in 'strict mode' so we COULD use with(),
 // and make `${ data.name }` available as simply `${ name }` in a template...
@@ -37,12 +40,12 @@ export const compiled = {};
 //
 // For these reasons we apply `"use strict";` by default.
 
-export default function compile(source, scope, consts, options = {}, debug) {
+function compile(body, scope, consts, options, debug) {
     const code = (options.consts && options.consts.length ?
             indent + 'const {' + options.consts.join(',') + '} = DATA;' :
             '' )
         + indent + (options.nostrict ? 'with(data) ' : '')
-        + 'return args`' + source + '`;\n';
+        + body;
 
     // Return cached fn
     if (compiled[code]) return compiled[code];
@@ -54,11 +57,19 @@ export default function compile(source, scope, consts, options = {}, debug) {
 
         // Log this compile
         log('compile', (t1 - t0).toPrecision(3) + 'ms – ' + debug, undefined, undefined, 'yellow');
-
-        // Add fn to cache
         return compiled[code] = fn;
     }
 
-    // The quick version scope, parameters, code, context, strict
+    // The quick version: scope, parameters, code, context, strict
     return compiled[code] = compileFn(scope, '{' + consts.join(',') + '}', code, null, !options.nostrict);
+}
+
+export function compileExpression(source, scope, consts, options = {}, debug) {
+    // Wrap in parens for ASI safety on multiline expressions and comma expressions
+    return compile('return (' + source + ');\n', scope, consts, options, debug);
+}
+
+export function compileLiteral(source, scope, consts, options = {}, debug) {
+    // Compile as tagged template returning [strings, ...values] via `args`
+    return compile('return args`' + source + '`;\n', scope, consts, options, debug);
 }

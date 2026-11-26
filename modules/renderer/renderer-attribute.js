@@ -8,8 +8,6 @@ import { printError }    from '../print.js';
 
 
 const assign        = Object.assign;
-const getDescriptor = Object.getOwnPropertyDescriptor;
-const getPrototype  = Object.getPrototypeOf;
 
 
 /**
@@ -49,22 +47,37 @@ export function toAttributeString(values) {
     return string;
 }
 
+function resolveProperty(element, name) {
+    const property = name in names ? names[name] : name;
+    return property && (property in element) && isMutableProperty(property, element) ?
+        property :
+        undefined ;
+}
+
 export default class AttributeRenderer extends Renderer {
     constructor(fn, parameters, element, name, compiled, isEvaluate) {
         super(fn, assign({}, parameters, { element }), compiled);
 
-        // Detect un-upgraded (or indeed, upgraded) custom element
-        this.isCustomElement = element.tagName.includes('-');
-        this.element = element;
-        this.name    = name;
+        this.element  = element;
+        this.name     = name;
+        // Use compile-time resolved property (zero prototype walk on built-in elements)
+        this.property = compiled ?
+            compiled.property :
+            resolveProperty(element, name) ;
 
-        // TODO: property ought to be tested dynamically on custom elements
-        // as they can be upgraded at any point
-        const property = name in names ? names[name] : name;
-        if (property
-            && (property in element)
-            && isMutableProperty(property, element)) {
-            this.property = property;
+        // Only autonomous custom elements can upgrade later to add new properties
+        const isCustom = compiled ?
+            Boolean(compiled.upgradeable) && element.tagName.includes('-') :
+            element.tagName.includes('-') ;
+
+        // Has the custom element been upgraded already? ...
+        if (isCustom && element.constructor !== HTMLElement) {
+            this.property        = resolveProperty(element, name);
+            this.isCustomElement = false;
+        }
+        // Nope
+        else {
+            this.isCustomElement = isCustom;
         }
 
         // Evaluate now unless explicitly told not to by subclass
@@ -87,29 +100,33 @@ export default class AttributeRenderer extends Renderer {
         return super.evaluate();
     }
 
-    render(strings) {
-        // If arguments contains a single expression use its value
-        const value = this.singleExpression ?
-            arguments[1] :
-            toAttributeString(arguments) ;
+    renderSingle(value) {
+        const { element, name } = this;
 
-        const { element, name, property } = this;
+        // Custom element awaiting upgrade (or newly upgraded since last render)
+        if (this.isCustomElement) {
+            if (element.constructor !== HTMLElement) {
+                // Upgraded: resolve property mutability once and switch to fast path
+                this.property        = resolveProperty(element, name);
+                this.isCustomElement = false;
+            }
+            else {
+                // Un-upgraded: use inherited mutable property, else object as property / primitive as attribute
+                return this.property ?
+                    setProperty(element, this.property, value) :
+                    typeof value === 'object' && value !== null ?
+                        setProperty(element, name, value) :
+                        setAttribute(element, name, value) ;
+            }
+        }
 
-        return this.isCustomElement ?
-            // Does element have property of same name as attribute...
-            name in element ?
-                // and it's writable, set property
-                isMutableProperty(name, element) ?
-                    setProperty(element, name, value) :
-                    // otherwise set the attribute
-                    setAttribute(element, name, value) :
-            typeof value === 'object' ?
-                setProperty(element, name, value) :
-                setAttribute(element, name, value) :
-            // If element has a mapped property name, set it
-            property ?
-                setProperty(element, property, value) :
-                // otherwise set attribute
-                setAttribute(element, name, value) ;
+        // Fast path for built-in elements and upgraded custom elements
+        return this.property ?
+            setProperty(element, this.property, value) :
+            setAttribute(element, name, value) ;
+    }
+
+    render() {
+        return this.renderSingle(toAttributeString(arguments));
     }
 }

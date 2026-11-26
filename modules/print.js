@@ -130,14 +130,15 @@ export const printError = window.DEBUG ? function printError(compiled, error) {
 export const printDebug = window.DEBUG ? function printDebug(renderer, error) {
     const compiled = renderer.compiled;
     const template = compiled.template;
-    const fullpath = compiled.path
-        + (typeof compiled.name === 'string' ? '>' + compiled.name : '') ;
+    const path     = compiled.path;
+    const fullpath = (path && path.length ? path.join(' > ') : '')
+        + (typeof compiled.name === 'string' ? (path && path.length ? ' > ' : '') + compiled.name : '') ;
 
     const children = [
         template.identifier + ' ',
 
         create('small', {
-            text:  (fullpath ? '> ' + fullpath.replace(/>/g, ' > ') : ''),
+            text:  (fullpath ? '> ' + fullpath : ''),
             style: literalSmallCSS
         }),
 
@@ -172,8 +173,18 @@ export const printDebug = window.DEBUG ? function printDebug(renderer, error) {
     });
 } : noop ;
 
-export default function print(renderer, object) {
-    return object instanceof Error ?
-        printError(renderer.compiled, object) :
-        printDebug(renderer, object) ;
+export class Print {
+    constructor(args) {
+        this.args = args;
+    }
 }
+
+export const printNode = window.DEBUG ? function printNode(renderer, args) {
+    return args[0] instanceof Error ?
+        printError(renderer.compiled, args[0]) :
+        printDebug(renderer, ...args) ;
+} : noop ;
+
+export default window.DEBUG ? function print(...args) {
+    return new Print(args);
+} : noop ;

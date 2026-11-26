@@ -4,7 +4,6 @@ export default function removeRange(first, last) {
     }
 
     if (first === last) {
-        if (window.DEBUG) ++stats.remove;
         return last;
     }
 

@@ -1,8 +1,6 @@
 
-import id                from 'fn/id.js';
 import get               from 'fn/get.js';
 import overload          from 'fn/overload.js';
-import Signal            from 'fn/signal.js';
 import trigger           from 'dom/trigger.js';
 import config            from '../config.js';
 import { stash }         from '../stash.js';
@@ -163,13 +161,15 @@ const coercer = {
 };
 
 export default class ValueRenderer extends AttributeRenderer {
-    render(strings, value) {
+    renderSingle(value) {
         return setValue(this.element,
-            this.singleExpression ?
-                coercer[this.element.type] ?
-                    coercer[this.element.type](value) :
-                value :
-            toAttributeString(arguments)
+            coercer[this.element.type] ?
+                coercer[this.element.type](value) :
+                value
         );
+    }
+
+    render() {
+        return setValue(this.element, toAttributeString(arguments));
     }
 }

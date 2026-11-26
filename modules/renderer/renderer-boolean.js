@@ -1,5 +1,4 @@
 
-import Signal            from 'fn/signal.js';
 import AttributeRenderer from './renderer-attribute.js';
 import { stats }         from './renderer.js';
 
@@ -48,14 +47,13 @@ export function toAttributeBoolean(values) {
 
 
 export default class BooleanRenderer extends AttributeRenderer {
-    render(strings) {
-        // If arguments contains a single expression use its value
-        const value = this.singleExpression ?
-            arguments[1] :
-            toAttributeBoolean(arguments);
-
+    renderSingle(value) {
         return this.property ?
             setBooleanProperty(this.element, this.property, value) :
             setBooleanAttribute(this.element, this.name, value) ;
+    }
+
+    render() {
+        return this.renderSingle(toAttributeBoolean(arguments));
     }
 }

@@ -1,8 +1,9 @@
 
-import remove  from 'fn/remove.js';
-import Data    from 'fn/data.js';
+import remove      from 'fn/remove.js';
+import Data        from 'fn/data.js';
 import { FrameSignal } from 'fn/signal.js';
-import Literal from '../literal.js';
+import Literal     from '../literal.js';
+import { Include } from '../scope/include.js';
 
 
 function stop(stopable) {
@@ -13,13 +14,23 @@ function promiseStop() {
     this.status = 'done';
 }
 
-function renderValue(renderer, args, values, n, object, isRender = false) {
+function triggerRender(renderer, root) {
+    // Dispatch back to single-expression or multi-expression render path
+    if (renderer.singleExpression) renderer.renderSingle(root[0]);
+    else renderer.render.apply(renderer, root);
+}
+
+function renderValue(renderer, root, values, n, object, isRender = false) {
     if (object && typeof object === 'object') {
         // Avoid having property gets registered as observers
         const target = Data.objectOf(object);
 
-        // Don't add literals to stopables
-        if (target instanceof Literal) return;
+        // Pass Literal instances and Include descriptors straight through to render
+        if (target instanceof Literal || target instanceof Include) {
+            if (values[n] !== object) values[n] = object;
+            if (isRender) triggerRender(renderer, root);
+            return;
+        }
 
         // Is target have .then()?
         if (typeof target.then === 'function') {
@@ -31,7 +42,7 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
             target.then((value) => {
                 if (target.status === 'done') { return; }
                 remove(stopables, target);
-                return renderValue(renderer, args, values, n, value, true);
+                return renderValue(renderer, root, values, n, value, true);
             });
 
             stopables.push(target);
@@ -51,26 +62,32 @@ function renderValue(renderer, args, values, n, object, isRender = false) {
             // Do not render synchronous values that are in the stream
             // immediately, as they are about to be rendered by the renderer
             let isRender = false;
-            target.pipe({ push: (value) => renderValue(renderer, args, values, n, value, isRender) });
+            target.pipe({ push: (value) => renderValue(renderer, root, values, n, value, isRender) });
             isRender = true;
             return;
         }
 
-        // Is target an array?
-        if (typeof target.length === 'number') {
+        // Array: inspect non-trivial object elements for nested promises or streams
+        if (Array.isArray(target)) {
             let i = target.length;
             while (i--) {
-                renderValue(renderer, args, target, i, target[i]);
+                const item = target[i];
+                if (item && typeof item === 'object'
+                 && !(item instanceof Include)
+                 && !(item instanceof Literal)
+                 && !(item instanceof Node)) {
+                    renderValue(renderer, root, target, i, item);
+                }
             }
         }
     }
 
-    values[n] = object;
+    if (values[n] !== object) values[n] = object;
 
     // If the isRender flag is set, send to render
     if (isRender) {
         // Todo: work out a way of cueing this render??
-        renderer.render.apply(renderer, args);
+        triggerRender(renderer, root);
     }
 }
 
@@ -81,10 +98,12 @@ export default class Renderer extends FrameSignal {
         // FrameSignal does not evaluate immediately when no fn passed in
         super();
 
-        this.compiled   = compiled;
-        this.count      = 0;
-        this.fn         = fn;
-        this.parameters = parameters;
+        this.compiled         = compiled;
+        this.count            = 0;
+        this.fn               = fn;
+        this.parameters       = parameters;
+        // Compile-time single-expression flag from target avoids args allocation and .apply()
+        this.singleExpression = Boolean(compiled && compiled.singleExpression);
     }
 
     invalidate(input) {
@@ -98,27 +117,37 @@ export default class Renderer extends FrameSignal {
     }
 
     evaluate() {
-        // Renderer may have been stopped as part of this frame's evaluation
-        // in which case it has not been removed from observers...
-        // TODO: check, not sure this is necessary
-        //if (this.status === 'done') return;
-
         // Render count
         ++this.count;
 
         const { fn, parameters } = this;
-        const args = fn(parameters);
-        const strings = args[0];
 
-        // Flag the literal as containing exactly 1 expression optionally
-        // surrounded by whitespace, which allows for some optimisations
-        // further down the line, particularly for attribute renderers. We
-        // need only do this on first render.
-        if (this.singleExpression === undefined) {
-            this.singleExpression = strings.length === 2
-                && !/\S/.test(strings[0])
-                && !/\S/.test(strings[1]) ;
+        // Fast path: single-expression templates return their value directly
+        if (this.singleExpression) {
+            const value = fn(parameters);
+            if (value && typeof value === 'object') {
+                const target = Data.objectOf(value);
+                // Only route promises, streams, stopables, or arrays through renderValue
+                if (!(target instanceof Literal)
+                 && !(target instanceof Include)
+                 && !(target instanceof Node)
+                 && (typeof target.then === 'function'
+                  || typeof target.stop === 'function'
+                  || typeof target.pipe === 'function'
+                  || Array.isArray(target))) {
+                    const box = [value];
+                    renderValue(this, box, box, 0, value);
+                    this.renderSingle(box[0]);
+                    return;
+                }
+            }
+            this.renderSingle(value);
+            return;
         }
+
+        // General path: tagged template returning [strings, ...values]
+        const args    = fn(parameters);
+        const strings = args[0];
 
         let n = 0;
         while (strings[++n] !== undefined) renderValue(this, args, args, n, args[n]);

@@ -1,31 +1,24 @@
 
 import Data        from 'fn/data.js';
-import Signal      from 'fn/signal.js';
 import create      from 'dom/create.js';
 import removeRange from './dom/remove-range.js';
-import { pathSeparator } from './compile/constants.js';
 import Template    from './template.js';
 
 
+const DEBUG  = globalThis.DEBUG;
 const assign = Object.assign;
-const define = Object.defineProperties;
-const ids    = {};
 
 
 /*
 Template contents
-Descendant paths are stored in the form `"#id>1>12>3"`, enabling fast cloning of
-Literal instances without re-traversing their DOMs looking for template tags.
+Descendant paths are stored as arrays of childNode indices (e.g. `[0, 2, 1]`),
+enabling fast cloning of Literal instances without re-traversing their DOMs.
 */
 
-function getChild(element, index) {
-    return element.childNodes[index];
-}
-
 function getElement(path, node) {
-    return path
-    .split(pathSeparator)
-    .reduce(getChild, node);
+    let n = -1;
+    while (++n < path.length) node = node.childNodes[path[n]];
+    return node;
 }
 
 
@@ -66,33 +59,6 @@ function getContextFragment(template, element) {
     return template.content.cloneNode(true);
 }
 
-function toTemplate(compiled) {
-    const { fragment, parameters } = this;
-    const { path, name } = compiled;
-
-    // Where `.path` exists find the element at the end of the path
-    const element = path ? getElement(path, fragment) : parameters.element ;
-
-    // Text renderer expects a text node that must always come from the
-    // cloned content fragment
-    const node =
-        typeof name === 'number' ?
-            path ? element.childNodes[name] :
-            fragment.childNodes[name] :
-        name;
-
-    if (window.DEBUG && !node) throw new Error('Literal – node ' + name + ' not found in template');
-
-    // Parameters for new Renderer()
-    return { element, node, compiled };
-}
-
-function toRenderer({ element, node, compiled }) {
-    const { parameters } = this;
-    const { Renderer, literal } = compiled;
-    return new Renderer(literal, parameters, element, node, compiled);
-}
-
 function stop(renderer) {
     renderer.stop();
 }
@@ -123,12 +89,41 @@ export default class Literal {
         this.#first = children[0];
         // The last node is always the last node
         this.lastNode = children[children.length - 1];
-        // Create renderers array
-        this.renderers = template.compiled
-            // We must find targets in cloned content
-            .map(toTemplate, this)
-            // before we create renderers for them, renderers may mutate the DOM
-            .map(toRenderer, this);
+
+        const compiled = template.compiled;
+        const length   = compiled.length;
+        const elements = new Array(length);
+        const nodes    = new Array(length);
+
+        // Resolve all targets before any renderer mutates the DOM
+        let i = -1;
+        while (++i < length) {
+            const target = compiled[i];
+            const { path, name } = target;
+            const element = path.length ?
+                getElement(path, this.fragment) :
+                this.parameters.element ;
+
+            // TextRenderer expects a text node from the cloned fragment
+            const node = typeof name === 'number' ?
+                path.length ? element.childNodes[name] :
+                this.fragment.childNodes[name] :
+                name ;
+
+            if (DEBUG && !node) throw new Error('Literal – node ' + name + ' not found in template');
+
+            elements[i] = element;
+            nodes[i]    = node;
+        }
+
+        // Instantiate renderers in place - reuse the elements array
+        i = -1;
+        while (++i < length) {
+            const target = compiled[i];
+            elements[i] = new target.Renderer(target.literal, this.parameters, elements[i], nodes[i], target);
+        }
+
+        this.renderers = elements;
     }
 
     /** .firstNode **/
@@ -195,12 +190,7 @@ export default class Literal {
     Literal.create(identifier, element, parameters)
     **/
     static create(identifier, data, parameters) {
-        // Assume identifier is of the form `#id`
-        const element = document.getElementById(identifier.slice(1));
-        //const fragment = element.content;
-        //const options  = { nostrict: element.hasAttribute && element.hasAttribute('nostrict') };
-        //const template = new Template(identifier, fragment, options, element);
-        const template = Template.fromTemplate(element);
+        const template = Template.fromId(identifier.slice(1));
         return new Literal(template, data, parameters);
     }
 

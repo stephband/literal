@@ -13,13 +13,11 @@ import noop      from 'fn/noop.js';
 import nothing   from 'fn/nothing.js';
 import overload  from 'fn/overload.js';
 import remove    from 'fn/remove.js';
-import create    from 'dom/create.js';
 import decode    from 'dom/decode.js';
 import identify  from 'dom/identify.js';
 
 //
 
-import safe      from './scope/safe.js';
 import stash     from './stash.js';
 
 const scope = {};
@@ -53,7 +51,6 @@ export default Object.assign(scope, {
     Signal,
     args,
     cache,
-    create,
     decode,
     get,
     id,
@@ -63,6 +60,5 @@ export default Object.assign(scope, {
     nothing,
     overload,
     remove,
-    safe,
     stash
 });

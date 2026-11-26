@@ -1,5 +1,4 @@
 
-import id                from 'fn/id.js';
 import isDefined         from 'fn/is-defined.js';
 import Signal            from 'fn/signal.js';
 import trigger           from 'dom/trigger.js';
@@ -59,12 +58,12 @@ export default class CheckedRenderer extends AttributeRenderer {
         Signal.evaluate(this, this.evaluate);
     }
 
-    render(strings) {
-        // If arguments contains a single expression use its value
-        const value = this.singleExpression ?
-            Boolean(arguments[1]) :
-            toAttributeBoolean(arguments) ;
-
+    renderSingle(value) {
+        // Pass raw value so setChecked can match radio/checkbox values or arrays
         return setChecked(this.element, value, this.hasValue);
+    }
+
+    render() {
+        return setChecked(this.element, toAttributeBoolean(arguments), this.hasValue);
     }
 }

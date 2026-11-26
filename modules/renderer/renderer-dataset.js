@@ -2,7 +2,7 @@
 import Signal            from 'fn/signal.js';
 import toCamelCase       from 'fn/to-camel-case.js';
 import AttributeRenderer, { toAttributeString } from './renderer-attribute.js';
-import { stats }         from './renderer.js';
+import toText            from './to-text.js';
 
 
 /**
@@ -23,9 +23,12 @@ export default class DatasetRenderer extends AttributeRenderer {
         Signal.evaluate(this, this.evaluate);
     }
 
-    render(strings) {
-        return this.element.dataset[this.property] = this.singleExpression ?
-            arguments[1] :
-            toAttributeString(arguments) ;
+    renderSingle(value) {
+        // Convert with toText so null/undefined/NaN/Signal stringify consistently
+        return this.element.dataset[this.property] = toText(value);
+    }
+
+    render() {
+        return this.element.dataset[this.property] = toAttributeString(arguments);
     }
 }

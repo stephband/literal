@@ -1,4 +1,5 @@
 
+import isMutableProperty from 'fn/is-mutable-property.js';
 import scope             from '../scope.js';
 import names             from '../renderer/property-names.js';
 import AttributeRenderer from '../renderer/renderer-attribute.js';
@@ -9,14 +10,13 @@ import OnRenderer        from '../renderer/renderer-on.js';
 import StyleRenderer     from '../renderer/renderer-style.js';
 import TokensRenderer    from '../renderer/renderer-tokens.js';
 import ValueRenderer     from '../renderer/renderer-value.js';
-import R                 from '../renderer/renderer.js';
 import isLiteralString   from './is-literal-string.js';
 import truncate          from './truncate.js';
-import compile           from './compile.js';
+import { compileExpression, compileLiteral, rsingle } from './compile.js';
 import { printError }    from '../print.js';
 
 
-const assign = Object.assign;
+const DEBUG = globalThis.DEBUG;
 
 
 /**
@@ -37,50 +37,72 @@ export default function compileAttribute(array, element, attribute, path, option
     // that does not help here. Even if it is registered, element is currently
     // inside a fragment so has not yet been upgraded.
     const upgradeable = /-/.test(tag) || element.getAttribute('is');
-    const property    = name in names ? names[name] : name;
+    const mapped      = name in names ? names[name] : name;
 
     // We need the Renderer here just to get .consts. This is a bit
     // clunky, but the whole passing parameters to compiled functions thing is,
     // anyway. Needs a once-over.
     const Renderer = /^data-/.test(name) ? DatasetRenderer :
-        property in element ?
-            property === 'value'   ? ValueRenderer :
-            property === 'checked' ? CheckedRenderer :
-            property === 'style'   ? StyleRenderer :
-            property.startsWith('on') ? OnRenderer :
-            typeof element[property] === 'boolean' ? BooleanRenderer :
-            typeof element[property] === 'object' && element[property].add && element[property].remove ? TokensRenderer :
+        mapped in element ?
+            mapped === 'value'   ? ValueRenderer :
+            mapped === 'checked' ? CheckedRenderer :
+            mapped === 'style'   ? StyleRenderer :
+            mapped.startsWith('on') ? OnRenderer :
+            typeof element[mapped] === 'boolean' ? BooleanRenderer :
+            typeof element[mapped] === 'object' && element[mapped].add && element[mapped].remove ? TokensRenderer :
             AttributeRenderer :
         AttributeRenderer ;
 
-    const target = { path, name, source, Renderer, upgradeable, template };
+    // Resolve mutable property once at compile time (TokensRenderer reads element[property])
+    const property = mapped
+        && (mapped in element)
+        && (Renderer === TokensRenderer || isMutableProperty(mapped, element)) ?
+            mapped :
+            undefined ;
 
-    if (window.DEBUG) {
-        const code = truncate(80, '<'
+    const target  = { path, name, property, source, Renderer, upgradeable, template };
+    const trimmed = source.trim();
+    const match   = rsingle.exec(trimmed);
+
+    let code;
+
+    if (DEBUG) {
+        code = truncate(80, '<'
             + tag + ' '
             + name + '="' + source
             + '">') ;
 
         // Fill target object with debug info
-        target.tag      = tag;
-        target.code     = code;
-        target.property = property;
+        target.tag  = tag;
+        target.code = code;
+    }
 
-        // Attempt to compile, and in case of an error replace element with
-        // an error element
+    // Attempt to compile single expression `${ expr }` render function...
+    if (match) {
         try {
-            target.literal = compile(source, scope, Renderer.consts, options, code);
+            target.literal          = compileExpression(match[1], scope, Renderer.consts, options, code);
+            target.singleExpression = true;
         }
-        catch(error) {
-            element.replaceWith(printError(target, error));
-            return array;
-        }
-    }
-    else {
-        target.literal = compile(source, scope, Renderer.consts, options);
+        catch (_error) {}
     }
 
-    array.push(target);
+    // That failed where code was not really a single expression, so now
+    // compile template literal render function
+    if (!target.literal) {
+        if (DEBUG) {
+            try {
+                target.literal = compileLiteral(trimmed, scope, Renderer.consts, options, code);
+            }
+            catch (error) {
+                // Replace element with an error element
+                element.replaceWith(printError(target, error));
+                return array;
+            }
+        }
+        else {
+            target.literal = compileLiteral(trimmed, scope, Renderer.consts, options);
+        }
+    }
 
     // Avoid errant template literals making booleans default to true, mangling
     // classes, and unnecessarily checking checkboxes. This has been moved here
@@ -89,5 +111,7 @@ export default function compileAttribute(array, element, attribute, path, option
     // rather than each cloned DOM).
     element.removeAttribute(name);
 
+    // Add compiled target object to the list
+    array.push(target);
     return array;
 }

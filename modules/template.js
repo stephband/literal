@@ -27,7 +27,7 @@ export default class Template extends id {
         // Identifier is a cache key, in the case of a template in the DOM it is
         // its fragment identifier, it may be a url or anything else
         this.identifier = id;
-        this.compiled = compileNode([], fragment, '', options, this);
+        this.compiled = compileNode([], fragment, [], options, this);
         if (!this.content) this.content = fragment;
 
         // Cache template
@@ -38,6 +38,17 @@ export default class Template extends id {
         // Meh. (TODO test if this actually works)
         const template = create('template', { children: [this.content] });
         return template.innerHTML;
+    }
+
+    /**
+    Template.fromId(id, settings)
+    **/
+    static fromId(id, settings) {
+        const identifier = '#' + id;
+        if (cache[identifier]) return cache[identifier];
+
+        const element = document.getElementById(id);
+        return Template.fromTemplate(element, settings);
     }
 
     /**
@@ -63,6 +74,8 @@ export default class Template extends id {
     **/
     static fromTemplate(template, settings) {
         const identifier = '#' + identify(template, 'literal-');
+        if (cache[identifier]) return cache[identifier];
+
         const consts = template.getAttribute('consts');
         const options = assign({}, settings, {
             nostrict: template.hasAttribute ?

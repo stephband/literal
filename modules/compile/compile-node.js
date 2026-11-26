@@ -7,14 +7,13 @@ import indexOf           from '../dom/index-of.js';
 import TextRenderer      from '../renderer/renderer-text.js';
 import { printError }    from '../print.js';
 import scope             from '../scope.js';
-import compile           from './compile.js';
-import { pathSeparator } from './constants.js';
+import { compileExpression, compileLiteral, rsingle } from './compile.js';
 import isLiteralString   from './is-literal-string.js';
 import truncate          from './truncate.js';
 import compileAttribute  from './compile-attribute.js';
 
 
-const assign = Object.assign;
+const DEBUG = globalThis.DEBUG;
 
 
 /*
@@ -124,8 +123,9 @@ const compileNode = overload((targets, node) => toType(node), {
     'doctype':  id,
     'document': compileChildren,
     'fragment': compileChildren,
-    'element': (targets, element, path, options, template) => {
-        compileElement(targets, element, (path ? path + pathSeparator : '') + indexOf(element), options, template);
+    'element': (targets, element, path = [], options, template) => {
+        // Use .concat() so each branch gets its own immutable path snapshot
+        compileElement(targets, element, path.concat(indexOf(element)), options, template);
         return targets;
     },
     'text': (targets, node, path, options, template) => {
@@ -133,6 +133,7 @@ const compileNode = overload((targets, node) => toType(node), {
         if (!isLiteralString(string)) return targets;
 
         const source = decode(string);
+        const match  = rsingle.exec(source);
         const target = {
             template,
             path,
@@ -141,34 +142,54 @@ const compileNode = overload((targets, node) => toType(node), {
             Renderer: TextRenderer
         };
 
-        if (window.DEBUG) {
+        let code;
+
+        if (DEBUG) {
+            // Add debug info to code and to compile object
             const parent = node.parentElement;
             const tag    = parent && parent.tagName.toLowerCase();
-            const code   = truncate(80, tag ?
+
+            code = truncate(80, tag ?
                 '<' + tag + '>' + source.trim() + '</' + tag + '>' :
                 source.trim()
             );
 
-            // Add target object with debug info
             target.tag  = tag;
             target.code = code;
+        }
 
-            // Attempt to compile, and in case of an error replace node with an
-            // error element
+        // Attempt to compile single expression `${ expr }` render function...
+        if (match) {
             try {
-                target.literal = compile(source, scope, TextRenderer.consts, options, code);
-                node.nodeValue = '';
-                targets.push(target);
-                return targets;
+                target.literal = compileExpression(match[1], scope, TextRenderer.consts, options, code);
+                target.singleExpression = true;
             }
-            catch(error) {
-                node.replaceWith(printError(target, error));
-                return targets;
+            catch (_error) {}
+        }
+
+        // That failed where code was not really a single expression, so now
+        // compile template literal render function
+        if (!target.literal) {
+            if (DEBUG) {
+                try {
+                    target.literal = compileLiteral(source, scope, TextRenderer.consts, options, code);
+                }
+                catch (error) {
+                    // Replace node with an error element
+                    node.replaceWith(printError(target, error));
+                    return targets;
+                }
+            }
+            else {
+                // Compile template literal render function
+                target.literal = compileLiteral(source, scope, TextRenderer.consts, options);
             }
         }
 
-        target.literal = compile(source, scope, TextRenderer.consts, options);
+        // Empty the node
         node.nodeValue = '';
+
+        // Add compiled target object to the list
         targets.push(target);
         return targets;
     }
